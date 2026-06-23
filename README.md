@@ -22,3 +22,19 @@ Phase 7). React / ReactDOM / Base UI are peer dependencies (the host provides th
 
 > Source is JSX consumed by a bundler (e.g. greenhouse's esbuild). A standalone Kernel
 > build + Storybook is a later milestone (Phase 7).
+
+## Two-tier drop — verified
+
+The external/client tier is the `.` entry; the internal (Corilus) tier adds `./clinical`.
+Because the clinical cards are reachable **only** through `./clinical`, a consumer that
+imports just `.` never pulls them — the bundler tree-shakes them out, no build flag needed.
+
+Exercised 2026-06-23 (esbuild metafile, via greenhouse's toolchain):
+
+| Entry a consumer imports | clinical card files bundled |
+|---|---|
+| `@corilus/kernel` (external/client) | **none** ✓ |
+| `@corilus/kernel/clinical` (internal/Corilus) | all 6 (Allergy, Condition, Demographic, LabResult, Medication, VitalSign) |
+
+So the **client-facing build drops the clinical slice automatically** while the internal
+build opts in via `./clinical` — locked decision 2, confirmed.
