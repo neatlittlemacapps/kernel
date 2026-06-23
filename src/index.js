@@ -7,13 +7,15 @@
 //
 // Extraction boundary (from companion-forge/greenhouse): primitives NEVER import
 // from the companion app layer; the dependency only points downward.
+//
+// `export *` re-exports the full public surface of each module (Btn, BrandContext,
+// SproutCard, Card primitives, PropertyList, lib helpers, …). Each module also has
+// a co-located `export const meta`; those collide and are intentionally dropped
+// from the package surface (consumers never import a component's `meta` here).
 
-// Base UI wrappers (the original barrel surface)
-export { Btn, IconButton, AIBadge, PAv, Tip, Toggle, TextInput, FFSection, Accordion, AIMarker } from './components/ui.jsx';
-export { ActionRow } from './components/ActionRow.jsx';
-
-// Sprout-card system (generic) — the seed→sprout→shoot orchestrator + card primitives
-export { SproutCard, SproutToneProvider } from './components/sprout-cards/SproutCard.jsx';
-export { Card, StatusPill, TrendChip, ValueDisplay, Stepper, IconPill, EditChip, MeterTooltip } from './components/sprout-cards/Card.jsx';
-export { PropertyList } from './components/sprout-cards/PropertyList.jsx';
-export { txtNL, propertyMap, propertyIcons, iconFor, Sparkline, ReferenceRangeBar } from './components/sprout-cards/lib.jsx';
+export * from './components/ui.jsx';
+export * from './components/ActionRow.jsx';
+export * from './components/sprout-cards/SproutCard.jsx';
+export * from './components/sprout-cards/Card.jsx';
+export * from './components/sprout-cards/PropertyList.jsx';
+export * from './components/sprout-cards/lib.jsx';
