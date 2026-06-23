@@ -1,0 +1,18 @@
+# .gh-token — YOUR personal GitHub token. NEVER commit this (it's gitignored).
+#
+# 1. Copy this file to `.gh-token` (here, or once at your Projects/ root to cover
+#    every migration repo via the walk-up — grove, kernel, greenhouse,
+#    skill-kernel-tokens, skill-kernel-components).
+# 2. Replace the line below with YOUR OWN token (no quotes, no extra whitespace).
+# 3. Run `bash setup-auth.sh` once in each clone. Then plain git push/pull works.
+#
+# Recommended token: a FINE-GRAINED PAT (github.com -> Settings -> Developer
+# settings -> Fine-grained tokens) scoped to ONLY these 5 repositories, with
+# Repository permission "Contents: Read and write". Least privilege: it cannot
+# create repos or touch anything else. (Creating new repos — rare — needs a
+# separate classic admin token, used only for that.)
+#
+# Your colleague must first be added as a collaborator on the repos (the owner
+# runs add-collaborator.sh). Each of you uses YOUR OWN token — never share one.
+
+github_pat_REPLACE_WITH_YOUR_OWN_FINE_GRAINED_TOKEN
