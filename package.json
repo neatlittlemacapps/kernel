@@ -1,0 +1,25 @@
+{
+  "name": "@corilus/kernel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kernel - Corilus shippable design system: DTCG design tokens + Base UI component wrappers. Generic surface (.) + optional clinical tier (./clinical). Extracted from companion-forge/greenhouse.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./clinical": "./src/clinical.js",
+    "./styles.css": "./src/styles.css",
+    "./tokens/*": "./tokens/*"
+  },
+  "files": [
+    "src",
+    "tokens"
+  ],
+  "peerDependencies": {
+    "@base-ui-components/react": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

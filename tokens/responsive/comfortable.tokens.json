@@ -1,0 +1,14 @@
+{
+  "density": {
+    "$type": "dimension",
+    "$description": "Comfortable density (default). Concentric-critical paddings alias the grid scales; row-py/control-py are tuned (off-grid by design). radius references the brand corner step so a brand owns roundness while density still varies one step.",
+    "card-pad":   { "$value": "{space.4}" },
+    "row-py":     { "$value": { "value": 10, "unit": "px" } },
+    "gap":        { "$value": "{space.3}" },
+    "gap-lg":     { "$value": "{space.4}" },
+    "control-py": { "$value": { "value": 10, "unit": "px" } },
+    "control-px": { "$value": "{space.4}" },
+    "radius":     { "$value": "{brand.radius.base}" },
+    "font":       { "$value": { "value": 14, "unit": "px" } }
+  }
+}

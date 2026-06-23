@@ -1,0 +1,17 @@
+{
+  "type": {
+    "size": {
+      "$type": "dimension",
+      "$description": "Type scale — DESKTOP. 1.2 ratio, 16px body base. Loaded by the breakpoint modifier (default).",
+      "2xs":  { "$value": { "value": 9,  "unit": "px" } },
+      "xs":   { "$value": { "value": 11, "unit": "px" } },
+      "sm":   { "$value": { "value": 13, "unit": "px" } },
+      "base": { "$value": { "value": 16, "unit": "px" } },
+      "lg":   { "$value": { "value": 19, "unit": "px" } },
+      "xl":   { "$value": { "value": 23, "unit": "px" } },
+      "2xl":  { "$value": { "value": 28, "unit": "px" } },
+      "3xl":  { "$value": { "value": 33, "unit": "px" } },
+      "4xl":  { "$value": { "value": 40, "unit": "px" } }
+    }
+  }
+}

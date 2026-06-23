@@ -1,0 +1,18 @@
+{
+  "button": {
+    "$type": "color",
+    "$description": "Button family. Emphasis variants alias action.* only; semantic variants alias status.*.solid/on (bold fills). No alias to ambient/inverted: mint reaches a button only inside an inverted scope, via remap, never here. @allow-passthrough: kept as the family's contract surface and home for future button-only deltas.",
+
+    "primary":   { "background": { "$value": "{action.solid}" },  "text": { "$value": "{action.on}" } },
+    "secondary": { "background": { "$value": "{surface.none}" },   "border": { "$value": "{action.accent}" }, "text": { "$value": "{action.quiet}" } },
+    "tertiary":  { "background": { "$value": "{surface.none}" },   "text": { "$value": "{action.quiet}" } },
+
+    "info":    { "background": { "$value": "{status.info.solid}" },    "text": { "$value": "{status.info.on}" } },
+    "success": { "background": { "$value": "{status.success.solid}" }, "text": { "$value": "{status.success.on}" } },
+    "warning": { "background": { "$value": "{status.warning.solid}" }, "text": { "$value": "{status.warning.on}" } },
+    "error":   { "background": { "$value": "{status.error.solid}" },   "text": { "$value": "{status.error.on}" } },
+
+    "disabled":   { "background": { "$value": "{state.disabled.surface}" }, "text": { "$value": "{state.disabled.text}" } },
+    "focus-ring": { "$value": "{focus.ring}" }
+  }
+}

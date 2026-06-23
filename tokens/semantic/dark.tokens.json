@@ -1,0 +1,505 @@
+{
+  "$type": "color",
+  "$description": "Dark theme. Additive over light: the resolver loads light first, then these overrides. Only the tokens that must change in the dark are present. Like light, references ONLY the brand tier for hue-bearing colour (hueless overlays/scrim/shadows stay in primitives). Neutrals stay in the brand fill hue family. Note `inverted` flips to a LIGHT block here, the opposite of this theme's base.",
+  "action": {
+    "accent": {
+      "$value": "{brand.primary-bright}",
+      "$description": "Emphasis/icon/accent-text colour. Brand-bright step so accents and icons meet AA on dark surfaces."
+    },
+    "quiet": {
+      "$value": "{brand.fill.50}",
+      "$description": "Outline/tertiary button text must be light on dark surfaces."
+    }
+  },
+  "focus": {
+    "ring": {
+      "$value": "{brand.fill.50}",
+      "$description": "Focus ring must be visible on dark surfaces."
+    }
+  },
+  "status": {
+    "$description": "Dark-mode status. The light theme's tints render as glaring light chips on dark, and its solids are illegible as foreground on dark. Flipped: soft form = dark tint (brand.status.*.900) + light solid (brand.status.*.300); bold form = light solid fill + dark `on` (brand ink).",
+    "info": {
+      "tint": {
+        "$value": "{brand.status.info.900}"
+      },
+      "solid": {
+        "$value": "{brand.status.info.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "success": {
+      "tint": {
+        "$value": "{brand.status.success.900}"
+      },
+      "solid": {
+        "$value": "{brand.status.success.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "warning": {
+      "tint": {
+        "$value": "{brand.status.warning.900}"
+      },
+      "solid": {
+        "$value": "{brand.status.warning.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "error": {
+      "tint": {
+        "$value": "{brand.status.error.900}"
+      },
+      "solid": {
+        "$value": "{brand.status.error.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    }
+  },
+  "surface": {
+    "page": {
+      "$value": "{brand.fill.950}"
+    },
+    "panel": {
+      "$value": "{brand.fill.900}"
+    },
+    "raised": {
+      "$value": "{brand.fill.800}"
+    },
+    "sunken": {
+      "$value": "{brand.fill.700}"
+    }
+  },
+  "text": {
+    "default": {
+      "$value": "{brand.ink.100}"
+    },
+    "muted": {
+      "$value": "{brand.ink.300}",
+      "$description": "Secondary text. Brand ink.300 meets AA on dark surfaces."
+    },
+    "faint": {
+      "$value": "{brand.ink.400}",
+      "$description": "Tertiary / placeholder / functional-icon ink."
+    }
+  },
+  "chart": {
+    "$description": "Dark-mode chart ink must be LIGHT-on-dark.",
+    "grid": {
+      "$value": "{brand.ink.800}"
+    },
+    "axis": {
+      "$value": "{brand.ink.600}"
+    },
+    "label": {
+      "$value": "{brand.ink.300}"
+    }
+  },
+  "border": {
+    "subtle": {
+      "$value": "{brand.fill.600}",
+      "$description": "Hairline structure, lifted for clearer delineation on dark. Hairlines/dividers are decorative (WCAG-exempt)."
+    }
+  },
+  "data": {
+    "$description": "Categorical / row-tone hues at the brand-bright (.400) step so decorative icons and chart series read on dark surfaces.",
+    "series-1": {
+      "$value": "{brand.data-bright.1}"
+    },
+    "series-2": {
+      "$value": "{brand.data-bright.2}"
+    },
+    "series-3": {
+      "$value": "{brand.data-bright.3}"
+    },
+    "series-4": {
+      "$value": "{brand.data-bright.4}"
+    },
+    "series-5": {
+      "$value": "{brand.data-bright.5}"
+    },
+    "series-6": {
+      "$value": "{brand.data-bright.6}"
+    }
+  },
+  "state": {
+    "hover": {
+      "$value": "{color.alpha.white-08}"
+    },
+    "active": {
+      "$value": "{color.alpha.white-16}"
+    },
+    "selected": {
+      "surface": {
+        "$value": "{brand.tint.strong}"
+      },
+      "text": {
+        "$value": "{action.accent}"
+      }
+    },
+    "disabled": {
+      "surface": {
+        "$value": "{brand.fill.700}"
+      },
+      "text": {
+        "$value": "{brand.fill.300}"
+      }
+    }
+  },
+  "overlay": {
+    "scrim": {
+      "$value": "{color.alpha.black-55}"
+    }
+  },
+  "elevation": {
+    "$type": "shadow",
+    "raised": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-30}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        {
+          "color": "{color.alpha.black-24}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 1,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "overlay": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-30}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 4,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 12,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -2,
+            "unit": "px"
+          }
+        },
+        {
+          "color": "{color.alpha.black-24}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 6,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -2,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "modal": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-55}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 12,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 32,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -8,
+            "unit": "px"
+          }
+        },
+        {
+          "color": "{color.alpha.black-30}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 4,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 12,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -4,
+            "unit": "px"
+          }
+        }
+      ]
+    }
+  },
+  "inverted": {
+    "$description": "In the dark theme the inverse block is LIGHT with dark text. Accent stays the brand accent hue (used as a fill with dark text).",
+    "surface": {
+      "$value": "{brand.neutral.paper}"
+    },
+    "raised": {
+      "$value": "{brand.neutral.panel-raised}"
+    },
+    "text": {
+      "$value": "{brand.ink.950}"
+    },
+    "muted": {
+      "$value": "{brand.ink.700}"
+    },
+    "border": {
+      "$value": "{brand.neutral.panel-sunken}"
+    },
+    "accent": {
+      "$value": "{brand.accent.700}"
+    },
+    "accent-on": {
+      "$value": "{brand.ink.0}"
+    }
+  },
+  "property": {
+    "$description": "Dark-theme property overrides. tint\u2192.900, tint-strong\u2192.700 (denser backdrop), accent\u2192.400 (bright on dark), solid\u2192.300 (light glyph), on\u2192ink.950.",
+    "heart": {
+      "tint": {
+        "$value": "{brand.property.heart.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.heart.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.heart.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.heart.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "breath": {
+      "tint": {
+        "$value": "{brand.property.breath.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.breath.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.breath.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.breath.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "oxygen": {
+      "tint": {
+        "$value": "{brand.property.oxygen.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.oxygen.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.oxygen.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.oxygen.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "temperature": {
+      "tint": {
+        "$value": "{brand.property.temperature.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.temperature.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.temperature.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.temperature.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "pressure": {
+      "tint": {
+        "$value": "{brand.property.pressure.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.pressure.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.pressure.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.pressure.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "body": {
+      "tint": {
+        "$value": "{brand.property.body.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.body.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.body.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.body.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "lab": {
+      "tint": {
+        "$value": "{brand.property.lab.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.lab.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.lab.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.lab.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "identity": {
+      "tint": {
+        "$value": "{brand.property.identity.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.identity.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.identity.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.identity.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "condition": {
+      "tint": {
+        "$value": "{brand.property.condition.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.condition.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.condition.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.condition.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "allergy": {
+      "tint": {
+        "$value": "{brand.property.allergy.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.allergy.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.allergy.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.allergy.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    },
+    "medication": {
+      "tint": {
+        "$value": "{brand.property.medication.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.medication.700}"
+      },
+      "accent": {
+        "$value": "{brand.property.medication.400}"
+      },
+      "solid": {
+        "$value": "{brand.property.medication.300}"
+      },
+      "on": {
+        "$value": "{brand.ink.950}"
+      }
+    }
+  }
+}

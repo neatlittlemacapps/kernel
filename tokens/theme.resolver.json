@@ -1,0 +1,172 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "version": "2025.10",
+  "sets": {
+    "primitives": {
+      "sources": [
+        {
+          "$ref": "primitives/colors.tokens.json"
+        },
+        {
+          "$ref": "primitives/typography.tokens.json"
+        },
+        {
+          "$ref": "primitives/radius.tokens.json"
+        },
+        {
+          "$ref": "primitives/space.tokens.json"
+        },
+        {
+          "$ref": "primitives/motion.tokens.json"
+        }
+      ]
+    },
+    "typography": {
+      "sources": [
+        {
+          "$ref": "semantic/typography.tokens.json"
+        }
+      ]
+    },
+    "foundations": {
+      "sources": [
+        {
+          "$ref": "semantic/foundations.tokens.json"
+        }
+      ]
+    },
+    "components": {
+      "sources": [
+        {
+          "$ref": "components/button.tokens.json"
+        },
+        {
+          "$ref": "components/pill.tokens.json"
+        },
+        {
+          "$ref": "components/card.tokens.json"
+        },
+        {
+          "$ref": "components/sparkline.tokens.json"
+        },
+        {
+          "$ref": "components/canvas.tokens.json"
+        }
+      ]
+    }
+  },
+  "modifiers": {
+    "brand": {
+      "description": "Brand identity \u2014 the single chokepoint for colour, radius and font. Resolves BEFORE theme so the semantic layer (and theme's dark deltas) re-resolve against the chosen brand. Each non-default brand is additive over Corilus (Corilus loaded first as the base, then the brand deltas) \u2014 the same pattern as dark-over-light. To add a brand, drop in brand/{name}.tokens.json and add a context here that loads corilus first, then the new file.",
+      "contexts": {
+        "corilus": [
+          {
+            "$ref": "brand/corilus.tokens.json"
+          }
+        ],
+        "semble": [
+          {
+            "$ref": "brand/corilus.tokens.json"
+          },
+          {
+            "$ref": "brand/semble.tokens.json"
+          }
+        ],
+        "myneva": [
+          {
+            "$ref": "brand/corilus.tokens.json"
+          },
+          {
+            "$ref": "brand/myneva.tokens.json"
+          }
+        ]
+      },
+      "default": "corilus"
+    },
+    "theme": {
+      "description": "Visual mode. Dark is additive over light.",
+      "contexts": {
+        "light": [
+          {
+            "$ref": "semantic/light.tokens.json"
+          }
+        ],
+        "dark": [
+          {
+            "$ref": "semantic/light.tokens.json"
+          },
+          {
+            "$ref": "semantic/dark.tokens.json"
+          }
+        ]
+      },
+      "default": "light"
+    },
+    "breakpoint": {
+      "contexts": {
+        "desktop": [
+          {
+            "$ref": "responsive/type-desktop.tokens.json"
+          }
+        ],
+        "tablet": [
+          {
+            "$ref": "responsive/type-tablet.tokens.json"
+          }
+        ],
+        "mobile": [
+          {
+            "$ref": "responsive/type-mobile.tokens.json"
+          }
+        ]
+      },
+      "default": "desktop"
+    },
+    "density": {
+      "contexts": {
+        "compact": [
+          {
+            "$ref": "responsive/compact.tokens.json"
+          }
+        ],
+        "comfortable": [
+          {
+            "$ref": "responsive/comfortable.tokens.json"
+          }
+        ],
+        "spacious": [
+          {
+            "$ref": "responsive/spacious.tokens.json"
+          }
+        ]
+      },
+      "default": "comfortable"
+    }
+  },
+  "resolutionOrder": [
+    {
+      "$ref": "#/sets/primitives"
+    },
+    {
+      "$ref": "#/modifiers/brand"
+    },
+    {
+      "$ref": "#/modifiers/theme"
+    },
+    {
+      "$ref": "#/modifiers/breakpoint"
+    },
+    {
+      "$ref": "#/modifiers/density"
+    },
+    {
+      "$ref": "#/sets/typography"
+    },
+    {
+      "$ref": "#/sets/foundations"
+    },
+    {
+      "$ref": "#/sets/components"
+    }
+  ]
+}

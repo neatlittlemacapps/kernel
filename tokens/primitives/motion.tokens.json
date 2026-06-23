@@ -1,0 +1,39 @@
+{
+  "motion": {
+    "$description": "Tier-1 motion primitives \u2014 raw durations + cubic-bezier easings. Theme- and brand-agnostic (motion timing does not change per brand or theme). Semantic motion tokens alias these by intent (`semantic.motion.duration.base` \u2192 `{motion.duration.260}`). (Easings moved to the semantic tier \u2014 they were intent-named, not descriptive, and clashed with the same names at semantic. See semantic/foundations.tokens.json.)",
+    "duration": {
+      "$type": "duration",
+      "$description": "Raw timing values on a perceptual cadence: 100/180/260/400/600 ms. Step parity is roughly 1.6\u00d7 \u2014 fast enough to read as crisp, slow enough to be perceived as deliberate. Anything <100ms reads as instant; anything >600ms reads as sluggish in product UI.",
+      "100": {
+        "$value": {
+          "value": 100,
+          "unit": "ms"
+        }
+      },
+      "180": {
+        "$value": {
+          "value": 180,
+          "unit": "ms"
+        }
+      },
+      "260": {
+        "$value": {
+          "value": 260,
+          "unit": "ms"
+        }
+      },
+      "400": {
+        "$value": {
+          "value": 400,
+          "unit": "ms"
+        }
+      },
+      "600": {
+        "$value": {
+          "value": 600,
+          "unit": "ms"
+        }
+      }
+    }
+  }
+}

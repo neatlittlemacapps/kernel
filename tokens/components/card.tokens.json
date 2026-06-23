@@ -1,0 +1,15 @@
+{
+  "card": {
+    "$description": "Card geometry \u2014 geometry only; density-aware where the system has a density-tier token to alias.",
+    "padding": {
+      "$type": "dimension",
+      "$value": "{density.card-pad}",
+      "$description": "Card outer padding. Aliases density.card-pad so the card resizes with [data-density]."
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{density.gap}",
+      "$description": "Card inner slot gap (head \u2194 value \u2194 meta \u2194 media \u2194 footer). Density-aware."
+    }
+  }
+}

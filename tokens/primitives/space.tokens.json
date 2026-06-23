@@ -1,0 +1,13 @@
+{
+  "space": {
+    "$type": "dimension",
+    "$description": "Spacing scale on the 4px grid (4·n). Padding/gap roles map to these per density. Concentric-critical paddings stay on the grid so radius − padding lands on a radius step; internal vertical rhythm (control-py/row-py) is tuned off-grid by design.",
+    "1": { "$value": { "value": 4,  "unit": "px" } },
+    "2": { "$value": { "value": 8,  "unit": "px" } },
+    "3": { "$value": { "value": 12, "unit": "px" } },
+    "4": { "$value": { "value": 16, "unit": "px" } },
+    "5": { "$value": { "value": 20, "unit": "px" } },
+    "6": { "$value": { "value": 24, "unit": "px" } },
+    "7": { "$value": { "value": 28, "unit": "px" } }
+  }
+}

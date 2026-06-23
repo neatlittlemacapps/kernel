@@ -1,0 +1,10 @@
+{
+  "canvas": {
+    "$type": "number",
+    "$description": "Page-level canvas surface. The paper grain is a data-URL SVG noise pattern composited at low opacity for warmth without harming contrast.",
+    "texture-opacity": {
+      "$value": 0.03,
+      "$description": "3% grain \u2014 felt at viewing distance, invisible on screenshot zoom."
+    }
+  }
+}

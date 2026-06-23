@@ -1,0 +1,1853 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Component layer — Base UI parts styled EXCLUSIVELY through semantic token
+   vars (USAGE.md §1). No hardcoded color/space/radius/elevation: every such
+   value is a var(--…). Font-size px are sanctioned (USAGE §11: type scale is a
+   deliberate gap). Injected into the page head by the bundle at mount.
+   Portalled popups (menu/select/tooltip) are intentionally global so they
+   inherit :root theme + density tokens.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── RADIUS RUNGS — derived from the radius scale + density base ─────────────
+   The tokenset now ships a radius scale (--radius-xs/sm/md/lg/xl/pill, 4px grid)
+   and a density-mapped base (--density-radius = radius.sm/md/lg per density).
+   The component rungs derive on the SAME grid: offsets are 4-multiples, so every
+   value stays on the grid and concentric nesting (radius − padding) lands on a
+   step. pill comes straight from the scale. (Kept as --cc-radius-* var names →
+   zero component edits.) */
+:root {
+  --cc-radius-pill: var(--radius-pill);                  /* 999 */
+  --cc-radius-panel: calc(var(--density-radius) + 4px);  /* 12 / 16 / 20 */
+  --cc-radius-capsule: calc(var(--density-radius) + 8px); /* 16 / 20 / 24 */
+  --cc-radius-sm: calc(var(--density-radius) - 4px);     /* 4 / 8 / 12 */
+}
+
+/* ── INVERSE scope ──────────────────────────────────────────────────────────
+   Drop `.inverted` on any container and everything inside flips to the inverse-
+   surface palette with NO component change (USAGE §inverted). It only remaps the
+   semantic vars to their inverted.* counterparts; the action accent becomes
+   Corilus lime (inverted.accent). Works in light (dark block) and dark (light
+   block) themes — the inverted.* tokens already carry the right per-theme value. */
+.inverted {
+  --surface-page: var(--inverted-surface);
+  --surface-panel: var(--inverted-raised);
+  --surface-raised: var(--inverted-raised);
+  --surface-sunken: var(--inverted-surface);
+  --text-default: var(--inverted-text);
+  --text-muted: var(--inverted-muted);
+  --text-faint: var(--inverted-muted);
+  --text-on-accent: var(--inverted-accent-on);
+  --border-subtle: var(--inverted-border);
+  --action-accent: var(--inverted-accent);
+  --action-solid: var(--inverted-accent);
+  --action-on: var(--inverted-accent-on);
+  --state-hover: var(--color-alpha-white-08);
+  --state-active: var(--color-alpha-white-16);
+  --state-selected-surface: var(--color-alpha-white-16);
+  --state-selected-text: var(--inverted-accent);
+  /* Brand tints are brand-teal-at-low-alpha by default — invisible on a dark
+     navy block. Inside `.inverted` they re-resolve to white-alpha tints, which
+     read on the inverted-surface and keep the same "soft / strong" semantics.
+     Used by the trigger promotion pulse and the soft AIActionButton variant. */
+  --brand-tint-soft: var(--color-alpha-white-08);
+  --brand-tint-strong: var(--color-alpha-white-16);
+  color: var(--inverted-text);
+}
+/* The logo is now a transparent inline SVG filled with the brand gradient
+   (brand.logo token) — no light chip / multiply backing needed in any theme. */
+/* inverse "hero": a rounded spotlight card for the companion identity */
+.cc-hero { background: var(--surface-raised); border-radius: var(--cc-radius-panel); padding: 22px 18px 20px; margin-bottom: 16px; box-shadow: var(--elevation-raised); }
+/* show the inverse accent (lime) on a real element: a ring around the identity badge */
+.cc-hero .cc-aibadge.is-glow { box-shadow: 0 0 0 3px var(--action-accent); }
+
+@keyframes cc-pulseFab { 0% { transform: scale(1); opacity: .45 } 100% { transform: scale(1.85); opacity: 0 } }
+@keyframes cc-handWave { 0%,60%,100% { transform: rotate(0) } 10%,30% { transform: rotate(14deg) } 20% { transform: rotate(-8deg) } 40% { transform: rotate(-4deg) } 50% { transform: rotate(10deg) } }
+@keyframes cc-fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes cc-fadeUp { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes cc-blink { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+
+.cc-companion-layer, .cc-companion-layer * { box-sizing: border-box; }
+.cc-companion-layer { font-family: var(--font-body); color: var(--text-default); }
+.cc-companion-layer ::-webkit-scrollbar { width: 5px; height: 5px; }
+.cc-companion-layer ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: var(--cc-radius-pill); }
+/* ── FOCUS RING — ONE colour, everywhere ──
+   Base ring on every focusable element in the companion so nothing falls back to
+   the browser/OS default outline (on macOS that's the system accent colour — which
+   is why an un-ringed control, e.g. the suggestion chip, showed up orange on a teal
+   Corilus build). Always the neutral --focus-ring (= brand.neutral.ink). Declared
+   BEFORE the per-control rules so their custom offsets (e.g. inset rows) still win
+   on equal specificity. Opt-outs below: elements that signal focus another way
+   (textarea + composer card border, menu-item highlight, input border). */
+.cc-companion-layer :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cc-composer-ta:focus-visible, .cc-menu-item:focus-visible, .cc-input:focus-visible { outline: none; }
+
+/* ── FAB ── */
+.cc-fab {
+  position: fixed; bottom: 20px; right: 20px; width: 52px; height: 52px;
+  border-radius: var(--cc-radius-pill); border: 2px solid var(--action-accent);
+  background: var(--surface-raised); cursor: pointer; z-index: 2147483000;
+  display: flex; align-items: center; justify-content: center; box-shadow: var(--elevation-overlay);
+}
+.cc-fab-pulse { position: absolute; inset: 0; border-radius: var(--cc-radius-pill); background: var(--state-selected-surface); animation: cc-pulseFab 2s ease-out infinite; }
+/* transparent brain mark sits directly in the FAB (above the pulse), no tile */
+.cc-fab .cc-aibadge { position: relative; z-index: 1; }
+
+/* ── PANEL (per mode) ── */
+.cc-panel {
+  position: fixed; z-index: 2147483000; display: flex; flex-direction: column;
+  background: var(--surface-raised); color: var(--text-default);
+  overflow: hidden; animation: cc-fadeIn .2s ease; font-family: var(--font-body);
+}
+.cc-panel--floating { bottom: 20px; right: 20px; width: 400px; height: min(640px, calc(100vh - 40px)); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel); box-shadow: var(--elevation-modal); }
+.cc-panel--sidebar { top: 0; right: 0; height: 100%; border-left: 1px solid var(--border-subtle); box-shadow: var(--elevation-overlay); overflow: visible; }
+.cc-panel--fullscreen { inset: 0; width: 100%; height: 100%; }
+/* Bottom sheet: bottom-anchored, height is content-driven (set inline by JS via
+   the ResizeObserver), capped to a content-hugging fallback. Animating height
+   while anchored to bottom makes it grow/slide upward. At ≥75vh the JS sets the
+   height to 100vh and adds .is-sheetfull → it morphs into a fullscreen takeover. */
+.cc-panel--bottomsheet { left: 0; right: 0; bottom: 0; top: auto; width: 100%; height: auto; max-height: 75%; border-top: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel) var(--cc-radius-panel) 0 0; box-shadow: var(--elevation-modal); transition: height .28s cubic-bezier(.4, 0, .2, 1), border-radius .2s ease; }
+.cc-panel--bottomsheet.is-sheetfull { max-height: 100%; border-radius: 0; border-top: none; }
+/* embedded = the "contained" rung (single-agent / basic feature): the companion
+   stops floating and FILLS its host container — no chrome, no shadow. position:
+   absolute resolves to the nearest POSITIONED ancestor, so the layer is made to
+   fill its parent below; the HOST's mount node must be position:relative + sized
+   (otherwise the companion covers the whole viewport).
+   Size by OFFSETS (inset:0) — NOT height:100%. A percentage height does not resolve
+   against a flex item stretched in its cross-axis (a very common host slot: flex:1
+   in a row/column), so height:100% collapsed to content height — the panel grew with
+   the answer, the flex body never got a bounded height, it stopped scrolling, and
+   long answers spilled BEHIND the composer. inset:0 resolves against the positioned
+   ancestor's box regardless of percentage-definiteness, so the panel gets a definite
+   height and the body scrolls. (Verified in the forge embedded harness.) */
+.cc-panel--embedded { position: absolute; inset: 0; border: none; border-radius: 0; box-shadow: none; animation: none; }
+.cc-companion-layer:has(.cc-panel--embedded) { position: absolute; inset: 0; }
+
+/* generous 16px grab zone (was 8) so you don't have to hit the edge exactly; the
+   3px handle bar surfaces at the dividing line on hover anywhere in the zone */
+.cc-resize { position: absolute; left: -16px; top: 0; width: 16px; height: 100%; cursor: ew-resize; z-index: 2147483001; }
+.cc-resize span { position: absolute; right: 0; top: 0; width: 3px; height: 100%; background: var(--action-accent); opacity: 0; transition: opacity .15s; }
+.cc-resize:hover span { opacity: 1; }
+
+/* ── HEADER ── */
+.cc-header { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+.cc-header-title { flex: 1; min-width: 0; margin-left: 6px; font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cc-back { width: auto !important; gap: 4px; padding: 4px 8px !important; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); }
+.cc-back span { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); }
+
+.cc-iconbtn {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: var(--density-radius);
+  background: transparent; border: none; cursor: pointer; color: var(--text-faint);
+  display: inline-flex; align-items: center; justify-content: center; transition: background .14s, color .14s;
+  font-family: var(--font-body);
+}
+.cc-iconbtn:hover { background: var(--state-hover); color: var(--text-default); }
+.cc-iconbtn.is-active, .cc-iconbtn[data-popup-open] { background: var(--state-selected-surface); color: var(--action-accent); }
+.cc-iconbtn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* ── AI identity badge ── */
+/* circular — the brain mark is round, so the badge (and its glow halo) must be a
+   circle, else the glow ring shows as a rounded-SQUARE wrapper at the corners */
+.cc-aibadge { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--cc-radius-pill); }
+.cc-aibadge svg { display: block; width: 100%; height: 100%; }
+.cc-aibadge.is-glow { box-shadow: 0 0 0 4px var(--state-selected-surface); border-radius: var(--cc-radius-pill); }
+
+/* ── Avatar (Base UI) ── */
+.cc-avatar { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--cc-radius-pill); overflow: hidden; flex-shrink: 0; color: var(--text-on-accent); font-family: var(--font-body); font-weight: var(--type-weight-bold); }
+.cc-avatar-fallback { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+
+/* ── BODY ── */
+/* wrap is the positioning context; scrim + CTA overlay its bottom (always pinned
+   above the composer, regardless of scroll position or how short the thread is) */
+/* The content region paints its OWN surface (not just relying on the panel behind
+   it) — so when the companion is embedded in a host whose slot doesn't fully back
+   the panel (e.g. :has() unsupported, or an unpositioned mount node), the body never
+   shows the host page through. Matches the panel's --surface-raised. */
+.cc-body-wrap { position: relative; flex: 1; min-height: 0; display: flex; background: var(--surface-raised); }
+/* background painted HERE (not only on the wrap) so the assistant fully owns its
+   surface — a host slot that paints its own bg (e.g. an embedded panel set to #fff)
+   can't show through the transparent content area. Bottom padding is generous (3×
+   the scrim) so the last line clears the foot-fade + composer instead of dissolving
+   right at the scrim edge. */
+.cc-body { flex: 1; min-height: 0; overflow-y: auto; background: var(--surface-raised); padding: var(--space-4) var(--space-3) calc(var(--space-7) * 3); }
+/* Centred page column. Width = the transcript-width preset (--cc-transcript-w, set on
+   the panel): min(100%, Npx) on desktop/tablet, 100% for 'full' and on mobile — so a
+   narrow sidebar or phone is always edge-to-edge (the floor is the container). The
+   whole page content (home, conversation, screens) sits in this centred column. */
+.cc-page { width: var(--cc-transcript-w, 100%); margin-inline: auto; }
+/* fade at the foot of the body — content dissolves behind the composer (no hard divider) */
+.cc-body-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: var(--space-7); background: linear-gradient(to top, var(--surface-raised), transparent); pointer-events: none; }
+/* fake "opening source" notification — floats at the foot of the body, above the composer */
+.cc-srctoast { position: absolute; left: 50%; bottom: var(--space-4); transform: translateX(-50%); z-index: 40; display: flex; align-items: center; gap: 10px; max-width: calc(100% - var(--space-6)); padding: 10px 14px; border-radius: var(--cc-radius-panel); background: var(--surface-raised); border: 1px solid var(--border-subtle); box-shadow: var(--elevation-overlay); animation: cc-fadeUp .18s ease; pointer-events: none; }
+.cc-srctoast-ic { display: flex; color: var(--action-accent); flex-shrink: 0; }
+.cc-srctoast-tx { display: flex; flex-direction: column; min-width: 0; }
+.cc-srctoast-lead { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+.cc-srctoast-title { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* jump-to-latest CTA — centered just above the composer; hidden at the end */
+.cc-tobottom { position: absolute; left: 0; right: 0; bottom: 10px; width: 30px; height: 30px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: var(--cc-radius-pill); border: 1px solid var(--border-subtle); background: var(--surface-raised); color: var(--text-default); box-shadow: var(--elevation-overlay); cursor: pointer; transition: opacity .18s, transform .18s; }
+.cc-tobottom:hover { color: var(--action-accent); border-color: var(--action-accent); }
+.cc-tobottom.is-hidden { opacity: 0; transform: translateY(6px); pointer-events: none; }
+
+/* ── HOME launcher ── */
+.cc-home { padding: 18px 16px; animation: cc-fadeUp .3s ease; display: flex; flex-direction: column; align-items: stretch; }
+.cc-home-head { text-align: center; }
+.cc-home-badge { margin-bottom: 12px; }
+.cc-home-greeting { font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); color: var(--text-default); margin-bottom: 3px; }
+.cc-wave { display: inline-block; transform-origin: 70% 70%; animation: cc-handWave 2.4s ease-in-out infinite; font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); }
+.cc-home-ready { font-size: var(--typography-heading-sm-font-size); font-weight: var(--typography-heading-sm-font-weight); color: var(--text-default); font-family: var(--typography-heading-sm-font-family); margin: 0 0 6px; letter-spacing: var(--type-tracking-tight); }
+.cc-home-sub { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); line-height: var(--typography-body-sm-line-height); max-width: 290px; margin: 0 auto 14px; }
+.cc-home-label { font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-muted); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); margin: 0 0 7px 2px; }
+
+/* ── ActionRow (the ONE shared action/command item: slash menu + home) ──────
+   Bare rows; a container (.cc-action-list or the slash popup) supplies the
+   surface. Tone sets icon + selected accent via --row-tone (token-only). */
+.cc-action {
+  --row-tone: var(--action-accent);
+  display: flex; align-items: center; gap: 11px; width: 100%; text-align: left;
+  padding: 10px 12px 10px 13px; border: none; background: transparent; cursor: pointer;
+  font-family: var(--font-body); border-left: 2px solid transparent; transition: background .14s;
+}
+.cc-action + .cc-action { border-top: 1px solid var(--border-subtle); }
+.cc-action:hover:not(.is-disabled) { background: var(--state-hover); }
+.cc-action.is-selected { background: var(--state-selected-surface); border-left-color: var(--row-tone); }
+.cc-action:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.cc-action.is-disabled { cursor: not-allowed; opacity: .6; }
+.cc-action-ic { width: 34px; height: 34px; flex-shrink: 0; border-radius: var(--cc-radius-sm); background: var(--surface-page); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; color: var(--row-tone); }
+.cc-action.is-disabled .cc-action-ic { color: var(--text-faint); }
+.cc-action-text { flex: 1; min-width: 0; }
+.cc-action-label { display: block; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
+.cc-action.is-disabled .cc-action-label { color: var(--text-muted); }
+.cc-action-desc { display: block; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-action-reason { color: var(--text-faint); white-space: normal; }
+.cc-action-chevron { color: var(--row-tone); display: flex; flex-shrink: 0; }
+/* tones — decorative icon + selected accent, token-only */
+.cc-tone--accent { --row-tone: var(--action-accent); }
+.cc-tone--violet { --row-tone: var(--data-series-3); }
+.cc-tone--indigo { --row-tone: var(--data-series-2); }
+/* Two list mechanics — same ActionRow, only the container differs:
+   • .cc-action-list (default, FRAMED): one bordered card, rows divided by the
+     global .cc-action + .cc-action hairline; mirrors the slash popup.
+   • .cc-action-list--plain (BORDERLESS): no frame, no dividers; each row is its
+     own rounded tap target. */
+.cc-action-list { display: flex; flex-direction: column; width: 100%; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); background: var(--surface-raised); overflow: hidden; }
+.cc-action-list--plain { border: none; border-radius: 0; background: transparent; overflow: visible; gap: 2px; }
+.cc-action-list--plain .cc-action { border-radius: var(--density-radius); }
+.cc-action-list--plain .cc-action + .cc-action { border-top: none; }
+
+/* ── CONTEXT chip — its own strip above the composer (OUT of the input card) ── */
+/* Patient context — NO bar background; a single chip styled like the composer's
+   attachment cards (bordered, rounded, surface-raised) with an overhanging corner
+   delete badge. Strip padding leaves room for the badge (badge sits at chip top -7px).
+   Follows the same centred reading column as .cc-page / .cc-composer
+   (--cc-transcript-w) so the chip sits under the composer's left edge instead of
+   the panel edge. */
+.cc-context { display: flex; align-items: center; gap: 9px; flex-shrink: 0; padding: 12px 14px 6px; width: var(--cc-transcript-w, 100%); margin-inline: auto; }
+.cc-context-chip { position: relative; display: inline-flex; align-items: center; gap: 9px; min-width: 0; padding: 6px 12px 6px 8px; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); background: var(--surface-raised); }
+.cc-context-label { flex-shrink: 0; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); font-weight: var(--typography-caption-md-font-weight); }
+.cc-context-name { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cc-context-x { position: absolute; top: -7px; right: -7px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: var(--cc-radius-pill); background: var(--text-muted); color: var(--surface-raised); cursor: pointer; box-shadow: var(--elevation-raised); }
+.cc-context-x:hover { background: var(--text-default); }
+
+/* ── INPUT bar ── (no divider — the body's scrim fades content behind it instead) */
+.cc-inputbar { padding: 9px 14px 12px; flex-shrink: 0; background: var(--surface-raised); position: relative; }
+
+/* ── COMPOSER (prompt-area organism: agent indicator · field · aux · chips) ── */
+/* the prompt follows the same centred reading column as the transcript
+   (--cc-transcript-w) instead of spanning the full panel width */
+.cc-composer { position: relative; display: flex; flex-direction: column; gap: 8px; width: var(--cc-transcript-w, 100%); margin-inline: auto; }
+.cc-composer .cc-slash { left: 0; right: 0; }
+
+/* agent selector chip — now lives in the toolbar (was a separate bar above) */
+.cc-agent-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 7px; border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-pill); background: var(--surface-page); color: var(--text-default); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; transition: background .14s, border-color .14s; }
+.cc-agent-chip:hover, .cc-agent-chip[data-popup-open] { border-color: var(--action-accent); background: var(--state-hover); }
+.cc-agent-ic { display: flex; color: var(--action-accent); }
+.cc-agent-name { white-space: nowrap; }
+
+/* prompt field — the ONE card; flex column so context · content · toolbar stack */
+.cc-composer-field { display: flex; flex-direction: column; background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--cc-radius-panel); padding: 10px 12px 8px; transition: border-color .15s; }
+.cc-composer-field:focus-within { border-color: var(--focus-ring); }
+.cc-composer-field.is-slash { border-color: var(--action-accent); }  /* command mode, not focus */
+.cc-composer-ta { display: block; width: 100%; min-height: 22px; max-height: 132px; resize: none; border: none; outline: none; background: none; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); overflow-y: auto; }
+.cc-composer-ta::placeholder { color: var(--text-faint); }
+.cc-composer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.cc-composer-aux, .cc-composer-tools { display: flex; align-items: center; gap: 2px; }
+.cc-composer-submit { width: 32px; height: 32px; flex-shrink: 0; border: none; border-radius: var(--cc-radius-pill); background: var(--action-solid); color: var(--action-on); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity .14s, transform .1s; }
+.cc-composer-submit:hover:not(:disabled) { opacity: .9; }
+.cc-composer-submit:active:not(:disabled) { transform: scale(.94); }
+.cc-composer-submit:disabled { background: var(--border-subtle); color: var(--text-faint); cursor: default; }
+
+/* suggestion chips — single row that scrolls on overflow (no wrapping to multiple lines) */
+.cc-composer-chips { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+.cc-chip { flex: 0 0 auto; }
+.cc-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-pill); background: var(--surface-page); color: var(--text-default); font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); cursor: pointer; transition: background .14s, border-color .14s; }
+.cc-chip:hover:not(:disabled) { border-color: var(--action-accent); background: var(--state-hover); }
+.cc-chip:disabled { opacity: .5; cursor: not-allowed; }
+.cc-chip-ic { display: flex; color: var(--action-accent); }
+
+/* attachment strip — type-aware preview cards, horizontally scrollable (thin
+   overlay scrollbar inherited from .cc-companion-layer; no chunky native bar) */
+/* negative-margin "bleed": the row's padding gives the corner ✕ room to overhang
+   (so it's never clipped), while the matching negative margin pulls the cards back
+   so they sit at the field's padding edge — the ✕ overhang is NOT counted in the
+   card's distance from the sides. */
+.cc-attach-row { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; margin: -8px -8px 5px; padding: 8px 8px 2px; scrollbar-width: thin; }
+.cc-attach { position: relative; display: flex; align-items: center; gap: 8px; flex-shrink: 0; max-width: 170px; padding: 7px 9px; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); background: var(--surface-raised); }
+.cc-attach-ic { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: var(--cc-radius-sm); background: var(--surface-sunken); color: var(--text-muted); overflow: hidden; }
+.cc-attach--pdf  .cc-attach-ic { color: var(--status-error-solid); }
+.cc-attach--code .cc-attach-ic { color: var(--data-series-3); }
+.cc-attach--doc  .cc-attach-ic { color: var(--action-accent); }
+.cc-attach-thumb { width: 100%; height: 100%; object-fit: cover; }
+.cc-attach-text { display: flex; flex-direction: column; min-width: 0; }
+.cc-attach-name { font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cc-attach-kind { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); }
+.cc-attach-x { position: absolute; top: -7px; right: -7px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: var(--cc-radius-pill); background: var(--text-muted); color: var(--surface-raised); cursor: pointer; box-shadow: var(--elevation-raised); }
+.cc-attach-x:hover { background: var(--text-default); }
+.cc-spin { width: 18px; height: 18px; border-radius: var(--cc-radius-pill); border: 2px solid var(--border-subtle); border-top-color: var(--action-accent); animation: cc-spin .7s linear infinite; }
+@keyframes cc-spin { to { transform: rotate(360deg); } }
+
+/* recording mode — waveform fills the inner area; cancel ✕ / send in the toolbar */
+.cc-rec { display: flex; align-items: center; gap: 3px; min-height: 30px; padding: 8px 2px 6px; }
+.cc-rec i { flex: 1 1 0; max-width: 3px; height: 3px; border-radius: var(--cc-radius-pill); background: var(--text-faint); transform-origin: center; animation: cc-wave 1.1s ease-in-out infinite; }
+@keyframes cc-wave { 0%, 100% { transform: scaleY(1); opacity: .45 } 50% { transform: scaleY(4.5); opacity: 1 } }
+
+/* FFF: section divider + per-toggle help text */
+.cc-ff-section { font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-muted); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); margin: 20px 0 2px; }
+.cc-ff-text { display: flex; flex-direction: column; gap: 2px; padding-right: 12px; }
+.cc-field-help { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); line-height: var(--typography-caption-md-line-height); }
+.cc-ff-agent { flex-direction: row; align-items: center; gap: 10px; }
+.cc-ff-agent-ic { display: flex; flex-shrink: 0; color: var(--row-tone); }
+.cc-switch[data-disabled], .cc-switch:disabled { opacity: .45; cursor: not-allowed; }
+
+/* segmented control (multi vs single agent mode) — token-only */
+.cc-segmented { display: flex; gap: 3px; padding: 3px; margin: 6px 0 8px; background: var(--surface-sunken); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-pill); }
+.cc-seg { flex: 1; padding: 7px 10px; border: none; background: transparent; border-radius: var(--cc-radius-pill); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-muted); cursor: pointer; transition: background .14s, color .14s; }
+.cc-seg:hover:not(.is-on) { color: var(--text-default); }
+.cc-seg.is-on { background: var(--surface-raised); color: var(--text-default); box-shadow: var(--elevation-raised); }
+/* 4-up segmented (breakpoint / density pickers) — tighter so labels fit the panel */
+.cc-segmented--quad { margin: 8px 0 0; }
+.cc-segmented--quad .cc-seg { padding: 6px 4px; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); white-space: nowrap; }
+
+/* per-brand companion-name row — sits inside the Brand card, divided from the picker */
+.cc-ff-namerow { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+
+/* single-agent radio rows — reuse the card row; a check-dot replaces the toggle */
+.cc-radio-row { width: 100%; text-align: left; cursor: pointer; font-family: var(--font-body); transition: border-color .14s; }
+.cc-radio-row:hover { border-color: var(--action-accent); }
+.cc-radio-row.is-sel { border-color: var(--action-accent); }
+.cc-radio { width: 18px; height: 18px; flex-shrink: 0; border-radius: var(--cc-radius-pill); border: 2px solid var(--border-strong, var(--border-subtle)); position: relative; transition: border-color .14s; }
+.cc-radio.is-sel { border-color: var(--action-accent); }
+.cc-radio.is-sel::after { content: ""; position: absolute; inset: 3px; border-radius: var(--cc-radius-pill); background: var(--action-accent); }
+
+/* FF sections as accordions (Base UI Accordion) — scales as sections grow */
+.cc-ffsec-root { display: flex; flex-direction: column; margin-top: 8px; }
+.cc-ffsec { border-top: 1px solid var(--border-subtle); }
+.cc-ffsec:last-child { border-bottom: 1px solid var(--border-subtle); }
+.cc-ffsec-head { margin: 0; }
+.cc-ffsec-trig { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 13px 2px; background: none; border: none; cursor: pointer; font-family: var(--font-body); text-align: left; }
+.cc-ffsec-trig:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; border-radius: var(--cc-radius-sm); }
+.cc-ffsec-title { font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); }
+.cc-ffsec-chev { display: flex; color: var(--text-faint); transition: transform .18s ease; }
+.cc-ffsec-trig[aria-expanded="true"] .cc-ffsec-chev { transform: rotate(90deg); }
+.cc-ffsec-panel { overflow: hidden; }
+.cc-ffsec-panel[hidden] { display: none; }
+.cc-ffsec-body { display: flex; flex-direction: column; gap: 10px; padding: 2px 0 14px; }
+/* subgroup label inside a section (Agents / Suggestions) */
+.cc-ff-subhead { font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-muted); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); margin: 6px 0 -2px 2px; }
+
+/* agent selector — non-defined "Switch agent" state reads muted */
+.cc-agent-chip.is-undefined { color: var(--text-muted); }
+.cc-agent-chip.is-undefined .cc-agent-ic { color: var(--text-faint); }
+.cc-agent-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+/* "Soon" tag on a gated agent in the selector menu (still clickable → preview) */
+.cc-menu-soon { margin-left: auto; font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); color: var(--text-muted); background: var(--surface-sunken); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-pill); padding: 1px 7px; }
+
+/* "not yet available" preview screen (marketing-preview slot) */
+.cc-unavail-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 7px; padding: 30px 20px; margin-top: 12px; border: 1px dashed var(--border-subtle); border-radius: var(--cc-radius-panel); background: var(--surface-page); }
+.cc-unavail-ic { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--cc-radius-panel); background: var(--state-selected-surface); color: var(--action-accent); margin-bottom: 4px; }
+.cc-unavail-title { font-size: var(--typography-title-md-font-size); font-weight: var(--typography-title-md-font-weight); color: var(--text-default); font-family: var(--typography-title-md-font-family); }
+.cc-unavail-reason { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); max-width: 260px; line-height: var(--typography-body-sm-line-height); }
+.cc-unavail-note { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); max-width: 260px; line-height: var(--typography-caption-md-line-height); }
+
+/* Base UI portals popups to document.body — a sibling of the fixed companion
+   panel (z 2147483000). Without a z-index the popup paints BEHIND the panel.
+   Lift every portalled positioner above the panel. */
+.cc-positioner { z-index: 2147483646; }
+
+/* ── SLASH menu (header + ActionRows + keyboard-hint footer) ── */
+.cc-slash { position: absolute; bottom: calc(100% + 6px); left: 14px; right: 14px; background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--density-radius); box-shadow: var(--elevation-overlay); overflow: hidden; animation: cc-fadeUp .18s ease; z-index: 60; }
+.cc-slash-head { padding: 9px 14px 7px; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid var(--border-subtle); }
+.cc-slash-slash { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--action-accent); }
+.cc-slash-label { font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); color: var(--text-muted); font-weight: var(--typography-label-sm-font-weight); letter-spacing: var(--type-tracking-wide); text-transform: uppercase; }
+.cc-slash-foot { display: flex; align-items: center; gap: 16px; padding: 7px 14px; border-top: 1px solid var(--border-subtle); }
+.cc-slash-hint { display: flex; align-items: center; gap: 5px; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+.cc-kbd { font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); color: var(--text-muted); background: var(--surface-panel); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-sm); padding: 1px 6px; min-width: 16px; text-align: center; line-height: var(--typography-micro-line-height); }
+
+/* ── MENU / SELECT popups (Base UI, portalled — global, high z) ── */
+.cc-menu-popup {
+  background: var(--surface-raised); color: var(--text-default);
+  border: 1px solid var(--border-subtle); border-radius: var(--density-radius);
+  box-shadow: var(--elevation-overlay); padding: 6px; min-width: 200px;
+  font-family: var(--font-body); z-index: 2147483646; animation: cc-fadeUp .16s ease; max-height: 70vh; overflow-y: auto;
+}
+.cc-menu-popup--wide { min-width: 264px; padding: 6px 0; }
+.cc-menu-item { display: flex; align-items: center; gap: 9px; padding: var(--density-row-py) var(--density-control-px); border-radius: calc(var(--density-radius) - 4px); font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); color: var(--text-default); cursor: pointer; outline: none; user-select: none; }
+.cc-menu-item[data-highlighted], .cc-menu-item:hover { background: var(--state-hover); }
+.cc-menu-item.is-selected, .cc-menu-item[data-selected] { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.cc-menu-item--btn { flex: 0 0 auto; border: 1px solid var(--border-subtle); background: var(--surface-panel); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); padding: 6px 12px; border-radius: var(--cc-radius-sm); }
+.cc-menu-item--rich { gap: 9px; }
+.cc-menu-item--check { justify-content: flex-start; }
+.cc-menu-toprow { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; }
+.cc-menu-group { border-top: 1px solid var(--border-subtle); padding: 6px 6px 8px; }
+.cc-menu-section { padding: 4px 8px 6px; font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-faint); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); }
+.cc-menu-empty { padding: 6px 8px 4px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); }
+.cc-ff-build { margin: -2px 0 2px; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); }
+.cc-menu-rich-text { display: flex; flex-direction: column; min-width: 0; }
+.cc-menu-rich-title { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cc-menu-rich-sub { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); }
+.cc-menu-rich-ic { color: var(--text-faint); display: flex; flex-shrink: 0; }
+.cc-menu-item.is-selected .cc-menu-rich-ic { color: var(--action-accent); }
+.cc-menu-check { margin-left: auto; color: var(--action-accent); display: flex; }
+
+/* ── SELECT trigger (Base UI) ── */
+.cc-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; font-family: var(--typography-body-sm-font-family); }
+.cc-select-trigger:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.cc-select-icon { color: var(--text-faint); display: flex; }
+.cc-select-item { justify-content: space-between; }
+.cc-select-check { color: var(--action-accent); display: flex; }
+
+/* ── TOOLTIP (Base UI) ── */
+.cc-tooltip { background: var(--inverted-surface); color: var(--inverted-text); border: 1px solid var(--inverted-border); border-radius: var(--cc-radius-sm); padding: 6px 10px; font-size: var(--typography-caption-md-font-size); font-family: var(--typography-caption-md-font-family); box-shadow: var(--elevation-overlay); max-width: 220px; z-index: 2147483646; }
+
+/* ── SWITCH (Base UI) ── */
+.cc-switch { width: 40px; height: 22px; border-radius: var(--cc-radius-pill); background: var(--state-disabled-surface); border: none; padding: 2px; cursor: pointer; transition: background .15s; flex-shrink: 0; }
+.cc-switch[data-checked] { background: var(--action-solid); }
+.cc-switch:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cc-switch-thumb { display: block; width: 18px; height: 18px; border-radius: var(--cc-radius-pill); background: var(--brand-neutral-on-light); box-shadow: var(--elevation-raised); transition: transform .15s; }
+.cc-switch[data-checked] .cc-switch-thumb { transform: translateX(18px); }
+
+/* ── BUTTONS ── */
+.cc-btn { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; line-height: var(--typography-label-lg-line-height); transition: filter .14s; }
+.cc-btn:hover:not([disabled]) { filter: brightness(1.06); }
+.cc-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cc-btn--primary { background: var(--button-primary-background); color: var(--button-primary-text); }
+.cc-btn--secondary { background: var(--button-secondary-background); border-color: var(--button-secondary-border); color: var(--button-secondary-text); }
+.cc-btn--tertiary { background: var(--button-tertiary-background); color: var(--button-tertiary-text); }
+.cc-btn[disabled] { background: var(--button-disabled-background); color: var(--button-disabled-text); cursor: not-allowed; border-color: transparent; }
+
+/* ── TEXT INPUT ── */
+.cc-input { width: 100%; box-sizing: border-box; font-size: var(--typography-body-sm-font-size); color: var(--text-default); background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); outline: none; font-family: var(--typography-body-sm-font-family); }
+.cc-input::placeholder { color: var(--text-faint); }
+.cc-input:focus { border-color: var(--focus-ring); }
+
+/* ── SCREENS / generic ── */
+.cc-screen { animation: cc-fadeUp .25s ease; }
+.cc-screen-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.cc-screen-icon { color: var(--action-accent); display: flex; }
+.cc-screen-title { font-size: var(--typography-title-md-font-size); font-weight: var(--typography-title-md-font-weight); color: var(--text-default); font-family: var(--typography-title-md-font-family); margin: 0; }
+.cc-section-label { font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-faint); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); margin: 12px 0 8px; }
+.cc-stub { padding: var(--density-card-pad); border: 1px dashed var(--border-subtle); border-radius: var(--density-radius); color: var(--text-muted); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); }
+.cc-muted { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); line-height: var(--typography-body-sm-line-height); margin: 0 0 14px; }
+.cc-muted--sm { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); margin: 0 0 10px; }
+
+/* ── AI verify marker ── */
+.cc-aimarker { display: inline-flex; align-items: center; gap: 6px; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--status-info-solid); background: var(--status-info-tint); border-radius: var(--cc-radius-pill); padding: 4px 10px; margin-bottom: 12px; }
+.cc-aimarker-dot { width: 6px; height: 6px; border-radius: var(--cc-radius-pill); background: var(--status-info-solid); animation: cc-blink 1.6s ease-in-out infinite; }
+
+/* ── SETTINGS ── */
+.cc-settings { animation: cc-fadeUp .25s ease; max-width: 420px; margin: 0 auto; }
+.cc-card { border: 1px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-card-pad); background: var(--surface-panel); margin-bottom: var(--density-gap); }
+.cc-row-between { display: flex; align-items: center; justify-content: space-between; }
+.cc-saved { display: inline-flex; align-items: center; gap: 4px; color: var(--status-success-solid); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); }
+
+/* ── PRESCRIBE ── */
+.cc-suggest-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.cc-suggest { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: var(--density-row-py) var(--density-control-px); border-radius: var(--density-radius); border: 1px solid var(--border-subtle); background: var(--surface-panel); cursor: pointer; transition: border-color .14s; }
+.cc-suggest:hover { border-color: var(--action-accent); }
+.cc-suggest-main { display: flex; align-items: baseline; gap: 8px; }
+.cc-suggest-med { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--text-default); }
+.cc-suggest-dose { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+.cc-suggest-note { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); }
+.cc-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.cc-field-row { display: flex; gap: 10px; }
+.cc-field-row .cc-field { flex: 1; }
+.cc-field--narrow { flex: 0 0 42%; }
+.cc-field-label { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
+.cc-actions { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.cc-actions--tight { margin-top: 12px; }
+.cc-banner { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); border-radius: var(--density-radius); padding: 9px 12px; margin-top: 12px; display: flex; align-items: center; gap: 7px; }
+.cc-banner--info { background: var(--status-info-tint); color: var(--status-info-solid); }
+.cc-banner--success { background: var(--status-success-tint); color: var(--status-success-solid); font-weight: var(--type-weight-semibold); }
+.cc-banner-icon { display: flex; }
+
+/* ── TABLE (medication scheme panel) ── */
+.cc-table { width: 100%; border-collapse: collapse; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); margin-top: 4px; }
+.cc-table th { text-align: left; font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-faint); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); }
+.cc-table td { padding: var(--density-row-py) 8px; border-bottom: 1px solid var(--border-subtle); color: var(--text-default); }
+.cc-td-strong { font-weight: var(--type-weight-semibold); }
+.cc-mono { font-variant-numeric: tabular-nums; letter-spacing: var(--type-tracking-wide); color: var(--text-muted); }
+.cc-badge { display: inline-block; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); border-radius: var(--cc-radius-pill); padding: 2px 9px; }
+.cc-badge--success { background: var(--status-success-tint); color: var(--status-success-solid); }
+.cc-badge--muted { background: var(--surface-sunken); color: var(--text-muted); }
+
+/* ── EVIDENCE-BASED SEARCH (aletta agent: conversation, answers, sources) ─────── */
+.cc-clinical { display: flex; flex-direction: column; }
+
+/* conversation + message bubbles */
+.cc-convo { display: flex; flex-direction: column; gap: 16px; }
+.cc-msg { display: flex; gap: 9px; }
+.cc-msg--user { justify-content: flex-end; }
+.cc-msg-body { padding: 10px 14px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); max-width: 88%; }
+/* tail = one squared bottom corner toward the sender (BL assistant / BR user) */
+.cc-msg--assistant .cc-msg-body { background: var(--surface-page); border: 1px solid var(--border-subtle); color: var(--text-default); border-radius: var(--cc-radius-panel) var(--cc-radius-panel) var(--cc-radius-panel) var(--cc-radius-sm); }
+.cc-msg--user .cc-msg-body { background: var(--action-solid); color: var(--action-on); max-width: 82%; border-radius: var(--cc-radius-panel) var(--cc-radius-panel) var(--cc-radius-sm) var(--cc-radius-panel); }
+.cc-msg-badge { flex-shrink: 0; }
+
+/* agent intro / empty state */
+.cc-intro { display: flex; flex-direction: column; gap: 14px; }
+.cc-intro-card { display: flex; flex-direction: column; gap: 8px; }
+.cc-intro-label { display: flex; align-items: center; gap: 7px; font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); }
+.cc-intro-bulb { display: flex; color: var(--action-accent); }
+/* (inline ask field removed — free-text asking is the shell's global composer) */
+
+/* searching / retrieval phase */
+.cc-searching { display: inline-flex; align-items: center; gap: 9px; background: var(--surface-page); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel); padding: 11px 15px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); }
+.cc-searching-dots { display: inline-flex; gap: 4px; }
+.cc-searching-dots i { width: 6px; height: 6px; border-radius: var(--cc-radius-pill); background: var(--action-accent); display: inline-block; animation: cc-blink 1.2s infinite ease-in-out; }
+.cc-searching-dots i:nth-child(2) { animation-delay: .2s; }
+.cc-searching-dots i:nth-child(3) { animation-delay: .4s; }
+
+/* the answer */
+.cc-answer { display: flex; flex-direction: column; gap: 14px; }
+.cc-ans-bd { display: flex; flex-direction: column; gap: 12px; }
+.cc-ans-p { font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); margin: 0; }
+.cc-ans-h { font-size: var(--typography-title-md-font-size); font-weight: var(--typography-title-md-font-weight); color: var(--text-default); font-family: var(--typography-title-md-font-family); }
+.cc-ans-ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); }
+.cc-ans-quote { margin: 0; padding: 8px 14px; border-left: 3px solid var(--action-accent); background: var(--surface-page); color: var(--text-muted); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); }
+.cc-ans-callout { padding: 10px 14px; border-radius: var(--cc-radius-sm); background: var(--surface-page); border: 1px solid var(--border-subtle); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); }
+
+/* inline citation chip */
+.cc-cite { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 4px; margin: 0 1px; font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); line-height: var(--typography-micro-line-height); color: var(--text-muted); background: var(--surface-sunken); border: none; border-radius: var(--cc-radius-sm); cursor: pointer; vertical-align: 2px; transition: background .14s, color .14s; }
+.cc-cite:hover { background: var(--state-selected-surface); color: var(--action-accent); }
+
+/* numbered step cards */
+.cc-steps { display: flex; flex-direction: column; gap: 10px; }
+.cc-step { display: flex; gap: 11px; padding: 13px 14px; background: var(--surface-page); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel); }
+.cc-step-n { flex-shrink: 0; width: 24px; height: 24px; border-radius: var(--cc-radius-pill); background: var(--action-solid); color: var(--action-on); display: inline-flex; align-items: center; justify-content: center; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); }
+.cc-step-main { flex: 1; min-width: 0; }
+.cc-step-title { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--text-default); margin-bottom: 3px; }
+.cc-step-body { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); }
+
+/* figure / table / flowchart (image-first) */
+.cc-fig { margin: 0; }
+.cc-fig-img { width: 100%; border-radius: var(--cc-radius-sm); border: 1px solid var(--border-subtle); display: block; }
+.cc-fig-cap { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); margin-top: 6px; display: flex; gap: 10px; align-items: baseline; }
+.cc-fig-data { border: none; background: none; color: var(--action-accent); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; padding: 0; }
+.cc-table-wrap { overflow-x: auto; }
+.cc-table { width: 100%; border-collapse: collapse; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); }
+.cc-table th, .cc-table td { border: 1px solid var(--border-subtle); padding: 6px 9px; text-align: left; color: var(--text-default); }
+.cc-table th { background: var(--surface-page); font-weight: var(--type-weight-bold); }
+.cc-dataset { white-space: pre-wrap; font-size: var(--typography-caption-md-font-size); color: var(--text-default); margin: 0; font-family: var(--typography-caption-md-font-family); }
+
+/* media viewer (oversized figure/table + datasets) */
+.cc-media { position: absolute; inset: 0; z-index: 80; background: var(--surface-raised); display: flex; flex-direction: column; }
+.cc-media-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle); }
+.cc-media-title { flex: 1; font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); }
+.cc-media-x { background: none; border: none; color: var(--text-faint); cursor: pointer; display: flex; }
+.cc-media-body { flex: 1; overflow: auto; padding: 16px; }
+
+/* answer actions + feedback */
+.cc-ans-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.cc-ans-act { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-subtle); background: var(--surface-page); border-radius: var(--cc-radius-pill); padding: 5px 11px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; }
+.cc-ans-act:hover { border-color: var(--action-accent); }
+.cc-ans-fb { display: inline-flex; align-items: center; gap: 6px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); }
+.cc-ans-thumb { width: 26px; height: 26px; border-radius: var(--cc-radius-pill); border: 1px solid var(--border-subtle); background: var(--surface-page); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.cc-ans-thumb.is-on { border-color: var(--action-accent); color: var(--action-accent); background: var(--state-selected-surface); }
+
+/* e-consult variant header */
+.cc-econsult-head { display: flex; align-items: center; justify-content: space-between; font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--action-accent); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); }
+.cc-econsult-tag { font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); color: var(--text-muted); background: var(--surface-sunken); border-radius: var(--cc-radius-pill); padding: 2px 8px; letter-spacing: var(--type-tracking-wide); }
+
+/* sources block */
+.cc-sources { border-top: 1px solid var(--border-subtle); padding-top: 12px; display: flex; flex-direction: column; gap: 2px; }
+.cc-sources-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.cc-sources-title { display: inline-flex; align-items: center; gap: 7px; font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); }
+.cc-sources-ic { display: flex; color: var(--action-accent); }
+.cc-sources-new { display: inline-flex; align-items: center; gap: 4px; border: none; background: none; color: var(--action-accent); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; }
+.cc-src { display: flex; gap: 9px; width: 100%; text-align: left; padding: 8px 9px; border: none; background: none; border-radius: var(--cc-radius-sm); cursor: pointer; transition: background .14s; }
+.cc-src:hover { background: var(--state-hover); }
+.cc-src.is-hit { background: var(--state-selected-surface); }
+.cc-src-n { flex-shrink: 0; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--action-accent); }
+.cc-src-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.cc-src-title { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); display: flex; align-items: center; gap: 7px; }
+.cc-src-flag { font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); color: var(--text-muted); background: var(--surface-sunken); border-radius: var(--cc-radius-sm); padding: 1px 5px; letter-spacing: var(--type-tracking-wide); }
+.cc-src-meta { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+
+/* ── Conversations-API flow surfaces (context toggle, disclosure, PII, follow-ups) ── */
+.cc-clinical-in { display: flex; flex-direction: column; gap: 14px; }
+
+/* context bar — what gets sent on the next question */
+.cc-ctxbar { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--surface-page); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel); }
+.cc-ctxbar-ic { display: flex; color: var(--action-accent); flex-shrink: 0; }
+.cc-ctxbar-txt { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.cc-ctxbar-lead { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+.cc-ctxbar-base { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
+.cc-ctxbar-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.cc-ctxbar-tlabel { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+
+/* per-answer disclosure banner */
+.cc-disc { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 9px 12px; border-radius: var(--cc-radius-sm); background: var(--status-info-tint); border: 1px solid var(--border-subtle); }
+.cc-disc--preview { background: var(--state-selected-surface); }
+.cc-disc-ic { display: flex; color: var(--action-accent); align-self: flex-start; }
+.cc-disc-txt { flex: 1; min-width: 0; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); }
+.cc-disc-tag { font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); color: var(--action-on); background: var(--action-solid); border-radius: var(--cc-radius-pill); padding: 1px 7px; letter-spacing: var(--type-tracking-wide); }
+.cc-disc-slice { font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); color: var(--text-muted); background: var(--surface-sunken); border-radius: var(--cc-radius-pill); padding: 1px 7px; }
+
+/* personal-data screening (422) */
+.cc-pii { display: flex; flex-direction: column; gap: 9px; padding: 13px 14px; border-radius: var(--cc-radius-panel); background: var(--status-info-tint); border: 1px solid var(--status-info-solid); }
+.cc-pii-head { display: inline-flex; align-items: center; gap: 8px; font-family: var(--typography-title-sm-font-family); font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); }
+.cc-pii-ic { display: flex; color: var(--status-info-solid); }
+.cc-pii-body { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); }
+.cc-pii-msg { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: 1.6; color: var(--text-default); background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-sm); padding: 9px 11px; }
+.cc-pii-mark { background: var(--status-error-tint); color: var(--status-error-solid); border-radius: var(--cc-radius-sm); padding: 0 3px; font-weight: var(--type-weight-medium); }
+.cc-pii-acts { display: flex; gap: 8px; justify-content: flex-end; }
+.cc-pii-cancel { border: 1px solid var(--border-subtle); background: var(--surface-raised); border-radius: var(--cc-radius-pill); padding: 6px 13px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-muted); cursor: pointer; }
+.cc-pii-go { border: none; background: var(--action-solid); color: var(--action-on); border-radius: var(--cc-radius-pill); padding: 6px 13px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); cursor: pointer; }
+
+/* follow-up clarifying questions */
+.cc-fu { display: flex; flex-direction: column; gap: 12px; padding: 13px 14px; border-radius: var(--cc-radius-panel); background: var(--surface-page); border: 1px solid var(--border-subtle); }
+.cc-fu-head { display: inline-flex; align-items: center; gap: 8px; font-family: var(--typography-title-sm-font-family); font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); }
+.cc-fu-ic { display: flex; color: var(--action-accent); }
+.cc-fu-q { display: flex; flex-direction: column; gap: 7px; }
+.cc-fu-qlabel { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
+.cc-fu-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.cc-fu-opt { border: 1px solid var(--border-subtle); background: var(--surface-raised); border-radius: var(--cc-radius-pill); padding: 5px 12px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; transition: background .14s, border-color .14s; }
+.cc-fu-opt:hover { border-color: var(--action-accent); }
+.cc-fu-opt.is-on { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
+.cc-fu-opt:disabled { opacity: .6; cursor: default; }
+.cc-fu-free { border: 1px solid var(--border-subtle); background: var(--surface-page); border-radius: var(--cc-radius-sm); padding: 7px 10px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); }
+.cc-fu-send { align-self: flex-start; border: none; background: var(--action-solid); color: var(--action-on); border-radius: var(--cc-radius-pill); padding: 7px 15px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); cursor: pointer; }
+.cc-fu-send:disabled { opacity: .6; cursor: default; }
+
+/* prompt coach */
+.cc-coach { display: flex; flex-direction: column; gap: 5px; padding: 10px 13px; border-radius: var(--cc-radius-sm); background: var(--surface-page); border: 1px dashed var(--border-subtle); }
+.cc-coach-head { display: inline-flex; align-items: center; gap: 7px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
+.cc-coach-ic { display: flex; color: var(--action-accent); }
+.cc-coach-list { margin: 0; padding-left: 22px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: 1.55; color: var(--text-muted); }
+
+/* streaming caret */
+.cc-stream-caret { display: inline-block; width: 7px; height: 15px; background: var(--action-accent); border-radius: 1px; animation: cc-blink 1s steps(2) infinite; vertical-align: -2px; }
+
+/* follow-up question chips (reuse .cc-chip) under a completed answer */
+.cc-relq { border-top: 1px solid var(--border-subtle); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.cc-relq-label { display: inline-flex; align-items: center; gap: 7px; font-family: var(--typography-title-sm-font-family); font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); }
+.cc-relq-ic { display: flex; color: var(--action-accent); }
+.cc-relq-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.cc-relq-row .cc-chip { white-space: normal; text-align: left; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   SPROUT CARDS — patient-property card system (vitals, labs, demographics,
+   conditions, allergies, medications). Base in src/components/sprout-cards/
+   Card.jsx; per-object cards compose it. Container-query intrinsic width
+   morph. Tone (identity) and status (interpretation) are independent.
+   See ANALYSIS.md §1 (slot derivation) and §6 (container-query deviation).
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── BASE ─────────────────────────────────────────────────────────────────
+   container-type: inline-size makes the card itself a query container;
+   @container rules inside this block (further down) own the width morph. */
+/* Global default tone — so cards inherit through SproutToneProvider unless
+   the card itself sets .cc-tone--*. NOT declared on .cc-pcard (that would
+   shadow ancestor declarations and break Level-4 colour passing). */
+:root {
+  --card-tone: var(--text-muted);
+}
+
+.cc-pcard {
+  container-type: inline-size;
+  position: relative;
+  z-index: 0;                 /* stacking context retained for descendants */
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+  padding: var(--card-padding);
+  background: var(--surface-raised);
+  border: none;
+  border-radius: var(--cc-radius-panel);
+  box-shadow:
+    0 0 0 var(--dimension-rule-hair) var(--border-subtle),
+    var(--elevation-raised);
+  /* No overflow:hidden — the ::before accent bar is allowed to extend ABOVE
+     the card and tuck back BEHIND it via z-index. The card body covers the
+     bottom of the bar; the top peek (~accent-rule-height pixels) is visible. */
+  font-family: var(--font-body);
+  color: var(--text-default);
+  /* Fallback derivations (used when the tone class doesn't supply explicit
+     tints — e.g. SproutToneProvider with just a single customColor). */
+  --card-tone-tint: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint) * 100%), var(--surface-raised));
+  --card-tone-tint-strong: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint-strong) * 100%), var(--surface-raised));
+  --card-tone-text: var(--card-tone);
+  /* Hover-lift baseline. Tokens restored: var() chain now works after the
+     easing-name-collision fix (easings moved to semantic-tier only). The
+     `swift` curve gives a sharp initial reaction with a long gentle fade —
+     "quick reactive + fade from there". */
+  transition:
+    transform var(--motion-duration-base) var(--motion-easing-swift),
+    box-shadow var(--motion-duration-base) var(--motion-easing-swift);
+}
+
+/* No top accent bar. We tried it three ways (overflow-clipped, behind-card,
+   asymmetric tab) and every variant had either corner-clip artefacts or
+   protruded weirdly past the card edges. Tone identity now lives in the
+   sparkline + (on hover) the card's border ring + the icon pill (entity
+   cards). The deleted ::before / @media (hover) ::before / @media (hover: none)
+   rules were here. Don't bring them back without solving the bounding-box
+   constraint first. */
+
+/* Data-just-updated: brief tone-coloured border-ring pulse on the card.
+   Replaces the old stripe brightness pulse — same intent, no stripe. */
+.cc-pcard[data-just-updated="true"] {
+  animation: cc-pcard-ring-pulse var(--motion-duration-slow) var(--motion-easing-standard);
+}
+@keyframes cc-pcard-ring-pulse {
+  0%   { box-shadow: 0 0 0 var(--dimension-rule-hair) var(--border-subtle),       var(--elevation-raised); }
+  40%  { box-shadow: 0 0 0 var(--dimension-rule-thin) var(--card-tone),           var(--elevation-overlay); }
+  100% { box-shadow: 0 0 0 var(--dimension-rule-hair) var(--border-subtle),       var(--elevation-raised); }
+}
+
+/* Hover — tone-coloured ring + soft, visible lift. Lift is 4px (one
+   space-1 unit) so the rise is clearly felt. Shadow upgraded to modal-tier
+   for stronger floating presence. Decelerate easing on .cc-pcard makes it
+   land softly. Hover-capable devices only. */
+@media (hover: hover) {
+  .cc-pcard:hover {
+    transform: translateY(calc(-1 * var(--space-1)));
+    box-shadow:
+      0 0 0 var(--dimension-rule-hair) var(--card-tone),
+      var(--elevation-modal);
+  }
+}
+
+/* ── SEED — compact pill-like row ──────────────────────────────────────── */
+.cc-pcard[data-stage="seed"] {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--cc-radius-capsule);
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-head {
+  display: contents;
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-title {
+  font-size: var(--typography-label-sm-font-size);
+  letter-spacing: var(--type-tracking-tight);
+  text-transform: none;
+  font-weight: var(--type-weight-semibold);
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-value {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-media,
+.cc-pcard[data-stage="seed"] .cc-pcard-footer,
+.cc-pcard[data-stage="seed"] .cc-pcard-actions {
+  display: none;
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-meta {
+  flex-shrink: 0;
+  margin-left: var(--space-2);
+}
+
+/* ── HEAD ─────────────────────────────────────────────────────────────── */
+.cc-pcard-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.cc-pcard-leading {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Sentence-case, semibold, tight tracking. Matches the neutral-by-default
+   reference; the colour bar (on hover) provides the accent. */
+.cc-pcard-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--typography-label-md-font-family);
+  font-size: var(--typography-label-md-font-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-tracking-tight);
+  text-transform: none;
+  color: var(--text-default);
+}
+/* Optional lighter suffix child — e.g. <h3>Productive Time <span class="cc-pcard-title-sub">/ Day</span></h3> */
+.cc-pcard-title-sub {
+  font-weight: var(--type-weight-regular);
+  color: var(--text-faint);
+  margin-left: 4px;
+}
+.cc-pcard-trailing {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  color: var(--card-tone);
+}
+
+/* ── ICON PILL (leading slot) ─────────────────────────────────────────── */
+/* Soft pre-tinted bg (property .100 — barely-there hue) + accent .500
+   glyph (vivid). The wrapper recedes; the glyph carries identity. */
+.cc-pcard-icon-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-pill-size);
+  height: var(--icon-pill-size);
+  border-radius: var(--icon-pill-radius);
+  background: var(--card-tone-tint);
+  color: var(--card-tone);
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-icon-pill {
+  width: var(--icon-pill-size-compact);
+  height: var(--icon-pill-size-compact);
+}
+.cc-pcard-icon-pill svg { stroke-width: var(--icon-pill-glyph-stroke); }
+
+/* ── VALUE ────────────────────────────────────────────────────────────── */
+.cc-pcard-value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--typography-heading-sm-font-family);
+  color: var(--text-default);
+}
+.cc-pcard-value-display { display: inline-flex; align-items: baseline; gap: var(--space-1); }
+.cc-pcard-value-num {
+  font-size: var(--type-size-3xl);
+  font-weight: var(--type-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--type-tracking-tight);
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-value-num {
+  font-size: var(--typography-heading-sm-font-size);
+}
+.cc-pcard-value-unit {
+  font-size: var(--typography-body-sm-font-size);
+  font-weight: var(--type-weight-medium);
+  font-style: italic;
+  color: var(--text-muted);
+}
+.cc-pcard-value-prefix {
+  font-size: var(--typography-body-sm-font-size);
+  color: var(--text-muted);
+  margin-right: 2px;
+}
+
+/* ── META — status pill + trend chip etc ──────────────────────────────── */
+.cc-pcard-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.cc-pcard-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pill-gap);
+  padding: var(--pill-padding-block) var(--pill-padding-inline);
+  border-radius: var(--cc-radius-pill);
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  font-weight: var(--type-weight-medium);
+  background: var(--status-success-tint);
+  color: var(--status-success-solid);
+}
+.cc-pcard-status-pill.is-status-normal     { background: var(--status-success-tint); color: var(--status-success-solid); }
+.cc-pcard-status-pill.is-status-borderline { background: var(--status-warning-tint); color: var(--status-warning-solid); }
+.cc-pcard-status-pill.is-status-high       { background: var(--status-warning-tint); color: var(--status-warning-solid); }
+.cc-pcard-status-pill.is-status-low        { background: var(--status-info-tint);    color: var(--status-info-solid); }
+.cc-pcard-status-pill.is-status-critical   { background: var(--status-error-tint);   color: var(--status-error-solid); }
+.cc-pcard-status-dot {
+  width: var(--pill-dot-size); height: var(--pill-dot-size);
+  border-radius: var(--radius-pill);
+  background: currentColor;
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-status-pill {
+  background: transparent;
+  padding: 0;
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-status-pill .cc-pcard-status-label {
+  display: none;
+}
+
+.cc-pcard-trend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  font-weight: var(--type-weight-medium);
+  color: var(--text-muted);
+}
+.cc-pcard-trend-chip.is-trend-up   .cc-pcard-trend-arrow { color: var(--status-warning-solid); }
+.cc-pcard-trend-chip.is-trend-down .cc-pcard-trend-arrow { color: var(--status-info-solid); }
+.cc-pcard-trend-chip.is-trend-flat .cc-pcard-trend-arrow { color: var(--text-faint); }
+
+/* ── MEDIA (sparkline / range bar / schedule strip) ───────────────────── */
+.cc-pcard-media {
+  width: 100%;
+}
+
+/* ── FOOTER (caption row) — italic margin annotations, Almanac feel ─── */
+.cc-pcard-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  font-style: italic;
+  color: var(--text-faint);
+}
+
+/* ── ASIDE (in-card margin annotations) — Sprout/Shoot only ─────────── */
+.cc-pcard-aside {
+  display: block;
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  font-style: italic;
+  color: var(--text-muted);
+  border-left: var(--dimension-rule-thin) solid var(--card-tone);
+  padding-left: var(--space-2);
+  margin-block: var(--space-1);
+}
+.cc-pcard[data-stage="seed"] .cc-pcard-aside { display: none; }
+
+/* ── ACTIONS (Shoot stage primary CTA bar) ────────────────────────────── */
+.cc-pcard-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+.cc-pcard-actions > button {
+  flex: 1;
+}
+
+/* ── STEPPER (Shoot value slot) ───────────────────────────────────────── */
+/* NumberField.Root is just a wrapper; let it be block. The inner Group does
+   the 3-column distribution: − (auto) | value (1fr, stretches) | + (auto). */
+.cc-pcard-stepper {
+  display: block;
+}
+.cc-pcard-stepper-btn {
+  flex-shrink: 0;
+  width: var(--dimension-touch-target-regular);
+  height: var(--dimension-touch-target-regular);
+  border-radius: var(--cc-radius-sm);
+  border: var(--dimension-rule-hair) solid var(--border-subtle);
+  background: var(--surface-raised);
+  color: var(--text-default);
+  font-size: 22px;
+  line-height: 1;
+  font-weight: var(--type-weight-medium);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cc-pcard-stepper-btn:hover:not(:disabled) { background: var(--state-hover); }
+.cc-pcard-stepper-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cc-pcard-stepper-btn:disabled { opacity: .4; cursor: not-allowed; }
+.cc-pcard-stepper-value {
+  flex: 1;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+/* ── EDIT CHIP (Shoot trailing) ───────────────────────────────────────── */
+.cc-pcard-edit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--status-info-tint);
+  color: var(--status-info-solid);
+  border: 1px solid transparent;
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  font-weight: var(--type-weight-medium);
+  cursor: pointer;
+}
+.cc-pcard-edit-chip:hover { background: color-mix(in oklch, var(--status-info-solid) 14%, var(--surface-raised)); }
+.cc-pcard-edit-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* ── TONE MAP ─────────────────────────────────────────────────────────── */
+/* Clinical Almanac: --card-tone is the VIVID DECORATIVE accent (.500 step)
+   used by stripe, icon glyph, sparkline. --card-tone-text is the .700-step
+   text-contrast solid for places contrast must hit WCAG AA. --card-tone-tint
+   (.100) and --card-tone-tint-strong (.200) drive backings. All four flip
+   automatically in dark theme via the semantic tier. */
+.cc-tone--neutral     { /* inherits from ancestor / :root default */ }
+.cc-tone--heart {
+  --card-tone:              var(--property-heart-accent);
+  --card-tone-text:         var(--property-heart-solid);
+  --card-tone-tint:         var(--property-heart-tint);
+  --card-tone-tint-strong:  var(--property-heart-tint-strong);
+}
+.cc-tone--breath {
+  --card-tone:              var(--property-breath-accent);
+  --card-tone-text:         var(--property-breath-solid);
+  --card-tone-tint:         var(--property-breath-tint);
+  --card-tone-tint-strong:  var(--property-breath-tint-strong);
+}
+.cc-tone--oxygen {
+  --card-tone:              var(--property-oxygen-accent);
+  --card-tone-text:         var(--property-oxygen-solid);
+  --card-tone-tint:         var(--property-oxygen-tint);
+  --card-tone-tint-strong:  var(--property-oxygen-tint-strong);
+}
+.cc-tone--temperature {
+  --card-tone:              var(--property-temperature-accent);
+  --card-tone-text:         var(--property-temperature-solid);
+  --card-tone-tint:         var(--property-temperature-tint);
+  --card-tone-tint-strong:  var(--property-temperature-tint-strong);
+}
+.cc-tone--pressure {
+  --card-tone:              var(--property-pressure-accent);
+  --card-tone-text:         var(--property-pressure-solid);
+  --card-tone-tint:         var(--property-pressure-tint);
+  --card-tone-tint-strong:  var(--property-pressure-tint-strong);
+}
+.cc-tone--body {
+  --card-tone:              var(--property-body-accent);
+  --card-tone-text:         var(--property-body-solid);
+  --card-tone-tint:         var(--property-body-tint);
+  --card-tone-tint-strong:  var(--property-body-tint-strong);
+}
+.cc-tone--lab {
+  --card-tone:              var(--property-lab-accent);
+  --card-tone-text:         var(--property-lab-solid);
+  --card-tone-tint:         var(--property-lab-tint);
+  --card-tone-tint-strong:  var(--property-lab-tint-strong);
+}
+.cc-tone--identity {
+  --card-tone:              var(--property-identity-accent);
+  --card-tone-text:         var(--property-identity-solid);
+  --card-tone-tint:         var(--property-identity-tint);
+  --card-tone-tint-strong:  var(--property-identity-tint-strong);
+}
+.cc-tone--condition {
+  --card-tone:              var(--property-condition-accent);
+  --card-tone-text:         var(--property-condition-solid);
+  --card-tone-tint:         var(--property-condition-tint);
+  --card-tone-tint-strong:  var(--property-condition-tint-strong);
+}
+.cc-tone--allergy {
+  --card-tone:              var(--property-allergy-accent);
+  --card-tone-text:         var(--property-allergy-solid);
+  --card-tone-tint:         var(--property-allergy-tint);
+  --card-tone-tint-strong:  var(--property-allergy-tint-strong);
+}
+.cc-tone--medication {
+  --card-tone:              var(--property-medication-accent);
+  --card-tone-text:         var(--property-medication-solid);
+  --card-tone-tint:         var(--property-medication-tint);
+  --card-tone-tint-strong:  var(--property-medication-tint-strong);
+}
+
+/* ── STATES ───────────────────────────────────────────────────────────── */
+.cc-pcard.is-disabled {
+  opacity: .58;
+  cursor: not-allowed;
+  filter: saturate(.6);
+}
+.cc-pcard.is-disabled * { pointer-events: none; }
+
+.cc-pcard.is-selected {
+  outline: 2px solid var(--card-tone);
+  outline-offset: 2px;
+}
+
+.cc-pcard:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.cc-pcard.is-stale .cc-pcard-value { color: var(--text-muted); }
+.cc-pcard.is-stale::after {
+  content: "Verouderd";
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  color: var(--text-faint);
+  background: var(--surface-page);
+  padding: 2px 8px;
+  border-radius: var(--cc-radius-pill);
+}
+
+.cc-pcard.is-dragging {
+  box-shadow: var(--elevation-overlay);
+  transform: rotate(-1deg);
+  cursor: grabbing;
+  z-index: 2;
+}
+
+.cc-pcard.is-loading {
+  pointer-events: none;
+}
+.cc-pcard-skeleton {
+  position: absolute;
+  inset: var(--density-card-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--surface-raised);
+}
+.cc-pcard-skeleton span {
+  height: 12px;
+  background: linear-gradient(90deg, var(--surface-sunken) 0%, var(--state-hover) 50%, var(--surface-sunken) 100%);
+  background-size: 200% 100%;
+  animation: cc-pcard-shimmer 1.4s linear infinite;
+  border-radius: var(--radius-pill);
+}
+.cc-pcard-skeleton span:nth-child(1) { width: 60%; }
+.cc-pcard-skeleton span:nth-child(2) { width: 90%; }
+.cc-pcard-skeleton span:nth-child(3) { width: 40%; }
+@keyframes cc-pcard-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.cc-pcard.is-error { border-color: var(--status-error-solid); }
+.cc-pcard-error {
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  background: var(--status-error-tint);
+  color: var(--status-error-solid);
+  border-radius: var(--cc-radius-sm);
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+}
+
+.cc-pcard.is-empty .cc-pcard-value { color: var(--text-faint); }
+.cc-pcard-empty {
+  font-family: var(--typography-heading-sm-font-family);
+  font-size: var(--typography-heading-lg-font-size);
+  color: var(--text-faint);
+  text-align: center;
+  padding: var(--space-7) 0;
+}
+
+/* ── INTRINSIC WIDTH MORPH via CONTAINER QUERIES ──────────────────────── */
+/* The card itself is the query container (container-type: inline-size). All
+   width-driven adjustments live here so the per-object cards don't repeat
+   media-query logic. Breakpoints chosen to align with companion form factors
+   inside floating / sidebar / full-screen — narrow ≤ 280, regular 281–479,
+   wide ≥ 480. */
+
+@container (max-width: 280px) {
+  .cc-pcard[data-stage="sprout"] .cc-pcard-footer { flex-direction: column; gap: 2px; }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-meta { gap: var(--space-2); }
+  .cc-pcard-value-num { font-size: var(--typography-heading-md-font-size); }
+  .cc-pcard-stepper-btn { width: var(--dimension-touch-target-compact); height: var(--dimension-touch-target-compact); }
+}
+
+@container (min-width: 480px) {
+  .cc-pcard[data-stage="sprout"] {
+    padding-inline: calc(var(--density-card-pad) + var(--space-2));
+  }
+  .cc-pcard-value-num { font-size: calc(var(--typography-heading-lg-font-size) + 4px); }
+}
+
+/* Side-by-side layout: value LEFT, sparkline RIGHT — kicks in at typical
+   card width (~340px+). Below that the card stacks (mobile-narrow). */
+@container (min-width: 340px) {
+  .cc-pcard[data-stage="sprout"] {
+    display: grid;
+    grid-template-columns: 1fr minmax(120px, 180px);
+    grid-template-areas:
+      "head    head"
+      "value   media"
+      "meta    media"
+      "footer  footer"
+      "aside   aside"
+      "actions actions";
+    gap: var(--space-2) var(--space-4);
+    align-items: start;
+  }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-head    { grid-area: head; }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-value   { grid-area: value; align-self: end; }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-meta    { grid-area: meta; }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-media   { grid-area: media; align-self: center; }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-footer  { grid-area: footer; margin-top: var(--space-2); }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-aside   { grid-area: aside; }
+  .cc-pcard[data-stage="sprout"] .cc-pcard-actions { grid-area: actions; }
+}
+
+/* ── DRAG HANDLE SLOT (reserved; mechanism deferred per Act-1 scope) ──── */
+.cc-pcard-drag-handle {
+  position: absolute;
+  top: 50%;
+  left: -18px;
+  transform: translateY(-50%);
+  width: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity .12s linear;
+  color: var(--text-faint);
+  cursor: grab;
+}
+.cc-pcard-drag-handle::before,
+.cc-pcard-drag-handle::after {
+  content: "⋮⋮";
+  letter-spacing: -2px;
+  line-height: .8;
+  font-size: 14px;
+}
+.cc-pcard:hover .cc-pcard-drag-handle,
+.cc-pcard:focus-within .cc-pcard-drag-handle { opacity: 1; }
+
+/* ── SPROUT CARDS — companion atoms (lib.jsx) ───────────────────────────── */
+
+/* Media slot: currentColor = card tone so sparklines / range bars render
+   in identity colour without a per-card prop. */
+.cc-pcard-media { color: var(--card-tone); }
+
+.cc-sparkline { display: block; }
+.cc-sparkline path[fill="none"] {
+  stroke-width: var(--sparkline-stroke-width);
+  stroke-dasharray: var(--cc-sparkline-len, 800);
+  stroke-dashoffset: 0;
+  animation: cc-sparkline-draw var(--sparkline-draw-in-duration) var(--motion-easing-decelerate) backwards;
+}
+@keyframes cc-sparkline-draw {
+  from { stroke-dashoffset: var(--cc-sparkline-len, 800); }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Reduced-motion overrides — surgical, not blanket. Disables LOUD motion
+   (keyframe entrance animations: sparkline draw-in, accent-rule slide-in,
+   data-just-updated pulse). Keeps subtle TRANSITIONS (the hover lift is
+   4px — well below any vestibular threshold). WCAG 2.2 reduced-motion is
+   about preventing nausea-inducing parallax/large transforms, not stripping
+   all micro-interactions. */
+@media (prefers-reduced-motion: reduce) {
+  .cc-sparkline path,
+  .cc-pcard::before { animation: none !important; }
+}
+
+/* Reference-range bar (lab cards) */
+.cc-refbar { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; color: var(--text-muted); }
+.cc-refbar-track {
+  position: relative;
+  height: 6px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--surface-sunken);
+}
+.cc-refbar-normal {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: color-mix(in oklch, var(--status-success-solid) 30%, var(--surface-raised));
+  border-radius: var(--cc-radius-pill);
+}
+.cc-refbar-marker {
+  position: absolute;
+  top: -3px;
+  width: 12px; height: 12px;
+  margin-left: -6px;
+  border-radius: var(--radius-pill);
+  background: var(--card-tone);
+  box-shadow: 0 0 0 2px var(--surface-raised);
+}
+.cc-refbar-marker.is-out-of-range {
+  background: var(--status-warning-solid);
+}
+.cc-refbar-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--typography-caption-md-font-size);
+}
+
+/* Medication schedule strip */
+.cc-schedule-strip {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  justify-content: space-between;
+}
+.cc-schedule-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+.cc-schedule-day-label {
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-tracking-wide);
+}
+.cc-schedule-day-dot {
+  width: 10px; height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+}
+.cc-schedule-day.is-taken    .cc-schedule-day-dot { background: var(--status-success-solid); border-color: var(--status-success-solid); }
+.cc-schedule-day.is-missed   .cc-schedule-day-dot { background: var(--status-error-solid);   border-color: var(--status-error-solid); }
+.cc-schedule-day.is-upcoming .cc-schedule-day-dot { background: transparent; border-color: var(--card-tone); }
+.cc-schedule-day.is-paused   .cc-schedule-day-dot { background: var(--text-faint);          border-color: var(--text-faint); }
+
+/* Demographic field list */
+.cc-field-list { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; }
+.cc-field-row { display: grid; grid-template-columns: minmax(80px, 0.4fr) 1fr; gap: var(--space-3); align-items: baseline; }
+.cc-field-label {
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-tracking-wide);
+  margin: 0;
+}
+.cc-field-value {
+  margin: 0;
+  font-family: var(--typography-body-sm-font-family);
+  font-size: var(--typography-body-sm-font-size);
+  color: var(--text-default);
+}
+
+/* Allergy reaction list */
+.cc-reaction-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.cc-reaction-item {
+  display: flex; align-items: center; gap: var(--space-2);
+  font-family: var(--typography-body-sm-font-family);
+  font-size: var(--typography-body-sm-font-size);
+  color: var(--text-default);
+}
+.cc-reaction-dot { width: 4px; height: 4px; border-radius: var(--radius-pill); background: var(--card-tone); flex-shrink: 0; }
+
+/* Primary CTA used inside actions slot */
+.cc-pcard-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: var(--cc-radius-sm);
+  background: var(--button-primary-background);
+  color: var(--button-primary-text);
+  font-family: var(--typography-label-md-font-family);
+  font-size: var(--typography-label-md-font-size);
+  font-weight: var(--type-weight-semibold);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+.cc-pcard-primary-cta:hover { filter: brightness(1.05); }
+.cc-pcard-primary-cta:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cc-pcard-primary-cta:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Sprout-cards iteration #1 — slots discovered during per-object build */
+
+/* Blood-pressure value separator (e.g. "145/88") */
+.cc-pcard-value-sep {
+  color: var(--text-faint);
+  font-weight: var(--type-weight-medium) !important;
+  margin: 0 1px;
+}
+
+/* Demographic trailing id-line ("♂ 84j") */
+.cc-pcard-id-line {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--typography-body-sm-font-family);
+  font-size: var(--typography-body-sm-font-size);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Seed-stage trailing icon shouldn't be coloured by tone (too noisy when many
+   cards stack in a list). Override the default. */
+.cc-pcard[data-stage="seed"] .cc-pcard-trailing {
+  color: var(--text-faint);
+}
+
+/* ── PROPERTY LIST (Act 2) ─────────────────────────────────────────────── */
+
+.cc-pcard-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.cc-pcard-list-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.cc-pcard-list-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.cc-pcard-list-title {
+  margin: 0;
+  font-family: var(--typography-title-md-font-family);
+  font-size: var(--typography-title-md-font-size);
+  font-weight: var(--typography-title-md-font-weight);
+  color: var(--text-default);
+}
+.cc-pcard-list-count {
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--surface-page);
+}
+
+.cc-pcard-list-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.cc-pcard-list-action {
+  margin-left: auto;
+}
+
+.cc-pcard-list-empty {
+  padding: var(--space-7) var(--space-4);
+  text-align: center;
+  font-family: var(--typography-body-md-font-family);
+  font-size: var(--typography-body-md-font-size);
+  color: var(--text-faint);
+  background: var(--surface-page);
+  border-radius: var(--cc-radius-panel);
+  border: 1px dashed var(--border-subtle);
+}
+
+/* ROWS — vertical stack */
+.cc-pcard-list--rows .cc-pcard-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* GRID — auto-fit minmax(min-card-width, 1fr) */
+.cc-pcard-list--grid .cc-pcard-list-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--cc-list-min-card), 1fr));
+  gap: var(--space-3);
+  align-items: start;
+}
+
+/* COLUMNS — CSS multi-column flow. Best for many small seeds.
+   Column flow is column-by-column (not row-major) — that's how CSS multi-
+   column works. If you want row-major, use layout="grid" instead. */
+.cc-pcard-list--columns .cc-pcard-list-items {
+  column-width: var(--cc-list-min-card);
+  column-gap: var(--space-6);  /* wider gap so hover shadows + tone rings of cards in adjacent columns don't visually overlap */
+}
+.cc-pcard-list--columns .cc-pcard-list-item {
+  break-inside: avoid;
+  margin-bottom: var(--space-3);
+  display: block;
+  isolation: isolate;          /* each item gets its own stacking context — keeps hover/focus rings paint-localised */
+}
+
+/* ── TRIGGERS ────────────────────────────────────────────────────────────
+   Six entry-point components (see docs/triggers/SYSTEM.md). Every trigger:
+   - inherits brand identity via <AIBadge>
+   - paints with semantic tokens only — no hardcoded color/size/elevation
+   - reads data-state to render the discovery ladder:
+     idle | staged | promotion | active | disabled
+   Family base — shared defaults across every cc-trig--*. */
+.cc-trig {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  position: relative;
+  font: inherit; color: var(--text-default);
+  background: transparent; border: 0; cursor: pointer;
+  border-radius: var(--cc-radius-pill);
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .12s ease;
+}
+.cc-trig:disabled, .cc-trig[data-state="disabled"] { cursor: not-allowed; opacity: .55; }
+.cc-trig:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+/* `position: relative` so the discovery dot/pulse (which is absolutely
+   positioned) anchors to the brain mark, NOT the whole button. Triggers nest
+   their <DiscoveryIndicator> inside .cc-trig-mark for the same reason. */
+.cc-trig .cc-trig-mark { display: inline-flex; align-items: center; justify-content: center; position: relative; }
+.cc-trig .cc-trig-label { font-weight: 500; white-space: nowrap; }
+
+/* The discovery dot (staged) and pulse (promotion) — siblings of the mark. */
+.cc-trig-dot {
+  position: absolute; top: -2px; right: -3px;
+  min-width: 10px; height: 10px; padding: 0 3px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--brand-signal-error);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; line-height: 1;
+  /* `--status-error-on` is the semantic "text on an error fill" — stays white
+     across light / dark / inverted, so the count is readable on the red dot in
+     every context. `--text-on-accent` would flip to lime-950 in `.inverted`
+     and become unreadable on red. */
+  color: var(--status-error-on);
+  box-shadow: 0 0 0 2px var(--surface-raised);
+}
+.cc-trig-dot-n { font-weight: 700; padding: 0 1px; }
+.cc-trig-pulse {
+  position: absolute; inset: -4px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--brand-tint-soft);
+  animation: cc-pulseFab 2.2s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ── 1. NavTrigger ────────────────────────────────────────────────────── */
+.cc-trig--nav {
+  padding: 6px 12px 6px 8px;
+  background: transparent;
+  color: var(--text-default);
+}
+.cc-trig--nav:hover { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.cc-trig--nav[data-state="active"] { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.cc-trig--nav.is-compact { padding: 6px 8px; }
+.cc-trig--nav.is-compact .cc-trig-label { display: none; }
+
+/* sidebar variant — full-width row, left-aligned, sized like a nav item */
+.cc-trig--nav-sidebar {
+  display: flex; width: 100%;
+  padding: 10px 12px; border-radius: var(--cc-radius-sm);
+  justify-content: flex-start;
+  color: var(--text-muted);
+}
+.cc-trig--nav-sidebar[data-state="active"] {
+  background: var(--state-selected-surface);
+  color: var(--state-selected-text);
+  box-shadow: inset 3px 0 0 var(--action-accent);
+}
+.cc-trig--nav-sidebar:hover { color: var(--text-default); background: var(--state-selected-surface); }
+
+/* The dot rides on top of the mark in the nav variant */
+.cc-trig--nav .cc-trig-dot { top: -2px; right: -2px; box-shadow: 0 0 0 2px var(--surface-page); }
+
+/* ── 2. CompanionFAB ──────────────────────────────────────────────────── */
+.cc-trig--fab {
+  position: fixed; width: 52px; height: 52px;
+  border-radius: var(--cc-radius-pill);
+  border: 2px solid var(--action-accent);
+  background: var(--surface-raised);
+  box-shadow: var(--elevation-overlay);
+  z-index: 2147483000;
+  justify-content: center; gap: 0;
+}
+.cc-trig--fab:hover { transform: translateY(-1px); box-shadow: var(--elevation-modal); }
+.cc-trig--fab[data-state="active"] { background: var(--state-selected-surface); }
+.cc-trig-fab-aura {
+  position: absolute; inset: 0; border-radius: var(--cc-radius-pill);
+  pointer-events: none;
+}
+.cc-trig-fab-aura--promotion { background: var(--state-selected-surface); animation: cc-pulseFab 2s ease-out infinite; }
+.cc-trig-fab-aura--staged { background: var(--brand-tint-soft); }
+.cc-trig-fab-badge {
+  position: absolute; top: -2px; right: -2px;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--brand-signal-error);
+  /* Always-white on error fill — see .cc-trig-dot for the reasoning. */
+  color: var(--status-error-on);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; line-height: 1;
+  box-shadow: 0 0 0 2px var(--surface-page);
+}
+.cc-trig--fab .cc-aibadge { position: relative; z-index: 1; }
+
+/* ── 3. MobileBarTrigger ──────────────────────────────────────────────── */
+.cc-trig--mobile {
+  flex-direction: column; gap: 2px;
+  padding: 6px 12px 4px; min-width: 64px;
+  border-radius: var(--cc-radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+}
+.cc-trig--mobile .cc-trig-label { font-size: 11px; font-weight: 500; }
+.cc-trig--mobile[data-state="active"] { color: var(--state-selected-text); }
+.cc-trig--mobile[data-state="active"] .cc-trig-mark::after {
+  content: ''; position: absolute; inset: -2px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--state-selected-surface);
+  z-index: -1;
+}
+/* center placement makes the cell visually heavier — for a 5-tab bar with
+   the companion in the middle slot. */
+.cc-trig--mobile-center .cc-trig-mark { transform: translateY(-2px); }
+
+/* ── 4. AIActionButton ────────────────────────────────────────────────── */
+.cc-trig--action {
+  padding: 6px 10px;
+  border-radius: var(--cc-radius-sm);
+  font-size: 13px;
+  color: var(--text-default);
+}
+.cc-trig--action-ghost { background: transparent; }
+.cc-trig--action-ghost:hover { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.cc-trig--action-soft { background: var(--brand-tint-soft); color: var(--state-selected-text); }
+.cc-trig--action-soft:hover { background: var(--brand-tint-strong); }
+.cc-trig--action-solid { background: var(--action-accent); color: var(--text-on-accent); }
+.cc-trig--action-solid:hover { background: var(--action-solid); }
+.cc-trig--action-solid .cc-aibadge { filter: brightness(1.2); }
+.cc-trig--action.cc-trig--d-compact { padding: 4px 8px; font-size: 12px; }
+.cc-trig--action[data-state="promotion"] { box-shadow: 0 0 0 2px var(--brand-tint-soft); }
+.cc-trig--action[data-state="staged"]::after {
+  content: ''; position: absolute; top: -2px; right: -2px;
+  width: 8px; height: 8px; border-radius: var(--cc-radius-pill);
+  background: var(--brand-signal-error);
+  box-shadow: 0 0 0 2px var(--surface-page);
+}
+
+/* ── 5. InlineSummons ─────────────────────────────────────────────────── */
+.cc-trig--inline {
+  padding: 4px 10px 4px 8px;
+  border-radius: var(--cc-radius-pill);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  font-size: 12px;
+  box-shadow: var(--elevation-raised);
+  color: var(--text-default);
+}
+.cc-trig--inline:hover { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.cc-trig--inline[data-state="active"] { background: var(--state-selected-surface); color: var(--state-selected-text); border-color: var(--action-accent); }
+/* selection-anchored: positioned by host through inline `top/left` — keep above content */
+.cc-trig--inline-selection { z-index: 2147483000; }
+/* slash: blends into the slash menu, no border or elevation */
+.cc-trig--inline-slash { border: 0; box-shadow: none; background: transparent; padding: 6px 8px; }
+
+.cc-trig-inline-popup {
+  background: var(--surface-raised); color: var(--text-default);
+  border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel);
+  box-shadow: var(--elevation-overlay);
+  padding: var(--space-2); min-width: 180px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.cc-trig-inline-action {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: 8px 10px; border-radius: var(--cc-radius-sm);
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--text-default); font: inherit;
+}
+.cc-trig-inline-action:hover { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.cc-trig-inline-action-ic { display: inline-flex; color: var(--text-muted); }
+.cc-trig-inline-action-label { font-size: 13px; }
+
+/* ── 6. ExplainChip ───────────────────────────────────────────────────── */
+.cc-trig--explain {
+  width: 18px; height: 18px; padding: 0;
+  border-radius: var(--cc-radius-pill);
+  background: transparent;
+  vertical-align: middle;
+  opacity: .55;
+}
+.cc-trig--explain:hover { opacity: 1; background: var(--brand-tint-soft); }
+.cc-trig--explain[data-state="active"] { opacity: 1; background: var(--brand-tint-strong); }
+.cc-trig--explain[data-state="staged"]::after {
+  content: ''; position: absolute; top: -2px; right: -2px;
+  width: 6px; height: 6px; border-radius: var(--cc-radius-pill);
+  background: var(--brand-signal-error);
+  box-shadow: 0 0 0 1.5px var(--surface-page);
+}
+
+.cc-trig-explain-popup {
+  background: var(--surface-raised); color: var(--text-default);
+  border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel);
+  box-shadow: var(--elevation-overlay);
+  padding: var(--space-3);
+  min-width: 220px; max-width: 320px;
+}
+.cc-trig-explain-body { font-size: 13px; line-height: 1.45; }
+.cc-trig-explain-foot {
+  margin-top: var(--space-3); padding-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; justify-content: flex-end;
+}
+.cc-trig-explain-deep {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--state-selected-text); font: inherit; font-size: 12px; font-weight: 600;
+  padding: 4px 6px; border-radius: var(--cc-radius-sm);
+}
+.cc-trig-explain-deep:hover { background: var(--state-selected-surface); }
+.cc-trig-explain-deep-ic { display: inline-flex; transform: rotate(-90deg); }
+
+/* ── trigger demo grid — used in /demo/triggers.html ─────────────────── */
+.cc-trig-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+.cc-trig-demo-cell {
+  background: var(--surface-raised); color: var(--text-default);
+  border: 1px solid var(--border-subtle); border-radius: var(--cc-radius-panel);
+  box-shadow: var(--elevation-raised);
+  padding: var(--space-4);
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.cc-trig-demo-cell h4 { margin: 0; font-size: 14px; font-weight: 600; color: var(--text-default); }
+.cc-trig-demo-cell .cc-trig-demo-desc { margin: 0; font-size: 12px; color: var(--text-muted); }
+.cc-trig-demo-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px dashed var(--border-subtle); border-radius: var(--cc-radius-sm);
+  background: var(--surface-page);
+  position: relative; min-height: 56px;
+}
+.cc-trig-demo-row[data-host="fab"] { min-height: 96px; }
+.cc-trig-demo-stateline { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: .05em; }
+
+/* ── SPROUT CARD SHELL + VIEW TRANSITIONS ──────────────────────────────── */
+/* The SproutCard wrapper is the click/keyboard/ARIA target when stage=seed;
+   it's display: contents at sprout/shoot so it adds no layout box. The
+   inner Card's container query still works (its own element is the
+   container; the shell is layout-invisible). */
+.cc-pcard-shell {
+  display: contents;
+}
+
+/* When the shell is the click target (stage=seed), bring it back into the
+   flow so we can render a focus ring around the inner card. The card
+   provides its own pill shape — the shell's outline traces it. */
+.cc-pcard-shell.is-stage-seed {
+  display: block;
+  cursor: pointer;
+  border-radius: var(--cc-radius-capsule);
+}
+.cc-pcard-shell.is-stage-seed:focus-visible {
+  outline: var(--dimension-rule-thin) solid var(--focus-ring);
+  outline-offset: var(--space-1);
+}
+
+/* The shell's tag — view-transition-name — is set inline only on the card
+   that's actively transitioning (avoids duplicate-name errors when many
+   cards share the page). CSS below picks the single active name. */
+@supports (view-transition-name: x) {
+  ::view-transition-old(cc-pcard-active),
+  ::view-transition-new(cc-pcard-active) {
+    animation-duration: var(--motion-duration-base);
+    animation-timing-function: var(--motion-easing-emphasized);
+  }
+}
+
+/* Reduced motion — view transitions snap. Slot reveals don't animate. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(cc-pcard-active),
+  ::view-transition-new(cc-pcard-active) {
+    animation-duration: 0.001ms !important;
+  }
+}
+
+/* ── Base UI NumberField stepper — refactor of the hand-rolled Stepper ──── */
+.cc-pcard-stepper-group {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+.cc-pcard-stepper-value {
+  justify-self: center;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.cc-pcard-stepper-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: var(--typography-heading-lg-font-size);
+  font-weight: var(--type-weight-bold);
+  color: var(--text-default);
+  text-align: center;
+  width: 4ch;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+.cc-pcard-stepper-input::-webkit-outer-spin-button,
+.cc-pcard-stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.cc-pcard-stepper-input:focus-visible {
+  outline: var(--dimension-rule-thin) solid var(--focus-ring);
+  outline-offset: var(--space-1);
+  border-radius: var(--cc-radius-sm);
+}
+
+/* ── Base UI Tooltip popup — used by MeterTooltip ─────────────────────── */
+.cc-pcard-tooltip {
+  background: var(--inverted-surface);
+  color: var(--inverted-text);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--cc-radius-sm);
+  font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size);
+  box-shadow: var(--elevation-overlay);
+  max-width: 240px;
+  z-index: 100;
+}
+
+/* ── CANVAS PAPER GRAIN — atmosphere without harming contrast ─────────── */
+/* Drop .cc-app-canvas on any page-level wrapper to get a subtle SVG fractal-
+   noise grain at the page background. The grain is decorative, not content;
+   reads as warmth at viewing distance. Opacity comes from the token so the
+   project can dial it up/down or zero it out. */
+.cc-app-canvas {
+  position: relative;
+}
+.cc-app-canvas::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: var(--canvas-texture-opacity);
+  mix-blend-mode: multiply;
+}
+.cc-app-canvas > * { position: relative; z-index: 1; }
+
+/* ── Btn --ghost variant ──────────────────────────────────────────────── */
+/* Transparent inline button that inherits surrounding typography + colour.
+   Used to make an existing visual (e.g. a card value "74 bpm") clickable
+   without imposing button chrome. Hover/focus give it visible state. */
+.cc-btn--ghost {
+  background: transparent;
+  border: none;
+  padding: var(--space-1) var(--space-2);
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: inherit;
+  display: inline-flex;
+  align-items: baseline;
+  border-radius: var(--cc-radius-sm);
+  transition: background var(--motion-duration-fast) var(--motion-easing-standard);
+}
+.cc-btn--ghost:hover { background: var(--state-hover); }
+.cc-btn--ghost:focus-visible {
+  outline: var(--dimension-rule-thin) solid var(--focus-ring);
+  outline-offset: var(--space-1);
+}

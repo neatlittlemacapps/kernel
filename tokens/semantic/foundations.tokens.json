@@ -1,0 +1,153 @@
+{
+  "$description": "Semantic foundations \u2014 non-colour intent tokens that live at the semantic tier because they encode a design decision rather than a raw value. Theme- and brand-agnostic; consumers of any tier may bind to these. Folded together in one file because each group is small and they share the same tier.",
+  "dimension": {
+    "rule": {
+      "$type": "dimension",
+      "$description": "Stroke/divider/accent-rule thicknesses. Borders use `hair`; focus outlines use `thin`; tone-coloured accent stripes (e.g. sprout-card top rule) use `regular`; heavy accents `thick`.",
+      "hair": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "thin": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "regular": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        }
+      },
+      "thick": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      }
+    },
+    "touch-target": {
+      "$type": "dimension",
+      "$description": "Minimum interactive size for tappable affordances (steppers, drag handles, segmented controls, mobile-bar buttons). `regular` (48px) is the WCAG 2.5.5 AAA finger-friendly default; `compact` (40px) for dense desktop UIs; `small` (32px) for icon-only secondary actions where the affordance is supported by surrounding context.",
+      "regular": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      },
+      "compact": {
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        }
+      },
+      "small": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "color": {
+    "tone-mix": {
+      "$type": "number",
+      "$description": "Mix ratios used by `color-mix(in oklch, var(--tone) <ratio>, var(--surface-raised))` to derive tinted backgrounds from any tone (property tone, status, action). Decoupled from the tone source so the same ratio applies whether the consumer is a card, a chip, a hover row, or a chart tooltip. Authored as 0\u20131 numbers so CSS can format as percent with `calc()` if needed; the standard CSS form `var(--colour-tone-mix-tint-ratio)` resolves to `0.12` and is consumed as the percent in `color-mix`.",
+      "tint": {
+        "$value": 0.12,
+        "$description": "Default tone tint \u2014 icon pill backings, edit-chip backings, soft hover surfaces."
+      },
+      "tint-strong": {
+        "$value": 0.22,
+        "$description": "Stronger tint \u2014 hover/active states over a tinted surface, selected rows."
+      }
+    }
+  },
+  "motion": {
+    "$description": "Semantic motion intents that alias the raw timing primitives. UI consumers bind to these names; the primitives can shift without rewriting components.",
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{motion.duration.100}",
+        "$description": "Micro-interactions, pill toggles, hover-state changes."
+      },
+      "fast": {
+        "$value": "{motion.duration.180}",
+        "$description": "Small state changes, button presses, focus rings."
+      },
+      "base": {
+        "$value": "{motion.duration.260}",
+        "$description": "Default UI transitions \u2014 Seed\u2192Sprout expand, default fades."
+      },
+      "slow": {
+        "$value": "{motion.duration.400}",
+        "$description": "Drawer / panel / dialog reveals."
+      },
+      "crawl": {
+        "$value": "{motion.duration.600}",
+        "$description": "Full-screen / route-level transitions. Rare."
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$description": "Standard easing curves at semantic tier. Authored here (not as aliases) because the names are intent-bearing \u2014 primitives stayed numeric/descriptive.",
+      "standard": {
+        "$value": [
+          0.2,
+          0,
+          0,
+          1
+        ],
+        "$description": "Default UI."
+      },
+      "emphasized": {
+        "$value": [
+          0.16,
+          1,
+          0.3,
+          1
+        ],
+        "$description": "Spring-flavoured; container morphs."
+      },
+      "decelerate": {
+        "$value": [
+          0,
+          0,
+          0.2,
+          1
+        ],
+        "$description": "Soft ease-out for entering UI, hover lifts."
+      },
+      "accelerate": {
+        "$value": [
+          0.3,
+          0,
+          1,
+          1
+        ],
+        "$description": "For exiting UI."
+      },
+      "linear": {
+        "$value": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "$description": "Constant velocity; progress indicators only."
+      },
+      "swift": {
+        "$value": [
+          0.1,
+          0.85,
+          0.25,
+          1
+        ],
+        "$description": "Quick reactive + long fade. Sharp initial velocity (\u22488.5), gentle landing (\u22480). Use for hover lifts where the card should respond instantly then settle softly. Sharper attack than `decelerate`, less springy than `emphasized`."
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "radius": {
+    "$type": "dimension",
+    "$description": "Radius scale on the 4px grid. Pairs with the space scale: because both are 4-multiples, a nested element's radius = container_radius − corner_gap lands on a step (concentric nesting). Density maps the base/container radius to these.",
+    "none": { "$value": { "value": 0,   "unit": "px" }, "$description": "Square corners — for harsh/angular brands (e.g. Semble's brand radius)." },
+    "xs":   { "$value": { "value": 4,   "unit": "px" } },
+    "sm":   { "$value": { "value": 8,   "unit": "px" } },
+    "md":   { "$value": { "value": 12,  "unit": "px" } },
+    "lg":   { "$value": { "value": 16,  "unit": "px" } },
+    "xl":   { "$value": { "value": 24,  "unit": "px" } },
+    "pill": { "$value": { "value": 999, "unit": "px" } }
+  }
+}

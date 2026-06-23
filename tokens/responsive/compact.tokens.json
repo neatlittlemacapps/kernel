@@ -1,0 +1,14 @@
+{
+  "density": {
+    "$type": "dimension",
+    "$description": "Compact density: tighter spacing for power users / dense data. Concentric-critical paddings + radius alias the grid scales; row-py/control-py are tuned (off-grid by design).",
+    "card-pad":   { "$value": "{space.3}" },
+    "row-py":     { "$value": { "value": 6,  "unit": "px" } },
+    "gap":        { "$value": "{space.2}" },
+    "gap-lg":     { "$value": "{space.3}" },
+    "control-py": { "$value": { "value": 7,  "unit": "px" } },
+    "control-px": { "$value": "{space.3}" },
+    "radius":     { "$value": "{brand.radius.compact}" },
+    "font":       { "$value": { "value": 13, "unit": "px" } }
+  }
+}

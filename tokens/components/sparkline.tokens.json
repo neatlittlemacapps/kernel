@@ -1,0 +1,28 @@
+{
+  "sparkline": {
+    "$type": "dimension",
+    "$description": "Sparkline visualisation primitives. Stroke + markers consume --card-tone via CSS currentColor.",
+    "stroke-width": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "Bumped from 1.6 \u2014 reads on phones at glance distance."
+    },
+    "marker-radius": {
+      "$value": {
+        "value": 3,
+        "unit": "px"
+      },
+      "$description": "Optional min/max markers."
+    },
+    "draw-in-duration": {
+      "$type": "duration",
+      "$value": {
+        "value": 600,
+        "unit": "ms"
+      },
+      "$description": "Stroke-dasharray reveal on mount."
+    }
+  }
+}

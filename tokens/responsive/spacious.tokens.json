@@ -1,0 +1,14 @@
+{
+  "density": {
+    "$type": "dimension",
+    "$description": "Spacious density: roomier for touch / readability. Concentric-critical paddings + radius alias the grid scales; row-py/control-py are tuned (off-grid by design).",
+    "card-pad":   { "$value": "{space.5}" },
+    "row-py":     { "$value": { "value": 15, "unit": "px" } },
+    "gap":        { "$value": "{space.4}" },
+    "gap-lg":     { "$value": "{space.6}" },
+    "control-py": { "$value": { "value": 13, "unit": "px" } },
+    "control-px": { "$value": "{space.5}" },
+    "radius":     { "$value": "{brand.radius.spacious}" },
+    "font":       { "$value": { "value": 15, "unit": "px" } }
+  }
+}

@@ -1,0 +1,601 @@
+{
+  "brand": {
+    "$type": "color",
+    "$description": "Tier 2 brand identity \u2014 Corilus. This is the SINGLE chokepoint for everything that varies per brand: colour, radius, and font. The semantic, responsive and component tiers reference ONLY {brand.*} (and {font.*}/{brand.radius.*}) for those concerns \u2014 never a raw {color.*} ramp step. Swap the brand modifier to re-skin every interface. Hueless structural values (alpha overlays, scrim, shadow ink, transparent) stay in primitives \u2014 they are elevation/interaction physics, not brand identity.",
+    "primary": {
+      "$value": "{color.teal.600}",
+      "$description": "Corilus teal. The action colour (default surfaces)."
+    },
+    "primary-deep": {
+      "$value": "{color.teal.700}",
+      "$description": "Deeper teal for solid fills that carry white text."
+    },
+    "primary-bright": {
+      "$value": "{color.teal.400}",
+      "$description": "Lighter teal for accents/icons on dark surfaces (AA on slate)."
+    },
+    "secondary": {
+      "$value": "{color.mint.400}",
+      "$description": "Corilus mint. Inverted surfaces + the console ambient indicator only."
+    },
+    "logo": {
+      "$description": "Corilus Companion brain-mark gradient. Brand-FIXED identity colours (intentionally off-ramp) and theme-independent. The inline logo SVG fills its path with these via --brand-logo-from/--brand-logo-to. `angle` is the brand spec, baked into the SVG gradient geometry. Logos are exempt from WCAG text-contrast.",
+      "from": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.7516,
+            0.1426,
+            225.17
+          ],
+          "hex": "#00c0f2"
+        },
+        "$description": "Gradient start \u2014 Corilus light blue (#00c0f2)."
+      },
+      "to": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.6645,
+            0.1872,
+            148.48
+          ],
+          "hex": "#0db14b"
+        },
+        "$description": "Gradient end \u2014 Corilus green (#0db14b)."
+      },
+      "angle": {
+        "$type": "number",
+        "$value": -52.3,
+        "$description": "Brand gradient angle in degrees (CSS convention)."
+      }
+    },
+    "ink": {
+      "$description": "Content-ink scale \u2014 text, icons, chart ink. Corilus uses Graphite (near-zero chroma) so ink never tints adjacent data colours. A brand re-points this whole scale to its own neutral hue. Steps mirror the primitive ramp steps the design actually consumes.",
+      "0": {
+        "$value": "{color.graphite.0}"
+      },
+      "100": {
+        "$value": "{color.graphite.100}"
+      },
+      "300": {
+        "$value": "{color.graphite.300}"
+      },
+      "400": {
+        "$value": "{color.graphite.400}"
+      },
+      "500": {
+        "$value": "{color.graphite.500}"
+      },
+      "600": {
+        "$value": "{color.graphite.600}"
+      },
+      "700": {
+        "$value": "{color.graphite.700}"
+      },
+      "800": {
+        "$value": "{color.graphite.800}"
+      },
+      "950": {
+        "$value": "{color.graphite.950}"
+      }
+    },
+    "fill": {
+      "$description": "Surface/structural fill scale \u2014 panels, borders, inverted blocks, disabled fills. Corilus uses Slate (cool, teal-tinted). A brand re-points this whole scale to its own surface hue.",
+      "25": {
+        "$value": "{color.slate.25}"
+      },
+      "50": {
+        "$value": "{color.slate.50}"
+      },
+      "100": {
+        "$value": "{color.slate.100}"
+      },
+      "200": {
+        "$value": "{color.slate.200}"
+      },
+      "300": {
+        "$value": "{color.slate.300}"
+      },
+      "600": {
+        "$value": "{color.slate.600}"
+      },
+      "700": {
+        "$value": "{color.slate.700}"
+      },
+      "800": {
+        "$value": "{color.slate.800}"
+      },
+      "900": {
+        "$value": "{color.slate.900}"
+      },
+      "950": {
+        "$value": "{color.slate.950}"
+      }
+    },
+    "neutral": {
+      "$description": "Friendly neutral roles. Ergonomic aliases into the ink/fill scales; these are the var names the app and semantic tier bind to (--brand-neutral-*). Keep the names stable across brands; change the scale steps they point at if a brand's neutral structure differs.",
+      "ink": {
+        "$value": "{brand.ink.950}"
+      },
+      "paper": {
+        "$value": "{brand.ink.0}",
+        "$description": "App canvas / page background (near-white)."
+      },
+      "panel": {
+        "$value": "{brand.fill.50}"
+      },
+      "panel-raised": {
+        "$value": "{brand.fill.25}"
+      },
+      "panel-sunken": {
+        "$value": "{brand.fill.100}"
+      },
+      "muted": {
+        "$value": "{brand.ink.700}"
+      },
+      "muted-light": {
+        "$value": "{brand.fill.300}"
+      },
+      "on-light": {
+        "$value": "{brand.ink.0}",
+        "$description": "Text/icon colour on a brand-primary fill."
+      }
+    },
+    "status": {
+      "$description": "The four status hue families, each exposing the steps both themes consume. Light uses 100 (soft tint) + 700 (solid); dark flips to 900 (dark tint) + 300 (light solid). A brand may shift these hues, but red=error / green=success conventions are near-universal \u2014 change with care.",
+      "info": {
+        "100": {
+          "$value": "{color.sky.100}"
+        },
+        "300": {
+          "$value": "{color.sky.300}"
+        },
+        "700": {
+          "$value": "{color.sky.700}"
+        },
+        "900": {
+          "$value": "{color.sky.900}"
+        }
+      },
+      "success": {
+        "100": {
+          "$value": "{color.green.100}"
+        },
+        "300": {
+          "$value": "{color.green.300}"
+        },
+        "700": {
+          "$value": "{color.green.700}"
+        },
+        "900": {
+          "$value": "{color.green.900}"
+        }
+      },
+      "warning": {
+        "100": {
+          "$value": "{color.amber.100}"
+        },
+        "300": {
+          "$value": "{color.amber.300}"
+        },
+        "700": {
+          "$value": "{color.amber.700}"
+        },
+        "900": {
+          "$value": "{color.amber.900}"
+        }
+      },
+      "error": {
+        "100": {
+          "$value": "{color.red.100}"
+        },
+        "300": {
+          "$value": "{color.red.300}"
+        },
+        "700": {
+          "$value": "{color.red.700}"
+        },
+        "900": {
+          "$value": "{color.red.900}"
+        }
+      }
+    },
+    "signal": {
+      "$description": "Mid-step status hues for decoration/identity (avatars, badges, row tones). App binds these directly via --brand-signal-*. Distinct from status.* which carries theme-aware UI state.",
+      "info": {
+        "$value": "{color.sky.500}"
+      },
+      "success": {
+        "$value": "{color.green.500}"
+      },
+      "warning": {
+        "$value": "{color.amber.500}"
+      },
+      "error": {
+        "$value": "{color.red.500}"
+      }
+    },
+    "accent": {
+      "$description": "Inverted-surface accent (Corilus lime). Reserved to inverted blocks + ambient. 400/950 used in light's dark block; 700 used in dark's light block.",
+      "400": {
+        "$value": "{color.lime.400}"
+      },
+      "700": {
+        "$value": "{color.lime.700}"
+      },
+      "950": {
+        "$value": "{color.lime.950}"
+      }
+    },
+    "data": {
+      "$description": "Categorical data-viz palette (6). Deliberately avoids the four status hues so chart colour is never read as status. App binds directly via --brand-data-*. The .500 steps for light surfaces.",
+      "1": {
+        "$value": "{color.teal.500}"
+      },
+      "2": {
+        "$value": "{color.indigo.500}"
+      },
+      "3": {
+        "$value": "{color.violet.500}"
+      },
+      "4": {
+        "$value": "{color.magenta.500}"
+      },
+      "5": {
+        "$value": "{color.amber.500}"
+      },
+      "6": {
+        "$value": "{color.lime.500}"
+      }
+    },
+    "data-bright": {
+      "$description": "The same six categorical hues at the .400 step, for dark surfaces (the .500 steps fall below AA for graphics on dark). Semantic dark data.series-* alias these.",
+      "1": {
+        "$value": "{color.teal.400}"
+      },
+      "2": {
+        "$value": "{color.indigo.400}"
+      },
+      "3": {
+        "$value": "{color.violet.400}"
+      },
+      "4": {
+        "$value": "{color.magenta.400}"
+      },
+      "5": {
+        "$value": "{color.amber.400}"
+      },
+      "6": {
+        "$value": "{color.lime.400}"
+      }
+    },
+    "tint": {
+      "$description": "Brand-hue translucent overlays for the 'selected' state (must track the brand primary, unlike the hueless black/white interaction overlays which stay in primitives). soft = light theme, strong = dark theme. Concrete OKLCH-with-alpha at the Corilus primary hue (219.1) \u2014 an alpha move that composites over any surface, NOT a baked opaque shade. L/C taken from the former color.alpha.teal-12/-24 primitive (#0088a4) via hex_to_oklch, so Corilus stays pixel-identical to before; the hex fallback round-trips to #0088a4 exactly.",
+      "soft": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.5792,
+            0.1048,
+            219.1
+          ],
+          "alpha": 0.12,
+          "hex": "#0088a4"
+        }
+      },
+      "strong": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.5792,
+            0.1048,
+            219.1
+          ],
+          "alpha": 0.24,
+          "hex": "#0088a4"
+        }
+      }
+    },
+    "radius": {
+      "$type": "dimension",
+      "$description": "Brand corner character. The density modifier references these three steps (compact/base/spacious) instead of raw {radius.*}, so a brand shifts its whole roundness while density still varies one step around the base. Corilus = medium (12px) base.",
+      "compact": {
+        "$value": "{radius.sm}"
+      },
+      "base": {
+        "$value": "{radius.md}"
+      },
+      "spacious": {
+        "$value": "{radius.lg}"
+      }
+    },
+    "property": {
+      "$description": "Patient-property identity hues \u2014 extended to 7 steps (100/200/300/400/500/700/900) for tier-3 vibrancy. The .500 is the decorative accent; .200 is the icon-pill backing; .100 the soft tint; .700 the text-contrast solid; .900 the dark-theme tint.",
+      "heart": {
+        "$description": "Hartslag / heart rate.",
+        "100": {
+          "$value": "{color.red.100}"
+        },
+        "200": {
+          "$value": "{color.red.200}"
+        },
+        "300": {
+          "$value": "{color.red.300}"
+        },
+        "400": {
+          "$value": "{color.red.400}"
+        },
+        "500": {
+          "$value": "{color.red.500}"
+        },
+        "700": {
+          "$value": "{color.red.700}"
+        },
+        "900": {
+          "$value": "{color.red.900}"
+        }
+      },
+      "breath": {
+        "$description": "Ademhalingsfrequentie / respiratory rate.",
+        "100": {
+          "$value": "{color.teal.100}"
+        },
+        "200": {
+          "$value": "{color.teal.200}"
+        },
+        "300": {
+          "$value": "{color.teal.300}"
+        },
+        "400": {
+          "$value": "{color.teal.400}"
+        },
+        "500": {
+          "$value": "{color.teal.500}"
+        },
+        "700": {
+          "$value": "{color.teal.700}"
+        },
+        "900": {
+          "$value": "{color.teal.900}"
+        }
+      },
+      "oxygen": {
+        "$description": "Zuurstofsaturatie / oxygen saturation.",
+        "100": {
+          "$value": "{color.sky.100}"
+        },
+        "200": {
+          "$value": "{color.sky.200}"
+        },
+        "300": {
+          "$value": "{color.sky.300}"
+        },
+        "400": {
+          "$value": "{color.sky.400}"
+        },
+        "500": {
+          "$value": "{color.sky.500}"
+        },
+        "700": {
+          "$value": "{color.sky.700}"
+        },
+        "900": {
+          "$value": "{color.sky.900}"
+        }
+      },
+      "temperature": {
+        "$description": "Lichaamstemperatuur / body temperature.",
+        "100": {
+          "$value": "{color.amber.100}"
+        },
+        "200": {
+          "$value": "{color.amber.200}"
+        },
+        "300": {
+          "$value": "{color.amber.300}"
+        },
+        "400": {
+          "$value": "{color.amber.400}"
+        },
+        "500": {
+          "$value": "{color.amber.500}"
+        },
+        "700": {
+          "$value": "{color.amber.700}"
+        },
+        "900": {
+          "$value": "{color.amber.900}"
+        }
+      },
+      "pressure": {
+        "$description": "Bloeddruk / blood pressure.",
+        "100": {
+          "$value": "{color.violet.100}"
+        },
+        "200": {
+          "$value": "{color.violet.200}"
+        },
+        "300": {
+          "$value": "{color.violet.300}"
+        },
+        "400": {
+          "$value": "{color.violet.400}"
+        },
+        "500": {
+          "$value": "{color.violet.500}"
+        },
+        "700": {
+          "$value": "{color.violet.700}"
+        },
+        "900": {
+          "$value": "{color.violet.900}"
+        }
+      },
+      "body": {
+        "$description": "Lengte, gewicht, BMI, hoofdomtrek \u2014 warm low-chroma neutral.",
+        "100": {
+          "$value": "{color.taupe.100}"
+        },
+        "200": {
+          "$value": "{color.taupe.200}"
+        },
+        "300": {
+          "$value": "{color.taupe.300}"
+        },
+        "400": {
+          "$value": "{color.taupe.400}"
+        },
+        "500": {
+          "$value": "{color.taupe.500}"
+        },
+        "700": {
+          "$value": "{color.taupe.700}"
+        },
+        "900": {
+          "$value": "{color.taupe.900}"
+        }
+      },
+      "lab": {
+        "$description": "Lab-resultaten.",
+        "100": {
+          "$value": "{color.mint.100}"
+        },
+        "200": {
+          "$value": "{color.mint.200}"
+        },
+        "300": {
+          "$value": "{color.mint.300}"
+        },
+        "400": {
+          "$value": "{color.mint.400}"
+        },
+        "500": {
+          "$value": "{color.mint.500}"
+        },
+        "700": {
+          "$value": "{color.mint.700}"
+        },
+        "900": {
+          "$value": "{color.mint.900}"
+        }
+      },
+      "identity": {
+        "$description": "Patient-identiteit / demographics. Achromatic.",
+        "100": {
+          "$value": "{color.graphite.100}"
+        },
+        "200": {
+          "$value": "{color.graphite.200}"
+        },
+        "300": {
+          "$value": "{color.graphite.300}"
+        },
+        "400": {
+          "$value": "{color.graphite.400}"
+        },
+        "500": {
+          "$value": "{color.graphite.500}"
+        },
+        "700": {
+          "$value": "{color.graphite.700}"
+        },
+        "900": {
+          "$value": "{color.graphite.900}"
+        }
+      },
+      "condition": {
+        "$description": "Aandoeningen / conditions.",
+        "100": {
+          "$value": "{color.coral.100}"
+        },
+        "200": {
+          "$value": "{color.coral.200}"
+        },
+        "300": {
+          "$value": "{color.coral.300}"
+        },
+        "400": {
+          "$value": "{color.coral.400}"
+        },
+        "500": {
+          "$value": "{color.coral.500}"
+        },
+        "700": {
+          "$value": "{color.coral.700}"
+        },
+        "900": {
+          "$value": "{color.coral.900}"
+        }
+      },
+      "allergy": {
+        "$description": "Allergieen \u2014 distinct rust ramp (hue 35\u00b0).",
+        "100": {
+          "$value": "{color.rust.100}"
+        },
+        "200": {
+          "$value": "{color.rust.200}"
+        },
+        "300": {
+          "$value": "{color.rust.300}"
+        },
+        "400": {
+          "$value": "{color.rust.400}"
+        },
+        "500": {
+          "$value": "{color.rust.500}"
+        },
+        "700": {
+          "$value": "{color.rust.700}"
+        },
+        "900": {
+          "$value": "{color.rust.900}"
+        }
+      },
+      "medication": {
+        "$description": "Medicatie / prescriptions.",
+        "100": {
+          "$value": "{color.indigo.100}"
+        },
+        "200": {
+          "$value": "{color.indigo.200}"
+        },
+        "300": {
+          "$value": "{color.indigo.300}"
+        },
+        "400": {
+          "$value": "{color.indigo.400}"
+        },
+        "500": {
+          "$value": "{color.indigo.500}"
+        },
+        "700": {
+          "$value": "{color.indigo.700}"
+        },
+        "900": {
+          "$value": "{color.indigo.900}"
+        }
+      }
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "$description": "Brand typeface stack. Lives in the brand layer (not primitives) so each brand swaps it; emitted as --font-heading/--font-body which the semantic typography roles and the app bind to. Corilus = Corporate S Pro (self-hosted woff2 via build/gen-fonts.mjs).",
+    "heading": {
+      "$value": [
+        "Corporate S Pro",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ]
+    },
+    "body": {
+      "$value": [
+        "Corporate S Pro",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ]
+    }
+  }
+}

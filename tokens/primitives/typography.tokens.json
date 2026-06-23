@@ -1,0 +1,29 @@
+{
+  "type": {
+    "weight": {
+      "$type": "fontWeight",
+      "$description": "Weight ramp. Reading-first UI leans on regular + semibold; bold for headings/display.",
+      "regular":  { "$value": "regular" },
+      "medium":   { "$value": "medium" },
+      "semibold": { "$value": "semi-bold" },
+      "bold":     { "$value": "bold" }
+    },
+    "leading": {
+      "$type": "number",
+      "$description": "Line-height multipliers (unitless). Tighter as size grows; relaxed for long-form reading.",
+      "none":    { "$value": 1.0 },
+      "tight":   { "$value": 1.15 },
+      "snug":    { "$value": 1.3 },
+      "normal":  { "$value": 1.5 },
+      "relaxed": { "$value": 1.65 }
+    },
+    "tracking": {
+      "$type": "dimension",
+      "$description": "Letter-spacing. DTCG 2025.10 has no letterSpacing sub-property on the typography composite, so these stay standalone and are applied at the CSS layer (display = tight, uppercase labels = wide).",
+      "tight":  { "$value": { "value": -0.5, "unit": "px" } },
+      "normal": { "$value": { "value": 0, "unit": "px" } },
+      "wide":   { "$value": { "value": 0.5, "unit": "px" } },
+      "wider":  { "$value": { "value": 0.8, "unit": "px" } }
+    }
+  }
+}

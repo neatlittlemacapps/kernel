@@ -1,0 +1,65 @@
+{
+  "brand": {
+    "$type": "color",
+    "$description": "Tier 2 brand identity — Semble (demo sub-brand). ADDITIVE over Corilus. Semble's palette: Shamrock #38D2A6 (primary), Yellow Orange #FFB03D (accent), black/white. Per the brand-exact decision, primary is a CONCRETE off-ramp colour (the exact Shamrock swatch) and fills carry DARK text (neutral.on-light) → WCAG AA (~9.3:1) with an exact brand match. Does NOT touch the shared mint/amber ramps. Everything not listed inherits Corilus.",
+
+    "primary":        { "$value": { "colorSpace": "oklch", "components": [0.774, 0.141, 169.0], "hex": "#38d2a6" }, "$description": "Semble Shamrock #38D2A6 — exact brand colour (off-ramp). Action accent + active states." },
+    "primary-deep":   { "$value": { "colorSpace": "oklch", "components": [0.774, 0.141, 169.0], "hex": "#38d2a6" }, "$description": "Solid action fill = the exact Shamrock; carries DARK text at AA." },
+    "primary-bright": { "$value": { "colorSpace": "oklch", "components": [0.774, 0.141, 169.0], "hex": "#38d2a6" }, "$description": "Shamrock accent/icon on dark surfaces." },
+    "secondary":      { "$value": "{color.graphite.0}", "$description": "White — Semble inverts to white on dark / ambient surfaces (matches the white glyph in its logo)." },
+
+    "neutral": {
+      "$description": "Brand-exact fills use DARK text. on-light overrides Corilus's white so text/icons on the Shamrock fill meet WCAG AA.",
+      "on-light": { "$value": "{brand.ink.950}", "$description": "Near-black text/icon on the Shamrock fill (~9.3:1)." }
+    },
+
+    "fill": {
+      "$description": "Surface scale tinted toward the Semble shamrock hue (sage, hue 169) — overrides Corilus's cool slate so panels/cards/borders/body carry a faint green cast. Same lightness/chroma as slate; only the hue differs.",
+      "25":  { "$value": "{color.sage.25}" },
+      "50":  { "$value": "{color.sage.50}" },
+      "100": { "$value": "{color.sage.100}" },
+      "200": { "$value": "{color.sage.200}" },
+      "300": { "$value": "{color.sage.300}" },
+      "600": { "$value": "{color.sage.600}" },
+      "700": { "$value": "{color.sage.700}" },
+      "800": { "$value": "{color.sage.800}" },
+      "900": { "$value": "{color.sage.900}" },
+      "950": { "$value": "{color.sage.950}" }
+    },
+
+    "logo": {
+      "$description": "FALLBACK only. Semble's real mark is a bundled SVG asset (src/lib/logo.js → BRAND_LOGOS.semble): a solid Shamrock tile with a white glyph, used verbatim — it does NOT read these vars.",
+      "from":  { "$value": { "colorSpace": "oklch", "components": [0.774, 0.141, 169.0], "hex": "#38d2a6" }, "$description": "Shamrock." },
+      "to":    { "$value": { "colorSpace": "oklch", "components": [0.573, 0.110, 169.0], "hex": "#008f6e" }, "$description": "Deeper shamrock." },
+      "angle": { "$type": "number", "$value": -52.3, "$description": "Brand gradient angle in degrees." }
+    },
+
+    "accent": {
+      "$description": "Semble Yellow Orange #FFB03D (hue 72) — exact off-ramp brand accent for inverted surfaces + ambient. 700/950 are darker steps of the same hue.",
+      "400": { "$value": { "colorSpace": "oklch", "components": [0.815, 0.154, 71.9], "hex": "#ffb03d" } },
+      "700": { "$value": { "colorSpace": "oklch", "components": [0.55, 0.130, 72.0], "hex": "#9f6200" } },
+      "950": { "$value": { "colorSpace": "oklch", "components": [0.32, 0.090, 72.0], "hex": "#4e2900" } }
+    },
+
+    "tint": {
+      "$description": "Selected-state overlay at the Shamrock hue (169). Concrete OKLCH-with-alpha, shared tint weight (L/C 0.5792/0.1048); composites over any surface. Hex fallback #248e6f.",
+      "soft":   { "$value": { "colorSpace": "oklch", "components": [0.5792, 0.1048, 169.0], "alpha": 0.12, "hex": "#248e6f" } },
+      "strong": { "$value": { "colorSpace": "oklch", "components": [0.5792, 0.1048, 169.0], "alpha": 0.24, "hex": "#248e6f" } }
+    },
+
+    "radius": {
+      "$type": "dimension",
+      "$description": "Semble corner character — DELIBERATELY HARSH (demo): square/near-square corners. Drives --density-radius to 0 → the whole UI sharpens cohesively; only --cc-radius-pill stays round.",
+      "compact":  { "$value": "{radius.none}" },
+      "base":     { "$value": "{radius.none}" },
+      "spacious": { "$value": "{radius.xs}" }
+    }
+  },
+
+  "font": {
+    "$type": "fontFamily",
+    "$description": "Semble uses DM Sans (bundled as a base64 variable ttf via build/gen-fonts.mjs).",
+    "heading": { "$value": ["DM Sans", "Segoe UI", "ui-sans-serif", "system-ui", "sans-serif"] },
+    "body":    { "$value": ["DM Sans", "Segoe UI", "ui-sans-serif", "system-ui", "sans-serif"] }
+  }
+}

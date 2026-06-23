@@ -1,0 +1,181 @@
+# Changelog
+
+All notable changes to this design token system are recorded here.
+Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning
+follows [SemVer](https://semver.org/).
+
+## [Unreleased]
+
+
+### Added
+- `color.*, brand.*, action.*, ambient.alive, status.*, button.*` - Initial Corilus colour token system (4 tiers) styled for the CC-1 console
+  - Before: `ad-hoc CSS hex values` → After: `DTCG 2025.10 four-tier aliases`
+  - *Affects:* buttons family (primary/secondary/tertiary + info/success/caution/alert + disabled); all surfaces/text/focus
+  - *Rationale:* Encode the palette so emphasis (teal) and status (4 secondary colours) are reusable, and make 'mint is never a button colour' structural: mint lives only in semantic.ambient, which no button token aliases.
+  - *Migration:* Replace hardcoded hexes with var(--button-*) / var(--action-*) etc. Mint usage limited to ambient indicators.
+- `color.slate-900, color.slate-850, color.slate-800, color.slate-700, color.slate-300, color.slate-50, inverted.surface, inverted.text, inverted.muted, inverted.border` - Dark theme + an inverted (inverse-surface) role in both themes
+  - After: `theme modifier {light,dark} (dark additive); semantic.inverted.* group per theme`
+  - *Affects:* resolver promoted from set to theme modifier; all surface/text/border consumers gain a dark context; new inverted.* tokens for spotlight surfaces. Components unchanged (they inherit via aliases).
+  - *Rationale:* Add light AND dark modes, plus an inverted role that runs opposite to the active theme (dark block in light, light block in dark) for high-emphasis surfaces. Inverted is a role, not a mode.
+  - *Migration:* Set data-theme=light|dark on a root element. Inverted surfaces alias semantic.inverted.*; wrap a region and remap surface/text to the inverted tokens.
+- `color.graphite-50, text.default, chart.grid` - Second neutral ramp (Graphite): a near-neutral content palette split from the tinted Slate surface palette
+  - Before: `single Slate ramp served both surfaces and text; muted text + chart ink carried a teal tint` → After: `Slate = surfaces/borders/elevation; Graphite (C~0.004) = text, icons, chart grid/axis/label, in both themes`
+  - *Affects:* text.*, chart.*, disabled.text, inverted text now alias Graphite. Surfaces/borders unchanged. Component authors still use surface./text. roles; the split is invisible above the semantic tier.
+  - *Rationale:* Surface tint and text legibility pull apart; splitting lets surfaces keep brand identity while text stays crisp and stops tinting adjacent data colours. Also enables white-label re-tinting of Slate without touching text legibility.
+  - *Migration:* Rule: never fill a surface with Graphite, never set body text in Slate. text.* and chart.* resolve to Graphite automatically.
+- `state.hover, state.selected.surface, overlay.scrim, elevation.raised` - Interaction-state, overlay, and elevation roles, plus USAGE.md application guide for downstream consumers
+  - Before: `semantic tier covered colour roles but had only state.disabled; no overlay, elevation, or application guide` → After: `added state.hover/active/selected, overlay.scrim, elevation.raised/overlay/modal (theme-aware), use-for descriptions on surface/border/focus, and USAGE.md mapping roles to components incl. ones not yet built`
+  - *Affects:* any new component can now bind interaction states, scrims, and shadows from semantic roles instead of improvising. Emitter extended for alpha colours (rgb / a) and shadow composites.
+  - *Rationale:* Hand-off readiness: a fresh session must be able to map arbitrary components to tokens. Filling the state/overlay/elevation gaps and documenting the decision procedure removes the guesswork.
+- $themes.json + $metadata.json (Figma / Tokens Studio mirror) and a compiled tokens.css for Base UI consumption
+  - *Affects:* tooling only: Figma export mirror and the CSS custom-property build that Base UI components consume
+  - *Rationale:* Skill mandates $themes.json as an always-on artifact for Figma-bound systems; Base UI consumes CSS variables, not DTCG JSON, so a compiled stylesheet is the consumable output.
+- `brand.logo.from, brand.logo.to, brand.logo.angle` — brand.logo gradient token (Companion brain-mark): from/to brand colours + angle
+  - After: `from=#00c0f2, to=#0db14b, angle=-52.3deg`
+  - *Affects:* AIBadge only (FAB, header, greeting). The logo is now a transparent inline SVG filled via --brand-logo-from/--brand-logo-to; removed the dark-mode white-tile backing + multiply blend that the old opaque JPEG required.
+  - *Rationale:* The shipped logo was an opaque JPEG with a rounded-square tile baked into the pixels — unfixable by CSS and looked like a button-in-a-button in the FAB. Replaced with the official brain-mark SVG, gradient driven by tokens so colour is controlled from the tokenset. Brand-fixed, off-ramp, theme-independent; logos are WCAG-contrast-exempt.
+  - *Migration:* window.CCK.CC_LOGO_SRC (legacy raster) retained for the kit host contract; companion UI uses ccLogoSvg().
+- `type.weight.*, type.leading.*, type.tracking.*, type.size.* (per breakpoint), typography.{display,heading,title,body,label,caption}` — Typographic token layer: 1.2 ratio, 16px body base, responsive by breakpoint
+  - *Affects:* ALL text — no components migrated yet (forge consumption pending); ~81 hardcoded font declarations in src/styles.css will move onto these tokens
+  - *Rationale:* Type was the documented un-tokenized gap. Intake: clinician/healthcare, mixed-age audience, embedded panel -> tight 1.2 productivity scale but 16px accessibility-forward body floor. New 'breakpoint' resolver modifier (desktop/tablet/mobile) drives type size; density stays spacing-only and is pinned to one value on mobile.
+  - *Migration:* None yet at token layer (additive). Next: extend to_css.py to emit breakpoint contexts + typography composites, then replace hardcoded sizes/weights/line-heights/tracking in src/styles.css per TYPOGRAPHY-AUDIT.md.
+- `radius.{xs,sm,md,lg,xl,pill}, space.{1..7}, density.{card-pad,gap,gap-lg,control-px,radius}` — 4px-grid radius + space scales; density spacing/radius aliased to them
+  - Before: `ad-hoc per-density px; radius via styles.css calc aliases` → After: `radius 4/8/12/16/24/pill; space 4·n; density aliases the scales`
+  - *Affects:* all spacing/radius consumers; 4 off-grid values normalized (card-pad 22→20, gap 18→16, gap-lg 18→16 & 26→24); panel radius 18→16 comfortable
+  - *Rationale:* Shared 4px grid so concentric nesting (radius − padding) lands on a step at every density; closes the radius-scale gap.
+  - *Migration:* Component vars keep their names (--density-*, --cc-radius-*) now resolving to the scales; row-py/control-py stay tuned off-grid.
+- `brand.semble` — Third brand: Semble (green primary, additive over Corilus)
+  - *Affects:* New [data-brand=semble] block; resolver brand context; FF brand selector (3-up); all token-consuming components re-skin via var(--brand-*)
+  - *Rationale:* Demonstrate the multi-brand pattern with a 3rd tenant. Semble's green primary maps to the existing mint ramp (hue 173) — no new primitive needed. Selected-row wash follows via concrete mint-hued oklch tint.
+  - *Migration:* Brand files are additive; corilus/careconnect unchanged. Colours eyeballed from a screenshot — replace with Semble's official palette. to_css.py emits brand blocks per-brand (added a semble line); FF selector + brandOpt i18n extended.
+- `color.sage, color.taupe, brand.semble.fill, brand.myneva.fill` — Brand-tinted surface neutrals: surfaces now switch hue with brand (sage for Semble, taupe for myNeva; slate stays Corilus)
+  - Before: `all brands' brand.fill.* → color.slate (cool/teal hue 219)` → After: `Semble fill → color.sage (hue 169, faint green); myNeva fill → color.taupe (hue 39, faint warm); Corilus keeps slate. Same L+chroma as slate (C 0.004–0.012, very subtle); only hue differs.`
+  - *Affects:* All surfaces (panel/body/cards/borders via surface.* ← brand.neutral.* ← brand.fill.*) now carry a faint brand-hued tint per brand. Corilus unchanged. graphite (ink) + the white assistant bubble unaffected.
+  - *Rationale:* User wanted the slate surface tint (which matched Corilus teal) to follow the active brand. slate is shared, so added sibling neutral ramps per brand rather than modifying slate.
+  - *Migration:* Additive: new color.sage/color.taupe primitives; semble/myneva gain a brand.fill override. No change to Corilus or shared ramps.
+- `brand.property, color.property` — Patient-property tone ramp at brand + semantic tier (11 properties × 4 brand steps; tint/solid/on semantic with theme-aware flip)
+  - Before: `(none — sprout-cards aliased --data-series-* and --status-*-solid as identity colours)` → After: `brand.property.{heart,breath,oxygen,temperature,pressure,body,lab,identity,condition,allergy,medication}.{100,300,700,900} aliasing existing primitives + semantic color.property.{name}.{tint,solid,on} with light/dark deltas`
+  - *Affects:* Sprout cards (immediate consumer); any future UI surfacing a clinical property (lists, badges, sidebar entries, chat avatars when a thread is property-bound). No existing component is touched — additive.
+  - *Rationale:* Property identity colour was conflated with chart data-series colour. A heart-rate card is always red-toned regardless of which series is slot 1 in any chart. Splitting unlocks correct identity without breaking chart palettes.
+  - *Migration:* Sprout-cards stylesheet to replace .cc-tone--heart { --card-tone: var(--data-series-1); } with var(--property-heart-solid). No other consumers yet.
+- Semantic foundations: rule thicknesses, touch-target dimensions, tone-mix ratios, motion durations + easings
+  - Before: `(none — components inlined literals: stripes 3px, stepper buttons 48/40px, color-mix tone tint 12%/22%, durations 0.25s/.14s/1.6s)` → After: `semantic.dimension.rule.{hair,thin,regular,thick} (1/2/3/4 px); semantic.dimension.touch-target.{regular,compact,small} (48/40/32 px); semantic.color.tone-mix.{tint,tint-strong} (0.12/0.22); semantic.motion.duration.{instant,fast,base,slow,crawl} (100/180/260/400/600 ms); semantic.motion.easing.{standard,emphasized,decelerate,accelerate,linear}; raw primitives at primitives.motion.*`
+  - *Affects:* Sprout cards (immediate); any component that draws accent rules, focus outlines, dividers; any tappable affordance (stepper, drag handle, segmented control); any component that wants a tone-derived tint via color-mix; the SproutCard wrapper animation work that blocked on motion tokens.
+  - *Rationale:* The Sprout-cards iteration surfaced these as gaps but each is reusable system-wide. Lifting them to the semantic tier (with primitives.motion for raw values) means every component can adopt without re-inventing.
+  - *Migration:* Components sweep CSS literals to the new vars. to_css.py extended to walk a cubicBezier list correctly (was bombing on the new motion file).
+- `pill` — Pill geometry (component tier)
+  - Before: `(literal padding/dot sizes per status pill / trend chip / suggestion chip)` → After: `pill.padding-block (3px), pill.padding-inline (10px), .padding-{block,inline}-dense (2/8px), pill.dot-size (6px), pill.gap (6px)`
+  - *Affects:* Status pills, suggestion chips, trend chips, count badges, recent-search chips, edit-chip backings — every pill-shaped component shares one geometry source.
+  - *Rationale:* Multiple pill-shaped components existed across the system, each with independent literals. Sharing geometry keeps them visually coherent and lets density adjust them centrally if needed.
+  - *Migration:* Component CSS swaps literals to var(--pill-*).
+
+### Changed
+- `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Warmed and lightened the six neutral primitives (cool greys -> warm greige, hue 75, lifted lightness)
+  - Before: `cool neutrals L .53-.96, near-zero chroma, hue 85-93/none (e.g. panel #d8d6d0, muted #6d6e71)` → After: `warm neutrals hue 75, low chroma, lighter L (panel #e5e1dc, muted #68625b, paper #f8f6f4)`
+  - *Affects:* all neutral consumers: surface.page/panel/raised/sunken, text.muted, border.subtle, state.disabled.*; every card, rail, topbar, row, metric track + button disabled/secondary text. Teal action + 4 status colours unchanged.
+  - *Rationale:* Make the canvas feel softer and lighter; button fills left on deep teal to preserve white-text AA.
+  - *Migration:* None; values change at the primitive tier and cascade through aliases. Muted text re-checked at >=4.5:1 on the lighter panels.
+- `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Replaced warm greige neutrals with cool teal-tinted neutrals (hue 219) harmonised to the primary; page pushed to near-white
+  - Before: `warm greige hue 75 (panel #e5e1dc, muted #68625b, page #f8f6f4)` → After: `cool slate hue 219, low chroma, lighter (panel #e9eeef, muted #5a6569, page #f8fbfb near-white)`
+  - *Affects:* all surfaces/border/muted text + disabled; whole canvas. Teal action + status unchanged.
+  - *Rationale:* Beige (hue ~75) is near-opposite the teal primary (hue ~219), so the canvas clashed. Tinting neutrals toward the brand hue (analogous temperature) harmonises the palette while keeping it light.
+  - *Migration:* None; primitive-tier change cascades via aliases. Muted text re-verified >=4.5:1 (now 5.1-5.8).
+- Reintroduced mint as the inverted-surface accent (inverted.accent), reserved exclusively for inverted contexts
+  - Before: `inverted.accent = teal (brand.primary), too dark on the slate inverted block` → After: `inverted.accent = mint (brand.secondary) + inverted.accent-on = ink-teal (7.5:1)`
+  - *Affects:* inverted surfaces only: buttons, switch-on, highlights inside an inverted region adopt mint. Non-inverted UI unchanged; button.* tokens still never reference mint directly (mint reaches buttons only via the inverted scope remap).
+  - *Rationale:* Deep teal disappears on the dark inverted block; mint is bright and reads at 8.8:1 there and 7.5:1 as a fill with dark text. Gives mint a single, well-defined job instead of being unused.
+  - *Migration:* Inverted regions remap action.solid/on/accent to inverted.accent/accent-on; mint must always take dark text (white fails at 2.2:1).
+- `status.warning, status.error, data.1, type.display, space.card` - Split colour into 4 true semantics (info/success/warning/error) + a 6-colour categorical data palette; added typography families and a 3-mode density system
+  - Before: `status: info/success/caution/alert reusing brand secondaries; monospace type; single density` → After: `semantic: info/success/warning(amber #f4af41)/error(red #ce222c, white text); data.1-6 categorical (teal/lime/coral/indigo/violet/magenta); type.display Space Grotesk + type.body Inter; density modifier compact/cozy/comfortable scaling space.* + text.base`
+  - *Affects:* status chips/tasks/spotlight (now true semantics); charts use data.*; all components inherit type + spacing; resolver gains a density modifier orthogonal to theme.
+  - *Rationale:* Coral was never a real error red; promoted a proper red and amber, separated decorative data colour from semantic state per Carbon/SAP guidance. Density + non-mono type per request.
+  - *Migration:* status.caution->warning, status.alert->error. Set data-density=compact|cozy|comfortable. Components read space.* and text.base via vars.
+- `status.warning, status.error, data.series-1, density.card-pad, font.display` - Reworked semantics to 4 roles (info/success/warning/error) with a true red + amber; added a 6-hue data palette; added fontFamily + a 3-mode density tier
+  - Before: `status: info/success/caution(lime)/alert(coral), surface+on; monospace fonts; single density` → After: `status: info/success/warning(amber)/error(red 27deg), tint+solid+on; data.series-1..6 categorical; font.display=Space Grotesk, font.ui=Inter; density modifier compact/comfortable/spacious`
+  - *Affects:* all status consumers (chips, meters, semantic buttons) renamed+recoloured; new data viz palette; every spacing/padding/radius/control now density-driven; type swapped off monospace.
+  - *Rationale:* Coral read as pink not error and lime as caution was off; proper hues fix legibility. Density modifier lets the whole UI switch compact/comfortable/spacious. Moving off monospace per request.
+  - *Migration:* Rename caution->warning, alert->error. Chips use status.X.tint + status.X.solid; solid buttons use solid + on(white). Set data-density on root. Swap font tokens.
+- `color.error-solid` - Replaced muddy brick error red with a vivid clinical alarm red
+  - Before: `#8d3f39 (L.469 C.107 H27) - read as brown, not an alarm` → After: `#c0271f (L.526 C.190 H29) - true red, 5.9:1 on white, 4.8:1 on the error tint`
+  - *Affects:* status.error in both soft and bold form; spotlight urgent indicator
+  - *Rationale:* Per IEC 60601-1 indicator-light convention red must signal immediate response; the brick failed to read as urgent. Higher chroma at H29 reads unmistakably as alarm red while clearing AA.
+- `color.*, brand.*` — Primitive colour layer rebuilt as 13 systematic OKLCH ramps (build_ramp.py); neutral palettes collapsed from 6 to 2
+  - Before: `ad-hoc single-step colours (teal, teal-deep, mint, sky…) + 6 overlapping neutral palettes (ink, white, paper, aluminium/-hi/-lo, grey/-light, slate-900..50, graphite-50..900) + viz-1..6 + *-tint/-solid + ink-teal/olive/maroon` → After: `11 chromatic ramps (teal/mint/sky/green/lime/coral/amber/red/indigo/violet/magenta, steps 50–950) + 2 neutral ramps (graphite achromatic 0–1000 = ink; slate cool 50–950 = surfaces) + color.alpha.* overlays + transparent`
+  - *Affects:* ALL families — every brand/semantic alias repointed to a ramp step. Surfaces→slate, ink/text→graphite, status tints/solids→hue.100/.700, data series→hue.500. Components (button) unchanged: they alias semantic roles, whose NAMES are preserved, so the companion bundle needs zero edits.
+  - *Rationale:* User audit: primitive layer had 6 inconsistently-named neutral palettes (graphite was the only well-formed ramp) and chromatic colours were single steps, not complete palettes. Consolidated to 2 neutrals + per-hue full ramps with homogeneous lightness; viz-*/data/*-solid/-tint/ink-* duplicates folded onto the canonical hue ramps.
+  - *Migration:* Primitive var names change (--color-aluminium-hi → --color-slate-50 etc.); consumers that referenced primitives directly must repoint. Consumers using semantic vars (--surface-*, --text-*, --action-*, --status-*) need NO change. Dark-mode surfaces shift slightly lighter (old slate-900 #080f11 → slate.950 #1a2022) because the ramp is now evenly distributed; add slate.975/1000 upstream if deeper dark surfaces are required.
+- `color.slate.25, brand.neutral.panel*, border.subtle, inverted.accent, inverted.accent-on` — Lighten app surfaces (new slate.25; surface roles lifted one rung) and set the inverse-surface accent to Corilus lime
+  - Before: `raised=slate.50, panel=slate.100, sunken=slate.200, border=panel-sunken; inverted.accent=mint, accent-on=teal.950` → After: `added slate.25 (#f8fcfd); raised=slate.25, panel=slate.50, sunken=slate.100; border.subtle decoupled to slate.200; inverted.accent=lime.400(light)/lime.700(dark), accent-on=lime.950(light)/graphite.0(dark)`
+  - *Affects:* ALL surfaces lighten app-wide (every prototype/dashboard consuming surface.*); inverse-surface family (spotlight blocks). Companion: brighter panel + lime inverse hero. Components unchanged (semantic names preserved).
+  - *Rationale:* User: lighter/brighter app feel; and an inverse theme whose accent maps to Corilus lime (#99cc5f, secondary palette) — distinct from success=green. WCAG audited: lime.400 on dark inverted 7.52, lime.700 light-block white-on 6.61.
+  - *Migration:* None for token consumers (surface.* names unchanged, values lighter). Borders no longer follow surface.sunken. Use .inverted scope to opt a region into the inverse palette.
+- `typography.{display,heading.lg,heading.md}, typography.title.{md,sm}, typography.label.lg, typography.overline, typography.micro` — Headings → semibold; added title.sm, label.lg, overline, micro roles
+  - Before: `headings bold; 12 roles` → After: `headings semibold; 16 roles`
+  - *Affects:* all heading/title elements go bold→semibold; new roles absorb the 30 custom one-offs
+  - *Rationale:* As-built type-map revealed 30 elements off-grid clustering into missing roles (overline, small title, large label, micro); Frank chose semibold heading voice.
+  - *Migration:* styles.css rebinds each element to a role longhand bundle.
+- `font.heading, font.body` — Brand font: heading + body → Corporate S Pro (self-hosted woff2)
+  - Before: `Space Grotesk / Inter (not self-hosted)` → After: `Corporate S Pro (both); 4 real weights embedded`
+  - *Affects:* all typography; both families collapse to the brand typeface; renders host-independently
+  - *Rationale:* Swapped to the Corilus brand typeface; quality-first — real 400/500/600/700 woff2, no faux weights.
+  - *Migration:* fonts/*.woff2 + build/gen-fonts.mjs embed base64 @font-face; index.jsx injects it; tokens repointed.
+- `brand.*, font.*, brand.radius.*` — Multi-brand refactor — brand tier is now the single chokepoint for colour, radius and font; brand becomes a runtime modifier; CareConnect demo brand added
+  - Before: `semantic referenced raw {color.*} ramp steps; brand was a fixed set; font in primitives/foundations; radius owned by density` → After: `semantic references only {brand.*} for hue-bearing colour; brand is a modifier (corilus default, careconnect additive); font.* moved into the brand layer; density radius references {brand.radius.compact|base|spacious}`
+  - *Affects:* ALL families (every semantic colour/radius/font token re-points through brand); app CSS var names (--action-*, --surface-*, --text-*, --font-*, --density-radius, --brand-*) unchanged so runtime bindings are preserved
+  - *Rationale:* Enable theme/brand switching: a brand must be able to swap colour, border radius and font; previous structure leaked through the brand tier so swapping it changed almost nothing
+  - *Migration:* Set [data-brand] on the root element (default corilus) alongside [data-theme]/[data-density]. To add a brand: drop brand/{name}.tokens.json (additive over corilus), add a resolver context + a [data-brand] block in to_css.py. Self-hosted fonts per brand must be bundled (build/gen-fonts.mjs). Brand-tinted selected-state alpha needs per-hue alpha primitives (careconnect reuses teal — documented).
+- Semble brand radii made deliberately harsh (square corners) for demo; added radius.none (0px) primitive
+  - Before: `compact/base/spacious = sm/md/lg (8/12/16px)` → After: `compact/base/spacious = none/none/xs (0/0/4px)`
+  - *Affects:* Only [data-brand=semble]: --density-radius→0 cascades to --cc-radius-panel(4px)/-sm(0) → square buttons, inputs, cards, panel; pills/avatars stay round. Corilus/CareConnect unaffected.
+  - *Rationale:* Demo the brand radius axis at its harsh extreme.
+  - *Migration:* Additive radius.none primitive; no impact on other brands.
+- `brand.myneva, brand.careconnect, color.orange` — Replaced CareConnect demo brand with myNeva (orange); added swappable per-brand logo assets + orange primitive ramp
+  - Before: `brands: corilus, careconnect (indigo), semble` → After: `brands: corilus, semble, myneva (orange, hue 39 — new ramp). Logo is now a per-brand SVG asset (lib/logo.js BRAND_LOGOS) selected via BrandContext(flags.brand); brands without a custom mark fall back to the recoloured brain-mark.`
+  - *Affects:* Removed [data-brand=careconnect]; added [data-brand=myneva] + color.orange ramp. AIBadge renders the brand's actual logo. FF brand selector + brandOpt i18n. myNeva logo carries exact #ED6739; UI primary = accessible orange.600.
+  - *Rationale:* User: swap actual logo per brand (not just recolour); replace CareConnect with myNeva. Orange hue 39 had no neighbour ramp (coral15/red25/amber75) so a new ramp was built for step-parity + WCAG.
+  - *Migration:* CareConnect fully removed (file, resolver context, to_css block, FF option, i18n). data-brand=careconnect no longer resolves.
+- `color.orange` — Rebuilt orange ramp with max-chroma strategy so myNeva reads as a vivid bright orange (near #ED6739)
+  - Before: `pinned chroma (C~0.13); primary orange.600 #b7593a (muted terracotta)` → After: `max/gamut chroma; primary orange.600 #cc4300 (vivid, white-text AA 4.81:1). Family: 400 #ff8359, 500 #f15100, 700 #9c3100.`
+  - *Affects:* Only myNeva ([data-brand=myneva]) — the only consumer of color.orange. Vivid orange across primary, accents, states.
+  - *Rationale:* myNeva brand orange is C~0.177; the pinned homogeneous ramp capped it muted. Exact #ED6739 (L0.67) fails white-text AA, so the AA-safe vivid primary settles at #cc4300; the exact tone stays in the logo + non-text accents. Orange is now intentionally non-homogeneous with other hues (brand exception, documented).
+  - *Migration:* Only orange step hexes changed; structure/steps unchanged. No other brand affected.
+- `brand.semble, brand.myneva, color.orange` — Brand-exact colours for Semble & myNeva (off-ramp concrete) with dark on-text for AA; white inverted; Semble logo asset; per-brand fonts (DM Sans / Lato); removed orphan orange ramp
+  - *Affects:* Semble primary=#38D2A6 + accent=#FFB03D; myNeva primary=#ED6739; both: on-light→dark (AA 5.6–9.8:1), secondary→white. Semble logo asset added. Fonts: semble DM Sans, myneva Lato (base64 in gen-fonts). Corilus + shared mint/amber UNTOUCHED. orange ramp removed (orphan).
+  - *Rationale:* User: map high-profile components to the real brand swatches. The swatches are light (fail white-text AA), so brand-exact fills carry dark text. Could not rebuild mint/amber (shared with Corilus) → off-ramp concrete per brand.
+  - *Migration:* data-brand=careconnect already gone. orange ramp removed (no consumers). Fonts add ~0.5MB to the bundle.
+- `color.sage, color.taupe` — Softened sage/taupe surface tints to 0.5x slate chroma (less colour, less visible)
+  - Before: `sage/taupe chroma = slate's (0.004-0.012)` → After: `sage/taupe chroma = 0.5x slate's; green/warm read more saturated than blue at equal chroma, so halving matches slate's perceived subtlety. Lightness + Corilus slate unchanged.`
+  - *Affects:* Semble/myNeva surfaces now barely-tinted (near-neutral with a whisper of hue). Corilus slate unchanged.
+  - *Rationale:* User: less colour, less visible. Considered an extra-light '10' step but that's a lightness change, not chroma; reduced chroma instead (no ramp-structure change).
+  - *Migration:* Values-only change to the (new this session) sage/taupe ramps.
+- `color.{red,sky,green,lime,coral,amber,indigo,violet,magenta,mint,rust}, brand.property, color.property, component.card, component.icon-pill, component.sparkline, component.canvas` — Tier-3 vibrancy pass: max-chroma property ramps, accent semantic role, asymmetric tab accent rule, paper-grain canvas
+  - Before: `property tones at .700 (text-contrast step, desaturated); icon-pill at 12% color-mix; full-width 3px accent stripe; uppercase wide-tracked labels; plain canvas` → After: `property tones use .500 accent (vivid decorative) + retain .700 for text-contrast; icon-pill backed by .200 pre-balanced tint; 4px accent stripe as asymmetric paper-file-tab (66% width, gradient taper); sentence-case bold labels; SVG fractal-noise canvas grain at 3% opacity`
+  - *Affects:* Sprout-cards system. Also: status/data/chart hues that derive from the rebuilt primitives (red, amber, green, sky, indigo, violet, magenta, mint, lime, coral) now read more vivid — generally positive in the Clinical Almanac direction. brand.primary (teal) preserved unchanged.
+  - *Rationale:* User complaint: cards read bland and dull. frontend-design skill audit prescribed Clinical Almanac aesthetic. .700-on-white was the dullness root; .500 accent decorative + .700 text-contrast preserves WCAG AA while shipping vibrancy. The paper-tab gesture and italic margin notes give a domain-specific personality clinicians read fluently.
+  - *Migration:* Sprout-cards CSS auto-updated. Components outside the sprout-cards system that consume color.{red,sky,etc.}.500 will read more vivid — review status/data palette usage if specific saturation matters. brand.property.allergy moved magenta → rust (hue 35°) — any UI referencing it gets a warm-orange instead of pink-purple.
+
+### Removed
+- `type.display, type.body` - Orphaned, duplicate primitives/typography.tokens.json
+  - Before: `type.display / type.body (Space Grotesk / Inter), unregistered in the resolver and unreferenced` → After: `removed; font families live solely in foundations.tokens.json as font.heading / font.body`
+  - *Affects:* none at runtime: the file was orphaned (not in resolver, no consumers). Removes a stale second source of truth for fonts.
+  - *Rationale:* Duplicate font definition left over from the display->heading rename. Two sources of truth for the same value is a drift risk.
+- `type.display, type.body` - Stale duplicate primitives/typography.tokens.json (font families already live in foundations)
+  - *Affects:* none: file was an unwired orphan duplicating font.heading/body
+  - *Rationale:* Two competing definitions of the type families (type.* vs font.*) is a drift hazard; foundations.font is the single source.
+
+### Fixed
+- `semantic.dark.text.muted, semantic.dark.text.faint, semantic.dark.action.accent, semantic.dark.data.series, semantic.dark.border.subtle, semantic.dark.chart` — Dark theme accessibility: repoint dark semantic foregrounds to lighter ramp steps so they meet WCAG 2.2 AA on dark surfaces
+  - Before: `muted=graphite.500(2.86:1), faint=graphite.600(2.12:1), accent=teal.600(2.2:1), series.*=*.500(~2.8:1), border=slate.700(1.37:1), chart grid/axis=graphite.950/900(invisible)` → After: `muted=graphite.300(5.48:1), faint=graphite.400(4.08:1), accent=teal.400(4.23:1), series.*=*.400(~3.9:1), border=slate.600(2.13:1), chart light-on-dark`
+  - *Affects:* Dark theme ONLY. Cascade: all secondary text + functional icon-buttons (text.muted/faint); button/control emphasis, focus, selected, FAB ring, chevrons, links (action.accent); agent row-tone icons + charts (data.series); cards/inputs/dividers/tiles/chips (border.subtle); charts (chart.*). Light theme untouched; semantic names unchanged so no component edits.
+  - *Rationale:* Dark mode pulled mid-ramp (500/600/700) steps for foregrounds, failing AA on the slate.800 panel surface (icons/text 2-2.9:1). On dark, foregrounds must come from the light end of the ramps. Steps chosen against a measured WCAG 2.2 audit vs slate.950/900/800.
+  - *Migration:* None — alias-layer values only; rebuild dist/corilus-companion.tokens.css via npm run tokens.
+- `semantic.dark.status` — Dark-mode status family (success/info/warning/error): dark tint + light foreground
+  - Before: `inherited light: tint=*.100 (glaring light chips), solid=*.700 (illegible fg, e.g. cc-saved ~2.5:1)` → After: `tint=*.900, solid=*.300 (5.3-5.7:1 panel / ~7.4:1 chip), on=graphite.950`
+  - *Affects:* cc-saved, cc-aimarker(+dot), cc-banner--info/success, cc-badge--success; any status chip/banner/badge in dark
+  - *Rationale:* Status was never overridden in dark so it inherited light values; success/info colours failed or glared. Soft form flipped to dark-tint+light-fg per the standard dark pattern; bold form (unused) kept consistent via on=graphite.950.
+- `to_css.py render(), brand.tint.soft, brand.tint.strong, color.alpha.teal-12, color.alpha.teal-24` — Brand-following selected-state tint now follows each brand's primary hue; OKLCH alpha no longer dropped by the CSS generator
+  - Before: `brand.tint.* -> {color.alpha.teal-12/-24} (sRGB, hue 219) in BOTH brands; CareConnect selected wash rendered teal while its primary is indigo. to_css.py silently dropped alpha on OKLCH colours (fell through to opaque hex).` → After: `to_css.py emits oklch(L C H / a) for translucent OKLCH. brand.tint.* are concrete OKLCH-with-alpha: Corilus oklch(0.5792 0.1048 219.1 / .12|.24) hex #0088a4 (pixel-identical to before; representation rgb->oklch); CareConnect oklch(0.5792 0.1048 267.0 / .12|.24) hex #5e77b8 (follows indigo primary). color.alpha.teal-12/-24 primitives removed (no remaining refs).`
+  - *Affects:* semantic state.selected.surface (light->brand.tint.soft, dark->brand.tint.strong): selected rows/tabs/menu items across nav, data tables, list/menu families. Corilus unchanged visually; CareConnect selected wash changes teal->indigo.
+  - *Rationale:* The selected wash must track each brand's primary hue. Root cause was to_css.py dropping OKLCH alpha, which forced the workaround of authoring the tint in sRGB teal — a hue that did not follow CareConnect's indigo primary.
+  - *Migration:* None for consumers (same var names). CareConnect selected tint now correctly renders indigo. Generators must support oklch(L C H / a); validate with --generator style-dictionary (capable). DRY future option (property-level $ref auto-following brand.primary) documented in careconnect tint $description, deferred until to_css.py/Style Dictionary resolve property-level JSON-pointer refs.
+

@@ -1,0 +1,17 @@
+{
+  "type": {
+    "size": {
+      "$type": "dimension",
+      "$description": "Type scale — TABLET. Body holds at 16px (accessibility floor); the large end eases down from desktop to suit narrower viewports.",
+      "2xs":  { "$value": { "value": 9,  "unit": "px" } },
+      "xs":   { "$value": { "value": 11, "unit": "px" } },
+      "sm":   { "$value": { "value": 13, "unit": "px" } },
+      "base": { "$value": { "value": 16, "unit": "px" } },
+      "lg":   { "$value": { "value": 18, "unit": "px" } },
+      "xl":   { "$value": { "value": 21, "unit": "px" } },
+      "2xl":  { "$value": { "value": 26, "unit": "px" } },
+      "3xl":  { "$value": { "value": 30, "unit": "px" } },
+      "4xl":  { "$value": { "value": 36, "unit": "px" } }
+    }
+  }
+}

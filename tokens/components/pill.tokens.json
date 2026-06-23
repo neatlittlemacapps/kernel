@@ -1,0 +1,76 @@
+{
+  "pill": {
+    "$type": "dimension",
+    "$description": "Pill geometry \u2014 consumed by status pills, follow-up question chips, trend chips, suggestion chips, count badges, recent-search chips. Kept at the component tier (not promoted to semantic) because the values are pill-shaped-thing geometry, not a general design intent. The point is shared geometry across all pill-shaped components, not card-specific styling.",
+    "padding-block": {
+      "$value": {
+        "value": 3,
+        "unit": "px"
+      }
+    },
+    "padding-inline": {
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      }
+    },
+    "padding-block-dense": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "Tighter variant for dense rows or in-card adornments."
+    },
+    "padding-inline-dense": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "dot-size": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$description": "Status dot inside a pill (success/warning/error/info indicator)."
+    },
+    "gap": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$description": "Inner gap (dot \u2194 label, icon \u2194 label)."
+    }
+  },
+  "icon-pill": {
+    "$type": "dimension",
+    "$description": "Rounded-square tone-tinted glyph holder. Used by sprout-cards, any future identity-bearing tag. Background is tone-derived (via --card-tone-tint-strong at runtime), so only geometry lives here.",
+    "radius": {
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      },
+      "$description": "Slightly softer than the chip pill \u2014 reads as a 'stamp', not a square."
+    },
+    "size": {
+      "$value": {
+        "value": 36,
+        "unit": "px"
+      }
+    },
+    "size-compact": {
+      "$value": {
+        "value": 28,
+        "unit": "px"
+      },
+      "$description": "Used at Seed stage and at narrow container-query widths."
+    },
+    "glyph-stroke": {
+      "$value": {
+        "value": 1.75,
+        "unit": "px"
+      },
+      "$description": "Slightly heavier than 1px so glyphs read on phones."
+    }
+  }
+}

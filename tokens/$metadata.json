@@ -1,0 +1,27 @@
+{
+  "tokenSetOrder": [
+    "primitives/colors",
+    "primitives/typography",
+    "primitives/radius",
+    "primitives/space",
+    "primitives/motion",
+    "brand/corilus",
+    "brand/semble",
+    "brand/myneva",
+    "semantic/light",
+    "semantic/dark",
+    "responsive/type-desktop",
+    "responsive/type-tablet",
+    "responsive/type-mobile",
+    "responsive/compact",
+    "responsive/comfortable",
+    "responsive/spacious",
+    "semantic/typography",
+    "semantic/foundations",
+    "components/button",
+    "components/pill",
+    "components/card",
+    "components/sparkline",
+    "components/canvas"
+  ]
+}

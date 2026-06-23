@@ -1,0 +1,32 @@
+{
+  "typography": {
+    "$type": "typography",
+    "$description": "Semantic text roles. fontSize references type.size.* which the breakpoint modifier swaps per device — so one role definition scales responsively. Headings are semibold (the companion's heading voice). Letter-spacing is NOT in the composite (DTCG limitation): apply type.tracking.* at the CSS layer (overline=wide+uppercase, display=tight).",
+    "display": { "$value": { "fontFamily": "{font.heading}", "fontSize": "{type.size.4xl}", "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.none}" } },
+    "heading": {
+      "lg": { "$value": { "fontFamily": "{font.heading}", "fontSize": "{type.size.2xl}", "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.tight}" } },
+      "md": { "$value": { "fontFamily": "{font.heading}", "fontSize": "{type.size.xl}",  "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.tight}" } },
+      "sm": { "$value": { "fontFamily": "{font.heading}", "fontSize": "{type.size.lg}",  "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.snug}" } }
+    },
+    "title": {
+      "md": { "$value": { "fontFamily": "{font.heading}", "fontSize": "{type.size.base}", "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.snug}" } },
+      "sm": { "$value": { "fontFamily": "{font.heading}", "fontSize": "{type.size.sm}",   "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.snug}" } }
+    },
+    "body": {
+      "lg": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.lg}",   "fontWeight": "{type.weight.regular}", "lineHeight": "{type.leading.normal}" } },
+      "md": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.base}", "fontWeight": "{type.weight.regular}", "lineHeight": "{type.leading.normal}" } },
+      "sm": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.sm}",   "fontWeight": "{type.weight.regular}", "lineHeight": "{type.leading.normal}" } }
+    },
+    "label": {
+      "lg": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.base}", "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.snug}" } },
+      "md": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.sm}",   "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.snug}" } },
+      "sm": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.xs}",   "fontWeight": "{type.weight.semibold}", "lineHeight": "{type.leading.tight}" } }
+    },
+    "overline": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.xs}", "fontWeight": "{type.weight.bold}", "lineHeight": "{type.leading.tight}" } },
+    "caption": {
+      "md": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.xs}",  "fontWeight": "{type.weight.regular}", "lineHeight": "{type.leading.snug}" } },
+      "sm": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.2xs}", "fontWeight": "{type.weight.medium}",  "lineHeight": "{type.leading.snug}" } }
+    },
+    "micro": { "$value": { "fontFamily": "{font.body}", "fontSize": "{type.size.2xs}", "fontWeight": "{type.weight.bold}", "lineHeight": "{type.leading.none}" } }
+  }
+}

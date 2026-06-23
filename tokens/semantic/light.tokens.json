@@ -1,0 +1,531 @@
+{
+  "$type": "color",
+  "$description": "Semantic intent layer, light theme (the :root baseline). References ONLY the brand tier for hue-bearing colour, so swapping the brand modifier re-skins everything. The only raw {color.*} left here are hueless structural physics \u2014 black/white interaction overlays, the scrim, shadow ink and transparent \u2014 which are not brand identity.",
+  "action": {
+    "$description": "Action family. The only emphasis colours a button or control may use on normal surfaces.",
+    "solid": {
+      "$value": "{brand.primary-deep}"
+    },
+    "accent": {
+      "$value": "{brand.primary}"
+    },
+    "on": {
+      "$value": "{brand.neutral.on-light}"
+    },
+    "quiet": {
+      "$value": "{brand.neutral.ink}"
+    }
+  },
+  "ambient": {
+    "$description": "The console's 'alive' indicator only. In app UI the brand secondary appears solely via inverted.accent.",
+    "alive": {
+      "$value": "{brand.secondary}"
+    }
+  },
+  "inverted": {
+    "$description": "Inverse surface that runs opposite to the theme. Light theme = dark block; dark theme flips to light. Accent is the brand accent hue, reserved to inverted surfaces.",
+    "surface": {
+      "$value": "{brand.fill.950}"
+    },
+    "raised": {
+      "$value": "{brand.fill.800}"
+    },
+    "text": {
+      "$value": "{brand.ink.100}"
+    },
+    "muted": {
+      "$value": "{brand.ink.500}"
+    },
+    "border": {
+      "$value": "{brand.fill.700}"
+    },
+    "accent": {
+      "$value": "{brand.accent.400}"
+    },
+    "accent-on": {
+      "$value": "{brand.accent.950}"
+    }
+  },
+  "status": {
+    "$description": "Four semantic roles. Each has a soft form (tint background + solid text/icon) and a bold form (solid fill + white on-colour). Hues owned by brand.status.*.",
+    "info": {
+      "tint": {
+        "$value": "{brand.status.info.100}"
+      },
+      "solid": {
+        "$value": "{brand.status.info.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "success": {
+      "tint": {
+        "$value": "{brand.status.success.100}"
+      },
+      "solid": {
+        "$value": "{brand.status.success.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "warning": {
+      "tint": {
+        "$value": "{brand.status.warning.100}"
+      },
+      "solid": {
+        "$value": "{brand.status.warning.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "error": {
+      "tint": {
+        "$value": "{brand.status.error.100}"
+      },
+      "solid": {
+        "$value": "{brand.status.error.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    }
+  },
+  "data": {
+    "$description": "Categorical data-visualisation palette. Six distinct hues with NO semantic meaning; for charts and series only. Hues owned by brand.data.*.",
+    "series-1": {
+      "$value": "{brand.data.1}"
+    },
+    "series-2": {
+      "$value": "{brand.data.2}"
+    },
+    "series-3": {
+      "$value": "{brand.data.3}"
+    },
+    "series-4": {
+      "$value": "{brand.data.4}"
+    },
+    "series-5": {
+      "$value": "{brand.data.5}"
+    },
+    "series-6": {
+      "$value": "{brand.data.6}"
+    }
+  },
+  "surface": {
+    "$description": "Background fills, furthest back to nearest front. page = app canvas; panel = a section/card; raised = a card lifted above its panel, or a menu/popover/toast body; sunken = an inset well, input field, or track; none = transparent.",
+    "page": {
+      "$value": "{brand.neutral.paper}"
+    },
+    "panel": {
+      "$value": "{brand.neutral.panel}"
+    },
+    "raised": {
+      "$value": "{brand.neutral.panel-raised}"
+    },
+    "sunken": {
+      "$value": "{brand.neutral.panel-sunken}"
+    },
+    "none": {
+      "$value": "{color.transparent}"
+    }
+  },
+  "text": {
+    "$description": "Content neutral (brand ink scale): text + icons. Near-zero chroma so it stays crisp and never tints adjacent data colours.",
+    "default": {
+      "$value": "{brand.ink.950}"
+    },
+    "muted": {
+      "$value": "{brand.ink.700}"
+    },
+    "faint": {
+      "$value": "{brand.ink.500}",
+      "$description": "Tertiary / placeholder. Decorative; not for body copy."
+    },
+    "on-accent": {
+      "$value": "{brand.neutral.on-light}"
+    }
+  },
+  "chart": {
+    "$description": "Data-visualisation ink (brand ink scale). Grid/axis/label are neutral so the categorical data palette reads true against them.",
+    "grid": {
+      "$value": "{brand.ink.400}"
+    },
+    "axis": {
+      "$value": "{brand.ink.500}"
+    },
+    "label": {
+      "$value": "{brand.ink.700}"
+    }
+  },
+  "border": {
+    "$description": "Hairline structure. Dividers, card and panel outlines, input borders, table rules. Not for chart gridlines (use chart.grid).",
+    "subtle": {
+      "$value": "{brand.fill.200}"
+    }
+  },
+  "focus": {
+    "$description": "Keyboard focus indication. Apply as a 2-3px outline with offset on any focusable element.",
+    "ring": {
+      "$value": "{brand.neutral.ink}"
+    }
+  },
+  "state": {
+    "$description": "Interaction states. hover/active are hueless translucent overlays meant to composite ON TOP of any surface (kept in primitives). selected marks the chosen row/tab/item with a brand-tinted overlay. disabled dims a control.",
+    "hover": {
+      "$value": "{color.alpha.black-06}",
+      "$description": "Overlay layered over a surface on hover."
+    },
+    "active": {
+      "$value": "{color.alpha.black-12}",
+      "$description": "Overlay layered over a surface while pressed/active."
+    },
+    "selected": {
+      "surface": {
+        "$value": "{brand.tint.soft}",
+        "$description": "Background of a selected row, tab, menu item (brand-tinted)."
+      },
+      "text": {
+        "$value": "{action.solid}",
+        "$description": "Text/icon colour when selected."
+      }
+    },
+    "disabled": {
+      "surface": {
+        "$value": "{brand.neutral.muted-light}"
+      },
+      "text": {
+        "$value": "{brand.ink.500}"
+      }
+    }
+  },
+  "overlay": {
+    "$description": "Full-viewport layers.",
+    "scrim": {
+      "$value": "{color.alpha.black-55}",
+      "$description": "Dimming backdrop behind modals, dialogs, drawers (hueless structural)."
+    }
+  },
+  "elevation": {
+    "$type": "shadow",
+    "$description": "Box-shadow levels. raised = cards and raised surfaces; overlay = menus, popovers, toasts; modal = dialogs. Shadow ink is hueless structural (primitives).",
+    "raised": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-10}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        {
+          "color": "{color.alpha.black-06}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 1,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "overlay": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-12}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 4,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 12,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -2,
+            "unit": "px"
+          }
+        },
+        {
+          "color": "{color.alpha.black-10}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 6,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -2,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "modal": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-18}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 12,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 32,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -8,
+            "unit": "px"
+          }
+        },
+        {
+          "color": "{color.alpha.black-12}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 4,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 12,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -4,
+            "unit": "px"
+          }
+        }
+      ]
+    }
+  },
+  "property": {
+    "$description": "Patient-property identity colours, light theme. Five roles: tint (.100, soft fill), tint-strong (.200, icon-pill backing), solid (.700, text-contrast), accent (.500, decorative: top rule, glyph, sparkline), on (text on solid fill).",
+    "heart": {
+      "tint": {
+        "$value": "{brand.property.heart.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.heart.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.heart.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.heart.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "breath": {
+      "tint": {
+        "$value": "{brand.property.breath.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.breath.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.breath.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.breath.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "oxygen": {
+      "tint": {
+        "$value": "{brand.property.oxygen.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.oxygen.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.oxygen.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.oxygen.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "temperature": {
+      "tint": {
+        "$value": "{brand.property.temperature.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.temperature.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.temperature.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.temperature.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "pressure": {
+      "tint": {
+        "$value": "{brand.property.pressure.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.pressure.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.pressure.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.pressure.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "body": {
+      "tint": {
+        "$value": "{brand.property.body.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.body.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.body.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.body.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "lab": {
+      "tint": {
+        "$value": "{brand.property.lab.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.lab.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.lab.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.lab.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "identity": {
+      "tint": {
+        "$value": "{brand.property.identity.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.identity.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.identity.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.identity.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "condition": {
+      "tint": {
+        "$value": "{brand.property.condition.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.condition.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.condition.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.condition.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "allergy": {
+      "tint": {
+        "$value": "{brand.property.allergy.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.allergy.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.allergy.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.allergy.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    },
+    "medication": {
+      "tint": {
+        "$value": "{brand.property.medication.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.property.medication.200}"
+      },
+      "accent": {
+        "$value": "{brand.property.medication.500}"
+      },
+      "solid": {
+        "$value": "{brand.property.medication.700}"
+      },
+      "on": {
+        "$value": "{brand.neutral.on-light}"
+      }
+    }
+  }
+}
