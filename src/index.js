@@ -19,3 +19,5 @@ export * from './components/sprout-cards/SproutCard.jsx';
 export * from './components/sprout-cards/Card.jsx';
 export * from './components/sprout-cards/PropertyList.jsx';
 export * from './components/sprout-cards/lib.jsx';
+export * from './lib/icons.jsx';   // Icon
+export * from './lib/logo.js';     // CC_LOGO_SRC, brandLogoSvg, ccLogoSvg
