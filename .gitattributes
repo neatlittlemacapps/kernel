@@ -1,0 +1,5 @@
+# Keep shell scripts + node tools LF on ALL platforms. A credential helper or
+# build script that checks out as CRLF on Windows breaks `sh` (it chokes on \r).
+*.sh   text eol=lf
+*.mjs  text eol=lf
+*.bash text eol=lf

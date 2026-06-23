@@ -10,11 +10,14 @@ HELPER="$(pwd)/tools/gh-auth.sh"
 chmod +x "$HELPER" 2>/dev/null || true
 
 # Scope the helper to github.com only (leaves other hosts to their own helpers).
-git config credential."https://github.com".helper "$HELPER"
-echo "✓ git configured: github.com auth -> $HELPER"
+# Use the "!"-shell form so git runs the script via sh — works on macOS AND on
+# Windows (Git for Windows / Git Bash), where a .sh can't be executed directly.
+# Single-quotes protect spaces in the path (e.g. "Corilus Skills Lib").
+git config credential."https://github.com".helper "!'$HELPER'"
+echo "✓ git configured: github.com auth -> sh '$HELPER'"
 
-# Verify a token is reachable (env or a walked-up .gh-token).
-if printf 'protocol=https\nhost=github.com\n\n' | "$HELPER" get | grep -q '^password='; then
+# Verify a token is reachable (env or a walked-up .gh-token). Invoke via sh for parity.
+if printf 'protocol=https\nhost=github.com\n\n' | sh "$HELPER" get | grep -q '^password='; then
   echo "✓ token found (via \$GH_TOKEN or a .gh-token up the tree)"
   echo "  You're set: plain 'git push' / 'pull' now authenticate as you."
 else
