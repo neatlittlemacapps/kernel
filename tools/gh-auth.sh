@@ -34,7 +34,11 @@ if [ -z "$token" ]; then
   i=0
   while [ "$i" -lt 10 ]; do
     if [ -f "$dir/.gh-token" ]; then
-      token=$(tr -d '\r\n' < "$dir/.gh-token")
+      # Extract the PAT, ignoring comment (#) and blank lines (a .gh-token may be
+      # commented, e.g. copied from .gh-token.example). Prefer a recognized GitHub
+      # token pattern; fall back to the first non-comment, non-blank line.
+      token=$(grep -oE 'github_pat_[A-Za-z0-9_]+|gh[oprsu]_[A-Za-z0-9_]+' "$dir/.gh-token" 2>/dev/null | head -1)
+      [ -z "$token" ] && token=$(grep -vE '^[[:space:]]*(#|$)' "$dir/.gh-token" | head -1 | tr -d '[:space:]')
       break
     fi
     parent=$(dirname -- "$dir")
