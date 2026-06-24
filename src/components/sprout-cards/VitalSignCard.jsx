@@ -29,11 +29,11 @@ export function VitalSignCard({ data, stage = 'sprout', onSave, onEdit, ...rest 
     if (isBP) {
       const { systolic, diastolic } = data.value;
       return (
-        <span className="cc-pcard-value-display">
-          <span className="cc-pcard-value-num">{systolic}</span>
-          <span className="cc-pcard-value-num cc-pcard-value-sep">/</span>
-          <span className="cc-pcard-value-num">{diastolic}</span>
-          <span className="cc-pcard-value-unit">{data.unit}</span>
+        <span className="krnl-pcard-value-display">
+          <span className="krnl-pcard-value-num">{systolic}</span>
+          <span className="krnl-pcard-value-num krnl-pcard-value-sep">/</span>
+          <span className="krnl-pcard-value-num">{diastolic}</span>
+          <span className="krnl-pcard-value-unit">{data.unit}</span>
         </span>
       );
     }

@@ -1,5 +1,5 @@
 // Design-system atoms. Base UI headless primitives + token-only styling.
-// Every visible value resolves to a semantic token var via the .cc-* classes
+// Every visible value resolves to a semantic token var via the .krnl-* classes
 // in styles.css — no hardcoded color/space/radius/elevation here.
 import { Avatar } from '@base-ui-components/react/avatar';
 import { Tooltip } from '@base-ui-components/react/tooltip';
@@ -19,7 +19,7 @@ export const BrandContext = React.createContext('corilus');
 // the DOM <button>, or the Positioner has no anchor and the popup lands at 0,0.
 export const Btn = React.forwardRef(function Btn({ variant = 'primary', size, className = '', children, ...rest }, ref) {
   return (
-    <button ref={ref} className={`cc-btn cc-btn--${variant}${size ? ' cc-btn--' + size : ''} ${className}`} {...rest}>
+    <button ref={ref} className={`krnl-btn krnl-btn--${variant}${size ? ' krnl-btn--' + size : ''} ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -27,7 +27,7 @@ export const Btn = React.forwardRef(function Btn({ variant = 'primary', size, cl
 
 export const IconButton = React.forwardRef(function IconButton({ active, className = '', children, ...rest }, ref) {
   return (
-    <button ref={ref} className={`cc-iconbtn${active ? ' is-active' : ''} ${className}`} {...rest}>
+    <button ref={ref} className={`krnl-iconbtn${active ? ' is-active' : ''} ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -43,7 +43,7 @@ export function AIBadge({ size = 28, glow = false }) {
   // brand-swappable: a brand with its own mark renders it verbatim; others fall
   // back to the recoloured brain-mark. Re-renders on brand change via the context.
   return (
-    <span className={`cc-aibadge${glow ? ' is-glow' : ''}`} style={{ width: size, height: size }} aria-hidden="true"
+    <span className={`krnl-aibadge${glow ? ' is-glow' : ''}`} style={{ width: size, height: size }} aria-hidden="true"
       dangerouslySetInnerHTML={{ __html: brandLogoSvg(brand, idRef.current) }} />
   );
 }
@@ -53,8 +53,8 @@ export function PAv({ p, size = 22 }) {
   if (!p) return null;
   const g = p.g || ['var(--brand-data-1)', 'var(--brand-data-4)'];
   return (
-    <Avatar.Root className="cc-avatar" style={{ width: size, height: size, fontSize: Math.round(size * 0.42), background: `linear-gradient(135deg, ${g[0]}, ${g[1]})` }}>
-      <Avatar.Fallback className="cc-avatar-fallback">{p.av || (p.name || '?').slice(0, 2).toUpperCase()}</Avatar.Fallback>
+    <Avatar.Root className="krnl-avatar" style={{ width: size, height: size, fontSize: Math.round(size * 0.42), background: `linear-gradient(135deg, ${g[0]}, ${g[1]})` }}>
+      <Avatar.Fallback className="krnl-avatar-fallback">{p.av || (p.name || '?').slice(0, 2).toUpperCase()}</Avatar.Fallback>
     </Avatar.Root>
   );
 }
@@ -65,8 +65,8 @@ export function Tip({ label, children }) {
     <Tooltip.Root>
       <Tooltip.Trigger render={children} />
       <Tooltip.Portal>
-        <Tooltip.Positioner className="cc-positioner" sideOffset={6}>
-          <Tooltip.Popup className="cc-tooltip">{label}</Tooltip.Popup>
+        <Tooltip.Positioner className="krnl-positioner" sideOffset={6}>
+          <Tooltip.Popup className="krnl-tooltip">{label}</Tooltip.Popup>
         </Tooltip.Positioner>
       </Tooltip.Portal>
     </Tooltip.Root>
@@ -75,28 +75,28 @@ export function Tip({ label, children }) {
 
 export function Toggle({ checked, onCheckedChange, id, disabled }) {
   return (
-    <Switch.Root id={id} checked={checked} disabled={disabled} onCheckedChange={onCheckedChange} className="cc-switch">
-      <Switch.Thumb className="cc-switch-thumb" />
+    <Switch.Root id={id} checked={checked} disabled={disabled} onCheckedChange={onCheckedChange} className="krnl-switch">
+      <Switch.Thumb className="krnl-switch-thumb" />
     </Switch.Root>
   );
 }
 
 export function TextInput({ className = '', ...rest }) {
-  return <input className={`cc-input ${className}`} {...rest} />;
+  return <input className={`krnl-input ${className}`} {...rest} />;
 }
 
 // FFSection — one collapsible Feature-flags section. Base UI Accordion.Item, so
 // the FF page scales as sections multiply. Wrap with <Accordion.Root openMultiple>.
 export function FFSection({ value, title, children }) {
   return (
-    <Accordion.Item className="cc-ffsec" value={value}>
-      <Accordion.Header className="cc-ffsec-head">
-        <Accordion.Trigger className="cc-ffsec-trig">
-          <span className="cc-ffsec-title">{title}</span>
-          <span className="cc-ffsec-chev">{Icon.chevron({ size: 14 })}</span>
+    <Accordion.Item className="krnl-ffsec" value={value}>
+      <Accordion.Header className="krnl-ffsec-head">
+        <Accordion.Trigger className="krnl-ffsec-trig">
+          <span className="krnl-ffsec-title">{title}</span>
+          <span className="krnl-ffsec-chev">{Icon.chevron({ size: 14 })}</span>
         </Accordion.Trigger>
       </Accordion.Header>
-      <Accordion.Panel className="cc-ffsec-panel"><div className="cc-ffsec-body">{children}</div></Accordion.Panel>
+      <Accordion.Panel className="krnl-ffsec-panel"><div className="krnl-ffsec-body">{children}</div></Accordion.Panel>
     </Accordion.Item>
   );
 }
@@ -106,8 +106,8 @@ export { Accordion };
 // AI verify marker chip — sits on every screen's output [C27].
 export function AIMarker({ text }) {
   return (
-    <div className="cc-aimarker" role="note">
-      <span className="cc-aimarker-dot" aria-hidden="true" />
+    <div className="krnl-aimarker" role="note">
+      <span className="krnl-aimarker-dot" aria-hidden="true" />
       {text}
     </div>
   );

@@ -29,13 +29,13 @@ export function DemographicCard({ data, stage = 'sprout', onEdit, onSave, ...res
         stage === 'shoot'
           ? <EditChip label={txtNL.edit} onClick={onEdit} />
           : stage === 'sprout'
-            ? <span className="cc-pcard-id-line">{data.gender === 'male' ? '♂' : '♀'} {data.age}j</span>
+            ? <span className="krnl-pcard-id-line">{data.gender === 'male' ? '♂' : '♀'} {data.age}j</span>
             : null
       }
       value={
         stage === 'seed'
-          ? <span className="cc-pcard-value-display">
-              <span className="cc-pcard-value-num" style={{ fontSize: 'var(--typography-body-md-font-size)' }}>{data.age}j</span>
+          ? <span className="krnl-pcard-value-display">
+              <span className="krnl-pcard-value-num" style={{ fontSize: 'var(--typography-body-md-font-size)' }}>{data.age}j</span>
             </span>
           : null
       }

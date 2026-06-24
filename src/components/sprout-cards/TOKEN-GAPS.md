@@ -119,7 +119,7 @@ semantic.dimension.rule.thick   = 4px   (heavy accents — rare)
 ```
 
 **Used by today:** Sprout card stage rule (regular), refbar marker outline (thin), card borders (hair).
-**Will be used by:** focus rings, dividers in `cc-action-list`, future segmented control underlines, chart sparkline strokes.
+**Will be used by:** focus rings, dividers in `krnl-action-list`, future segmented control underlines, chart sparkline strokes.
 
 ---
 
@@ -147,7 +147,7 @@ semantic.motion.easing.accelerate  = cubic-bezier(0.3, 0, 1, 1)        (exiting 
 A `prefers-reduced-motion` companion token isn't needed (consumers handle it via media query), but durations should be zero-able by class.
 
 **Used by today:** none (companion uses literals).
-**Will be used by:** SproutCard transitions, fade animations in cc-screen, cc-blink and cc-stream-caret (could be re-keyed), tooltip enter/exit, slash-menu open.
+**Will be used by:** SproutCard transitions, fade animations in krnl-screen, krnl-blink and krnl-stream-caret (could be re-keyed), tooltip enter/exit, slash-menu open.
 
 ---
 

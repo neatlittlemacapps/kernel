@@ -58,7 +58,7 @@ export function SproutCard({
     // across the page don't cause spec errors. Tag removed after the transition
     // finishes (success or fail).
     const el = wrapperRef.current;
-    if (el) el.style.viewTransitionName = 'cc-pcard-active';
+    if (el) el.style.viewTransitionName = 'krnl-pcard-active';
 
     const transition = document.startViewTransition(() => {
       ReactDOM.flushSync(() => setInternalStage(next));
@@ -109,7 +109,7 @@ export function SproutCard({
   return (
     <div
       ref={wrapperRef}
-      className={['cc-pcard-shell', `is-stage-${stage}`, className].filter(Boolean).join(' ')}
+      className={['krnl-pcard-shell', `is-stage-${stage}`, className].filter(Boolean).join(' ')}
       data-sprout-stage={stage}
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : -1}
@@ -149,8 +149,8 @@ export function SproutToneProvider({ tone, customColor, children, className = ''
     }
   }
   const cls = [
-    'cc-sprout-tone-provider',
-    tone && `cc-tone--${tone}`,
+    'krnl-sprout-tone-provider',
+    tone && `krnl-tone--${tone}`,
     className,
   ].filter(Boolean).join(' ');
   return <div className={cls} style={style} {...rest}>{children}</div>;

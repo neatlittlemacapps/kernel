@@ -1,7 +1,7 @@
 // Kernel — the generic, client-shippable design-system surface.
 //
 // DTCG design tokens (../tokens) + Base UI component wrappers, styled through the
-// `.cc-*` contract in styles.css. This is the "." package entry. The healthcare-
+// `.krnl-*` contract in styles.css. This is the "." package entry. The healthcare-
 // specific clinical cards live behind the "./clinical" subpath so external/client
 // builds can drop them (two-tier consumption — see package.json `exports`).
 //
@@ -20,4 +20,4 @@ export * from './components/sprout-cards/Card.jsx';
 export * from './components/sprout-cards/PropertyList.jsx';
 export * from './components/sprout-cards/lib.jsx';
 export * from './lib/icons.jsx';   // Icon
-export * from './lib/logo.js';     // CC_LOGO_SRC, brandLogoSvg, ccLogoSvg
+export * from './lib/logo.js';     // KRNL_LOGO_SRC, brandLogoSvg, krnlLogoSvg

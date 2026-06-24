@@ -37,8 +37,8 @@ export function PropertyList({
   ...rest
 }) {
   const cls = [
-    'cc-pcard-list',
-    `cc-pcard-list--${layout}`,
+    'krnl-pcard-list',
+    `krnl-pcard-list--${layout}`,
     className,
   ].filter(Boolean).join(' ');
 
@@ -46,7 +46,7 @@ export function PropertyList({
   // the consumer never edits the stylesheet. Token-only colour/spacing rules
   // still apply.
   const inlineVars = {
-    '--cc-list-min-card': minCard + 'px',
+    '--krnl-list-min-card': minCard + 'px',
   };
 
   const showHeader = title || filter || sort || action;
@@ -60,29 +60,29 @@ export function PropertyList({
       {...rest}
     >
       {showHeader && (
-        <header className="cc-pcard-list-head">
+        <header className="krnl-pcard-list-head">
           {title && (
-            <div className="cc-pcard-list-title-wrap">
-              <h2 className="cc-pcard-list-title">{title}</h2>
-              {items.length > 0 && <span className="cc-pcard-list-count">{items.length}</span>}
+            <div className="krnl-pcard-list-title-wrap">
+              <h2 className="krnl-pcard-list-title">{title}</h2>
+              {items.length > 0 && <span className="krnl-pcard-list-count">{items.length}</span>}
             </div>
           )}
           {(filter || sort) && (
-            <div className="cc-pcard-list-controls">
-              {filter && <div className="cc-pcard-list-filter">{filter}</div>}
-              {sort && <div className="cc-pcard-list-sort">{sort}</div>}
+            <div className="krnl-pcard-list-controls">
+              {filter && <div className="krnl-pcard-list-filter">{filter}</div>}
+              {sort && <div className="krnl-pcard-list-sort">{sort}</div>}
             </div>
           )}
-          {action && <div className="cc-pcard-list-action">{action}</div>}
+          {action && <div className="krnl-pcard-list-action">{action}</div>}
         </header>
       )}
 
       {items.length === 0 ? (
-        <div className="cc-pcard-list-empty">{emptyLabel}</div>
+        <div className="krnl-pcard-list-empty">{emptyLabel}</div>
       ) : (
-        <div className="cc-pcard-list-items">
+        <div className="krnl-pcard-list-items">
           {items.map((item, i) => (
-            <div className="cc-pcard-list-item" key={item.id ?? item.key ?? i}>
+            <div className="krnl-pcard-list-item" key={item.id ?? item.key ?? i}>
               {renderItem(item, i)}
             </div>
           ))}

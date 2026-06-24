@@ -14,20 +14,20 @@ export function ActionRow({
   selected = false, disabled = false, reason,
   trailing = true, onClick, onMouseEnter, onMouseDown,
 }) {
-  const cls = ['cc-action', `cc-tone--${tone}`, selected && 'is-selected', disabled && 'is-disabled']
+  const cls = ['krnl-action', `krnl-tone--${tone}`, selected && 'is-selected', disabled && 'is-disabled']
     .filter(Boolean).join(' ');
   return (
     <button type="button" className={cls} disabled={disabled} aria-disabled={disabled}
       title={disabled ? reason : undefined}
       onClick={onClick} onMouseEnter={onMouseEnter} onMouseDown={onMouseDown}>
-      <span className="cc-action-ic">{icon}</span>
-      <span className="cc-action-text">
-        <span className="cc-action-label">{label}</span>
+      <span className="krnl-action-ic">{icon}</span>
+      <span className="krnl-action-text">
+        <span className="krnl-action-label">{label}</span>
         {disabled && reason
-          ? <span className="cc-action-desc cc-action-reason">{reason}</span>
-          : description ? <span className="cc-action-desc">{description}</span> : null}
+          ? <span className="krnl-action-desc krnl-action-reason">{reason}</span>
+          : description ? <span className="krnl-action-desc">{description}</span> : null}
       </span>
-      {trailing && !disabled && <span className="cc-action-chevron">{Icon.chevron({ size: 13 })}</span>}
+      {trailing && !disabled && <span className="krnl-action-chevron">{Icon.chevron({ size: 13 })}</span>}
     </button>
   );
 }

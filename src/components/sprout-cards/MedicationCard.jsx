@@ -43,12 +43,12 @@ export function MedicationCard({ data, stage = 'sprout', onEdit, onMarkTaken, ..
       }
       value={
         stage === 'seed'
-          ? <span className="cc-pcard-value-display">
-              <span className="cc-pcard-value-num" style={{ fontSize: 'var(--typography-body-md-font-size)' }}>{data.dose}</span>
+          ? <span className="krnl-pcard-value-display">
+              <span className="krnl-pcard-value-num" style={{ fontSize: 'var(--typography-body-md-font-size)' }}>{data.dose}</span>
             </span>
-          : <span className="cc-pcard-value-display">
-              <span className="cc-pcard-value-num">{data.dose}</span>
-              {data.frequency && <span className="cc-pcard-value-unit">· {data.frequency}</span>}
+          : <span className="krnl-pcard-value-display">
+              <span className="krnl-pcard-value-num">{data.dose}</span>
+              {data.frequency && <span className="krnl-pcard-value-unit">· {data.frequency}</span>}
             </span>
       }
       meta={<StatusPill status={statusKey} label={statusLabel} />}

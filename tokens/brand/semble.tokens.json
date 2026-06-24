@@ -49,7 +49,7 @@
 
     "radius": {
       "$type": "dimension",
-      "$description": "Semble corner character — DELIBERATELY HARSH (demo): square/near-square corners. Drives --density-radius to 0 → the whole UI sharpens cohesively; only --cc-radius-pill stays round.",
+      "$description": "Semble corner character — DELIBERATELY HARSH (demo): square/near-square corners. Drives --density-radius to 0 → the whole UI sharpens cohesively; only --krnl-radius-pill stays round.",
       "compact":  { "$value": "{radius.none}" },
       "base":     { "$value": "{radius.none}" },
       "spacious": { "$value": "{radius.xs}" }

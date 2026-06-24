@@ -62,7 +62,7 @@ export function Card({
   style,
   ...rest
 }) {
-  // customColor → inline CSS variables (wins over .cc-tone--* by specificity)
+  // customColor → inline CSS variables (wins over .krnl-tone--* by specificity)
   let colorStyle;
   if (customColor) {
     colorStyle = {};
@@ -77,9 +77,9 @@ export function Card({
   }
   const mergedStyle = colorStyle ? { ...style, ...colorStyle } : style;
   const cls = [
-    'cc-pcard',
-    `cc-pcard--${stage}`,
-    `cc-tone--${tone}`,
+    'krnl-pcard',
+    `krnl-pcard--${stage}`,
+    `krnl-tone--${tone}`,
     status && `is-status-${status}`,
     loading && 'is-loading',
     error && 'is-error',
@@ -113,39 +113,39 @@ export function Card({
       {...rest}
     >
       {(leading || title || trailing) && (
-        <header className="cc-pcard-head">
-          {leading && <span className="cc-pcard-leading" aria-hidden="true">{leading}</span>}
-          {title && <h3 className="cc-pcard-title">{title}</h3>}
-          {trailing && <span className="cc-pcard-trailing">{trailing}</span>}
+        <header className="krnl-pcard-head">
+          {leading && <span className="krnl-pcard-leading" aria-hidden="true">{leading}</span>}
+          {title && <h3 className="krnl-pcard-title">{title}</h3>}
+          {trailing && <span className="krnl-pcard-trailing">{trailing}</span>}
         </header>
       )}
 
-      {value != null && <div className="cc-pcard-value">{value}</div>}
+      {value != null && <div className="krnl-pcard-value">{value}</div>}
 
-      {meta != null && <div className="cc-pcard-meta">{meta}</div>}
+      {meta != null && <div className="krnl-pcard-meta">{meta}</div>}
 
-      {media != null && <div className="cc-pcard-media">{media}</div>}
+      {media != null && <div className="krnl-pcard-media">{media}</div>}
 
-      {aside != null && <div className="cc-pcard-aside" role="note">{aside}</div>}
+      {aside != null && <div className="krnl-pcard-aside" role="note">{aside}</div>}
 
-      {footer != null && <footer className="cc-pcard-footer">{footer}</footer>}
+      {footer != null && <footer className="krnl-pcard-footer">{footer}</footer>}
 
-      {actions != null && <div className="cc-pcard-actions">{actions}</div>}
+      {actions != null && <div className="krnl-pcard-actions">{actions}</div>}
 
       {loading && (
-        <div className="cc-pcard-skeleton" aria-hidden="true">
+        <div className="krnl-pcard-skeleton" aria-hidden="true">
           <span /><span /><span />
         </div>
       )}
 
       {error && (
-        <div className="cc-pcard-error" role="alert">
-          <span className="cc-pcard-error-msg">{error.message || String(error)}</span>
+        <div className="krnl-pcard-error" role="alert">
+          <span className="krnl-pcard-error-msg">{error.message || String(error)}</span>
         </div>
       )}
 
       {empty && !loading && !error && (
-        <div className="cc-pcard-empty" aria-hidden="true">—</div>
+        <div className="krnl-pcard-empty" aria-hidden="true">—</div>
       )}
     </article>
   );
@@ -159,9 +159,9 @@ export function Card({
 // card. (Don't pass it the card tone — that would conflate identity + interpretation.)
 export function StatusPill({ status = 'normal', label, children }) {
   return (
-    <span className={`cc-pcard-status-pill is-status-${status}`}>
-      <span className="cc-pcard-status-dot" aria-hidden="true" />
-      <span className="cc-pcard-status-label">{label || children}</span>
+    <span className={`krnl-pcard-status-pill is-status-${status}`}>
+      <span className="krnl-pcard-status-dot" aria-hidden="true" />
+      <span className="krnl-pcard-status-label">{label || children}</span>
     </span>
   );
 }
@@ -171,9 +171,9 @@ export function StatusPill({ status = 'normal', label, children }) {
 export function TrendChip({ direction = 'flat', value, label }) {
   const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '·';
   return (
-    <span className={`cc-pcard-trend-chip is-trend-${direction}`} aria-label={label}>
-      <span className="cc-pcard-trend-arrow" aria-hidden="true">{arrow}</span>
-      <span className="cc-pcard-trend-value">{value}</span>
+    <span className={`krnl-pcard-trend-chip is-trend-${direction}`} aria-label={label}>
+      <span className="krnl-pcard-trend-arrow" aria-hidden="true">{arrow}</span>
+      <span className="krnl-pcard-trend-value">{value}</span>
     </span>
   );
 }
@@ -183,10 +183,10 @@ export function TrendChip({ direction = 'flat', value, label }) {
 // custom node instead — the slot is unopinionated.
 export function ValueDisplay({ value, unit, prefix }) {
   return (
-    <span className="cc-pcard-value-display">
-      {prefix && <span className="cc-pcard-value-prefix">{prefix}</span>}
-      <span className="cc-pcard-value-num">{value}</span>
-      {unit && <span className="cc-pcard-value-unit">{unit}</span>}
+    <span className="krnl-pcard-value-display">
+      {prefix && <span className="krnl-pcard-value-prefix">{prefix}</span>}
+      <span className="krnl-pcard-value-num">{value}</span>
+      {unit && <span className="krnl-pcard-value-unit">{unit}</span>}
     </span>
   );
 }
@@ -203,15 +203,15 @@ export function Stepper({ value, unit, min, max, step = 1, onChange, ariaLabel }
       max={max}
       step={step}
       aria-label={ariaLabel}
-      className="cc-pcard-stepper"
+      className="krnl-pcard-stepper"
     >
-      <NumberField.Group className="cc-pcard-stepper-group">
-        <NumberField.Decrement className="cc-pcard-stepper-btn" aria-label="Verlagen">−</NumberField.Decrement>
-        <span className="cc-pcard-stepper-value">
-          <NumberField.Input className="cc-pcard-stepper-input" />
-          {unit && <span className="cc-pcard-value-unit">{unit}</span>}
+      <NumberField.Group className="krnl-pcard-stepper-group">
+        <NumberField.Decrement className="krnl-pcard-stepper-btn" aria-label="Verlagen">−</NumberField.Decrement>
+        <span className="krnl-pcard-stepper-value">
+          <NumberField.Input className="krnl-pcard-stepper-input" />
+          {unit && <span className="krnl-pcard-value-unit">{unit}</span>}
         </span>
-        <NumberField.Increment className="cc-pcard-stepper-btn" aria-label="Verhogen">+</NumberField.Increment>
+        <NumberField.Increment className="krnl-pcard-stepper-btn" aria-label="Verhogen">+</NumberField.Increment>
       </NumberField.Group>
     </NumberField.Root>
   );
@@ -221,7 +221,7 @@ export function Stepper({ value, unit, min, max, step = 1, onChange, ariaLabel }
 // Light tint of the card tone behind a tone-coloured glyph.
 export function IconPill({ children, label }) {
   return (
-    <span className="cc-pcard-icon-pill" role="img" aria-label={label}>
+    <span className="krnl-pcard-icon-pill" role="img" aria-label={label}>
       {children}
     </span>
   );
@@ -231,7 +231,7 @@ export function IconPill({ children, label }) {
 // Composes Base UI Button for the a11y/focus baseline.
 export function EditChip({ label = 'Bewerken', onClick }) {
   return (
-    <Button className="cc-pcard-edit-chip" onClick={onClick}>
+    <Button className="krnl-pcard-edit-chip" onClick={onClick}>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 20h9" />
@@ -252,7 +252,7 @@ export function MeterTooltip({ tip, children, side = 'top' }) {
       <Tooltip.Trigger render={(props) => <span {...props}>{children}</span>} />
       <Tooltip.Portal>
         <Tooltip.Positioner side={side} sideOffset={6}>
-          <Tooltip.Popup className="cc-pcard-tooltip">{tip}</Tooltip.Popup>
+          <Tooltip.Popup className="krnl-pcard-tooltip">{tip}</Tooltip.Popup>
         </Tooltip.Positioner>
       </Tooltip.Portal>
     </Tooltip.Root>

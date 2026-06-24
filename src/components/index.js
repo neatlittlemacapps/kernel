@@ -8,7 +8,7 @@
 //
 // Rule of the boundary: primitives NEVER import from src/companion/* (verified —
 // the dependency only points downward). These are token-styled Base UI wrappers;
-// their visual contract is the `.cc-*` classes in styles.css + the design tokens,
+// their visual contract is the `.krnl-*` classes in styles.css + the design tokens,
 // which is the framework-neutral part other platforms re-implement against.
 
 export { Btn, IconButton, AIBadge, PAv, Tip, Toggle, TextInput, FFSection, Accordion, AIMarker } from './ui.jsx';

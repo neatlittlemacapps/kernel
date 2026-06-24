@@ -8,17 +8,17 @@ Three things to fix or design before this system can ship beyond the current ske
 
 The temperature card screenshot shows a thin coloured rule across the top that looks **inset** from the card's outer edge, with the grey `--border-subtle` still visible at the rounded corners. Two compounding causes:
 
-1. **Class collision.** `src/styles.css:439` defines a different `.cc-card` for the Settings panel (border, padding, density-radius). Our Sprout rule at line 639 wins on cascade order, but density-radius from the older rule used to apply briefly during page paint. Not the visible bug — but worth namespacing later.
+1. **Class collision.** `src/styles.css:439` defines a different `.krnl-card` for the Settings panel (border, padding, density-radius). Our Sprout rule at line 639 wins on cascade order, but density-radius from the older rule used to apply briefly during page paint. Not the visible bug — but worth namespacing later.
 2. **Stripe sits inside the border.** Current CSS:
    ```css
-   .cc-card[data-stage="sprout"]::before {
+   .krnl-card[data-stage="sprout"]::before {
      position: absolute;
      inset: 0 0 auto 0;          /* references the parent's padding-box */
      height: 3px;
-     border-radius: var(--cc-radius-panel) var(--cc-radius-panel) 0 0;
+     border-radius: var(--krnl-radius-panel) var(--krnl-radius-panel) 0 0;
    }
    ```
-   The parent `.cc-card` has `border: 1px solid var(--border-subtle)` plus the same border-radius. The pseudo-element is positioned at the top of the padding-box → it sits **1 px inside** the outer border. The grey border is visible above and around it; the stripe's corner radius is the *outer* card radius applied to an element that lives at the *inner* radius. The two arcs don't line up → visible seam.
+   The parent `.krnl-card` has `border: 1px solid var(--border-subtle)` plus the same border-radius. The pseudo-element is positioned at the top of the padding-box → it sits **1 px inside** the outer border. The grey border is visible above and around it; the stripe's corner radius is the *outer* card radius applied to an element that lives at the *inner* radius. The two arcs don't line up → visible seam.
 
 ### Fix options
 

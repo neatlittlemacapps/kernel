@@ -118,7 +118,7 @@ export function iconFor(propertyOrTone) {
 // ── Sparkline ────────────────────────────────────────────────────────────
 // Inline SVG line + soft gradient fill. Uses the card tone via currentColor so
 // the consumer needs only style="color: var(--card-tone)" on a parent — but
-// in practice we set `currentColor` to the card tone via .cc-pcard-media.
+// in practice we set `currentColor` to the card tone via .krnl-pcard-media.
 export function Sparkline({ data = [], width = 240, height = 56, ariaLabel }) {
   if (!data.length) return null;
   const min = Math.min(...data);
@@ -132,9 +132,9 @@ export function Sparkline({ data = [], width = 240, height = 56, ariaLabel }) {
   });
   const pathD = points.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`).join(' ');
   const areaD = `${pathD} L ${width} ${height} L 0 ${height} Z`;
-  const gradId = 'cc-sparkline-' + Math.random().toString(36).slice(2, 8);
+  const gradId = 'krnl-sparkline-' + Math.random().toString(36).slice(2, 8);
   return (
-    <svg className="cc-sparkline" width="100%" height={height} viewBox={`0 0 ${width} ${height}`}
+    <svg className="krnl-sparkline" width="100%" height={height} viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none" role="img" aria-label={ariaLabel}>
       <defs>
         <linearGradient id={gradId} x1="0" x2="0" y1="0" y2="1">
@@ -160,13 +160,13 @@ export function ReferenceRangeBar({ value, low, high, absMin, absMax, ariaLabel 
   const valPct = pct(value);
   const inRange = value >= low && value <= high;
   return (
-    <div className="cc-refbar" role="img" aria-label={ariaLabel}>
-      <div className="cc-refbar-track">
-        <div className="cc-refbar-normal" style={{ left: `${lowPct}%`, width: `${highPct - lowPct}%` }} />
-        <div className={`cc-refbar-marker ${inRange ? 'is-in-range' : 'is-out-of-range'}`}
+    <div className="krnl-refbar" role="img" aria-label={ariaLabel}>
+      <div className="krnl-refbar-track">
+        <div className="krnl-refbar-normal" style={{ left: `${lowPct}%`, width: `${highPct - lowPct}%` }} />
+        <div className={`krnl-refbar-marker ${inRange ? 'is-in-range' : 'is-out-of-range'}`}
              style={{ left: `${valPct}%` }} />
       </div>
-      <div className="cc-refbar-scale">
+      <div className="krnl-refbar-scale">
         <span>{low}</span>
         <span>{high}</span>
       </div>
@@ -178,11 +178,11 @@ export function ReferenceRangeBar({ value, low, high, absMin, absMax, ariaLabel 
 export function ScheduleStrip({ days = [], ariaLabel }) {
   // days: array of { label, status: 'taken'|'missed'|'upcoming'|'paused' }
   return (
-    <ol className="cc-schedule-strip" role="img" aria-label={ariaLabel}>
+    <ol className="krnl-schedule-strip" role="img" aria-label={ariaLabel}>
       {days.map((d, i) => (
-        <li key={i} className={`cc-schedule-day is-${d.status}`} title={d.label}>
-          <span className="cc-schedule-day-label">{d.label}</span>
-          <span className="cc-schedule-day-dot" aria-hidden="true" />
+        <li key={i} className={`krnl-schedule-day is-${d.status}`} title={d.label}>
+          <span className="krnl-schedule-day-label">{d.label}</span>
+          <span className="krnl-schedule-day-dot" aria-hidden="true" />
         </li>
       ))}
     </ol>
@@ -192,11 +192,11 @@ export function ScheduleStrip({ days = [], ariaLabel }) {
 // ── FieldList — demographic key/value pairs in the body of a Sprout card ─
 export function FieldList({ items = [] }) {
   return (
-    <dl className="cc-field-list">
+    <dl className="krnl-field-list">
       {items.map(({ label, value }, i) => (
-        <div key={i} className="cc-field-row">
-          <dt className="cc-field-label">{label}</dt>
-          <dd className="cc-field-value">{value}</dd>
+        <div key={i} className="krnl-field-row">
+          <dt className="krnl-field-label">{label}</dt>
+          <dd className="krnl-field-value">{value}</dd>
         </div>
       ))}
     </dl>
@@ -206,10 +206,10 @@ export function FieldList({ items = [] }) {
 // ── ReactionList — allergy reactions ─────────────────────────────────────
 export function ReactionList({ reactions = [] }) {
   return (
-    <ul className="cc-reaction-list">
+    <ul className="krnl-reaction-list">
       {reactions.map((r, i) => (
-        <li key={i} className="cc-reaction-item">
-          <span className="cc-reaction-dot" aria-hidden="true" />
+        <li key={i} className="krnl-reaction-item">
+          <span className="krnl-reaction-dot" aria-hidden="true" />
           <span>{r}</span>
         </li>
       ))}
@@ -219,10 +219,10 @@ export function ReactionList({ reactions = [] }) {
 
 // ── Primary CTA used in the actions slot ────────────────────────────────
 // Composes Base UI Button (a11y/focus baseline from useButton). Visual style
-// is owned here via .cc-pcard-primary-cta (token-driven).
+// is owned here via .krnl-pcard-primary-cta (token-driven).
 export function PrimaryCTA({ children, onClick, disabled }) {
   return (
-    <Button className="cc-pcard-primary-cta" onClick={onClick} disabled={disabled}>
+    <Button className="krnl-pcard-primary-cta" onClick={onClick} disabled={disabled}>
       {children}
     </Button>
   );
