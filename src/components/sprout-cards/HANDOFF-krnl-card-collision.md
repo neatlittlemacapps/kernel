@@ -1,6 +1,6 @@
 # ⚠️ Handoff: `.krnl-card` class collision breaks the companion UI
 
-**From:** the Ask Aletta / companion-layout thread (found while verifying an unrelated
+**From:** the Evidence Based Search / companion-layout thread (found while verifying an unrelated
 embedded-scroll fix on 2026-06-18).
 **Severity:** high — visibly breaks the live companion, not just the sprout-cards demo.
 **Status:** NOT fixed here (left for the sprout-cards thread — it's your domain).

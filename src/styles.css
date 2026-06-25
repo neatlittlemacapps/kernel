@@ -487,7 +487,7 @@
 .krnl-badge--success { background: var(--status-success-tint); color: var(--status-success-solid); }
 .krnl-badge--muted { background: var(--surface-sunken); color: var(--text-muted); }
 
-/* ── EVIDENCE-BASED SEARCH (aletta agent: conversation, answers, sources) ─────── */
+/* ── EVIDENCE-BASED SEARCH (ebs agent: conversation, answers, sources) ─────── */
 .krnl-clinical { display: flex; flex-direction: column; }
 
 /* conversation + message bubbles */
