@@ -1,0 +1,115 @@
+{
+  "$comment": "Machine-readable Kernel Component & Property Standard. Human narrative: STANDARD.md. Consumed by the catalog gate (grove BACKLOG B-20). Exported as @corilus/kernel/standard.json so every consumer + skill reads one copy.",
+  "version": "0.1.0",
+  "ownershipClasses": {
+    "interactionState": {
+      "owner": "base-ui-primitive",
+      "rule": "Never a prop. Styled via data-* attributes in CSS.",
+      "dataAttrs": ["data-state", "data-checked", "data-disabled", "data-pressed", "data-invalid", "data-orientation", "data-focus-visible", "data-value"],
+      "bannedProps": ["isOpen", "isChecked", "isExpanded", "isPressed", "isSelected", "isDisabled", "isIndeterminate"]
+    },
+    "passThroughControl": {
+      "owner": "base-ui-primitive",
+      "rule": "Mirror the primitive's prop name verbatim. Booleans are bare (Base UI / HTML form), not is*-prefixed.",
+      "props": ["checked", "onCheckedChange", "open", "onOpenChange", "value", "defaultValue", "onValueChange", "disabled", "required", "readOnly"]
+    },
+    "dsPresentation": {
+      "owner": "kernel",
+      "rule": "variant + tone + size. The only axis Kernel invents.",
+      "props": ["variant", "tone", "size"]
+    },
+    "content": {
+      "owner": "kernel",
+      "rule": "Slots / children / text props. Trailing/leading, not right/left.",
+      "props": ["children", "icon", "action", "label", "title", "render"]
+    }
+  },
+  "dictionary": {
+    "tone": {
+      "values": ["neutral", "info", "success", "warning", "error"],
+      "tokenBinding": {
+        "info|success|warning|error": {
+          "background": "--status-{tone}-tint",
+          "accent": "--status-{tone}-solid",
+          "text": "--status-{tone}-on"
+        },
+        "neutral": {
+          "background": "--surface-panel",
+          "text": "--text-muted",
+          "$comment": "no --status-neutral-* token exists"
+        }
+      }
+    },
+    "size": {
+      "values": ["sm", "md", "lg"],
+      "tokenBinding": "--density-* / size-step tokens"
+    },
+    "variant": {
+      "perComponent": true,
+      "$comment": "style/emphasis enum; values defined per component (e.g. Banner: subtle|strong, Btn: primary|secondary)"
+    },
+    "booleans": {
+      "passThrough": { "form": "bare", "examples": ["disabled", "required", "readOnly", "checked"] },
+      "dsOnly": { "form": "plain-adjective", "examples": ["glow", "loading"], "note": "prefer expressing as tone/variant if it is really a style axis" }
+    },
+    "events": { "form": "on<Event>", "examples": ["onDismiss", "onValueChange", "onCheckedChange", "onOpenChange"] },
+    "controlledTriad": { "controlled": "value", "uncontrolled": "defaultValue", "handler": "onValueChange" },
+    "notProps": {
+      "density": "orthogonal token modifier --density-*, applied at ancestor",
+      "radius|elevation|spacing": "resolve to tokens at the component class, not props"
+    }
+  },
+  "scope": {
+    "tiers": {
+      "global": { "livesIn": "kernel `.`", "for": "generic atoms/molecules" },
+      "surfaces": { "livesIn": "kernel `./clinical` (or other subpath)", "for": "shared domain" },
+      "agents": { "livesIn": "the agent's own code (Juglans)", "for": "agent-specific organisms" }
+    },
+    "promotionRule": "graduate into Kernel only when a 2nd agent needs it",
+    "gateRules": [
+      "a global component may not import an agents:[...] component (no upward dependency)",
+      "two agent-scoped components resolving to the same tokens+anatomy are flagged as a promotion candidate",
+      "scope must be present and honest"
+    ]
+  },
+  "gateChecks": [
+    "banned interaction-state props (is*) are an error - state is data-*",
+    "non-canonical style synonyms (kind/appearance/intent...) are an error",
+    "raw controls (<button>/<input>/...) with no composed Kernel equivalent are an error (false composes)",
+    "a composing layer (molecule/composite/organism) with composes:[] is a warning",
+    "hand-rolled .is-on / isOpen-style state that should be data-* is an error (step 3, not yet implemented)",
+    "tone present where --status-* is consumed (step 3, not yet implemented)",
+    "scope present and not violating gateRules (step 4, not yet implemented)",
+    "forwardRef present on any component used as a Base UI render target (step 3, not yet implemented)"
+  ],
+  "lint": {
+    "$comment": "Data-driven rules consumed by tools/catalog-gate.mjs. Prop-name validation is intentionally OPEN for content/data props (children, items, payload, ...) - the gate errors only on bannedProps + forbiddenStyleSynonyms, never on an unrecognised content prop, to stay false-positive-free.",
+    "forbiddenStyleSynonyms": {
+      "kind": "variant",
+      "appearance": "variant",
+      "intent": "tone",
+      "colorScheme": "tone"
+    },
+    "rawControlEquivalents": {
+      "button": "Btn / IconButton",
+      "input": "TextInput / Field",
+      "select": "Select",
+      "textarea": "TextInput"
+    },
+    "controlComponents": {
+      "$comment": "the canonical Kernel wrappers for each raw element; a file that DEFINES one of these (its meta key) is exempt from the raw-control check for that tag - that raw element is the primitive itself.",
+      "button": ["Btn", "IconButton"],
+      "input": ["TextInput"],
+      "select": ["Select"],
+      "textarea": ["TextInput"]
+    },
+    "composingLayers": ["molecule", "composite", "organism"],
+    "atomsMayHandRollControls": true,
+    "$atomsNote": "atoms are leaf primitives and may render a raw control (a button-based row, etc.); only composing layers (molecule/composite/organism) that hand-roll a control instead of composing the atom are flagged. A composing layer mislabelled as an atom is a layer-integrity problem for a later check."
+  },
+  "meta": {
+    "$comment": "structured replacement for today's freeform meta.props strings",
+    "requiredFields": ["layer", "scope", "usecases", "status", "summary", "props", "composes"],
+    "propShape": { "name": "string", "class": "interactionState|passThroughControl|dsPresentation|content|event|a11y", "values": "string[]?", "passthrough": "BaseUI.<Primitive>.<prop>?", "tokenBinding": "string?" }
+  }
+}
