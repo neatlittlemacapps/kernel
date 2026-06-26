@@ -93,28 +93,45 @@ const add = (level, file, component, rule, msg, hint) =>
 
 const rel = (f) => path.relative(process.cwd(), f);
 
+function scopeKind(scope) {
+  if (scope == null) return 'missing';
+  if (typeof scope === 'string') return scope === 'global' ? 'global' : scope.startsWith('?') ? 'missing' : 'other';
+  if (typeof scope === 'object') {
+    if (Array.isArray(scope.agents) && scope.agents.length) return 'agents';
+    if (Array.isArray(scope.surfaces) && scope.surfaces.length) return 'surfaces';
+  }
+  return 'other';
+}
+
+// state classes that should be a Base UI data-* attr, not a hand-toggled className
+const STATE_CLASS = /\bis-(on|off|active|selected|open|closed|expanded|collapsed|checked|disabled|pressed|current|highlighted|loading|invalid)\b/g;
+
+// ── pass 1: collect units + build the cross-file scope registry ─────────────────
+const units = []; // {file, src, meta}
+const scopeBy = {}; // componentName -> scopeKind (names are unique across the catalog by convention)
 for (const file of walk(targetDir)) {
   const src = fs.readFileSync(file, 'utf8');
   const metaText = extractMetaText(src);
+  let meta = null;
+  if (metaText) {
+    try { meta = parseMeta(metaText); }
+    catch (e) { add('error', file, '(file)', 'meta-parse', `meta does not evaluate: ${e.message}`); }
+  }
+  if (meta) for (const [name, c] of Object.entries(meta)) scopeBy[name] = scopeKind(c.scope);
+  units.push({ file, src, meta });
+}
 
-  // file-level raw-control scan (catches the raw <button>/<input>/… bypassing the family)
+// ── pass 2: per-file checks ─────────────────────────────────────────────────────
+for (const { file, src, meta } of units) {
   const rawCounts = {};
   for (const tag of Object.keys(rawEquivalents)) {
     const n = (src.match(new RegExp('<' + tag + '[\\s/>]', 'g')) || []).length;
     if (n) rawCounts[tag] = n;
   }
 
-  let meta = null;
-  if (metaText) {
-    try { meta = parseMeta(metaText); }
-    catch (e) { add('error', file, '(file)', 'meta-parse', `meta does not evaluate: ${e.message}`); }
-  }
-
-  // gather all composes across this file's components (raw-control attribution is file-level)
   const composedAll = new Set();
   if (meta) for (const c of Object.values(meta)) (c.composes || []).forEach((x) => composedAll.add(x));
 
-  // per-component prop + composes checks
   if (meta) {
     for (const [name, c] of Object.entries(meta)) {
       const props = c && typeof c.props === 'object' ? Object.keys(c.props) : [];
@@ -131,11 +148,32 @@ for (const file of walk(targetDir)) {
         add('warn', file, name, 'empty-composes',
           `layer "${c.layer}" normally composes design-system parts but declares composes:[].`,
           'list what it composes, or extract the inlined parts into Kernel atoms.');
+
+      // scope presence (step 4)
+      if (scopeKind(c.scope) === 'missing')
+        add('warn', file, name, 'scope-missing',
+          'no scope declared — set "global" / {agents:[…]} / {surfaces:[…]}.',
+          'scope drives the promotion gate; an honest scope is required.');
+
+      // upward dependency: a global component must not compose an agent-scoped one (step 4)
+      if (scopeKind(c.scope) === 'global')
+        for (const dep of c.composes || [])
+          if (scopeBy[dep] === 'agents')
+            add('error', file, name, 'scope-upward-dep',
+              `global component composes agent-scoped \`${dep}\` — no upward dependency allowed.`,
+              `promote \`${dep}\` to global/clinical, or make this component agent-scoped.`);
     }
   }
 
-  // false-composes: raw control present but no Kernel equivalent composed.
-  // Exempt, per tag, the file that DEFINES that tag's canonical control (it IS the primitive).
+  // hand-rolled state classes (step 3) — WARN pending migration, then promote to ERROR
+  const stateHits = [...new Set(src.match(STATE_CLASS) || [])];
+  if (stateHits.length)
+    add('warn', file, '(file)', 'handrolled-state',
+      `hand-rolled state class(es): ${stateHits.join(', ')}.`,
+      'drive state off the Base UI data-* attr ([data-pressed]/[data-selected]/…), not a toggled className.');
+
+  // false-composes / raw-control. Exempt, per tag, the file that DEFINES that tag's
+  // canonical control (it IS the primitive) and pure-atom files (atoms are leaf primitives).
   const defined = meta ? new Set(Object.keys(meta)) : new Set();
   const metaVals = meta ? Object.values(meta) : [];
   const pureAtom = atomsMayHandRollControls && metaVals.length > 0 && metaVals.every((c) => c.layer === 'atom');
@@ -143,8 +181,8 @@ for (const file of walk(targetDir)) {
   let rawError = false;
   for (const [tag, n] of Object.entries(rawCounts)) {
     const controls = controlComponents[tag] || [];
-    if (controls.some((c) => defined.has(c))) continue; // this file defines the canonical control
-    if (pureAtom) continue;                             // pure-atom file: atoms are leaf primitives
+    if (controls.some((c) => defined.has(c))) continue;
+    if (pureAtom) continue;
     flagged.push(`${tag}×${n}`);
     if (tag === 'button' && !controls.some((c) => composedAll.has(c))) rawError = true;
   }
@@ -175,7 +213,8 @@ for (const [file, fs_] of Object.entries(byFile)) {
 if (!findings.length) console.log('  clean — no findings.\n');
 
 console.log(`\n  ${errors.length} error(s), ${warns.length} warning(s).`);
-console.log('  v0 covers: banned-state props, style synonyms, raw controls, empty composes.');
-console.log('  not yet covered (steps 3-4): hand-rolled .is-on/isOpen state, scope graph, tone-vs-CSS.\n');
+console.log('  covers: banned-state props, style synonyms, raw controls, empty composes,');
+console.log('          hand-rolled state classes, scope presence + upward-dependency.');
+console.log('  not yet: forwardRef-on-render-target, tone-vs-CSS (need cross-file / CSS-parse work).\n');
 
 process.exit(!audit && errors.length ? 1 : 0);
