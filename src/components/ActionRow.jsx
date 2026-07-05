@@ -33,5 +33,5 @@ export function ActionRow({
 }
 
 export const meta = {
-  ActionRow: { layer:'atom', scope:'global', usecases:['launcher','slash-menu','suggestion'], status:'stable', summary:'The one canonical action/command row (icon · label · description · chevron); gating-aware.', props:{ icon:'node', label:'string', description:'?string', tone:'?string', selected:'?bool', disabled:'?bool', reason:'?string', onClick:'fn' }, composes:[] },
+  ActionRow: { layer:'atom', scope:'global', usecases:['launcher','slash-menu','suggestion'], status:'stable', summary:'The one canonical action/command row (icon · label · description · chevron); gating-aware.', props:{ icon:'node', label:'string', description:'?string', tone:'?string', selected:'?bool', disabled:'?bool', reason:'?string', onClick:'fn' }, composes:[], usage:'<ActionRow icon={Icon.search({ size: 18 })} label="Search records" description="Find a patient" onClick={run} />' },
 };

@@ -1,0 +1,1254 @@
+{
+  "standardVersion": "0.1.0",
+  "components": [
+    {
+      "name": "ActionRow",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "The one canonical action/command row (icon · label · description · chevron); gating-aware.",
+      "usecases": [
+        "launcher",
+        "slash-menu",
+        "suggestion"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "raw": "node"
+        },
+        {
+          "name": "label",
+          "raw": "string"
+        },
+        {
+          "name": "description",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "tone",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "selected",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "reason",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "onClick",
+          "raw": "fn"
+        }
+      ],
+      "composes": [],
+      "usage": "<ActionRow icon={Icon.search({ size: 18 })} label=\"Search records\" description=\"Find a patient\" onClick={run} />"
+    },
+    {
+      "name": "AIBadge",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Companion brain mark (inline SVG, token gradient); optional glow.",
+      "usecases": [
+        "identity"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "raw": "number"
+        },
+        {
+          "name": "glow",
+          "raw": "?bool",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "AIMarker",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "AI-generated / verify provenance marker.",
+      "usecases": [
+        "ai-disclosure"
+      ],
+      "props": [
+        {
+          "name": "text",
+          "raw": "string"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "AllergyCard",
+      "import": "@corilus/kernel/clinical",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "FHIR AllergyIntolerance card. Criticality maps to status interpretation (critical/borderline).",
+      "usecases": [
+        "allergy",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "object"
+        },
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "onEdit",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [
+        "Card",
+        "StatusPill",
+        "IconPill",
+        "EditChip",
+        "ReactionList",
+        "PrimaryCTA"
+      ],
+      "usage": null
+    },
+    {
+      "name": "Btn",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Primary/secondary text button.",
+      "usecases": [
+        "action"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "raw": "'primary'|'secondary'",
+          "values": [
+            "primary",
+            "secondary"
+          ]
+        },
+        {
+          "name": "size",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<Btn variant=\"primary\">Save</Btn>"
+    },
+    {
+      "name": "Card",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Slot-driven base card for the Sprout pattern. Three fidelities (seed/sprout/shoot), two colour axes (tone/status), container-query intrinsic width morph.",
+      "usecases": [
+        "vital-sign",
+        "lab-result",
+        "demographic",
+        "condition",
+        "allergy",
+        "medication",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "tone",
+          "raw": "'neutral'|'heart'|'breath'|'oxygen'|'temperature'|'pressure'|'body'|'lab'|'identity'|'condition'|'allergy'|'medication'",
+          "values": [
+            "neutral",
+            "heart",
+            "breath",
+            "oxygen",
+            "temperature",
+            "pressure",
+            "body",
+            "lab",
+            "identity",
+            "condition",
+            "allergy",
+            "medication"
+          ]
+        },
+        {
+          "name": "customColor",
+          "raw": "?string|{solid,tint,tintStrong,on}",
+          "optional": true
+        },
+        {
+          "name": "status",
+          "raw": "?'normal'|'borderline'|'high'|'low'|'critical'",
+          "optional": true,
+          "values": [
+            "normal",
+            "borderline",
+            "high",
+            "low",
+            "critical"
+          ]
+        },
+        {
+          "name": "loading",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "raw": "?object",
+          "optional": true
+        },
+        {
+          "name": "empty",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "selected",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "stale",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "dragging",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "leading",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "title",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "trailing",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "meta",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "media",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "aside",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "footer",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "actions",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "role",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "onClick",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "className",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<Card stage=\"sprout\" tone=\"heart\" title=\"Heart rate\" value={<ValueDisplay value=\"72\" unit=\"bpm\" />} />"
+    },
+    {
+      "name": "ConditionCard",
+      "import": "@corilus/kernel/clinical",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "FHIR Condition card. Status pill follows clinicalStatus → interpretation mapping.",
+      "usecases": [
+        "condition",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "object"
+        },
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "onEdit",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "onStatusChange",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [
+        "Card",
+        "StatusPill",
+        "IconPill",
+        "EditChip",
+        "FieldList",
+        "PrimaryCTA"
+      ],
+      "usage": null
+    },
+    {
+      "name": "DemographicCard",
+      "import": "@corilus/kernel/clinical",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "FHIR Patient identity card. Seed/Sprout/Shoot. No time-series; attributes flow as a field list.",
+      "usecases": [
+        "demographic",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "object"
+        },
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "onEdit",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "onSave",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [
+        "Card",
+        "IconPill",
+        "EditChip",
+        "FieldList",
+        "PrimaryCTA"
+      ],
+      "usage": null
+    },
+    {
+      "name": "EditChip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Pencil + label trailing chip used on Shoot stage cards. Composes Base UI Button for a11y/focus.",
+      "usecases": [
+        "card-trailing"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "onClick",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "FFSection",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Collapsible Feature-flags section (Base UI Accordion item).",
+      "usecases": [
+        "feature-flags"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "raw": "string"
+        },
+        {
+          "name": "title",
+          "raw": "string"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "FieldList",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Key-value list for demographic / condition detail bodies.",
+      "usecases": [
+        "card-body",
+        "demographics"
+      ],
+      "props": [
+        {
+          "name": "items",
+          "raw": "object[]"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "IconButton",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Square icon button; Base UI render-target (forwardRef).",
+      "usecases": [
+        "action"
+      ],
+      "props": [
+        {
+          "name": "active",
+          "raw": "?bool",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<IconButton aria-label=\"Close\">{Icon.close({ size: 18 })}</IconButton>"
+    },
+    {
+      "name": "IconPill",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Rounded-square tone-tinted glyph holder for the leading slot.",
+      "usecases": [
+        "card-leading"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "raw": "string"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "LabResultCard",
+      "import": "@corilus/kernel/clinical",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "FHIR Observation (laboratory) Seed/Sprout. Reference range central; Shoot rare (lab acknowledge → Rooted).",
+      "usecases": [
+        "lab-result",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "object"
+        },
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "onAcknowledge",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [
+        "Card",
+        "StatusPill",
+        "TrendChip",
+        "ValueDisplay",
+        "IconPill",
+        "ReferenceRangeBar"
+      ],
+      "usage": null
+    },
+    {
+      "name": "MedicationCard",
+      "import": "@corilus/kernel/clinical",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "FHIR MedicationStatement. Schedule strip in Sprout; mark-taken in Shoot. Prescribing requires Rooted.",
+      "usecases": [
+        "medication",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "object"
+        },
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "onEdit",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "onMarkTaken",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [
+        "Card",
+        "StatusPill",
+        "IconPill",
+        "EditChip",
+        "ScheduleStrip",
+        "PrimaryCTA"
+      ],
+      "usage": null
+    },
+    {
+      "name": "MeterTooltip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Tooltip wrapper for exposing measurement metadata on hover (timestamp, source). Composes Base UI Tooltip.",
+      "usecases": [
+        "card-meta",
+        "hover-detail"
+      ],
+      "props": [
+        {
+          "name": "tip",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "side",
+          "raw": "?'top'|'right'|'bottom'|'left'",
+          "optional": true,
+          "values": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "PAv",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Patient avatar with initials fallback.",
+      "usecases": [
+        "identity"
+      ],
+      "props": [
+        {
+          "name": "p",
+          "raw": "patient"
+        },
+        {
+          "name": "size",
+          "raw": "number"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "PrimaryCTA",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Primary action button used in the card actions slot.",
+      "usecases": [
+        "card-actions"
+      ],
+      "props": [
+        {
+          "name": "onClick",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "raw": "?bool",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "PropertyList",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Collection view for sprout-cards. Three layouts (rows / grid / columns); cards keep their intrinsic width-morph. Header slots for filter / sort / action.",
+      "usecases": [
+        "property-list",
+        "dashboard",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "title",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "items",
+          "raw": "object[]"
+        },
+        {
+          "name": "renderItem",
+          "raw": "fn"
+        },
+        {
+          "name": "layout",
+          "raw": "'rows'|'grid'|'columns'",
+          "values": [
+            "rows",
+            "grid",
+            "columns"
+          ]
+        },
+        {
+          "name": "minCard",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "density",
+          "raw": "?'comfortable'|'compact'|'spacious'",
+          "optional": true,
+          "values": [
+            "comfortable",
+            "compact",
+            "spacious"
+          ]
+        },
+        {
+          "name": "filter",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "sort",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "action",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "className",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<PropertyList items={items} renderItem={(it) => <VitalSignCard data={it} stage=\"sprout\" />} layout=\"grid\" />"
+    },
+    {
+      "name": "ReactionList",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Bulleted reaction list for allergy cards.",
+      "usecases": [
+        "card-body",
+        "allergy"
+      ],
+      "props": [
+        {
+          "name": "reactions",
+          "raw": "string[]"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "ReferenceRangeBar",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Lab reference-range strip with patient marker.",
+      "usecases": [
+        "card-media",
+        "lab-range"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "raw": "number"
+        },
+        {
+          "name": "low",
+          "raw": "number"
+        },
+        {
+          "name": "high",
+          "raw": "number"
+        },
+        {
+          "name": "absMin",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "absMax",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "ScheduleStrip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Seven-day medication adherence strip.",
+      "usecases": [
+        "card-media",
+        "medication"
+      ],
+      "props": [
+        {
+          "name": "days",
+          "raw": "object[]"
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "Sparkline",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Inline SVG sparkline with gradient fill in currentColor.",
+      "usecases": [
+        "card-media",
+        "vital-trend"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "number[]"
+        },
+        {
+          "name": "width",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "height",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "SproutCard",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Stateful wrapper that owns Seed↔Sprout↔Shoot stage state and applies the cross-stage view-transition animation. Render-prop based; per-object cards stay presentational.",
+      "usecases": [
+        "sprout-pattern",
+        "fidelity-orchestrator"
+      ],
+      "props": [
+        {
+          "name": "initialStage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "stage",
+          "raw": "?'seed'|'sprout'|'shoot' (controlled mode)",
+          "optional": true
+        },
+        {
+          "name": "onStageChange",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "render",
+          "raw": "fn"
+        },
+        {
+          "name": "onRooted",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "className",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<SproutCard initialStage=\"seed\" render={(stage, t) => <VitalSignCard data={hr} stage={stage} onEdit={t.toShoot} />} />"
+    },
+    {
+      "name": "SproutToneProvider",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Sets --card-tone (and optionally tint/tintStrong/on) on a wrapper so descendant cards inherit a tone. Cards that explicitly pass tone override the provider.",
+      "usecases": [
+        "sprout-pattern",
+        "theming"
+      ],
+      "props": [
+        {
+          "name": "tone",
+          "raw": "?'neutral'|'heart'|'breath'|'oxygen'|'temperature'|'pressure'|'body'|'lab'|'identity'|'condition'|'allergy'|'medication'",
+          "optional": true,
+          "values": [
+            "neutral",
+            "heart",
+            "breath",
+            "oxygen",
+            "temperature",
+            "pressure",
+            "body",
+            "lab",
+            "identity",
+            "condition",
+            "allergy",
+            "medication"
+          ]
+        },
+        {
+          "name": "customColor",
+          "raw": "?string|{solid,tint,tintStrong,on}",
+          "optional": true
+        },
+        {
+          "name": "className",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "StatusPill",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Interpretation pill (dot + label). Tone follows the status, not the card identity tone.",
+      "usecases": [
+        "card-meta"
+      ],
+      "props": [
+        {
+          "name": "status",
+          "raw": "'normal'|'borderline'|'high'|'low'|'critical'",
+          "values": [
+            "normal",
+            "borderline",
+            "high",
+            "low",
+            "critical"
+          ]
+        },
+        {
+          "name": "label",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "Stepper",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Shoot-stage editable value (− / value / +). No save; consumer provides the CTA in the actions slot.",
+      "usecases": [
+        "card-value-shoot"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "raw": "number"
+        },
+        {
+          "name": "unit",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "raw": "?number",
+          "optional": true
+        },
+        {
+          "name": "onChange",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "TextInput",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Outlined text field.",
+      "usecases": [
+        "control"
+      ],
+      "props": [],
+      "composes": [],
+      "usage": "<TextInput placeholder=\"Search records\" />"
+    },
+    {
+      "name": "Tip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Tooltip wrapper (Base UI).",
+      "usecases": [
+        "affordance"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "raw": "string"
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "Toggle",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "On/off switch (Base UI).",
+      "usecases": [
+        "control"
+      ],
+      "props": [
+        {
+          "name": "checked",
+          "raw": "bool"
+        },
+        {
+          "name": "onCheckedChange",
+          "raw": "fn"
+        },
+        {
+          "name": "disabled",
+          "raw": "?bool",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<Toggle checked={on} onCheckedChange={setOn} />"
+    },
+    {
+      "name": "TrendChip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Compact delta indicator (▲ / ▼ / ·).",
+      "usecases": [
+        "card-meta"
+      ],
+      "props": [
+        {
+          "name": "direction",
+          "raw": "'up'|'down'|'flat'",
+          "values": [
+            "up",
+            "down",
+            "flat"
+          ]
+        },
+        {
+          "name": "value",
+          "raw": "string"
+        },
+        {
+          "name": "label",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "ValueDisplay",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Big numeric value + small unit; canonical value slot content.",
+      "usecases": [
+        "card-value"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "raw": "string|number"
+        },
+        {
+          "name": "unit",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "prefix",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": null
+    },
+    {
+      "name": "VitalSignCard",
+      "import": "@corilus/kernel/clinical",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "FHIR Observation (vital-signs) at Seed/Sprout/Shoot. Handles 9 properties incl. blood pressure (multi-component).",
+      "usecases": [
+        "vital-sign",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "raw": "object"
+        },
+        {
+          "name": "stage",
+          "raw": "'seed'|'sprout'|'shoot'",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ]
+        },
+        {
+          "name": "onSave",
+          "raw": "?fn",
+          "optional": true
+        },
+        {
+          "name": "onEdit",
+          "raw": "?fn",
+          "optional": true
+        }
+      ],
+      "composes": [
+        "Card",
+        "StatusPill",
+        "TrendChip",
+        "ValueDisplay",
+        "Stepper",
+        "IconPill",
+        "EditChip",
+        "Sparkline",
+        "PrimaryCTA"
+      ],
+      "usage": null
+    }
+  ]
+}

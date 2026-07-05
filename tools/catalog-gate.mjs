@@ -23,6 +23,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { walk, extractMetaText, parseMeta, scopeKind } from './lib/meta.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -49,42 +50,8 @@ const controlComponents = lint.controlComponents || {};
 const composingLayers = new Set(lint.composingLayers || ['molecule', 'composite', 'organism']);
 const atomsMayHandRollControls = lint.atomsMayHandRollControls !== false;
 
-// ── walk source ─────────────────────────────────────────────────────────────────
-function walk(dir, out = []) {
-  let entries;
-  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return out; }
-  for (const e of entries) {
-    if (e.name === 'node_modules' || e.name === 'dist' || e.name === '.git' || e.name.startsWith('.')) continue;
-    const full = path.join(dir, e.name);
-    if (e.isDirectory()) walk(full, out);
-    else if (/\.(jsx|tsx|js)$/.test(e.name)) out.push(full);
-  }
-  return out;
-}
-
-// ── extract the `export const meta = { ... }` object literal (brace-matched) ──────
-function extractMetaText(src) {
-  const m = src.match(/export\s+const\s+meta\s*=\s*\{/);
-  if (!m) return null;
-  const start = m.index + m[0].length - 1; // index of the opening {
-  let depth = 0, inStr = null, prev = '';
-  for (let i = start; i < src.length; i++) {
-    const c = src[i];
-    if (inStr) { if (c === inStr && prev !== '\\') inStr = null; }
-    else if (c === '"' || c === "'" || c === '`') inStr = c;
-    else if (c === '{') depth++;
-    else if (c === '}') { if (--depth === 0) return src.slice(start, i + 1); }
-    prev = c;
-  }
-  return null;
-}
-
-function parseMeta(text) {
-  // meta is a pure object literal of string/array/object/bool values (no calls) in
-  // every Kernel/greenhouse file. Evaluate it directly; report parse failures, don't crash.
-  // eslint-disable-next-line no-new-func
-  return new Function('return (' + text + ')')();
-}
+// ── meta parser (walk / extractMetaText / parseMeta / scopeKind) is shared with
+//    tools/gen-catalog.mjs via ./lib/meta.mjs ────────────────────────────────────
 
 // ── checks ────────────────────────────────────────────────────────────────────
 const findings = []; // {level:'error'|'warn', file, component, rule, msg, hint}
@@ -92,16 +59,6 @@ const add = (level, file, component, rule, msg, hint) =>
   findings.push({ level, file, component, rule, msg, hint });
 
 const rel = (f) => path.relative(process.cwd(), f);
-
-function scopeKind(scope) {
-  if (scope == null) return 'missing';
-  if (typeof scope === 'string') return scope === 'global' ? 'global' : scope.startsWith('?') ? 'missing' : 'other';
-  if (typeof scope === 'object') {
-    if (Array.isArray(scope.agents) && scope.agents.length) return 'agents';
-    if (Array.isArray(scope.surfaces) && scope.surfaces.length) return 'surfaces';
-  }
-  return 'other';
-}
 
 // state classes that should be a Base UI data-* attr, not a hand-toggled className
 const STATE_CLASS = /\bis-(on|off|active|selected|open|closed|expanded|collapsed|checked|disabled|pressed|current|highlighted|loading|invalid)\b/g;

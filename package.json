@@ -9,12 +9,14 @@
     "./clinical": "./src/clinical.js",
     "./styles.css": "./src/styles.css",
     "./standard.json": "./standard.json",
+    "./catalog.json": "./catalog.json",
     "./tokens/*": "./tokens/*"
   },
   "files": [
     "src",
     "tokens",
     "standard.json",
+    "catalog.json",
     "STANDARD.md"
   ],
   "peerDependencies": {
@@ -26,7 +28,8 @@
     "*.css"
   ],
   "scripts": {
-    "gate": "node tools/catalog-gate.mjs src",
+    "catalog": "node tools/gen-catalog.mjs",
+    "gate": "node tools/gen-catalog.mjs --check && node tools/catalog-gate.mjs src",
     "audit:greenhouse": "node tools/catalog-gate.mjs ../greenhouse/src --audit"
   }
 }

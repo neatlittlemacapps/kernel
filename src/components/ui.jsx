@@ -115,13 +115,13 @@ export function AIMarker({ text }) {
 
 // ── component catalog metadata (tree-shaken from the bundle; read by build/gen-components.mjs) ──
 export const meta = {
-  Btn:        { layer:'atom', scope:'global', usecases:['action'], status:'stable', summary:'Primary/secondary text button.', props:{ variant:"'primary'|'secondary'", size:'?string' }, composes:[] },
-  IconButton: { layer:'atom', scope:'global', usecases:['action'], status:'stable', summary:'Square icon button; Base UI render-target (forwardRef).', props:{ active:'?bool' }, composes:[] },
+  Btn:        { layer:'atom', scope:'global', usecases:['action'], status:'stable', summary:'Primary/secondary text button.', props:{ variant:"'primary'|'secondary'", size:'?string' }, composes:[], usage:'<Btn variant="primary">Save</Btn>' },
+  IconButton: { layer:'atom', scope:'global', usecases:['action'], status:'stable', summary:'Square icon button; Base UI render-target (forwardRef).', props:{ active:'?bool' }, composes:[], usage:'<IconButton aria-label="Close">{Icon.close({ size: 18 })}</IconButton>' },
   AIBadge:    { layer:'atom', scope:'global', usecases:['identity'], status:'stable', summary:'Companion brain mark (inline SVG, token gradient); optional glow.', props:{ size:'number', glow:'?bool' }, composes:[] },
   PAv:        { layer:'atom', scope:'global', usecases:['identity'], status:'stable', summary:'Patient avatar with initials fallback.', props:{ p:'patient', size:'number' }, composes:[] },
   Tip:        { layer:'atom', scope:'global', usecases:['affordance'], status:'stable', summary:'Tooltip wrapper (Base UI).', props:{ label:'string' }, composes:[] },
-  Toggle:     { layer:'atom', scope:'global', usecases:['control'], status:'stable', summary:'On/off switch (Base UI).', props:{ checked:'bool', onCheckedChange:'fn', disabled:'?bool' }, composes:[] },
-  TextInput:  { layer:'atom', scope:'global', usecases:['control'], status:'stable', summary:'Outlined text field.', props:{}, composes:[] },
+  Toggle:     { layer:'atom', scope:'global', usecases:['control'], status:'stable', summary:'On/off switch (Base UI).', props:{ checked:'bool', onCheckedChange:'fn', disabled:'?bool' }, composes:[], usage:'<Toggle checked={on} onCheckedChange={setOn} />' },
+  TextInput:  { layer:'atom', scope:'global', usecases:['control'], status:'stable', summary:'Outlined text field.', props:{}, composes:[], usage:'<TextInput placeholder="Search records" />' },
   FFSection:  { layer:'composite', scope:'global', usecases:['feature-flags'], status:'stable', summary:'Collapsible Feature-flags section (Base UI Accordion item).', props:{ value:'string', title:'string' }, composes:[] },
   AIMarker:   { layer:'atom', scope:'global', usecases:['ai-disclosure'], status:'stable', summary:'AI-generated / verify provenance marker.', props:{ text:'string' }, composes:[] },
 };

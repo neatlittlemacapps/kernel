@@ -172,6 +172,7 @@ export const meta = {
       className: '?string',
     },
     composes: [],
+    usage: '<SproutCard initialStage="seed" render={(stage, t) => <VitalSignCard data={hr} stage={stage} onEdit={t.toShoot} />} />',
   },
   SproutToneProvider: {
     layer: 'composite',

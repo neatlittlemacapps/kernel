@@ -281,6 +281,7 @@ export const meta = {
       ariaLabel: '?string', role: '?string', onClick: '?fn', className: '?string',
     },
     composes: [],
+    usage: '<Card stage="sprout" tone="heart" title="Heart rate" value={<ValueDisplay value="72" unit="bpm" />} />',
   },
   StatusPill: {
     layer: 'atom', scope: 'global', usecases: ['card-meta'], status: 'experimental',

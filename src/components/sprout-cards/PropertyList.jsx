@@ -112,5 +112,6 @@ export const meta = {
       className: '?string',
     },
     composes: [],
+    usage: '<PropertyList items={items} renderItem={(it) => <VitalSignCard data={it} stage="sprout" />} layout="grid" />',
   },
 };
