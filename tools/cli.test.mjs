@@ -4,9 +4,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { contrastRatio, checkContrast } from './lib/contrast.mjs';
+import { renderDoc } from './gen-agent-docs.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BIN = path.join(ROOT, 'bin', 'kernel.mjs');
@@ -17,6 +20,13 @@ function run(...args) {
   try { json = JSON.parse(r.stdout); } catch { /* not json */ }
   return { status: r.status, stdout: r.stdout, stderr: r.stderr, json };
 }
+function runIn(cwd, ...args) {
+  const r = spawnSync('node', [BIN, ...args], { cwd, encoding: 'utf8' });
+  let json = null;
+  try { json = JSON.parse(r.stdout); } catch { /* not json */ }
+  return { status: r.status, stdout: r.stdout, stderr: r.stderr, json };
+}
+const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'kernel-init-'));
 
 test('component --list --json returns component.list with every component', () => {
   const { status, json } = run('component', '--list', '--json');
@@ -91,6 +101,47 @@ test('unknown option -> ERR_INVALID_OPTION', () => {
   const { status, json } = run('component', '--nope', '--json');
   assert.equal(status, 1);
   assert.equal(json.code, 'ERR_INVALID_OPTION');
+});
+
+test('init --agents writes a delimited block reflecting standard + catalog', () => {
+  const dir = tmp();
+  const r = runIn(dir, 'init', '--agents');
+  assert.equal(r.status, 0);
+  const claude = fs.readFileSync(path.join(dir, 'CLAUDE.md'), 'utf8');
+  assert.ok(claude.includes('<!-- KERNEL:START -->') && claude.includes('<!-- KERNEL:END -->'));
+  assert.ok(claude.includes('isOpen')); // banned prop from standard.json
+  assert.ok(claude.includes('SproutCard')); // component from catalog.json
+  assert.ok(fs.existsSync(path.join(dir, 'AGENTS.md')));
+});
+
+test('init --agents is idempotent and preserves content outside the markers', () => {
+  const dir = tmp();
+  runIn(dir, 'init', '--agents');
+  const claude = path.join(dir, 'CLAUDE.md');
+  fs.appendFileSync(claude, '\n# my notes\nkeep me\n');
+  const snapshot = fs.readFileSync(claude, 'utf8');
+  const r = runIn(dir, 'init', '--agents');
+  assert.equal(r.status, 0);
+  const after = fs.readFileSync(claude, 'utf8');
+  assert.ok(after.includes('keep me'));
+  assert.equal(after, snapshot); // byte-identical: only between-markers is managed, and it was fresh
+});
+
+test('init --agent claude writes only CLAUDE.md', () => {
+  const dir = tmp();
+  const r = runIn(dir, 'init', '--agents', '--agent', 'claude');
+  assert.equal(r.status, 0);
+  assert.ok(fs.existsSync(path.join(dir, 'CLAUDE.md')));
+  assert.ok(!fs.existsSync(path.join(dir, 'AGENTS.md')));
+});
+
+test('renderDoc replaces only between markers', () => {
+  const block = '<!-- KERNEL:START -->\nNEW\n<!-- KERNEL:END -->';
+  const existing = 'top\n<!-- KERNEL:START -->\nOLD\n<!-- KERNEL:END -->\nbottom\n';
+  const { contents, action } = renderDoc(existing, block);
+  assert.equal(action, 'refreshed');
+  assert.ok(contents.startsWith('top\n') && contents.endsWith('bottom\n'));
+  assert.ok(contents.includes('NEW') && !contents.includes('OLD'));
 });
 
 test('contrast math: black on white is 21:1', () => {

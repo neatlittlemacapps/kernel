@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { buildCatalog, CATALOG_PATH } from '../tools/gen-catalog.mjs';
 import { checkContrast } from '../tools/lib/contrast.mjs';
+import { buildAgentBlock, renderDoc } from '../tools/gen-agent-docs.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -26,13 +27,14 @@ const CODES = ['ERR_UNKNOWN', 'ERR_UNKNOWN_COMPONENT', 'ERR_UNKNOWN_TOPIC', 'ERR
 // ── arg parse ─────────────────────────────────────────────────────────────────────
 const raw = process.argv.slice(2);
 // Pre-scan output flags so an ERR_INVALID_OPTION below still respects --json regardless of order.
-const flags = { json: raw.includes('--json'), dense: raw.includes('--dense'), detail: 'compact' };
+const flags = { json: raw.includes('--json'), dense: raw.includes('--dense'), detail: 'compact', agents: raw.includes('--agents'), agent: 'all' };
 const positional = [];
 for (let i = 0; i < raw.length; i++) {
   const a = raw[i];
-  if (a === '--json' || a === '--dense') continue; // already captured
+  if (a === '--json' || a === '--dense' || a === '--agents') continue; // already captured
   else if (a === '--list') positional.push('--list'); // handled per-command
   else if (a === '--detail') { flags.detail = raw[++i]; if (!['brief', 'compact', 'full'].includes(flags.detail)) fail('ERR_INVALID_OPTION', `--detail must be brief|compact|full, got "${flags.detail}"`); }
+  else if (a === '--agent') { flags.agent = raw[++i]; if (!['claude', 'codex', 'all'].includes(flags.agent)) fail('ERR_INVALID_OPTION', `--agent must be claude|codex|all, got "${flags.agent}"`); }
   else if (a.startsWith('--')) fail('ERR_INVALID_OPTION', `unknown option "${a}"`);
   else positional.push(a);
 }
@@ -270,6 +272,22 @@ function cmdBuild() {
       : `no on-system components matched "${idea}". Try \`kernel component --list\`.`);
 }
 
+function cmdInit() {
+  if (!flags.agents) fail('ERR_INVALID_OPTION', 'init: pass --agents to write the Kernel agent-docs block.');
+  const targets = flags.agent === 'claude' ? ['CLAUDE.md'] : flags.agent === 'codex' ? ['AGENTS.md'] : ['CLAUDE.md', 'AGENTS.md'];
+  const block = buildAgentBlock();
+  const written = [];
+  for (const file of targets) {
+    const p = path.join(process.cwd(), file);
+    let existing = null;
+    try { existing = fs.readFileSync(p, 'utf8'); } catch { /* new file */ }
+    const { contents, action } = renderDoc(existing, block);
+    fs.writeFileSync(p, contents);
+    written.push({ file, action });
+  }
+  emit('init', { written }, () => ['kernel init --agents:', ...written.map((w) => `  ${w.action.padEnd(9)} ${w.file}`)].join('\n'));
+}
+
 // ── help / dispatch ────────────────────────────────────────────────────────────────
 const HELP = `kernel - Corilus design-system CLI (a view over catalog.json)
 
@@ -283,11 +301,13 @@ commands:
   impact <Name>              what breaks if you change <Name>
   doctor                     setup + drift + WCAG contrast health
   build "<idea>"             closest component kit + a Compose suggestion
+  init --agents              write/refresh the Kernel agent-docs block (CLAUDE.md/AGENTS.md)
 
 global flags: --json (typed {type,data} envelope), --dense (context-window format).
+init flags: --agents (required), --agent claude|codex|all (default all).
 error codes are stable + append-only; see CLI.md.`;
 
-const COMMANDS = { component: cmdComponent, docs: cmdDocs, search: cmdSearch, impact: cmdImpact, doctor: cmdDoctor, build: cmdBuild };
+const COMMANDS = { component: cmdComponent, docs: cmdDocs, search: cmdSearch, impact: cmdImpact, doctor: cmdDoctor, build: cmdBuild, init: cmdInit };
 
 if (!command || command === 'help' || command === '--help') { process.stdout.write(HELP + '\n'); process.exit(0); }
 const handler = COMMANDS[command];
