@@ -70,6 +70,37 @@ on `code` and never on the message text.
 `suggestions` (when present) is an array of `{ name, reason }`, ranked by closeness (same prefix,
 substring match, then edit distance). It may be empty when nothing is close.
 
+## MCP server
+
+Kernel ships a zero-dependency MCP server (`mcp/server.mjs`) that exposes the same catalog views
+as the CLI over the Model Context Protocol, so an MCP client can query Kernel live. It is a local
+stdio server (newline-delimited JSON-RPC 2.0); it needs no dependency and runs on bare `node`.
+
+Register it in your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "kernel": {
+      "command": "node",
+      "args": ["node_modules/@corilus/kernel/mcp/server.mjs"]
+    }
+  }
+}
+```
+
+(From inside this repo: `npm run mcp`, or `node mcp/server.mjs`.)
+
+Tools (results mirror the CLI's `--json` `data`, both as `content` text and `structuredContent`):
+
+| Tool | Input | Returns |
+|---|---|---|
+| `search` | `{ query: string }` | `{ query, results: [{ name, import, score, summary }] }` |
+| `get` | `{ name: string }` | the full catalog entry; on an unknown name, an `isError` result with `suggestions`. |
+
+The server and the CLI share one query implementation (`tools/lib/queries.mjs`), so `get`/`search`
+never drift from `kernel component`/`kernel search`.
+
 ## Notes
 
 - `docs brands` and `docs density` both project the token doc's "Modes and brands" section, which

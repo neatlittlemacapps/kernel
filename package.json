@@ -20,6 +20,7 @@
     "tokens",
     "bin",
     "tools",
+    "mcp",
     "standard.json",
     "catalog.json",
     "STANDARD.md",
@@ -37,6 +38,7 @@
     "catalog": "node tools/gen-catalog.mjs",
     "gate": "node tools/gen-catalog.mjs --check && node tools/catalog-gate.mjs src",
     "audit:greenhouse": "node tools/catalog-gate.mjs ../greenhouse/src --audit",
+    "mcp": "node mcp/server.mjs",
     "test": "node --test"
   }
 }

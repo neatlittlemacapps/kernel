@@ -15,6 +15,7 @@ import { spawnSync } from 'node:child_process';
 import { buildCatalog, CATALOG_PATH } from '../tools/gen-catalog.mjs';
 import { checkContrast } from '../tools/lib/contrast.mjs';
 import { buildAgentBlock, renderDoc } from '../tools/gen-agent-docs.mjs';
+import { loadCatalog as readCatalog, findComponent, scoreComponents, searchCatalog, suggestNames } from '../tools/lib/queries.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -56,60 +57,10 @@ function fail(code, message, suggestions = []) {
   process.exit(1);
 }
 
-// ── catalog load ────────────────────────────────────────────────────────────────────
+// ── catalog load (query logic is shared with the MCP server via tools/lib/queries.mjs) ──
 function loadCatalog() {
-  let text;
-  try { text = fs.readFileSync(CATALOG_PATH, 'utf8'); }
-  catch { fail('ERR_NO_CATALOG', 'catalog.json not found. Run `npm run catalog` to generate it.'); }
-  try { return JSON.parse(text); }
-  catch (e) { fail('ERR_NO_CATALOG', `catalog.json is not valid JSON: ${e.message}`); }
-}
-
-// ── small string helpers (suggestions) ────────────────────────────────────────────
-function levenshtein(a, b) {
-  a = a.toLowerCase(); b = b.toLowerCase();
-  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
-  for (let j = 0; j <= b.length; j++) d[0][j] = j;
-  for (let i = 1; i <= a.length; i++)
-    for (let j = 1; j <= b.length; j++)
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-  return d[a.length][b.length];
-}
-function suggestNames(query, names, n = 3) {
-  const q = query.toLowerCase();
-  return names
-    .map((name) => {
-      const l = name.toLowerCase();
-      let reason = null, rank;
-      if (l.startsWith(q)) { reason = 'same prefix'; rank = 0; }
-      else if (l.includes(q)) { reason = 'substring match'; rank = 1; }
-      else { const dist = levenshtein(query, name); if (dist <= Math.max(2, Math.ceil(name.length / 3))) { reason = 'similar name'; rank = 2 + dist; } }
-      return reason ? { name, reason, rank } : null;
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.rank - b.rank)
-    .slice(0, n)
-    .map(({ name, reason }) => ({ name, reason }));
-}
-
-// ── search scoring (shared by search + build) ──────────────────────────────────────
-function scoreComponents(query, components) {
-  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-  return components
-    .map((c) => {
-      const name = c.name.toLowerCase();
-      const uses = (c.usecases || []).join(' ').toLowerCase();
-      const summary = (c.summary || '').toLowerCase();
-      let score = 0;
-      for (const t of terms) {
-        if (name.includes(t)) score += 3;
-        if (uses.includes(t)) score += 2;
-        if (summary.includes(t)) score += 1;
-      }
-      return { c, score };
-    })
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score || a.c.name.localeCompare(b.c.name, 'en'));
+  try { return readCatalog(CATALOG_PATH); }
+  catch (e) { fail(e.code || 'ERR_NO_CATALOG', e.message); }
 }
 
 // ── per-component rendering ──────────────────────────────────────────────────────
@@ -179,9 +130,8 @@ function cmdComponent() {
   }
   const name = args[0];
   if (!name) fail('ERR_INVALID_OPTION', 'component: pass a <Name> or --list.');
-  const names = catalog.components.map((c) => c.name);
-  let c = catalog.components.find((x) => x.name === name) || catalog.components.find((x) => x.name.toLowerCase() === name.toLowerCase());
-  if (!c) fail('ERR_UNKNOWN_COMPONENT', `no component named "${name}".`, suggestNames(name, names));
+  const c = findComponent(catalog, name);
+  if (!c) fail('ERR_UNKNOWN_COMPONENT', `no component named "${name}".`, suggestNames(name, catalog.components.map((x) => x.name)));
   return emit('component.detail', c, () => (flags.dense ? renderComponentDense(c) : renderComponentFull(c)));
 }
 
@@ -202,7 +152,7 @@ function cmdSearch() {
   const query = args.join(' ');
   if (!query) fail('ERR_INVALID_OPTION', 'search: pass a <query>.');
   const catalog = loadCatalog();
-  const ranked = scoreComponents(query, catalog.components).map(({ c, score }) => ({ name: c.name, import: c.import, score, summary: c.summary }));
+  const ranked = searchCatalog(catalog, query);
   return emit('search', { query, results: ranked }, () =>
     ranked.length ? [`${ranked.length} match(es) for "${query}":`, ...ranked.map((r) => `  ${r.name.padEnd(20)} ${r.summary || ''}`)].join('\n') : `no matches for "${query}".`);
 }
