@@ -4,6 +4,9 @@
   "private": true,
   "description": "Kernel - Corilus shippable design system: DTCG design tokens + Base UI component wrappers. Generic surface (.) + optional clinical tier (./clinical). Extracted from companion-forge/greenhouse.",
   "type": "module",
+  "bin": {
+    "kernel": "bin/kernel.mjs"
+  },
   "exports": {
     ".": "./src/index.js",
     "./clinical": "./src/clinical.js",
@@ -15,9 +18,12 @@
   "files": [
     "src",
     "tokens",
+    "bin",
+    "tools",
     "standard.json",
     "catalog.json",
-    "STANDARD.md"
+    "STANDARD.md",
+    "CLI.md"
   ],
   "peerDependencies": {
     "@base-ui-components/react": "*",
@@ -30,6 +36,7 @@
   "scripts": {
     "catalog": "node tools/gen-catalog.mjs",
     "gate": "node tools/gen-catalog.mjs --check && node tools/catalog-gate.mjs src",
-    "audit:greenhouse": "node tools/catalog-gate.mjs ../greenhouse/src --audit"
+    "audit:greenhouse": "node tools/catalog-gate.mjs ../greenhouse/src --audit",
+    "test": "node --test"
   }
 }

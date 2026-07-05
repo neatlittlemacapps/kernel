@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const list = args.includes('--list');
+const json = args.includes('--json'); // structured envelope for the `kernel` CLI (B-30)
 const positional = args.filter((a) => !a.startsWith('--'));
 const target = list ? positional[0] : positional[0];
 const dirs = (list ? positional : positional.slice(1));
@@ -81,13 +82,17 @@ for (const dir of dirs) {
 
 if (list) {
   const names = Object.keys(catalog).sort();
+  if (json) {
+    console.log(JSON.stringify({ type: 'impact.list', data: { count: names.length, components: names.map((n) => ({ name: n, scope: catalog[n].scope, file: catalog[n].file })) } }, null, 2));
+    process.exit(0);
+  }
   console.log(`\n${names.length} components across ${dirs.length} dir(s):\n`);
   for (const n of names) console.log(`  ${n}  ·  ${catalog[n].scope}  ·  ${catalog[n].file}`);
   console.log('');
   process.exit(0);
 }
 
-if (!catalog[target] && !Object.values(catalog).some((c) => c.composes.includes(target)))
+if (!json && !catalog[target] && !Object.values(catalog).some((c) => c.composes.includes(target)))
   console.log(`\nnote: "${target}" is not in the catalog and nothing composes it (external or misspelled?).`);
 
 // direct dependents
@@ -107,6 +112,28 @@ while (frontier.length && depth < 12) {
   depth++;
 }
 
+const agents = new Set();
+for (const n of seen) { const m = /agents:\[(.+)\]/.exec(catalog[n].scope); if (m) m[1].split(',').forEach((a) => agents.add(a)); }
+
+if (json) {
+  const levels = layers.map((names, i) => ({
+    level: i + 1, kind: i === 0 ? 'direct' : 'transitive',
+    components: names.sort().map((n) => ({ name: n, scope: catalog[n].scope, file: catalog[n].file })),
+  }));
+  console.log(JSON.stringify({
+    type: 'impact',
+    data: {
+      target,
+      catalogued: !!catalog[target],
+      scope: catalog[target] ? catalog[target].scope : null,
+      dependentCount: seen.size,
+      levels,
+      agentsTouched: [...agents],
+    },
+  }, null, 2));
+  process.exit(0);
+}
+
 console.log(`\nImpact of changing  ${target}  (${catalog[target] ? catalog[target].scope + ' · ' + catalog[target].file : 'not catalogued'})\n`);
 if (!layers.length) {
   console.log('  no dependents — safe to change in isolation.\n');
@@ -116,8 +143,6 @@ if (!layers.length) {
     console.log(`  level ${i + 1} (${i === 0 ? 'direct' : 'transitive'}):`);
     for (const n of names.sort()) console.log(`    ${n}  ·  ${catalog[n].scope}  ·  ${catalog[n].file}`);
   });
-  const agents = new Set();
-  for (const n of seen) { const m = /agents:\[(.+)\]/.exec(catalog[n].scope); if (m) m[1].split(',').forEach((a) => agents.add(a)); }
   console.log(`\n  agents touched: ${agents.size ? [...agents].join(', ') : 'none flagged via scope'}.`);
   console.log('  → re-verify these (screenshot-diff the shared atom) before shipping the change.\n');
 }

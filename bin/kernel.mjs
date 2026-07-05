@@ -1,0 +1,295 @@
+#!/usr/bin/env node
+// The `kernel` CLI (grove BACKLOG B-30) - the pull surface over catalog.json.
+//
+// A thin, zero-dependency projection of catalog.json + the token docs, with a JSON + error
+// contract modeled on Astryx's: every command supports `--json` (typed {type,data} envelope)
+// and `--dense` (token-efficient markdown for context windows). Error codes are stable and
+// append-only (see CLI.md). Node built-ins only, so it runs with bare `node`.
+//
+// Commands: component | docs | search | impact | doctor | build   (see `kernel help`).
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { buildCatalog, CATALOG_PATH } from '../tools/gen-catalog.mjs';
+import { checkContrast } from '../tools/lib/contrast.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dirname, '..');
+const TOOLS = path.join(ROOT, 'tools');
+const TOKENS = path.join(ROOT, 'tokens');
+
+// ── stable, append-only error codes (documented in CLI.md) ────────────────────────
+const CODES = ['ERR_UNKNOWN', 'ERR_UNKNOWN_COMPONENT', 'ERR_UNKNOWN_TOPIC', 'ERR_NO_CATALOG', 'ERR_STALE_CATALOG', 'ERR_INVALID_OPTION'];
+
+// ── arg parse ─────────────────────────────────────────────────────────────────────
+const raw = process.argv.slice(2);
+// Pre-scan output flags so an ERR_INVALID_OPTION below still respects --json regardless of order.
+const flags = { json: raw.includes('--json'), dense: raw.includes('--dense'), detail: 'compact' };
+const positional = [];
+for (let i = 0; i < raw.length; i++) {
+  const a = raw[i];
+  if (a === '--json' || a === '--dense') continue; // already captured
+  else if (a === '--list') positional.push('--list'); // handled per-command
+  else if (a === '--detail') { flags.detail = raw[++i]; if (!['brief', 'compact', 'full'].includes(flags.detail)) fail('ERR_INVALID_OPTION', `--detail must be brief|compact|full, got "${flags.detail}"`); }
+  else if (a.startsWith('--')) fail('ERR_INVALID_OPTION', `unknown option "${a}"`);
+  else positional.push(a);
+}
+const command = positional[0];
+const args = positional.slice(1);
+
+// ── emit / fail ────────────────────────────────────────────────────────────────────
+function emit(type, data, human) {
+  if (flags.json) process.stdout.write(JSON.stringify({ type, data }, null, 2) + '\n');
+  else process.stdout.write(human() + '\n');
+}
+function fail(code, message, suggestions = []) {
+  if (!CODES.includes(code)) code = 'ERR_UNKNOWN';
+  if (flags.json) process.stdout.write(JSON.stringify({ error: message, code, suggestions }, null, 2) + '\n');
+  else {
+    process.stderr.write(`error [${code}]: ${message}\n`);
+    for (const s of suggestions) process.stderr.write(`  did you mean ${s.name}? (${s.reason})\n`);
+  }
+  process.exit(1);
+}
+
+// ── catalog load ────────────────────────────────────────────────────────────────────
+function loadCatalog() {
+  let text;
+  try { text = fs.readFileSync(CATALOG_PATH, 'utf8'); }
+  catch { fail('ERR_NO_CATALOG', 'catalog.json not found. Run `npm run catalog` to generate it.'); }
+  try { return JSON.parse(text); }
+  catch (e) { fail('ERR_NO_CATALOG', `catalog.json is not valid JSON: ${e.message}`); }
+}
+
+// ── small string helpers (suggestions) ────────────────────────────────────────────
+function levenshtein(a, b) {
+  a = a.toLowerCase(); b = b.toLowerCase();
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function suggestNames(query, names, n = 3) {
+  const q = query.toLowerCase();
+  return names
+    .map((name) => {
+      const l = name.toLowerCase();
+      let reason = null, rank;
+      if (l.startsWith(q)) { reason = 'same prefix'; rank = 0; }
+      else if (l.includes(q)) { reason = 'substring match'; rank = 1; }
+      else { const dist = levenshtein(query, name); if (dist <= Math.max(2, Math.ceil(name.length / 3))) { reason = 'similar name'; rank = 2 + dist; } }
+      return reason ? { name, reason, rank } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.rank - b.rank)
+    .slice(0, n)
+    .map(({ name, reason }) => ({ name, reason }));
+}
+
+// ── search scoring (shared by search + build) ──────────────────────────────────────
+function scoreComponents(query, components) {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  return components
+    .map((c) => {
+      const name = c.name.toLowerCase();
+      const uses = (c.usecases || []).join(' ').toLowerCase();
+      const summary = (c.summary || '').toLowerCase();
+      let score = 0;
+      for (const t of terms) {
+        if (name.includes(t)) score += 3;
+        if (uses.includes(t)) score += 2;
+        if (summary.includes(t)) score += 1;
+      }
+      return { c, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score || a.c.name.localeCompare(b.c.name, 'en'));
+}
+
+// ── per-component rendering ──────────────────────────────────────────────────────
+function propLine(p) {
+  const bits = [p.name];
+  if (p.optional) bits[0] += '?';
+  if (p.values) bits.push(`= ${p.values.join(' | ')}`);
+  else if (p.class) bits.push(`(${p.class})`);
+  else if (p.raw) bits.push(`= ${p.raw.startsWith('?') ? p.raw.slice(1) : p.raw}`);
+  return '  ' + bits.join(' ');
+}
+function renderComponentDense(c) {
+  const lines = [`## ${c.name}  (import from "${c.import}")`, c.summary || ''];
+  lines.push('props:');
+  if (c.props.length) for (const p of c.props) lines.push(propLine(p)); else lines.push('  (none)');
+  if (c.composes.length) lines.push(`composes: ${c.composes.join(', ')}`);
+  if (c.usage) lines.push('usage:\n  ' + c.usage);
+  return lines.filter(Boolean).join('\n');
+}
+function renderComponentFull(c) {
+  const lines = [
+    `${c.name}`,
+    `  import   ${c.import}`,
+    `  layer    ${c.layer}    scope ${JSON.stringify(c.scope)}    status ${c.status}`,
+    `  summary  ${c.summary || ''}`,
+    `  usecases ${(c.usecases || []).join(', ') || '(none)'}`,
+    '  props:',
+  ];
+  if (c.props.length) for (const p of c.props) lines.push('  ' + propLine(p)); else lines.push('    (none)');
+  lines.push(`  composes ${c.composes.join(', ') || '(none)'}`);
+  lines.push(`  usage    ${c.usage || '(none yet)'}`);
+  return lines.join('\n');
+}
+
+// ── docs registry ────────────────────────────────────────────────────────────────
+const DOCS = {
+  tokens: { file: 'TOKENS.md', mode: 'index' },
+  usage: { file: 'USAGE.md', mode: 'full' },
+  brands: { file: 'TOKENS.md', section: '## Modes and brands' },
+  density: { file: 'TOKENS.md', section: '## Modes and brands' },
+  motion: { file: 'TOKENS.md', section: '### Base / motion' },
+};
+function readDoc(file) { return fs.readFileSync(path.join(TOKENS, file), 'utf8'); }
+function docHeadings(md) {
+  return md.split('\n').filter((l) => /^#{2,3}\s/.test(l)).map((l) => l.trim());
+}
+function docSection(md, section) {
+  const lines = md.split('\n');
+  const level = (section.match(/^#+/) || [''])[0].length;
+  let start = lines.findIndex((l) => l.trim() === section);
+  if (start === -1) return null;
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i++) {
+    const m = lines[i].match(/^(#{1,6})\s/);
+    if (m && m[1].length <= level) { end = i; break; }
+  }
+  return lines.slice(start, end).join('\n').trim();
+}
+
+// ── commands ──────────────────────────────────────────────────────────────────────
+function cmdComponent() {
+  const catalog = loadCatalog();
+  if (args[0] === '--list' || raw.includes('--list')) {
+    const data = catalog.components.map((c) => ({ name: c.name, import: c.import, layer: c.layer, scope: c.scope, status: c.status }));
+    return emit('component.list', { count: data.length, components: data }, () =>
+      [`${data.length} components:`, ...data.map((c) => `  ${c.name.padEnd(20)} ${c.layer.padEnd(10)} ${c.status.padEnd(12)} ${c.import}`)].join('\n'));
+  }
+  const name = args[0];
+  if (!name) fail('ERR_INVALID_OPTION', 'component: pass a <Name> or --list.');
+  const names = catalog.components.map((c) => c.name);
+  let c = catalog.components.find((x) => x.name === name) || catalog.components.find((x) => x.name.toLowerCase() === name.toLowerCase());
+  if (!c) fail('ERR_UNKNOWN_COMPONENT', `no component named "${name}".`, suggestNames(name, names));
+  return emit('component.detail', c, () => (flags.dense ? renderComponentDense(c) : renderComponentFull(c)));
+}
+
+function cmdDocs() {
+  const topic = args[0];
+  if (!topic) fail('ERR_INVALID_OPTION', 'docs: pass a <topic>.', Object.keys(DOCS).map((t) => ({ name: t, reason: 'available topic' })));
+  const spec = DOCS[topic];
+  if (!spec) fail('ERR_UNKNOWN_TOPIC', `no docs topic "${topic}".`, suggestNames(topic, Object.keys(DOCS)));
+  const md = readDoc(spec.file);
+  let content;
+  if (spec.mode === 'full') content = md.trim();
+  else if (spec.mode === 'index') content = docHeadings(md).join('\n');
+  else { content = docSection(md, spec.section); if (content == null) fail('ERR_UNKNOWN_TOPIC', `section "${spec.section}" not found in ${spec.file}.`); }
+  return emit('docs.detail', { topic, file: `tokens/${spec.file}`, content }, () => content);
+}
+
+function cmdSearch() {
+  const query = args.join(' ');
+  if (!query) fail('ERR_INVALID_OPTION', 'search: pass a <query>.');
+  const catalog = loadCatalog();
+  const ranked = scoreComponents(query, catalog.components).map(({ c, score }) => ({ name: c.name, import: c.import, score, summary: c.summary }));
+  return emit('search', { query, results: ranked }, () =>
+    ranked.length ? [`${ranked.length} match(es) for "${query}":`, ...ranked.map((r) => `  ${r.name.padEnd(20)} ${r.summary || ''}`)].join('\n') : `no matches for "${query}".`);
+}
+
+function cmdImpact() {
+  const name = args[0];
+  if (!name) fail('ERR_INVALID_OPTION', 'impact: pass a <Name>.');
+  const passArgs = [path.join(TOOLS, 'impact.mjs'), name];
+  if (flags.json) passArgs.push('--json');
+  const res = spawnSync('node', passArgs, { encoding: 'utf8' });
+  if (res.status !== 0 && res.status !== null && !flags.json) { process.stderr.write(res.stderr || ''); process.exit(res.status || 1); }
+  if (flags.json) {
+    let parsed;
+    try { parsed = JSON.parse(res.stdout); } catch { fail('ERR_UNKNOWN', `impact did not return JSON: ${res.stderr || res.stdout}`); }
+    process.stdout.write(JSON.stringify(parsed, null, 2) + '\n');
+  } else {
+    process.stdout.write(res.stdout);
+  }
+}
+
+function cmdDoctor() {
+  const checks = [];
+  // 1. catalog freshness (inline, no spawn)
+  let committed = null;
+  try { committed = fs.readFileSync(CATALOG_PATH, 'utf8'); } catch { /* handled below */ }
+  if (committed == null) checks.push({ name: 'catalog present', status: 'FAIL', code: 'ERR_NO_CATALOG', detail: 'catalog.json missing; run `npm run catalog`.' });
+  else {
+    const fresh = buildCatalog().json === committed;
+    checks.push({ name: 'catalog fresh', status: fresh ? 'PASS' : 'FAIL', ...(fresh ? {} : { code: 'ERR_STALE_CATALOG' }), detail: fresh ? 'catalog.json matches source metas.' : 'catalog.json is stale; run `npm run catalog`.' });
+  }
+  // 2. catalog gate
+  const gate = spawnSync('node', [path.join(TOOLS, 'catalog-gate.mjs'), path.join(ROOT, 'src')], { encoding: 'utf8' });
+  checks.push({ name: 'catalog gate', status: gate.status === 0 ? 'PASS' : 'FAIL', detail: gate.status === 0 ? 'no gate errors.' : 'gate reported errors (run `npm run gate`).' });
+  // 3. token-file sanity
+  const files = [{ p: path.join(TOKENS, 'tokens.css'), kind: 'css' }, { p: path.join(ROOT, 'standard.json'), kind: 'json' }, { p: CATALOG_PATH, kind: 'json' }];
+  let sane = true, badFile = null;
+  for (const f of files) {
+    try { const t = fs.readFileSync(f.p, 'utf8'); if (f.kind === 'json') JSON.parse(t); else if (!t.includes('{')) throw new Error('empty css'); }
+    catch { sane = false; badFile = path.relative(ROOT, f.p); break; }
+  }
+  checks.push({ name: 'token files parse', status: sane ? 'PASS' : 'FAIL', detail: sane ? 'tokens.css / standard.json / catalog.json all parse.' : `failed to parse ${badFile}.` });
+  // 4. WCAG contrast spot-check
+  let contrast;
+  try { contrast = checkContrast(path.join(TOKENS, 'tokens.css')); } catch (e) { contrast = null; }
+  if (!contrast) checks.push({ name: 'wcag contrast', status: 'WARN', detail: 'could not run contrast check.' });
+  else {
+    const failing = contrast.filter((r) => r.pass === false);
+    checks.push({ name: 'wcag contrast', status: failing.length ? 'FAIL' : 'PASS', detail: failing.length ? failing.map((f) => `${f.pair} [${f.mode}] ${f.ratio} < ${f.min}`).join('; ') : `${contrast.length} pairs meet AA.`, pairs: contrast });
+  }
+
+  const ok = !checks.some((c) => c.status === 'FAIL');
+  emit('doctor', { ok, checks }, () =>
+    ['kernel doctor:', ...checks.map((c) => `  ${c.status.padEnd(4)} ${c.name}${c.detail ? ' - ' + c.detail : ''}`), `\n  ${ok ? 'healthy.' : 'FAILures present.'}`].join('\n'));
+  if (!ok) process.exit(1);
+}
+
+function cmdBuild() {
+  const idea = args.join(' ');
+  if (!idea) fail('ERR_INVALID_OPTION', 'build: pass an "<idea>".');
+  const catalog = loadCatalog();
+  const ranked = scoreComponents(idea, catalog.components).slice(0, 6);
+  const matches = ranked.map(({ c, score }) => ({ name: c.name, layer: c.layer, import: c.import, score, summary: c.summary }));
+  const compose = matches.map((m) => m.name);
+  emit('build', { idea, matches, compose }, () =>
+    matches.length
+      ? [`kit for "${idea}":`, ...matches.map((m) => `  ${m.name.padEnd(20)} ${m.layer.padEnd(10)} ${m.summary || ''}`), `\n  Compose: ${compose.join(' + ')}`].join('\n')
+      : `no on-system components matched "${idea}". Try \`kernel component --list\`.`);
+}
+
+// ── help / dispatch ────────────────────────────────────────────────────────────────
+const HELP = `kernel - Corilus design-system CLI (a view over catalog.json)
+
+usage: kernel <command> [args] [--json] [--dense] [--detail brief|compact|full]
+
+commands:
+  component --list           list every component
+  component <Name>           show one component (props, composes, usage)
+  docs <topic>               token docs: ${Object.keys(DOCS).join(', ')}
+  search <query>             rank components by name/usecases/summary
+  impact <Name>              what breaks if you change <Name>
+  doctor                     setup + drift + WCAG contrast health
+  build "<idea>"             closest component kit + a Compose suggestion
+
+global flags: --json (typed {type,data} envelope), --dense (context-window format).
+error codes are stable + append-only; see CLI.md.`;
+
+const COMMANDS = { component: cmdComponent, docs: cmdDocs, search: cmdSearch, impact: cmdImpact, doctor: cmdDoctor, build: cmdBuild };
+
+if (!command || command === 'help' || command === '--help') { process.stdout.write(HELP + '\n'); process.exit(0); }
+const handler = COMMANDS[command];
+if (!handler) fail('ERR_UNKNOWN', `unknown command "${command}".`, suggestNames(command, Object.keys(COMMANDS)));
+handler();
