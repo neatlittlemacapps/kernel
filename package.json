@@ -21,6 +21,7 @@
     "bin",
     "tools",
     "mcp",
+    "templates",
     "standard.json",
     "catalog.json",
     "STANDARD.md",

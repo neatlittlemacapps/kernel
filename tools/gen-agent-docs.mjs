@@ -82,6 +82,7 @@ export function buildAgentBlock() {
     'kernel docs <topic>            # tokens | usage | brands | density | motion',
     'kernel impact <Name>           # what breaks if you change it',
     'kernel build "<idea>"          # closest component kit + a Compose suggestion',
+    'kernel template --list         # frame-first starter templates (<name> --skeleton for the layout)',
     'kernel doctor                  # freshness + gate + WCAG contrast health',
     '```',
     '',

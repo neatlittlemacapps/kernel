@@ -103,6 +103,38 @@ test('unknown option -> ERR_INVALID_OPTION', () => {
   assert.equal(json.code, 'ERR_INVALID_OPTION');
 });
 
+test('template --list returns the seeded templates', () => {
+  const { status, json } = run('template', '--list', '--json');
+  assert.equal(status, 0);
+  assert.equal(json.type, 'template.list');
+  const names = json.data.templates.map((t) => t.name).sort();
+  assert.deepEqual(names, ['ai-chat', 'list-detail', 'settings']);
+});
+
+test('template <name> --skeleton prints frame-first JSX composing Kernel', () => {
+  const { status, stdout } = run('template', 'settings', '--skeleton');
+  assert.equal(status, 0);
+  assert.ok(stdout.includes('region:')); // frame-first region markers
+  assert.ok(stdout.includes('<main')); // structural frame element
+  assert.ok(stdout.includes('PropertyList') && stdout.includes('@corilus/kernel')); // real Kernel component
+  assert.ok(!/<button[\s/>]/.test(stdout)); // no raw controls
+});
+
+test('template <name> --json (detail) carries regions + composes', () => {
+  const { status, json } = run('template', 'ai-chat', '--json');
+  assert.equal(status, 0);
+  assert.equal(json.type, 'template.detail');
+  assert.ok(json.data.regions.length > 0);
+  assert.ok(json.data.composes.includes('AIBadge'));
+});
+
+test('unknown template -> ERR_UNKNOWN_TEMPLATE + suggestion', () => {
+  const { status, json } = run('template', 'setings', '--json');
+  assert.equal(status, 1);
+  assert.equal(json.code, 'ERR_UNKNOWN_TEMPLATE');
+  assert.ok(json.suggestions.some((s) => s.name === 'settings'));
+});
+
 test('init --agents writes a delimited block reflecting standard + catalog', () => {
   const dir = tmp();
   const r = runIn(dir, 'init', '--agents');

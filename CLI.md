@@ -25,6 +25,8 @@ node bin/kernel.mjs <command> [args] [flags]
 | `impact <Name>` | What breaks if you change `<Name>` (direct + transitive dependents, agents touched). Wraps `tools/impact.mjs`. |
 | `doctor` | Health: catalog freshness, catalog gate, token-file parse, WCAG contrast spot-check. Non-zero exit on any FAIL. |
 | `build "<idea>"` | Closest component kit + a `Compose:` suggestion. |
+| `template --list` | List the frame-first starter templates. |
+| `template <name> [--skeleton]` | Show a template's metadata, or with `--skeleton` its frame-first JSX. |
 | `help` | Usage. |
 
 ## Global flags
@@ -63,6 +65,7 @@ on `code` and never on the message text.
 | `ERR_UNKNOWN` | Unknown command, or an otherwise-unclassified failure. |
 | `ERR_UNKNOWN_COMPONENT` | No component by that name. Carries `suggestions`. |
 | `ERR_UNKNOWN_TOPIC` | No docs topic by that name. Carries `suggestions`. |
+| `ERR_UNKNOWN_TEMPLATE` | No template by that name. Carries `suggestions`. |
 | `ERR_NO_CATALOG` | `catalog.json` is missing or unreadable. Run `npm run catalog`. |
 | `ERR_STALE_CATALOG` | `catalog.json` no longer matches the source metas (reported by `doctor`). Run `npm run catalog`. |
 | `ERR_INVALID_OPTION` | Unknown flag, bad flag value, or a command called without its required argument. |

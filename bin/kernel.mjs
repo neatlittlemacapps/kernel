@@ -16,23 +16,25 @@ import { buildCatalog, CATALOG_PATH } from '../tools/gen-catalog.mjs';
 import { checkContrast } from '../tools/lib/contrast.mjs';
 import { buildAgentBlock, renderDoc } from '../tools/gen-agent-docs.mjs';
 import { loadCatalog as readCatalog, findComponent, scoreComponents, searchCatalog, suggestNames } from '../tools/lib/queries.mjs';
+import { walk, extractMetaText, parseMeta } from '../tools/lib/meta.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const TOOLS = path.join(ROOT, 'tools');
 const TOKENS = path.join(ROOT, 'tokens');
+const TEMPLATES = path.join(ROOT, 'templates');
 
 // ── stable, append-only error codes (documented in CLI.md) ────────────────────────
-const CODES = ['ERR_UNKNOWN', 'ERR_UNKNOWN_COMPONENT', 'ERR_UNKNOWN_TOPIC', 'ERR_NO_CATALOG', 'ERR_STALE_CATALOG', 'ERR_INVALID_OPTION'];
+const CODES = ['ERR_UNKNOWN', 'ERR_UNKNOWN_COMPONENT', 'ERR_UNKNOWN_TOPIC', 'ERR_UNKNOWN_TEMPLATE', 'ERR_NO_CATALOG', 'ERR_STALE_CATALOG', 'ERR_INVALID_OPTION'];
 
 // ── arg parse ─────────────────────────────────────────────────────────────────────
 const raw = process.argv.slice(2);
 // Pre-scan output flags so an ERR_INVALID_OPTION below still respects --json regardless of order.
-const flags = { json: raw.includes('--json'), dense: raw.includes('--dense'), detail: 'compact', agents: raw.includes('--agents'), agent: 'all' };
+const flags = { json: raw.includes('--json'), dense: raw.includes('--dense'), detail: 'compact', agents: raw.includes('--agents'), agent: 'all', skeleton: raw.includes('--skeleton') };
 const positional = [];
 for (let i = 0; i < raw.length; i++) {
   const a = raw[i];
-  if (a === '--json' || a === '--dense' || a === '--agents') continue; // already captured
+  if (a === '--json' || a === '--dense' || a === '--agents' || a === '--skeleton') continue; // already captured
   else if (a === '--list') positional.push('--list'); // handled per-command
   else if (a === '--detail') { flags.detail = raw[++i]; if (!['brief', 'compact', 'full'].includes(flags.detail)) fail('ERR_INVALID_OPTION', `--detail must be brief|compact|full, got "${flags.detail}"`); }
   else if (a === '--agent') { flags.agent = raw[++i]; if (!['claude', 'codex', 'all'].includes(flags.agent)) fail('ERR_INVALID_OPTION', `--agent must be claude|codex|all, got "${flags.agent}"`); }
@@ -222,6 +224,39 @@ function cmdBuild() {
       : `no on-system components matched "${idea}". Try \`kernel component --list\`.`);
 }
 
+// ── templates (frame-first reference skeletons under templates/) ───────────────────
+function loadTemplates() {
+  return walk(TEMPLATES)
+    .filter((f) => f.endsWith('.jsx'))
+    .map((file) => {
+      const source = fs.readFileSync(file, 'utf8');
+      const metaText = extractMetaText(source);
+      const meta = metaText ? parseMeta(metaText) : {};
+      return { ...meta, name: meta.name || path.basename(file, '.jsx'), file, source };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, 'en'));
+}
+
+function cmdTemplate() {
+  const templates = loadTemplates();
+  if (args[0] === '--list' || raw.includes('--list')) {
+    const data = templates.map((t) => ({ name: t.name, title: t.title || null, summary: t.summary || null }));
+    return emit('template.list', { count: data.length, templates: data }, () =>
+      [`${data.length} templates:`, ...data.map((t) => `  ${t.name.padEnd(14)} ${t.summary || t.title || ''}`)].join('\n'));
+  }
+  const name = args[0];
+  if (!name) fail('ERR_INVALID_OPTION', 'template: pass a <name> or --list.');
+  const t = templates.find((x) => x.name === name);
+  if (!t) fail('ERR_UNKNOWN_TEMPLATE', `no template named "${name}".`, suggestNames(name, templates.map((x) => x.name)));
+  const detail = { name: t.name, title: t.title || null, summary: t.summary || null, regions: t.regions || [], composes: t.composes || [] };
+  if (flags.skeleton) {
+    return emit('template.detail', { ...detail, skeleton: t.source }, () => t.source);
+  }
+  return emit('template.detail', detail, () =>
+    [`${t.name} - ${t.title || ''}`, `  ${t.summary || ''}`, `  regions:  ${(t.regions || []).join(', ') || '(none)'}`,
+     `  composes: ${(t.composes || []).join(', ') || '(none)'}`, `\n  see the layout: kernel template ${t.name} --skeleton`].join('\n'));
+}
+
 function cmdInit() {
   if (!flags.agents) fail('ERR_INVALID_OPTION', 'init: pass --agents to write the Kernel agent-docs block.');
   const targets = flags.agent === 'claude' ? ['CLAUDE.md'] : flags.agent === 'codex' ? ['AGENTS.md'] : ['CLAUDE.md', 'AGENTS.md'];
@@ -251,13 +286,15 @@ commands:
   impact <Name>              what breaks if you change <Name>
   doctor                     setup + drift + WCAG contrast health
   build "<idea>"             closest component kit + a Compose suggestion
+  template --list            list frame-first starter templates
+  template <name> --skeleton print a template's frame-first layout
   init --agents              write/refresh the Kernel agent-docs block (CLAUDE.md/AGENTS.md)
 
 global flags: --json (typed {type,data} envelope), --dense (context-window format).
 init flags: --agents (required), --agent claude|codex|all (default all).
 error codes are stable + append-only; see CLI.md.`;
 
-const COMMANDS = { component: cmdComponent, docs: cmdDocs, search: cmdSearch, impact: cmdImpact, doctor: cmdDoctor, build: cmdBuild, init: cmdInit };
+const COMMANDS = { component: cmdComponent, docs: cmdDocs, search: cmdSearch, impact: cmdImpact, doctor: cmdDoctor, build: cmdBuild, template: cmdTemplate, init: cmdInit };
 
 if (!command || command === 'help' || command === '--help') { process.stdout.write(HELP + '\n'); process.exit(0); }
 const handler = COMMANDS[command];
