@@ -63,9 +63,15 @@ const rel = (f) => path.relative(process.cwd(), f);
 // state classes that should be a Base UI data-* attr, not a hand-toggled className
 const STATE_CLASS = /\bis-(on|off|active|selected|open|closed|expanded|collapsed|checked|disabled|pressed|current|highlighted|loading|invalid)\b/g;
 
-// ── pass 1: collect units + build the cross-file scope registry ─────────────────
+// component definitions we can see in this tree, and which of them forwardRef (step 3).
+const DEFINED_COMPONENT = /(?:export\s+)?(?:const|function)\s+([A-Z]\w*)/g;
+const DEFINED_FORWARDREF = /(?:const\s+([A-Z]\w*)\s*=\s*(?:React\.)?forwardRef|forwardRef\(\s*function\s+([A-Z]\w*))/g;
+
+// ── pass 1: collect units + build the cross-file registries ─────────────────────
 const units = []; // {file, src, meta}
 const scopeBy = {}; // componentName -> scopeKind (names are unique across the catalog by convention)
+const definedComponents = new Set(); // PascalCase components defined in the scanned tree
+const definedForwardRef = new Set(); // ...of those, the ones wrapped in forwardRef
 for (const file of walk(targetDir)) {
   const src = fs.readFileSync(file, 'utf8');
   const metaText = extractMetaText(src);
@@ -75,6 +81,8 @@ for (const file of walk(targetDir)) {
     catch (e) { add('error', file, '(file)', 'meta-parse', `meta does not evaluate: ${e.message}`); }
   }
   if (meta) for (const [name, c] of Object.entries(meta)) scopeBy[name] = scopeKind(c.scope);
+  for (const m of src.matchAll(DEFINED_COMPONENT)) definedComponents.add(m[1]);
+  for (const m of src.matchAll(DEFINED_FORWARDREF)) definedForwardRef.add(m[1] || m[2]);
   units.push({ file, src, meta });
 }
 
@@ -129,6 +137,22 @@ for (const { file, src, meta } of units) {
       `hand-rolled state class(es): ${stateHits.join(', ')}.`,
       'drive state off the Base UI data-* attr ([data-pressed]/[data-selected]/…), not a toggled className.');
 
+  // forwardRef on Base UI render targets (step 3). A component passed as an element render
+  // target - `render={<X .../>}` - must be forwardRef, or the injected ref never reaches the
+  // node (the positioner anchors at 0,0). Only flag X we can SEE defined in this tree; imported
+  // components (defined elsewhere, e.g. Kernel's Btn used from greenhouse) are skipped, and
+  // dotted Base UI (`<Menu.Trigger`) never matches the bare-component pattern.
+  const flaggedRenderTargets = new Set();
+  for (const m of src.matchAll(/render=\{<([A-Z]\w*)[\s/>]/g)) {
+    const x = m[1];
+    if (definedComponents.has(x) && !definedForwardRef.has(x) && !flaggedRenderTargets.has(x)) {
+      flaggedRenderTargets.add(x); // once per component per file (a comment + a use should not double-count)
+      add('error', file, x, 'forwardref-render-target',
+        `\`${x}\` is used as a Base UI render target but is not forwardRef - the injected ref won't reach the DOM node.`,
+        `wrap \`${x}\` in React.forwardRef (see the Standard: composition uses Base UI render + forwardRef).`);
+    }
+  }
+
   // false-composes / raw-control. Exempt, per tag, the file that DEFINES that tag's
   // canonical control (it IS the primitive) and pure-atom files (atoms are leaf primitives).
   const defined = meta ? new Set(Object.keys(meta)) : new Set();
@@ -171,7 +195,9 @@ if (!findings.length) console.log('  clean — no findings.\n');
 
 console.log(`\n  ${errors.length} error(s), ${warns.length} warning(s).`);
 console.log('  covers: banned-state props, style synonyms, raw controls, empty composes,');
-console.log('          hand-rolled state classes, scope presence + upward-dependency.');
-console.log('  not yet: forwardRef-on-render-target, tone-vs-CSS (need cross-file / CSS-parse work).\n');
+console.log('          hand-rolled state classes, scope presence + upward-dependency,');
+console.log('          forwardRef-on-render-target.');
+console.log('  not yet: tone-vs-CSS + scope cross-agent-drift (greenhouse-audit scope; contrast itself');
+console.log('           is enforced in the token ramp builder + verified by `kernel doctor`).\n');
 
 process.exit(!audit && errors.length ? 1 : 0);

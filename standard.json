@@ -77,10 +77,10 @@
     "non-canonical style synonyms (kind/appearance/intent...) are an error",
     "raw controls (<button>/<input>/...) with no composed Kernel equivalent are an error (false composes)",
     "a composing layer (molecule/composite/organism) with composes:[] is a warning",
-    "hand-rolled .is-on / isOpen-style state that should be data-* is an error (step 3, not yet implemented)",
-    "tone present where --status-* is consumed (step 3, not yet implemented)",
-    "scope present and not violating gateRules (step 4, not yet implemented)",
-    "forwardRef present on any component used as a Base UI render target (step 3, not yet implemented)"
+    "hand-rolled .is-on className state that should be data-* is a warning (CSS half; the isOpen JS-state half needs a parser Kernel intentionally does not take)",
+    "forwardRef present on any component used as a Base UI render target (implemented: flags a component defined in the scanned tree used as `render={<X/>}` without forwardRef)",
+    "scope present and not violating gateRules (upward-dependency implemented; cross-agent-drift is greenhouse-audit scope, deferred)",
+    "tone present where --status-* is consumed: deferred - the contrast rule lives in the token ramp builder (WCAG-targeted step pairs) and is verified by `kernel doctor`, not re-checked per component"
   ],
   "lint": {
     "$comment": "Data-driven rules consumed by tools/catalog-gate.mjs. Prop-name validation is intentionally OPEN for content/data props (children, items, payload, ...) - the gate errors only on bannedProps + forbiddenStyleSynonyms, never on an unrecognised content prop, to stay false-positive-free.",

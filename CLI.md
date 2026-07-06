@@ -110,5 +110,6 @@ never drift from `kernel component`/`kernel search`.
   documents the theme/brand and density modifiers together.
 - `impact` scans this repo's `src/` plus `../greenhouse/src` (the same default as
   `tools/impact.mjs`), so dependents in the consuming app are included.
-- `doctor`'s WCAG check is a spot-check over key semantic pairs (body text, primary/error button
-  fills) via `tools/lib/contrast.mjs`; the fuller contrast gate is B-35 and reuses that lib.
+- `doctor`'s WCAG check is a spot-check over key semantic pairs (body text, and the primary +
+  info/success/warning/error button fills) via `tools/lib/contrast.mjs`. It verifies the compiled
+  tokens; the contrast rule itself is enforced upstream in the token ramp builder.

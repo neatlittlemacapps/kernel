@@ -115,6 +115,10 @@ export const PAIRS = [
   { name: 'text-default on surface-page', fg: '--text-default', bg: '--surface-page', min: 4.5 },
   { name: 'text-muted on surface-panel', fg: '--text-muted', bg: '--surface-panel', min: 4.5 },
   { name: 'button-primary-text on button-primary-background', fg: '--button-primary-text', bg: '--button-primary-background', min: 4.5 },
+  // status tones (text on the solid fill) - the pairs most likely to drift.
+  { name: 'button-info-text on button-info-background', fg: '--button-info-text', bg: '--button-info-background', min: 4.5 },
+  { name: 'button-success-text on button-success-background', fg: '--button-success-text', bg: '--button-success-background', min: 4.5 },
+  { name: 'button-warning-text on button-warning-background', fg: '--button-warning-text', bg: '--button-warning-background', min: 4.5 },
   { name: 'button-error-text on button-error-background', fg: '--button-error-text', bg: '--button-error-background', min: 4.5 },
 ];
 

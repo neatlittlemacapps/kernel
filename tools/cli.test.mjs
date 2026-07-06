@@ -176,6 +176,15 @@ test('renderDoc replaces only between markers', () => {
   assert.ok(contents.includes('NEW') && !contents.includes('OLD'));
 });
 
+test('catalog gate flags a non-forwardRef render target (seeded fixture)', () => {
+  const r = spawnSync('node', [path.join(ROOT, 'tools', 'catalog-gate.mjs'), path.join(ROOT, 'tools', 'fixtures')], { encoding: 'utf8' });
+  assert.equal(r.status, 1); // guard mode exits 1 on an error
+  assert.match(r.stdout, /forwardref-render-target/);
+  assert.match(r.stdout, /BadChip/);
+  // fires once per component per file, not once per textual match (comment + use)
+  assert.equal((r.stdout.match(/forwardref-render-target/g) || []).length, 1);
+});
+
 test('contrast math: black on white is 21:1', () => {
   assert.equal(Math.round(contrastRatio('#000000', '#ffffff')), 21);
 });
