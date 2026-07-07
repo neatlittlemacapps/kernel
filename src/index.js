@@ -14,6 +14,20 @@
 // from the package surface (consumers never import a component's `meta` here).
 
 export * from './components/ui.jsx';
+export * from './components/Menu.jsx';
+export * from './components/ContextMenu.jsx';
+export * from './components/Popover.jsx';
+export * from './components/Dialog.jsx';
+export * from './components/AlertDialog.jsx';
+export * from './components/Select.jsx';
+export * from './components/Checkbox.jsx';
+export * from './components/RadioGroup.jsx';
+export * from './components/Slider.jsx';
+export * from './components/TextArea.jsx';
+export * from './components/Tabs.jsx';
+export * from './components/Collapsible.jsx';
+export * from './components/Separator.jsx';
+export * from './components/Progress.jsx';
 export * from './components/ActionRow.jsx';
 export * from './components/sprout-cards/SproutCard.jsx';
 export * from './components/sprout-cards/Card.jsx';

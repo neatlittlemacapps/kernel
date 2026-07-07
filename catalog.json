@@ -168,6 +168,147 @@
       "category": "AI"
     },
     {
+      "name": "AlertDialog",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Modal that forces a consequential confirmation (Base UI alert-dialog).",
+      "usecases": [
+        "destructive confirmation",
+        "blocking decision"
+      ],
+      "props": [
+        {
+          "name": "trigger",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "Element that opens the alert (a Btn). Omit when controlling open/onOpenChange yourself."
+        },
+        {
+          "name": "title",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The decision, phrased as a question (\"Delete prescription?\"); the accessible name."
+        },
+        {
+          "name": "description",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The consequence, stated plainly (\"This cannot be undone.\"); wired as aria-describedby."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional extra body content beyond the description."
+        },
+        {
+          "name": "actions",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The cancel + confirm controls; wrap cancel in AlertDialogClose and make it the safe default."
+        },
+        {
+          "name": "className",
+          "class": "content",
+          "type": "string",
+          "description": "Extra class(es) appended to the surface."
+        },
+        {
+          "name": "open",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.AlertDialog.Root.open"
+        },
+        {
+          "name": "defaultOpen",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.AlertDialog.Root.defaultOpen"
+        },
+        {
+          "name": "onOpenChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.AlertDialog.Root.onOpenChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<AlertDialog title=\"Delete prescription?\" description=\"This cannot be undone.\"\n  trigger={<Btn variant=\"secondary\">Delete</Btn>}\n  actions={<><AlertDialogClose><Btn variant=\"secondary\">Cancel</Btn></AlertDialogClose><Btn tone=\"error\">Delete</Btn></>} />",
+      "keywords": [
+        "alert-dialog",
+        "confirm",
+        "destructive",
+        "delete",
+        "warning",
+        "modal"
+      ],
+      "category": "Overlay",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Name the consequence in the description; give the confirm Btn tone=\"error\" and label it with the verb (\"Delete\"), not \"OK\"."
+        },
+        {
+          "do": false,
+          "text": "Use an AlertDialog for routine confirmations - reserve it for irreversible or costly actions, or it becomes noise."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Backdrop",
+          "required": true,
+          "description": "The scrim; blocks interaction until a choice is made."
+        },
+        {
+          "name": "Title",
+          "required": true,
+          "description": "The decision question, the accessible name."
+        },
+        {
+          "name": "Description",
+          "required": true,
+          "description": "The consequence."
+        },
+        {
+          "name": "Actions",
+          "required": true,
+          "description": "Cancel (safe default, in AlertDialogClose) + confirm."
+        }
+      ],
+      "related": [
+        "Dialog"
+      ]
+    },
+    {
+      "name": "AlertDialogClose",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "The cancel / dismiss control inside an AlertDialog; wrap a Btn.",
+      "usecases": [
+        "destructive confirmation"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "The control that dismisses the alert (a Btn); make it the safe default."
+        }
+      ],
+      "composes": [],
+      "usage": "<AlertDialogClose><Btn variant=\"secondary\">Cancel</Btn></AlertDialogClose>",
+      "keywords": [
+        "alert-dialog-close",
+        "cancel",
+        "dismiss"
+      ],
+      "category": "Overlay",
+      "related": [
+        "AlertDialog"
+      ]
+    },
+    {
       "name": "AllergyCard",
       "import": "@corilus/kernel/clinical",
       "layer": "composite",
@@ -239,10 +380,24 @@
           "class": "dsPresentation",
           "values": [
             "primary",
-            "secondary"
+            "secondary",
+            "tertiary"
           ],
           "default": "primary",
           "description": "Visual emphasis. Reserve primary for the single most important action in a view."
+        },
+        {
+          "name": "tone",
+          "class": "dsPresentation",
+          "values": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "error"
+          ],
+          "default": "neutral",
+          "description": "Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors."
         },
         {
           "name": "size",
@@ -316,6 +471,11 @@
           "name": "Secondary",
           "code": "<Btn variant=\"secondary\">Cancel</Btn>",
           "description": "Lower emphasis; pairs with a primary."
+        },
+        {
+          "name": "Destructive",
+          "code": "<Btn tone=\"error\">Delete</Btn>",
+          "description": "error tone for an irreversible action; pair it with an AlertDialog confirm."
         }
       ]
     },
@@ -531,6 +691,181 @@
       ]
     },
     {
+      "name": "Checkbox",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Single boolean checkbox with an optional label (Base UI checkbox).",
+      "usecases": [
+        "boolean control",
+        "multi-select option",
+        "consent"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Text beside the box; the whole row toggles. Omit for a bare box (label it elsewhere)."
+        },
+        {
+          "name": "checked",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Checkbox.Root.checked"
+        },
+        {
+          "name": "defaultChecked",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Checkbox.Root.defaultChecked"
+        },
+        {
+          "name": "onCheckedChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Checkbox.Root.onCheckedChange"
+        },
+        {
+          "name": "indeterminate",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Checkbox.Root.indeterminate"
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Checkbox.Root.disabled"
+        },
+        {
+          "name": "required",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Checkbox.Root.required"
+        }
+      ],
+      "composes": [],
+      "usage": "<Checkbox label=\"Email me updates\" defaultChecked />",
+      "keywords": [
+        "checkbox",
+        "check",
+        "boolean",
+        "toggle",
+        "tickbox",
+        "consent",
+        "option"
+      ],
+      "category": "Data Input",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for independent on/off options; use a RadioGroup when exactly one of several must be chosen."
+        },
+        {
+          "do": true,
+          "text": "Write the label as a positive statement (\"Email me updates\"), so checked = the stated thing is true."
+        },
+        {
+          "do": false,
+          "text": "Use a Checkbox to switch a setting on immediately - that is a Toggle (switch)."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Box",
+          "required": true,
+          "description": "The square control carrying the checked/indeterminate state."
+        },
+        {
+          "name": "Indicator",
+          "required": true,
+          "description": "The checkmark shown when checked."
+        },
+        {
+          "name": "Label",
+          "required": false,
+          "description": "The clickable text."
+        }
+      ],
+      "related": [
+        "Toggle",
+        "RadioGroup"
+      ]
+    },
+    {
+      "name": "Collapsible",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A single region that expands and collapses (Base UI collapsible).",
+      "usecases": [
+        "expand/collapse a region",
+        "show more"
+      ],
+      "props": [
+        {
+          "name": "trigger",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The always-visible header that toggles the region (a chevron is added automatically)."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The content revealed when open."
+        },
+        {
+          "name": "open",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Collapsible.Root.open"
+        },
+        {
+          "name": "defaultOpen",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Collapsible.Root.defaultOpen"
+        },
+        {
+          "name": "onOpenChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Collapsible.Root.onOpenChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<Collapsible trigger=\"Advanced options\">\n  <p>…</p>\n</Collapsible>",
+      "keywords": [
+        "collapsible",
+        "expand",
+        "collapse",
+        "disclosure",
+        "show-more",
+        "toggle"
+      ],
+      "category": "Structure",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use to hide secondary detail behind a clear header; keep the header label descriptive of what expands."
+        },
+        {
+          "do": false,
+          "text": "Use several stacked Collapsibles where only one should be open at a time - use an Accordion for that."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Trigger",
+          "required": true,
+          "description": "The header toggle (with chevron)."
+        },
+        {
+          "name": "Panel",
+          "required": true,
+          "description": "The revealed region."
+        }
+      ],
+      "related": [
+        "Tabs"
+      ]
+    },
+    {
       "name": "ConditionCard",
       "import": "@corilus/kernel/clinical",
       "layer": "composite",
@@ -591,6 +926,162 @@
         "remission"
       ],
       "category": "Clinical"
+    },
+    {
+      "name": "ContextMenu",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Right-click / long-press contextual menu on a region (Base UI context-menu).",
+      "usecases": [
+        "context menu",
+        "right-click menu"
+      ],
+      "props": [
+        {
+          "name": "trigger",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The region whose context-menu gesture (right-click / long-press) opens the menu, e.g. a card or list row."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The menu body: ContextMenuItem rows, divided by ContextMenuSeparator."
+        },
+        {
+          "name": "className",
+          "class": "content",
+          "type": "string",
+          "description": "Extra class(es) appended to the popup surface."
+        },
+        {
+          "name": "open",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ContextMenu.Root.open"
+        },
+        {
+          "name": "onOpenChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ContextMenu.Root.onOpenChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<ContextMenu trigger={<div className=\"card\">Right-click me</div>}>\n  <ContextMenuItem onClick={onRename}>Rename</ContextMenuItem>\n  <ContextMenuSeparator />\n  <ContextMenuItem onClick={onDelete}>Delete</ContextMenuItem>\n</ContextMenu>",
+      "keywords": [
+        "context-menu",
+        "right-click",
+        "long-press",
+        "menu",
+        "contextual",
+        "popup"
+      ],
+      "category": "Overlay",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Mirror the primary actions available elsewhere; a context menu is a shortcut, not the only path to an action."
+        },
+        {
+          "do": false,
+          "text": "Hide critical actions behind a context menu only - discoverability on touch is poor."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Trigger region",
+          "required": true,
+          "description": "The area that responds to the context-menu gesture."
+        },
+        {
+          "name": "Popup",
+          "required": true,
+          "description": "The portalled surface holding the items (shared .krnl-menu-* look)."
+        },
+        {
+          "name": "Item",
+          "required": true,
+          "description": "A command row (ContextMenuItem)."
+        }
+      ],
+      "related": [
+        "Menu"
+      ]
+    },
+    {
+      "name": "ContextMenuItem",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A single command row inside a ContextMenu.",
+      "usecases": [
+        "context menu"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional leading icon; decorative (aria-hidden)."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The command label (the action)."
+        },
+        {
+          "name": "onClick",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Fires on activation; the menu then closes."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ContextMenu.Item.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<ContextMenuItem onClick={onDelete}>Delete</ContextMenuItem>",
+      "keywords": [
+        "context-menu-item",
+        "command",
+        "action",
+        "row"
+      ],
+      "category": "Overlay",
+      "related": [
+        "ContextMenu",
+        "MenuItem"
+      ]
+    },
+    {
+      "name": "ContextMenuSeparator",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A hairline divider between ContextMenu item clusters.",
+      "usecases": [
+        "context menu"
+      ],
+      "props": [],
+      "composes": [],
+      "usage": "<ContextMenuSeparator />",
+      "keywords": [
+        "separator",
+        "divider",
+        "context-menu"
+      ],
+      "category": "Overlay",
+      "related": [
+        "ContextMenu",
+        "MenuSeparator"
+      ]
     },
     {
       "name": "DemographicCard",
@@ -654,6 +1145,156 @@
         "address"
       ],
       "category": "Clinical"
+    },
+    {
+      "name": "Dialog",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Modal surface for a focused task or confirmation (Base UI dialog).",
+      "usecases": [
+        "modal dialog",
+        "focused task",
+        "confirmation"
+      ],
+      "props": [
+        {
+          "name": "trigger",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "Optional element that opens the dialog (a Btn). Omit when controlling open/onOpenChange yourself."
+        },
+        {
+          "name": "title",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The dialog heading; wired as the accessible name (aria-labelledby)."
+        },
+        {
+          "name": "description",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Supporting line under the title; wired as aria-describedby."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The dialog body content."
+        },
+        {
+          "name": "actions",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Footer controls, typically a DialogClose-wrapped cancel and a confirm Btn; right-aligned."
+        },
+        {
+          "name": "className",
+          "class": "content",
+          "type": "string",
+          "description": "Extra class(es) appended to the dialog surface (e.g. a wider variant)."
+        },
+        {
+          "name": "open",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Dialog.Root.open"
+        },
+        {
+          "name": "defaultOpen",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Dialog.Root.defaultOpen"
+        },
+        {
+          "name": "onOpenChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Dialog.Root.onOpenChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<Dialog title=\"Rename file\" trigger={<Btn>Rename</Btn>}\n  actions={<><DialogClose><Btn variant=\"secondary\">Cancel</Btn></DialogClose><Btn>Save</Btn></>}>\n  <TextInput defaultValue=\"report.pdf\" />\n</Dialog>",
+      "keywords": [
+        "dialog",
+        "modal",
+        "overlay",
+        "popup",
+        "sheet",
+        "window"
+      ],
+      "category": "Overlay",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Give every dialog a title and a clear primary action; put the primary Btn last in actions."
+        },
+        {
+          "do": false,
+          "text": "Use a modal Dialog for a non-blocking message - use a Banner or Toast. Reserve modality for tasks that need full attention."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Backdrop",
+          "required": true,
+          "description": "The scrim behind the dialog; dims and blocks the page."
+        },
+        {
+          "name": "Title",
+          "required": false,
+          "description": "The heading and accessible name."
+        },
+        {
+          "name": "Body",
+          "required": false,
+          "description": "The task content (children)."
+        },
+        {
+          "name": "Actions",
+          "required": false,
+          "description": "Footer controls (cancel + confirm)."
+        }
+      ],
+      "related": [
+        "AlertDialog",
+        "Popover"
+      ],
+      "examples": [
+        {
+          "name": "Confirm",
+          "code": "<Dialog title=\"Discard changes?\" description=\"Your edits will be lost.\"\n  trigger={<Btn variant=\"secondary\">Discard</Btn>}\n  actions={<><DialogClose><Btn variant=\"secondary\">Keep editing</Btn></DialogClose><Btn>Discard</Btn></>} />"
+        }
+      ]
+    },
+    {
+      "name": "DialogClose",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A close control inside a Dialog; wrap a Btn / IconButton.",
+      "usecases": [
+        "modal dialog"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "The control that closes the dialog on click (a Btn / IconButton)."
+        }
+      ],
+      "composes": [],
+      "usage": "<DialogClose><Btn variant=\"secondary\">Cancel</Btn></DialogClose>",
+      "keywords": [
+        "dialog-close",
+        "close",
+        "cancel",
+        "dismiss"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Dialog"
+      ]
     },
     {
       "name": "EditChip",
@@ -987,6 +1628,280 @@
       "category": "Clinical"
     },
     {
+      "name": "Menu",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Anchored, dismissible dropdown menu of commands (Base UI menu).",
+      "usecases": [
+        "action menu",
+        "overflow menu",
+        "dropdown"
+      ],
+      "props": [
+        {
+          "name": "trigger",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "The element that opens the menu (a Btn / IconButton). Used as the Base UI render target, so it must be a forwardRef component or the popup anchors at (0,0)."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The menu body: MenuItem rows, optionally grouped with MenuGroup / MenuGroupLabel and divided by MenuSeparator."
+        },
+        {
+          "name": "className",
+          "class": "content",
+          "type": "string",
+          "description": "Extra class(es) appended to the popup surface, for one-off width or spacing tweaks (e.g. a wide variant)."
+        },
+        {
+          "name": "align",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Positioner.align"
+        },
+        {
+          "name": "side",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Positioner.side"
+        },
+        {
+          "name": "sideOffset",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Positioner.sideOffset"
+        },
+        {
+          "name": "open",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Root.open"
+        },
+        {
+          "name": "defaultOpen",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Root.defaultOpen"
+        },
+        {
+          "name": "onOpenChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Root.onOpenChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<Menu trigger={<IconButton aria-label=\"Actions\">{Icon.dots({ size: 18 })}</IconButton>}>\n  <MenuItem onClick={onRename}>Rename</MenuItem>\n  <MenuSeparator />\n  <MenuItem onClick={onDelete}>Delete</MenuItem>\n</Menu>",
+      "keywords": [
+        "menu",
+        "dropdown",
+        "overflow",
+        "kebab",
+        "actions",
+        "context",
+        "popup",
+        "flyout"
+      ],
+      "category": "Overlay",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for a set of actions on the same object; give the trigger an accessible name (aria-label) when it is icon-only."
+        },
+        {
+          "do": true,
+          "text": "Group related commands with MenuGroup + MenuGroupLabel; divide groups (and set off a destructive action) with a MenuSeparator - groups do not draw their own divider."
+        },
+        {
+          "do": false,
+          "text": "Use a Menu to pick one value from a set - that is a Select. A Menu fires actions, it does not hold a value."
+        },
+        {
+          "do": false,
+          "text": "Put more than a screen of items in a Menu; for long lists reach for a Select or a Combobox."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Trigger",
+          "required": true,
+          "description": "The forwardRef element that opens the menu (Btn / IconButton)."
+        },
+        {
+          "name": "Popup",
+          "required": true,
+          "description": "The portalled, positioned surface holding the items."
+        },
+        {
+          "name": "Item",
+          "required": true,
+          "description": "A single command row (MenuItem); fires onClick and closes the menu."
+        },
+        {
+          "name": "Group + GroupLabel",
+          "required": false,
+          "description": "A labelled cluster of related items."
+        },
+        {
+          "name": "Separator",
+          "required": false,
+          "description": "A hairline divider between clusters."
+        }
+      ],
+      "related": [
+        "Popover",
+        "Select",
+        "ContextMenu"
+      ],
+      "examples": [
+        {
+          "name": "Overflow actions",
+          "code": "<Menu trigger={<IconButton aria-label=\"More\">{Icon.dots({ size: 18 })}</IconButton>}>\n  <MenuItem onClick={onEdit}>Edit</MenuItem>\n  <MenuItem onClick={onDuplicate}>Duplicate</MenuItem>\n  <MenuSeparator />\n  <MenuItem onClick={onDelete}>Delete</MenuItem>\n</Menu>"
+        },
+        {
+          "name": "Grouped",
+          "code": "<Menu trigger={<Btn variant=\"secondary\">Insert</Btn>}>\n  <MenuGroup>\n    <MenuGroupLabel>Blocks</MenuGroupLabel>\n    <MenuItem onClick={addText}>Text</MenuItem>\n    <MenuItem onClick={addImage}>Image</MenuItem>\n  </MenuGroup>\n  <MenuSeparator />\n  <MenuGroup>\n    <MenuGroupLabel>Media</MenuGroupLabel>\n    <MenuItem onClick={addQuote}>Quote</MenuItem>\n  </MenuGroup>\n</Menu>",
+          "description": "Related commands under section labels; a MenuSeparator divides the groups."
+        }
+      ]
+    },
+    {
+      "name": "MenuGroup",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A labelled cluster of related Menu items.",
+      "usecases": [
+        "action menu"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "A MenuGroupLabel followed by the MenuItems in the cluster."
+        }
+      ],
+      "composes": [],
+      "usage": "<MenuGroup><MenuGroupLabel>Blocks</MenuGroupLabel><MenuItem>Text</MenuItem></MenuGroup>",
+      "keywords": [
+        "menu-group",
+        "group",
+        "cluster",
+        "section"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Menu",
+        "MenuGroupLabel"
+      ]
+    },
+    {
+      "name": "MenuGroupLabel",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "The heading for a MenuGroup.",
+      "usecases": [
+        "action menu"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The section heading text; associated with its group for screen readers by Base UI."
+        }
+      ],
+      "composes": [],
+      "usage": "<MenuGroupLabel>Blocks</MenuGroupLabel>",
+      "keywords": [
+        "menu-group-label",
+        "label",
+        "heading",
+        "section"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Menu",
+        "MenuGroup"
+      ]
+    },
+    {
+      "name": "MenuItem",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A single command row inside a Menu.",
+      "usecases": [
+        "action menu"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional leading icon reinforcing the command; decorative (aria-hidden), the label is the accessible name."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The command label. Write the action (\"Delete prescription\"), not \"OK\"."
+        },
+        {
+          "name": "onClick",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Fires when the item is activated (click or keyboard); the menu closes automatically afterwards."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Menu.Item.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<MenuItem onClick={onDelete}>Delete</MenuItem>",
+      "keywords": [
+        "menu-item",
+        "command",
+        "action",
+        "row"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Menu"
+      ]
+    },
+    {
+      "name": "MenuSeparator",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A hairline divider between Menu item clusters.",
+      "usecases": [
+        "action menu"
+      ],
+      "props": [],
+      "composes": [],
+      "usage": "<MenuSeparator />",
+      "keywords": [
+        "separator",
+        "divider",
+        "menu",
+        "rule"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Menu",
+        "Separator"
+      ]
+    },
+    {
       "name": "MeterTooltip",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -1078,6 +1993,185 @@
       ]
     },
     {
+      "name": "Popover",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Anchored, dismissible surface for rich content (Base UI popover).",
+      "usecases": [
+        "popover",
+        "rich flyout",
+        "inline detail"
+      ],
+      "props": [
+        {
+          "name": "trigger",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "The element that opens the popover (a Btn / IconButton). Base UI render target - must be forwardRef or the popup anchors at (0,0)."
+        },
+        {
+          "name": "title",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional heading; wired as the accessible name (aria-labelledby) by Base UI."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The popover body - any content (text, fields, PopoverDescription, a PopoverClose)."
+        },
+        {
+          "name": "className",
+          "class": "content",
+          "type": "string",
+          "description": "Extra class(es) appended to the popup surface (e.g. a wider variant)."
+        },
+        {
+          "name": "align",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Popover.Positioner.align"
+        },
+        {
+          "name": "side",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Popover.Positioner.side"
+        },
+        {
+          "name": "sideOffset",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Popover.Positioner.sideOffset"
+        },
+        {
+          "name": "open",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Popover.Root.open"
+        },
+        {
+          "name": "defaultOpen",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Popover.Root.defaultOpen"
+        },
+        {
+          "name": "onOpenChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Popover.Root.onOpenChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<Popover title=\"Filters\" trigger={<Btn variant=\"secondary\">Filter</Btn>}>\n  <PopoverDescription>Narrow the list.</PopoverDescription>\n</Popover>",
+      "keywords": [
+        "popover",
+        "flyout",
+        "overlay",
+        "detail",
+        "anchored",
+        "popup",
+        "card"
+      ],
+      "category": "Overlay",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for rich, interactive content anchored to a control (a filter form, a detail card)."
+        },
+        {
+          "do": false,
+          "text": "Use a Popover for a simple label - that is a Tip (tooltip). Use it for a command list - that is a Menu."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Trigger",
+          "required": true,
+          "description": "The forwardRef element that opens the popover."
+        },
+        {
+          "name": "Title",
+          "required": false,
+          "description": "Optional heading, the accessible name."
+        },
+        {
+          "name": "Body",
+          "required": true,
+          "description": "The content (children); may include PopoverDescription and PopoverClose."
+        }
+      ],
+      "related": [
+        "Menu",
+        "Tip",
+        "Dialog"
+      ],
+      "examples": [
+        {
+          "name": "With close",
+          "code": "<Popover title=\"Profile\" trigger={<IconButton aria-label=\"Profile\">{Icon.user({ size: 18 })}</IconButton>}>\n  <PopoverDescription>Signed in as Dr. Vermeulen.</PopoverDescription>\n  <PopoverClose><Btn variant=\"secondary\">Close</Btn></PopoverClose>\n</Popover>"
+        }
+      ]
+    },
+    {
+      "name": "PopoverClose",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A close control inside a Popover; wrap a Btn / IconButton.",
+      "usecases": [
+        "popover"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactElement",
+          "description": "The control that closes the popover on click (a Btn / IconButton)."
+        }
+      ],
+      "composes": [],
+      "usage": "<PopoverClose><IconButton aria-label=\"Close\">{Icon.close({ size: 16 })}</IconButton></PopoverClose>",
+      "keywords": [
+        "popover-close",
+        "close",
+        "dismiss"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Popover"
+      ]
+    },
+    {
+      "name": "PopoverDescription",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A descriptive paragraph inside a Popover (wires aria-describedby).",
+      "usecases": [
+        "popover"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The descriptive text."
+        }
+      ],
+      "composes": [],
+      "usage": "<PopoverDescription>Narrow the list to unresolved items.</PopoverDescription>",
+      "keywords": [
+        "popover-description",
+        "description",
+        "body-text"
+      ],
+      "category": "Overlay",
+      "related": [
+        "Popover"
+      ]
+    },
+    {
       "name": "PrimaryCTA",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -1118,6 +2212,88 @@
         "submit"
       ],
       "category": "Action"
+    },
+    {
+      "name": "Progress",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Determinate progress of a task toward completion (Base UI progress).",
+      "usecases": [
+        "task progress",
+        "upload/download",
+        "multi-step completion"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Caption above the track; also the accessible name. If omitted you must supply aria-label instead."
+        },
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name when there is no visible label. Exactly one of label / aria-label is required - Base UI names the progressbar only from a mounted label, so a bare bar is otherwise unnamed (WCAG 4.1.2)."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Progress.Root.value"
+        },
+        {
+          "name": "max",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Progress.Root.max"
+        }
+      ],
+      "composes": [],
+      "usage": "<Progress label=\"Uploading\" value={64} />",
+      "keywords": [
+        "progress",
+        "progressbar",
+        "loading",
+        "completion",
+        "percent",
+        "bar"
+      ],
+      "category": "Feedback & Status",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Give every Progress a name: a visible label, or aria-label when the bar stands alone. Without one the progressbar is unnamed."
+        },
+        {
+          "do": true,
+          "text": "Use for a task with a knowable percentage (upload, import); pair with a value so progress is legible."
+        },
+        {
+          "do": false,
+          "text": "Use Progress to report a static level or score (battery, risk) - that is a Meter. Progress implies movement toward done."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "required": false,
+          "description": "Caption + accessible name."
+        },
+        {
+          "name": "Track",
+          "required": true,
+          "description": "The rail."
+        },
+        {
+          "name": "Indicator",
+          "required": true,
+          "description": "The fill, sized to value/max by Base UI."
+        }
+      ],
+      "related": [
+        "Slider"
+      ]
     },
     {
       "name": "PropertyList",
@@ -1267,6 +2443,124 @@
           "required": false,
           "description": "The emptyLabel message shown when there are no items."
         }
+      ]
+    },
+    {
+      "name": "Radio",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "One option inside a RadioGroup.",
+      "usecases": [
+        "single-select from a set"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Radio.Root.value"
+        },
+        {
+          "name": "label",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The clickable text beside the dot."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Radio.Root.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<Radio value=\"email\" label=\"Email\" />",
+      "keywords": [
+        "radio",
+        "option",
+        "choice",
+        "dot"
+      ],
+      "category": "Data Input",
+      "related": [
+        "RadioGroup"
+      ]
+    },
+    {
+      "name": "RadioGroup",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Pick exactly one option from a small set (Base UI radio-group).",
+      "usecases": [
+        "single-select from a set",
+        "exclusive option"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The Radio options."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.RadioGroup.value"
+        },
+        {
+          "name": "defaultValue",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.RadioGroup.defaultValue"
+        },
+        {
+          "name": "onValueChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.RadioGroup.onValueChange"
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.RadioGroup.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<RadioGroup defaultValue=\"fax\">\n  <Radio value=\"email\" label=\"Email\" />\n  <Radio value=\"fax\" label=\"Fax\" />\n</RadioGroup>",
+      "keywords": [
+        "radio",
+        "radio-group",
+        "single-select",
+        "exclusive",
+        "choice",
+        "option"
+      ],
+      "category": "Data Input",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for 2-5 mutually exclusive options that are all worth showing at once; above ~6, use a Select."
+        },
+        {
+          "do": false,
+          "text": "Use a RadioGroup for independent on/off options - those are Checkboxes."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Group",
+          "required": true,
+          "description": "The container enforcing single selection."
+        },
+        {
+          "name": "Radio",
+          "required": true,
+          "description": "One option (dot + label)."
+        }
+      ],
+      "related": [
+        "Checkbox",
+        "Select"
       ]
     },
     {
@@ -1440,6 +2734,306 @@
         {
           "do": false,
           "text": "Drive this from a status value outside taken, missed, upcoming, or paused; unknown values get no styled dot."
+        }
+      ]
+    },
+    {
+      "name": "Select",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Dropdown picker for one value from a list (Base UI select).",
+      "usecases": [
+        "single-select from a long list",
+        "dropdown picker"
+      ],
+      "props": [
+        {
+          "name": "placeholder",
+          "class": "content",
+          "type": "string",
+          "default": "Select…",
+          "description": "Text shown on the trigger when nothing is chosen. Assumes string item values (value === label); for object values supply a custom Value."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The options as SelectItems."
+        },
+        {
+          "name": "className",
+          "class": "content",
+          "type": "string",
+          "description": "Extra class(es) appended to the popup surface."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Select.Root.value"
+        },
+        {
+          "name": "defaultValue",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Select.Root.defaultValue"
+        },
+        {
+          "name": "onValueChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Select.Root.onValueChange"
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Select.Root.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<Select defaultValue=\"7 days\" placeholder=\"Duration\">\n  <SelectItem value=\"3 days\">3 days</SelectItem>\n  <SelectItem value=\"7 days\">7 days</SelectItem>\n</Select>",
+      "keywords": [
+        "select",
+        "dropdown",
+        "picker",
+        "combobox",
+        "listbox",
+        "options",
+        "choose"
+      ],
+      "category": "Data Input",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for one choice from a longer list (~6+); for a handful of always-visible options use a RadioGroup."
+        },
+        {
+          "do": false,
+          "text": "Use a Select to fire actions - a list of commands is a Menu, not a value picker."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Trigger",
+          "required": true,
+          "description": "The closed control showing the current Value + a chevron."
+        },
+        {
+          "name": "Popup",
+          "required": true,
+          "description": "The portalled listbox of items."
+        },
+        {
+          "name": "Item",
+          "required": true,
+          "description": "One option (SelectItem); a check marks the selected one."
+        }
+      ],
+      "related": [
+        "RadioGroup",
+        "Menu"
+      ]
+    },
+    {
+      "name": "SelectItem",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "One option inside a Select.",
+      "usecases": [
+        "single-select from a long list"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Select.Item.value"
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The visible option label."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Select.Item.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<SelectItem value=\"7 days\">7 days</SelectItem>",
+      "keywords": [
+        "select-item",
+        "option",
+        "listbox-item"
+      ],
+      "category": "Data Input",
+      "related": [
+        "Select"
+      ]
+    },
+    {
+      "name": "Separator",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A visual divider between sections or items (Base UI separator).",
+      "usecases": [
+        "divide sections",
+        "divide items"
+      ],
+      "props": [
+        {
+          "name": "orientation",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Separator.orientation"
+        }
+      ],
+      "composes": [],
+      "usage": "<Separator />",
+      "keywords": [
+        "separator",
+        "divider",
+        "rule",
+        "hr",
+        "line"
+      ],
+      "category": "Structure",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use to group; often whitespace alone is enough - reach for a rule only when the grouping needs a hard edge."
+        },
+        {
+          "do": false,
+          "text": "Stack multiple separators for spacing - adjust margins/tokens instead."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Rule",
+          "required": true,
+          "description": "The hairline; horizontal or vertical per orientation."
+        }
+      ],
+      "related": [
+        "MenuSeparator"
+      ],
+      "examples": [
+        {
+          "name": "Vertical",
+          "code": "<Separator orientation=\"vertical\" />",
+          "description": "Inside a flex row (e.g. between toolbar groups)."
+        }
+      ]
+    },
+    {
+      "name": "Slider",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Choose a number or range by dragging along a track (Base UI slider).",
+      "usecases": [
+        "numeric input by drag",
+        "range selection"
+      ],
+      "props": [
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name; forwarded to each range-input thumb (a range slider suffixes \" minimum\" / \" maximum\"). Required - a slider has no intrinsic label. Alternatively pass aria-labelledby (it propagates to the thumbs via the Root)."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.value"
+        },
+        {
+          "name": "defaultValue",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.defaultValue"
+        },
+        {
+          "name": "onValueChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.onValueChange"
+        },
+        {
+          "name": "min",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.min"
+        },
+        {
+          "name": "max",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.max"
+        },
+        {
+          "name": "step",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.step"
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Slider.Root.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<Slider aria-label=\"Dose\" defaultValue={40} />",
+      "keywords": [
+        "slider",
+        "range",
+        "track",
+        "thumb",
+        "numeric",
+        "scrub",
+        "volume"
+      ],
+      "category": "Data Input",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Always give the slider an accessible name (aria-label or aria-labelledby) - it has none by default."
+        },
+        {
+          "do": true,
+          "text": "Use when the approximate position matters more than the exact number; pair with a visible value readout when precision matters."
+        },
+        {
+          "do": false,
+          "text": "Use a Slider for a value that needs an exact typed entry (a dose, a price) - use a number field instead."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Track",
+          "required": true,
+          "description": "The rail the thumb travels along."
+        },
+        {
+          "name": "Indicator",
+          "required": true,
+          "description": "The filled portion from the start to the thumb."
+        },
+        {
+          "name": "Thumb",
+          "required": true,
+          "description": "The draggable handle (one per value)."
+        }
+      ],
+      "related": [
+        "Progress"
+      ],
+      "examples": [
+        {
+          "name": "Range",
+          "code": "<Slider aria-label=\"Price range\" defaultValue={[20, 60]} />",
+          "description": "A [lo, hi] value renders two thumbs automatically."
         }
       ]
     },
@@ -1799,6 +3393,262 @@
           "required": true,
           "description": "The plus button."
         }
+      ]
+    },
+    {
+      "name": "Tab",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "One selectable tab.",
+      "usecases": [
+        "switch peer views"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tabs.Tab.value"
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The tab label (one or two words)."
+        }
+      ],
+      "composes": [],
+      "usage": "<Tab value=\"overview\">Overview</Tab>",
+      "keywords": [
+        "tab",
+        "label"
+      ],
+      "category": "Navigation",
+      "related": [
+        "Tabs",
+        "TabPanel"
+      ]
+    },
+    {
+      "name": "TabList",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "The row of Tabs with the active indicator.",
+      "usecases": [
+        "switch peer views"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The Tab elements."
+        }
+      ],
+      "composes": [],
+      "usage": "<TabList><Tab value=\"a\">A</Tab></TabList>",
+      "keywords": [
+        "tablist",
+        "tabs",
+        "row"
+      ],
+      "category": "Navigation",
+      "related": [
+        "Tabs"
+      ]
+    },
+    {
+      "name": "TabPanel",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "The content for one tab.",
+      "usecases": [
+        "switch peer views"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tabs.Panel.value"
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The panel content."
+        }
+      ],
+      "composes": [],
+      "usage": "<TabPanel value=\"overview\">…</TabPanel>",
+      "keywords": [
+        "tabpanel",
+        "panel",
+        "content"
+      ],
+      "category": "Navigation",
+      "related": [
+        "Tabs",
+        "Tab"
+      ]
+    },
+    {
+      "name": "Tabs",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Switch between peer views in one space (Base UI tabs).",
+      "usecases": [
+        "switch peer views",
+        "sectioned content"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "A TabList of Tabs followed by a TabPanel per value."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tabs.Root.value"
+        },
+        {
+          "name": "defaultValue",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tabs.Root.defaultValue"
+        },
+        {
+          "name": "onValueChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tabs.Root.onValueChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<Tabs defaultValue=\"overview\">\n  <TabList>\n    <Tab value=\"overview\">Overview</Tab>\n    <Tab value=\"history\">History</Tab>\n  </TabList>\n  <TabPanel value=\"overview\">…</TabPanel>\n  <TabPanel value=\"history\">…</TabPanel>\n</Tabs>",
+      "keywords": [
+        "tabs",
+        "tablist",
+        "segmented",
+        "sections",
+        "navigation",
+        "switcher"
+      ],
+      "category": "Navigation",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for a handful of peer views the user switches between; keep tab labels to one or two words."
+        },
+        {
+          "do": false,
+          "text": "Use Tabs for a linear multi-step flow - that is a stepper/wizard. Tabs imply the sections are independent and equal."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "List",
+          "required": true,
+          "description": "The row of tabs + the sliding indicator."
+        },
+        {
+          "name": "Tab",
+          "required": true,
+          "description": "One selectable label."
+        },
+        {
+          "name": "Panel",
+          "required": true,
+          "description": "The content shown for the selected tab."
+        }
+      ],
+      "related": [
+        "Collapsible"
+      ]
+    },
+    {
+      "name": "TextArea",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Multiline text field (native textarea on Kernel tokens).",
+      "usecases": [
+        "multiline text",
+        "notes",
+        "comment"
+      ],
+      "props": [
+        {
+          "name": "rows",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": "4",
+          "description": "Initial visible height in text rows; the field still grows via native resize unless disabled in CSS."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.value"
+        },
+        {
+          "name": "defaultValue",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.defaultValue"
+        },
+        {
+          "name": "onChange",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.onChange"
+        },
+        {
+          "name": "placeholder",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.placeholder"
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<TextArea placeholder=\"Add a note\" rows={4} />",
+      "keywords": [
+        "textarea",
+        "multiline",
+        "text",
+        "notes",
+        "comment",
+        "message",
+        "field"
+      ],
+      "category": "Data Input",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Size rows to the expected input; a comment box is ~3-4 rows, a long note more."
+        },
+        {
+          "do": false,
+          "text": "Use a TextArea for a single-line value (a name, a code) - that is a TextInput."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Field",
+          "required": true,
+          "description": "The multiline input surface."
+        }
+      ],
+      "related": [
+        "TextInput"
       ]
     },
     {

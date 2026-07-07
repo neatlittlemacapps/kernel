@@ -17,9 +17,10 @@ export const BrandContext = React.createContext('corilus');
 // forwardRef is REQUIRED: these are used as Base UI `render` targets
 // (Menu.Trigger render={<IconButton/>}). Base UI injects a ref that must reach
 // the DOM <button>, or the Positioner has no anchor and the popup lands at 0,0.
-export const Btn = React.forwardRef(function Btn({ variant = 'primary', size, className = '', children, ...rest }, ref) {
+export const Btn = React.forwardRef(function Btn({ variant = 'primary', tone, size, className = '', children, ...rest }, ref) {
+  const toneCls = tone && tone !== 'neutral' ? ' krnl-btn--tone-' + tone : '';
   return (
-    <button ref={ref} className={`krnl-btn krnl-btn--${variant}${size ? ' krnl-btn--' + size : ''} ${className}`} {...rest}>
+    <button ref={ref} className={`krnl-btn krnl-btn--${variant}${toneCls}${size ? ' krnl-btn--' + size : ''} ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -121,7 +122,8 @@ export const meta = {
     keywords: ['button', 'btn', 'cta', 'submit', 'action', 'primary', 'secondary'],
     summary: 'Primary/secondary text button.',
     props: [
-      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view.' },
+      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view.' },
+      { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors.' },
       { name: 'size', class: 'dsPresentation', type: 'string', description: 'Size step; resolves to the density / size-step tokens.' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The button label. Write the action ("Save changes"), not "OK" or "Click here".' },
       { name: 'disabled', class: 'passThroughControl', passthrough: 'BaseUI.Button.disabled' },
@@ -142,6 +144,7 @@ export const meta = {
     examples: [
       { name: 'Primary', code: '<Btn variant="primary">Save changes</Btn>' },
       { name: 'Secondary', code: '<Btn variant="secondary">Cancel</Btn>', description: 'Lower emphasis; pairs with a primary.' },
+      { name: 'Destructive', code: '<Btn tone="error">Delete</Btn>', description: 'error tone for an irreversible action; pair it with an AlertDialog confirm.' },
     ],
     // prop descriptions adapted from Astryx Button.doc.mjs (MIT), rewritten to the Kernel API.
   },

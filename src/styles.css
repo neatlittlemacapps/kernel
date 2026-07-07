@@ -79,6 +79,9 @@
    (textarea + composer card border, menu-item highlight, input border). */
 .krnl-companion-layer :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 .krnl-composer-ta:focus-visible, .krnl-menu-item:focus-visible, .krnl-input:focus-visible { outline: none; }
+/* Portalled popup CONTAINERS never show a focus frame - focus indication lives on
+   the items ([data-highlighted]); Base UI focuses the popup on open (seen on ContextMenu). */
+.krnl-menu-popup:focus-visible, .krnl-popover:focus-visible, .krnl-dialog:focus-visible { outline: none; }
 
 /* ── FAB ── */
 .krnl-fab {
@@ -390,6 +393,8 @@
 .krnl-menu-popup--wide { min-width: 264px; padding: 6px 0; }
 .krnl-menu-item { display: flex; align-items: center; gap: 9px; padding: var(--density-row-py) var(--density-control-px); border-radius: calc(var(--density-radius) - 4px); font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); color: var(--text-default); cursor: pointer; outline: none; user-select: none; }
 .krnl-menu-item[data-highlighted], .krnl-menu-item:hover { background: var(--state-hover); }
+/* .is-selected is legacy hand-rolled state kept for greenhouse's live JSX; migrate it
+   to [data-selected] and drop the .is-selected half in B-40 (greenhouse -> Kernel). */
 .krnl-menu-item.is-selected, .krnl-menu-item[data-selected] { background: var(--state-selected-surface); color: var(--state-selected-text); }
 .krnl-menu-item--btn { flex: 0 0 auto; border: 1px solid var(--border-subtle); background: var(--surface-panel); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); padding: 6px 12px; border-radius: var(--krnl-radius-sm); }
 .krnl-menu-item--rich { gap: 9px; }
@@ -405,6 +410,114 @@
 .krnl-menu-rich-ic { color: var(--text-faint); display: flex; flex-shrink: 0; }
 .krnl-menu-item.is-selected .krnl-menu-rich-ic { color: var(--action-accent); }
 .krnl-menu-check { margin-left: auto; color: var(--action-accent); display: flex; }
+
+/* Kernel Menu wrapper (B-38) - leading-icon slot, group, separator, disabled item.
+   The popup / item / section classes above are shared with the extraction; the
+   Kernel Menu uses its OWN group class (krnl-menu-grp) so groups never draw a
+   divider - MenuSeparator is the single divider mechanism (no doubled rules). */
+.krnl-menu-item-ic { display: flex; flex-shrink: 0; color: var(--text-faint); }
+.krnl-menu-item[data-disabled] { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+.krnl-menu-item[data-disabled]:hover { background: transparent; }
+.krnl-menu-grp { display: flex; flex-direction: column; }
+.krnl-menu-sep { height: var(--dimension-rule-hair); margin: var(--space-1) 0; background: var(--border-subtle); border: none; }
+
+/* ── ContextMenu (B-38) - trigger region; popup reuses .krnl-menu-* ── */
+.krnl-ctxarea { display: block; }
+
+/* ── Popover (B-38, Base UI) - anchored rich-content surface ── */
+.krnl-popover {
+  background: var(--surface-raised); color: var(--text-default);
+  border: var(--dimension-rule-hair) solid var(--border-subtle); border-radius: var(--krnl-radius-panel);
+  box-shadow: var(--elevation-overlay); padding: var(--space-4); min-width: 220px; max-width: 320px;
+  font-family: var(--font-body); z-index: 2147483646; animation: krnl-fadeUp .16s ease;
+  display: flex; flex-direction: column; gap: var(--space-2);
+}
+.krnl-popover-title { font-family: var(--typography-title-sm-font-family); font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); }
+.krnl-popover-desc { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); margin: 0; }
+
+/* ── Dialog + AlertDialog (B-38, Base UI) - modal surface + backdrop ── */
+.krnl-dialog-backdrop { position: fixed; inset: 0; background: var(--overlay-scrim); z-index: 2147483646; animation: krnl-fadeIn .18s ease; }
+.krnl-dialog {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 2147483647; display: flex; flex-direction: column; gap: var(--space-3);
+  width: min(440px, calc(100vw - var(--space-6))); max-height: calc(100vh - var(--space-7));
+  overflow-y: auto; padding: var(--space-5);
+  background: var(--surface-raised); color: var(--text-default);
+  border: var(--dimension-rule-hair) solid var(--border-subtle); border-radius: var(--krnl-radius-panel);
+  box-shadow: var(--elevation-modal); font-family: var(--font-body); animation: krnl-fadeUp .18s ease;
+}
+.krnl-dialog--alert { width: min(400px, calc(100vw - var(--space-6))); }
+.krnl-dialog-title { font-family: var(--typography-title-md-font-family); font-size: var(--typography-title-md-font-size); font-weight: var(--typography-title-md-font-weight); color: var(--text-default); margin: 0; }
+.krnl-dialog-desc { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); margin: 0; }
+.krnl-dialog-body { font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); display: flex; flex-direction: column; gap: var(--space-3); }
+.krnl-dialog-foot { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-2); }
+
+/* ── Checkbox + Radio (B-38, Base UI) - shared .krnl-choice row ── */
+.krnl-choice { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); }
+.krnl-choice-label { user-select: none; }
+.krnl-checkbox { width: 18px; height: 18px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border: var(--dimension-rule-thin) solid var(--border-strong, var(--border-subtle)); border-radius: var(--krnl-radius-sm); background: var(--surface-page); color: var(--action-on); transition: background .14s, border-color .14s; }
+.krnl-checkbox[data-checked], .krnl-checkbox[data-indeterminate] { background: var(--action-solid); border-color: var(--action-solid); }
+.krnl-checkbox:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+.krnl-checkbox-ind { display: inline-flex; }
+.krnl-checkbox[data-disabled], .krnl-radioctl[data-disabled] { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+/* dim the label too (the box/dot is a sibling of the label inside .krnl-choice, so
+   dimming it alone leaves the text full-strength); dim each element once, no compounding. */
+.krnl-choice:has([data-disabled]) { cursor: not-allowed; }
+.krnl-choice:has([data-disabled]) .krnl-choice-label { opacity: var(--state-disabled-opacity); }
+.krnl-radiogroup { display: flex; flex-direction: column; gap: var(--space-2); }
+.krnl-radioctl { width: 18px; height: 18px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--krnl-radius-pill); border: var(--dimension-rule-thin) solid var(--border-strong, var(--border-subtle)); background: var(--surface-page); transition: border-color .14s; }
+.krnl-radioctl[data-checked] { border-color: var(--action-solid); }
+.krnl-radioctl:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+.krnl-radioctl-ind { width: 10px; height: 10px; border-radius: var(--krnl-radius-pill); background: var(--action-solid); transform: scale(0); transition: transform .14s; }
+.krnl-radioctl[data-checked] .krnl-radioctl-ind { transform: scale(1); }
+
+/* ── Slider (B-38, Base UI) - Base UI sets indicator width + thumb inset inline ── */
+.krnl-slider { width: 100%; display: flex; align-items: center; }
+.krnl-slider-control { display: flex; align-items: center; width: 100%; height: 20px; cursor: pointer; }
+.krnl-slider-track { position: relative; width: 100%; height: 4px; border-radius: var(--krnl-radius-pill); background: var(--surface-sunken); }
+.krnl-slider-ind { height: 100%; border-radius: var(--krnl-radius-pill); background: var(--action-solid); }
+.krnl-slider-thumb { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; border-radius: var(--krnl-radius-pill); background: var(--surface-raised); border: var(--dimension-rule-thin) solid var(--action-solid); box-shadow: var(--elevation-raised); }
+.krnl-slider-thumb:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+.krnl-slider[data-disabled] { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+
+/* ── TextArea (B-38) - multiline sibling of .krnl-input ── */
+.krnl-textarea { width: 100%; box-sizing: border-box; min-height: 76px; resize: vertical; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); outline: none; }
+.krnl-textarea::placeholder { color: var(--text-faint); }
+.krnl-textarea:focus { border-color: var(--focus-ring); }
+.krnl-textarea:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+
+/* Select placeholder state (trigger reuses .krnl-select-trigger above) */
+.krnl-select-trigger[data-placeholder] { color: var(--text-faint); }
+
+/* ── Tabs (B-38, Base UI) - indicator uses Base UI's --active-tab-* vars ── */
+.krnl-tabs { display: flex; flex-direction: column; }
+.krnl-tablist { position: relative; display: flex; gap: var(--space-2); border-bottom: var(--dimension-rule-hair) solid var(--border-subtle); }
+.krnl-tab { appearance: none; background: none; border: none; cursor: pointer; padding: var(--space-2) var(--space-1); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-muted); transition: color .14s; }
+.krnl-tab:hover { color: var(--text-default); }
+.krnl-tab[data-selected] { color: var(--action-accent); }
+.krnl-tab:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: -2px; border-radius: var(--krnl-radius-sm); }
+.krnl-tab-indicator { position: absolute; bottom: calc(-1 * var(--dimension-rule-thin)); left: var(--active-tab-left); width: var(--active-tab-width); height: var(--dimension-rule-thin); background: var(--action-solid); transition: left .2s ease, width .2s ease; }
+.krnl-tabpanel { padding: var(--space-3) 0; font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); }
+
+/* ── Collapsible (B-38, Base UI) ── */
+.krnl-collapsible { display: flex; flex-direction: column; }
+.krnl-collapsible-trigger { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); width: 100%; padding: var(--density-control-py) var(--density-control-px); background: var(--surface-page); border: var(--dimension-rule-hair) solid var(--border-subtle); border-radius: var(--density-radius); cursor: pointer; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); text-align: left; }
+.krnl-collapsible-trigger:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+.krnl-collapsible-chev { display: inline-flex; color: var(--text-faint); transition: transform .18s ease; }
+.krnl-collapsible-trigger[data-panel-open] .krnl-collapsible-chev { transform: rotate(90deg); }
+.krnl-collapsible-panel { overflow: hidden; }
+.krnl-collapsible-panel-inner { padding: var(--space-3) var(--space-1) var(--space-1); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); }
+
+/* ── Separator (B-38, Base UI) ── */
+.krnl-separator { border: none; background: var(--border-subtle); flex-shrink: 0; }
+.krnl-separator[data-orientation="horizontal"] { height: var(--dimension-rule-hair); width: 100%; margin: var(--space-2) 0; }
+.krnl-separator[data-orientation="vertical"] { width: var(--dimension-rule-hair); align-self: stretch; margin: 0 var(--space-2); }
+
+/* ── Progress (B-38, Base UI) - Base UI sets the indicator width from value/max ── */
+.krnl-progress { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; }
+.krnl-progress-label { font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-muted); }
+.krnl-progress-track { height: 6px; border-radius: var(--krnl-radius-pill); background: var(--surface-sunken); overflow: hidden; }
+.krnl-progress-ind { height: 100%; background: var(--action-solid); border-radius: var(--krnl-radius-pill); transition: width .3s ease; }
 
 /* ── SELECT trigger (Base UI) ── */
 .krnl-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; font-family: var(--typography-body-sm-font-family); }
@@ -427,9 +540,18 @@
 .krnl-btn { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; line-height: var(--typography-label-lg-line-height); transition: filter .14s; }
 .krnl-btn:hover:not([disabled]) { filter: brightness(1.06); }
 .krnl-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-.krnl-btn--primary { background: var(--button-primary-background); color: var(--button-primary-text); }
-.krnl-btn--secondary { background: var(--button-secondary-background); border-color: var(--button-secondary-border); color: var(--button-secondary-text); }
-.krnl-btn--tertiary { background: var(--button-tertiary-background); color: var(--button-tertiary-text); }
+/* tone axis (B-38): --btn-tone-* are unset by default, so the var() fallbacks
+   below resolve to the existing button colors (byte-identical, no tone = no change).
+   A .krnl-btn--tone-{status} class defines them, and variants pick them up:
+   primary -> solid fill, secondary -> tinted outline, tertiary -> tint. neutral
+   has no status token, so it sets nothing and keeps the default action colors. */
+.krnl-btn--tone-info { --btn-tone-solid: var(--status-info-solid); --btn-tone-on: var(--status-info-on); --btn-tone-tint: var(--status-info-tint); }
+.krnl-btn--tone-success { --btn-tone-solid: var(--status-success-solid); --btn-tone-on: var(--status-success-on); --btn-tone-tint: var(--status-success-tint); }
+.krnl-btn--tone-warning { --btn-tone-solid: var(--status-warning-solid); --btn-tone-on: var(--status-warning-on); --btn-tone-tint: var(--status-warning-tint); }
+.krnl-btn--tone-error { --btn-tone-solid: var(--status-error-solid); --btn-tone-on: var(--status-error-on); --btn-tone-tint: var(--status-error-tint); }
+.krnl-btn--primary { background: var(--btn-tone-solid, var(--button-primary-background)); color: var(--btn-tone-on, var(--button-primary-text)); }
+.krnl-btn--secondary { background: var(--button-secondary-background); border-color: var(--btn-tone-solid, var(--button-secondary-border)); color: var(--btn-tone-solid, var(--button-secondary-text)); }
+.krnl-btn--tertiary { background: var(--btn-tone-tint, var(--button-tertiary-background)); color: var(--btn-tone-solid, var(--button-tertiary-text)); }
 .krnl-btn[disabled] { background: var(--button-disabled-background); color: var(--button-disabled-text); cursor: not-allowed; border-color: transparent; }
 
 /* ── TEXT INPUT ── */

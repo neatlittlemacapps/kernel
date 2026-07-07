@@ -198,6 +198,11 @@
       },
       "text": {
         "$value": "{brand.ink.500}"
+      },
+      "opacity": {
+        "$type": "number",
+        "$value": 0.5,
+        "$description": "Multiplier for dimming a whole control on [data-disabled] when a fill/text colour swap is not enough (icon + text rows: Menu items, checkbox/radio/select/slider labels). The convergence value for the current drifting ad-hoc opacity literals (.45 switch, .5 chip, .6 action row); theme-invariant."
       }
     }
   },

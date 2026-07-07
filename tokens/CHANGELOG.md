@@ -68,6 +68,11 @@ follows [SemVer](https://semver.org/).
   - *Affects:* Status pills, suggestion chips, trend chips, count badges, recent-search chips, edit-chip backings — every pill-shaped component shares one geometry source.
   - *Rationale:* Multiple pill-shaped components existed across the system, each with independent literals. Sharing geometry keeps them visually coherent and lets density adjust them centrally if needed.
   - *Migration:* Component CSS swaps literals to var(--pill-*).
+- state.disabled.opacity semantic token (0.5) for dimming whole controls on [data-disabled]
+  - After: `0.5`
+  - *Affects:* Menu items now; convergence target for Checkbox/RadioGroup/Select/Slider (B-38) and the drifting .45/.5/.6 literals in switch/chip/action-row (B-scope retrofit, not done here)
+  - *Rationale:* DS had no opacity token; styling-bridge forbids inlining opacity literals. One semantic token stops the drift and serves B-38 disabled states.
+  - *Migration:* Use var(--state-disabled-opacity) for [data-disabled] dimming instead of a literal.
 
 ### Changed
 - `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Warmed and lightened the six neutral primitives (cool greys -> warm greige, hue 75, lifted lightness)

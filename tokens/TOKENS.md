@@ -1,8 +1,8 @@
-# Design tokens — Corilus Companion
+# Design tokens — system documentation
 
-_Last regenerated: 2026-06-18._
+_Last regenerated: 2026-07-07._
 _Spec: W3C Design Tokens 2025.10._  
-_Discovered: 772 tokens across 23 file(s); 1 resolver(s)._
+_Discovered: 767 tokens across 23 file(s); 1 resolver(s)._
 
 This document is the canonical reference for the token system. It is regenerated automatically — do not hand-edit; instead update the source `.tokens.json` files and re-run `scripts/generate_docs.py`.
 
@@ -70,15 +70,13 @@ _18 token(s)._
 
 _See [USAGE.md#surfaces](./USAGE.md#surfaces) for usage recommendations and CSS snippets._
 
-_22 token(s)._
+_20 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
 | `brand.neutral.panel` | color | `{brand.fill.50}` |  |
-| `card.accent-rule.height` | dimension | `4px` | Was 3px; bumped for confidence. |
-| `card.accent-rule.tab-width` | dimension | `66px` | Stripe extends roughly 2/3 of the card width at default min — actual length set via min(tab-width-pct, container-width). |
-| `card.accent-rule.tab-width-pct` | number | `0.66` | Stripe extent as fraction of card width. Consumer CSS does width: calc(100% * var(...)). |
-| `card.padding` | dimension | `20px` | Generous padding (was 16) — Clinical Almanac aesthetic favours breathing room. |
+| `card.gap` | dimension | `{density.gap}` | Card inner slot gap (head ↔ value ↔ meta ↔ media ↔ footer). Density-aware. |
+| `card.padding` | dimension | `{density.card-pad}` | Card outer padding. Aliases density.card-pad so the card resizes with [data-density]. |
 | `elevation.modal` | shadow | `array[2]` |  |
 | `elevation.modal` | shadow | `array[2]` |  |
 | `inverted.surface` | color | `{brand.neutral.paper}` |  |
@@ -454,7 +452,7 @@ _9 token(s)._
 
 ### Base / motion
 
-_20 token(s)._
+_16 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -468,20 +466,16 @@ _20 token(s)._
 | `motion.duration.fast` | duration | `{motion.duration.180}` | Small state changes, button presses, focus rings. |
 | `motion.duration.instant` | duration | `{motion.duration.100}` | Micro-interactions, pill toggles, hover-state changes. |
 | `motion.duration.slow` | duration | `{motion.duration.400}` | Drawer / panel / dialog reveals. |
-| `motion.easing.accelerate` | cubicBezier | `[0.3, 0, 1, 1]` | Speeds on exit — for leaving UI (modal out, drawer slide-out). |
-| `motion.easing.accelerate` | cubicBezier | `{motion.easing.accelerate}` | Exiting UI. |
-| `motion.easing.decelerate` | cubicBezier | `[0, 0, 0.2, 1]` | Slows on exit — for entering UI (modal in, drawer slide-in). |
-| `motion.easing.decelerate` | cubicBezier | `{motion.easing.decelerate}` | Entering UI. |
-| `motion.easing.emphasized` | cubicBezier | `[0.16, 1, 0.3, 1]` | Spring-ish — for container morphs, layout changes. |
-| `motion.easing.emphasized` | cubicBezier | `{motion.easing.emphasized}` | Container morphs (e.g. sprout card growth). |
-| `motion.easing.linear` | cubicBezier | `[0, 0, 1, 1]` | Constant velocity — only for progress indicators / loops. |
-| `motion.easing.linear` | cubicBezier | `{motion.easing.linear}` | Constant velocity (progress indicators). |
-| `motion.easing.standard` | cubicBezier | `[0.2, 0, 0, 1]` | Default UI easing. |
-| `motion.easing.standard` | cubicBezier | `{motion.easing.standard}` | Default UI. |
+| `motion.easing.accelerate` | cubicBezier | `[0.3, 0, 1, 1]` | For exiting UI. |
+| `motion.easing.decelerate` | cubicBezier | `[0, 0, 0.2, 1]` | Soft ease-out for entering UI, hover lifts. |
+| `motion.easing.emphasized` | cubicBezier | `[0.16, 1, 0.3, 1]` | Spring-flavoured; container morphs. |
+| `motion.easing.linear` | cubicBezier | `[0, 0, 1, 1]` | Constant velocity; progress indicators only. |
+| `motion.easing.standard` | cubicBezier | `[0.2, 0, 0, 1]` | Default UI. |
+| `motion.easing.swift` | cubicBezier | `[0.1, 0.85, 0.25, 1]` | Quick reactive + long fade. Sharp initial velocity (≈8.5), gentle landing (≈0). Use for hover lifts where the card should respond instantly then settle softly. Sharper attack than `decelerate`, less springy than `emphasized`. |
 
 ### Other
 
-_403 token(s)._
+_404 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -851,6 +845,7 @@ _403 token(s)._
 | `sparkline.stroke-width` | dimension | `2px` | Bumped from 1.6 — reads on phones at glance distance. |
 | `state.active` | color | `{color.alpha.white-16}` |  |
 | `state.active` | color | `{color.alpha.black-12}` | Overlay layered over a surface while pressed/active. |
+| `state.disabled.opacity` | number | `0.5` | Multiplier for dimming a whole control on [data-disabled] when a fill/text colour swap is not enough (icon + text rows: Menu items, checkbox/radio/select/slider labels). The convergence value for the current drifting ad-hoc opacity literals (.45 switch, .5 chip, .6 action row); theme-invariant. |
 | `state.disabled.text` | color | `{brand.fill.300}` |  |
 | `state.disabled.text` | color | `{brand.ink.500}` |  |
 | `state.hover` | color | `{color.alpha.white-08}` |  |
