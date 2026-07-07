@@ -38,9 +38,9 @@ test('tools/list returns the two tools with input schemas', () => {
 });
 
 test('tools/call search ranks the obvious component first', () => {
-  const r = dispatch(req(3, 'tools/call', { name: 'search', arguments: { query: 'toggle' } }), catalog);
+  const r = dispatch(req(3, 'tools/call', { name: 'search', arguments: { query: 'slider' } }), catalog);
   assert.equal(r.result.content[0].type, 'text');
-  assert.equal(r.result.structuredContent.results[0].name, 'Toggle');
+  assert.equal(r.result.structuredContent.results[0].name, 'Slider');
   assert.ok(!r.result.isError);
 });
 

@@ -519,6 +519,20 @@
 .krnl-progress-track { height: 6px; border-radius: var(--krnl-radius-pill); background: var(--surface-sunken); overflow: hidden; }
 .krnl-progress-ind { height: 100%; background: var(--action-solid); border-radius: var(--krnl-radius-pill); transition: width .3s ease; }
 
+/* ── Chip / ToggleGroup / Fab (B-40 atoms) - extend the extraction classes.
+   .krnl-chip, .krnl-chip-ic, .krnl-segmented, .krnl-seg, .krnl-fab(-pulse) already
+   exist above; these add the generic Chip's selected + remove parts and the Base UI
+   [data-pressed] companion for the segmented item (retiring the hand-rolled .is-on). */
+.krnl-chip--selected { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
+.krnl-chip-x { display: inline-flex; align-items: center; justify-content: center; margin-left: 2px; padding: 0; border: none; background: none; color: var(--text-faint); cursor: pointer; }
+.krnl-chip-x:hover { color: var(--text-default); }
+/* self-contained focus rings - these atoms can float/portal outside the
+   .krnl-companion-layer :focus-visible base rule, so ring them directly. */
+.krnl-chip:focus-visible, .krnl-chip-x:focus-visible, .krnl-fab:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+.krnl-seg:hover:not([data-pressed]) { color: var(--text-default); }
+.krnl-seg[data-pressed] { background: var(--surface-raised); color: var(--text-default); box-shadow: var(--elevation-raised); }
+.krnl-seg:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+
 /* ── SELECT trigger (Base UI) ── */
 .krnl-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; font-family: var(--typography-body-sm-font-family); }
 .krnl-select-trigger:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }

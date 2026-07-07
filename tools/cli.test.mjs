@@ -76,10 +76,10 @@ test('unknown topic -> ERR_UNKNOWN_TOPIC + suggestion', () => {
 });
 
 test('search ranks the obvious component first', () => {
-  const { status, json } = run('search', 'toggle', '--json');
+  const { status, json } = run('search', 'slider', '--json');
   assert.equal(status, 0);
   assert.equal(json.type, 'search');
-  assert.equal(json.data.results[0].name, 'Toggle');
+  assert.equal(json.data.results[0].name, 'Slider');
 });
 
 test('build "<idea>" returns a kit naming the relevant components', () => {

@@ -815,6 +815,112 @@
       ]
     },
     {
+      "name": "Chip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Small token-styled label - suggestion, filter, removable tag, or citation.",
+      "usecases": [
+        "suggestion",
+        "filter",
+        "tag",
+        "citation"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The chip label (keep it short)."
+        },
+        {
+          "name": "icon",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional leading glyph; decorative (aria-hidden)."
+        },
+        {
+          "name": "selected",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Marks the chosen state for a filter / choice chip (sets aria-pressed on the actionable form)."
+        },
+        {
+          "name": "onClick",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Makes the chip actionable (renders a button). Use for suggestion / filter / citation chips."
+        },
+        {
+          "name": "onRemove",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Adds a trailing remove control (renders a static label + a remove button). Use for a removable tag; do not combine with onClick."
+        }
+      ],
+      "composes": [],
+      "usage": "<Chip icon={Icon.spark({ size: 13 })} onClick={onPick}>Summarize</Chip>",
+      "keywords": [
+        "chip",
+        "tag",
+        "pill",
+        "token",
+        "suggestion",
+        "filter",
+        "citation",
+        "badge"
+      ],
+      "category": "Data Display",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Keep the label to a word or two; a chip is a token, not a sentence."
+        },
+        {
+          "do": true,
+          "text": "Pick one mode: actionable (onClick) or removable (onRemove) - not both (avoids a button inside a button)."
+        },
+        {
+          "do": false,
+          "text": "Use a Chip as a primary action - that is a Button. Chips are lightweight, secondary, and plural."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "required": true,
+          "description": "The text (children)."
+        },
+        {
+          "name": "Icon",
+          "required": false,
+          "description": "A leading glyph."
+        },
+        {
+          "name": "Remove",
+          "required": false,
+          "description": "A trailing remove button when onRemove is set."
+        }
+      ],
+      "related": [
+        "Button",
+        "StatusPill"
+      ],
+      "examples": [
+        {
+          "name": "Removable tag",
+          "code": "<Chip onRemove={onClear}>Amoxicillin</Chip>",
+          "description": "Static label with a remove control."
+        },
+        {
+          "name": "Filter (selected)",
+          "code": "<Chip selected onClick={onToggle}>Unresolved</Chip>",
+          "description": "Actionable filter chip in the chosen state."
+        }
+      ]
+    },
+    {
       "name": "Collapsible",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -1370,6 +1476,78 @@
           "required": true,
           "description": "The chip text."
         }
+      ]
+    },
+    {
+      "name": "Fab",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Floating action button for one persistent, high-emphasis action.",
+      "usecases": [
+        "floating action",
+        "persistent launcher"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The icon or mark shown in the button (e.g. an AIBadge or an Icon)."
+        },
+        {
+          "name": "pulse",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Adds the token-driven attention pulse ring (e.g. to promote a new capability)."
+        },
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name; required since the Fab is icon-only."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "HTMLButtonElement.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<Fab aria-label=\"Open assistant\"><AIBadge size={24} /></Fab>",
+      "keywords": [
+        "fab",
+        "floating",
+        "launcher",
+        "action-button",
+        "floating-action"
+      ],
+      "category": "Action",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use exactly one Fab per surface for the single most important standing action; always give it an aria-label."
+        },
+        {
+          "do": false,
+          "text": "Stack multiple Fabs or use one for a routine action - it is the loudest control on the screen."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Button",
+          "required": true,
+          "description": "The circular floating control."
+        },
+        {
+          "name": "Pulse",
+          "required": false,
+          "description": "An optional attention ring behind the mark."
+        }
+      ],
+      "related": [
+        "IconButton"
       ]
     },
     {
@@ -3803,6 +3981,125 @@
         "checkbox"
       ],
       "category": "Data Input"
+    },
+    {
+      "name": "ToggleGroup",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "A set of related toggle buttons - a segmented control (Base UI toggle-group).",
+      "usecases": [
+        "segmented control",
+        "view switcher",
+        "multi-select button bar"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The ToggleGroupItem options."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ToggleGroup.value"
+        },
+        {
+          "name": "defaultValue",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ToggleGroup.defaultValue"
+        },
+        {
+          "name": "onValueChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ToggleGroup.onValueChange"
+        },
+        {
+          "name": "toggleMultiple",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.ToggleGroup.toggleMultiple"
+        }
+      ],
+      "composes": [],
+      "usage": "<ToggleGroup defaultValue={[\"list\"]}>\n  <ToggleGroupItem value=\"list\">List</ToggleGroupItem>\n  <ToggleGroupItem value=\"grid\">Grid</ToggleGroupItem>\n</ToggleGroup>",
+      "keywords": [
+        "toggle-group",
+        "segmented",
+        "segment",
+        "switcher",
+        "button-group",
+        "view-toggle"
+      ],
+      "category": "Data Input",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for 2-4 mutually exclusive views/modes shown at once (a segmented control); keep labels short."
+        },
+        {
+          "do": false,
+          "text": "Use a ToggleGroup for one on/off setting - that is a Toggle (switch); or for many options - that is a Select."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Group",
+          "required": true,
+          "description": "The segmented container."
+        },
+        {
+          "name": "Item",
+          "required": true,
+          "description": "One toggle option (ToggleGroupItem); pressed state via [data-pressed]."
+        }
+      ],
+      "related": [
+        "Tabs",
+        "Toggle"
+      ]
+    },
+    {
+      "name": "ToggleGroupItem",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "One option inside a ToggleGroup.",
+      "usecases": [
+        "segmented control"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Toggle.value"
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The option label."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Toggle.disabled"
+        }
+      ],
+      "composes": [],
+      "usage": "<ToggleGroupItem value=\"grid\">Grid</ToggleGroupItem>",
+      "keywords": [
+        "toggle",
+        "segment",
+        "option",
+        "button"
+      ],
+      "category": "Data Input",
+      "related": [
+        "ToggleGroup"
+      ]
     },
     {
       "name": "Tooltip",
