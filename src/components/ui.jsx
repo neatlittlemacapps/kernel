@@ -2,7 +2,7 @@
 // Every visible value resolves to a semantic token var via the .krnl-* classes
 // in styles.css — no hardcoded color/space/radius/elevation here.
 import { Avatar } from '@base-ui-components/react/avatar';
-import { Tooltip } from '@base-ui-components/react/tooltip';
+import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip';
 import { Switch } from '@base-ui-components/react/switch';
 import { Accordion } from '@base-ui-components/react/accordion';
 import { brandLogoSvg } from '../lib/logo.js';
@@ -17,7 +17,7 @@ export const BrandContext = React.createContext('corilus');
 // forwardRef is REQUIRED: these are used as Base UI `render` targets
 // (Menu.Trigger render={<IconButton/>}). Base UI injects a ref that must reach
 // the DOM <button>, or the Positioner has no anchor and the popup lands at 0,0.
-export const Btn = React.forwardRef(function Btn({ variant = 'primary', tone, size, className = '', children, ...rest }, ref) {
+export const Button = React.forwardRef(function Button({ variant = 'primary', tone, size, className = '', children, ...rest }, ref) {
   const toneCls = tone && tone !== 'neutral' ? ' krnl-btn--tone-' + tone : '';
   return (
     <button ref={ref} className={`krnl-btn krnl-btn--${variant}${toneCls}${size ? ' krnl-btn--' + size : ''} ${className}`} {...rest}>
@@ -25,6 +25,8 @@ export const Btn = React.forwardRef(function Btn({ variant = 'primary', tone, si
     </button>
   );
 });
+/** @deprecated Use `Button`. `Btn` is kept as an alias (B-39) and removed on the next major. */
+export const Btn = Button;
 
 export const IconButton = React.forwardRef(function IconButton({ active, className = '', children, ...rest }, ref) {
   return (
@@ -50,7 +52,7 @@ export function AIBadge({ size = 28, glow = false }) {
 }
 
 // Patient avatar — Base UI Avatar with initials fallback over a token gradient.
-export function PAv({ p, size = 22 }) {
+export function PersonAvatar({ p, size = 22 }) {
   if (!p) return null;
   const g = p.g || ['var(--brand-data-1)', 'var(--brand-data-4)'];
   return (
@@ -59,20 +61,24 @@ export function PAv({ p, size = 22 }) {
     </Avatar.Root>
   );
 }
+/** @deprecated Use `PersonAvatar`. `PAv` is kept as an alias (B-39) and removed on the next major. */
+export const PAv = PersonAvatar;
 
-export function Tip({ label, children }) {
+export function Tooltip({ label, children }) {
   if (!label) return children;
   return (
-    <Tooltip.Root>
-      <Tooltip.Trigger render={children} />
-      <Tooltip.Portal>
-        <Tooltip.Positioner className="krnl-positioner" sideOffset={6}>
-          <Tooltip.Popup className="krnl-tooltip">{label}</Tooltip.Popup>
-        </Tooltip.Positioner>
-      </Tooltip.Portal>
-    </Tooltip.Root>
+    <BaseTooltip.Root>
+      <BaseTooltip.Trigger render={children} />
+      <BaseTooltip.Portal>
+        <BaseTooltip.Positioner className="krnl-positioner" sideOffset={6}>
+          <BaseTooltip.Popup className="krnl-tooltip">{label}</BaseTooltip.Popup>
+        </BaseTooltip.Positioner>
+      </BaseTooltip.Portal>
+    </BaseTooltip.Root>
   );
 }
+/** @deprecated Use `Tooltip`. `Tip` is kept as an alias (B-39) and removed on the next major. */
+export const Tip = Tooltip;
 
 export function Toggle({ checked, onCheckedChange, id, disabled }) {
   return (
@@ -116,11 +122,11 @@ export function AIMarker({ text }) {
 
 // ── component catalog metadata (tree-shaken from the bundle; read by build/gen-components.mjs) ──
 export const meta = {
-  Btn: {
+  Button: {
     layer: 'atom', scope: 'global', status: 'stable', category: 'Action',
     usecases: ['action'],
     keywords: ['button', 'btn', 'cta', 'submit', 'action', 'primary', 'secondary'],
-    summary: 'Primary/secondary text button.',
+    summary: 'Text button with variant (emphasis) + tone (semantic color).',
     props: [
       { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view.' },
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors.' },
@@ -132,7 +138,7 @@ export const meta = {
       { do: true, text: 'Reserve primary for the single most important action in the view; use secondary for the rest.' },
       { do: true, text: 'Write labels that describe the action ("Save changes", "Delete account"), not "OK".' },
       { do: false, text: 'Place more than one primary button in the same view - it dilutes the hierarchy.' },
-      { do: false, text: 'Use a Btn for navigation; if it only goes to another page, use a link.' },
+      { do: false, text: 'Use a Button for navigation; if it only goes to another page, use a link.' },
     ],
     anatomy: [
       { name: 'Label', required: true, description: 'The visible text (children); also the accessible name.' },
@@ -140,13 +146,24 @@ export const meta = {
     ],
     related: ['IconButton'],
     composes: [],
-    usage: '<Btn variant="primary">Save changes</Btn>',
+    usage: '<Button variant="primary">Save changes</Button>',
     examples: [
-      { name: 'Primary', code: '<Btn variant="primary">Save changes</Btn>' },
-      { name: 'Secondary', code: '<Btn variant="secondary">Cancel</Btn>', description: 'Lower emphasis; pairs with a primary.' },
-      { name: 'Destructive', code: '<Btn tone="error">Delete</Btn>', description: 'error tone for an irreversible action; pair it with an AlertDialog confirm.' },
+      { name: 'Primary', code: '<Button variant="primary">Save changes</Button>' },
+      { name: 'Secondary', code: '<Button variant="secondary">Cancel</Button>', description: 'Lower emphasis; pairs with a primary.' },
+      { name: 'Destructive', code: '<Button tone="error">Delete</Button>', description: 'error tone for an irreversible action; pair it with an AlertDialog confirm.' },
     ],
     // prop descriptions adapted from Astryx Button.doc.mjs (MIT), rewritten to the Kernel API.
+  },
+  Btn: {
+    layer: 'atom', scope: 'global', status: 'deprecated', category: 'Action',
+    deprecated: 'Button',
+    usecases: ['action'],
+    keywords: ['button', 'btn', 'cta', 'submit', 'action'],
+    summary: 'Deprecated alias of Button (B-39). Use Button; Btn is removed on the next major.',
+    props: [],
+    related: ['Button'],
+    composes: [],
+    usage: '<Button variant="primary">Save changes</Button>',
   },
   IconButton: {
     layer: 'atom', scope: 'global', status: 'stable', category: 'Action',
@@ -159,7 +176,7 @@ export const meta = {
       { name: 'aria-label', class: 'a11y', type: 'string', description: 'Accessible name; required since there is no visible label.' },
       { name: 'disabled', class: 'passThroughControl', passthrough: 'BaseUI.Button.disabled' },
     ],
-    related: ['Btn'],
+    related: ['Button'],
     composes: [],
     usage: '<IconButton aria-label="Close">{Icon.close({ size: 18 })}</IconButton>',
   },
@@ -175,33 +192,55 @@ export const meta = {
     composes: [],
     usage: '<AIBadge size={20} glow />',
   },
-  PAv: {
+  PersonAvatar: {
     layer: 'atom', scope: 'global', status: 'stable', category: 'Identity',
     usecases: ['identity'],
-    keywords: ['avatar', 'patient', 'profile', 'initials', 'photo', 'identity'],
-    summary: 'Patient avatar with initials fallback.',
+    keywords: ['avatar', 'patient', 'person', 'profile', 'initials', 'photo', 'identity'],
+    summary: 'Person avatar with initials fallback.',
     props: [
-      { name: 'p', class: 'content', type: 'patient', description: 'The patient record; the name drives the initials fallback when no photo is available.' },
+      { name: 'p', class: 'content', type: 'patient', description: 'The person record; the name drives the initials fallback when no photo is available.' },
       { name: 'size', class: 'dsPresentation', type: 'number', description: 'Pixel diameter of the (always circular) avatar.' },
     ],
     anatomy: [
-      { name: 'Photo', required: false, description: 'The patient image, shown when available.' },
+      { name: 'Photo', required: false, description: 'The person image, shown when available.' },
       { name: 'Initials', required: false, description: 'One or two letters from the name; shown when there is no photo.' },
     ],
     composes: [],
-    usage: '<PAv p={patient} size={32} />',
+    usage: '<PersonAvatar p={patient} size={32} />',
   },
-  Tip: {
+  PAv: {
+    layer: 'atom', scope: 'global', status: 'deprecated', category: 'Identity',
+    deprecated: 'PersonAvatar',
+    usecases: ['identity'],
+    keywords: ['avatar', 'patient', 'person', 'initials'],
+    summary: 'Deprecated alias of PersonAvatar (B-39). Use PersonAvatar; PAv is removed on the next major.',
+    props: [],
+    related: ['PersonAvatar'],
+    composes: [],
+    usage: '<PersonAvatar p={patient} size={32} />',
+  },
+  Tooltip: {
     layer: 'atom', scope: 'global', status: 'stable', category: 'Overlay',
     usecases: ['affordance'],
-    keywords: ['tooltip', 'hint', 'hover', 'infotip', 'flyout'],
+    keywords: ['tooltip', 'tip', 'hint', 'hover', 'infotip', 'flyout'],
     summary: 'Tooltip wrapper (Base UI).',
     props: [
       { name: 'label', class: 'content', type: 'string', description: 'Short tooltip text shown on hover / focus of the trigger.' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The trigger element the tooltip is attached to.' },
     ],
     composes: [],
-    usage: '<Tip label="Copy"><IconButton aria-label="Copy">{Icon.dots({ size: 16 })}</IconButton></Tip>',
+    usage: '<Tooltip label="Copy"><IconButton aria-label="Copy">{Icon.dots({ size: 16 })}</IconButton></Tooltip>',
+  },
+  Tip: {
+    layer: 'atom', scope: 'global', status: 'deprecated', category: 'Overlay',
+    deprecated: 'Tooltip',
+    usecases: ['affordance'],
+    keywords: ['tooltip', 'tip', 'hint', 'hover'],
+    summary: 'Deprecated alias of Tooltip (B-39). Use Tooltip; Tip is removed on the next major.',
+    props: [],
+    related: ['Tooltip'],
+    composes: [],
+    usage: '<Tooltip label="Copy"><IconButton aria-label="Copy">{Icon.dots({ size: 16 })}</IconButton></Tooltip>',
   },
   Toggle: {
     layer: 'atom', scope: 'global', status: 'stable', category: 'Data Input',

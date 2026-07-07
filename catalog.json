@@ -369,8 +369,34 @@
       "import": "@corilus/kernel",
       "layer": "atom",
       "scope": "global",
+      "status": "deprecated",
+      "summary": "Deprecated alias of Button (B-39). Use Button; Btn is removed on the next major.",
+      "usecases": [
+        "action"
+      ],
+      "props": [],
+      "composes": [],
+      "usage": "<Button variant=\"primary\">Save changes</Button>",
+      "keywords": [
+        "button",
+        "btn",
+        "cta",
+        "submit",
+        "action"
+      ],
+      "category": "Action",
+      "related": [
+        "Button"
+      ],
+      "deprecated": "Button"
+    },
+    {
+      "name": "Button",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
       "status": "stable",
-      "summary": "Primary/secondary text button.",
+      "summary": "Text button with variant (emphasis) + tone (semantic color).",
       "usecases": [
         "action"
       ],
@@ -418,7 +444,7 @@
         }
       ],
       "composes": [],
-      "usage": "<Btn variant=\"primary\">Save changes</Btn>",
+      "usage": "<Button variant=\"primary\">Save changes</Button>",
       "keywords": [
         "button",
         "btn",
@@ -444,7 +470,7 @@
         },
         {
           "do": false,
-          "text": "Use a Btn for navigation; if it only goes to another page, use a link."
+          "text": "Use a Button for navigation; if it only goes to another page, use a link."
         }
       ],
       "anatomy": [
@@ -465,16 +491,16 @@
       "examples": [
         {
           "name": "Primary",
-          "code": "<Btn variant=\"primary\">Save changes</Btn>"
+          "code": "<Button variant=\"primary\">Save changes</Button>"
         },
         {
           "name": "Secondary",
-          "code": "<Btn variant=\"secondary\">Cancel</Btn>",
+          "code": "<Button variant=\"secondary\">Cancel</Button>",
           "description": "Lower emphasis; pairs with a primary."
         },
         {
           "name": "Destructive",
-          "code": "<Btn tone=\"error\">Delete</Btn>",
+          "code": "<Button tone=\"error\">Delete</Button>",
           "description": "error tone for an irreversible action; pair it with an AlertDialog confirm."
         }
       ]
@@ -1466,7 +1492,7 @@
       ],
       "category": "Action",
       "related": [
-        "Btn"
+        "Button"
       ]
     },
     {
@@ -1949,8 +1975,33 @@
       "import": "@corilus/kernel",
       "layer": "atom",
       "scope": "global",
+      "status": "deprecated",
+      "summary": "Deprecated alias of PersonAvatar (B-39). Use PersonAvatar; PAv is removed on the next major.",
+      "usecases": [
+        "identity"
+      ],
+      "props": [],
+      "composes": [],
+      "usage": "<PersonAvatar p={patient} size={32} />",
+      "keywords": [
+        "avatar",
+        "patient",
+        "person",
+        "initials"
+      ],
+      "category": "Identity",
+      "related": [
+        "PersonAvatar"
+      ],
+      "deprecated": "PersonAvatar"
+    },
+    {
+      "name": "PersonAvatar",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
       "status": "stable",
-      "summary": "Patient avatar with initials fallback.",
+      "summary": "Person avatar with initials fallback.",
       "usecases": [
         "identity"
       ],
@@ -1959,7 +2010,7 @@
           "name": "p",
           "class": "content",
           "type": "patient",
-          "description": "The patient record; the name drives the initials fallback when no photo is available."
+          "description": "The person record; the name drives the initials fallback when no photo is available."
         },
         {
           "name": "size",
@@ -1969,10 +2020,11 @@
         }
       ],
       "composes": [],
-      "usage": "<PAv p={patient} size={32} />",
+      "usage": "<PersonAvatar p={patient} size={32} />",
       "keywords": [
         "avatar",
         "patient",
+        "person",
         "profile",
         "initials",
         "photo",
@@ -1983,7 +2035,7 @@
         {
           "name": "Photo",
           "required": false,
-          "description": "The patient image, shown when available."
+          "description": "The person image, shown when available."
         },
         {
           "name": "Initials",
@@ -3694,35 +3746,25 @@
       "import": "@corilus/kernel",
       "layer": "atom",
       "scope": "global",
-      "status": "stable",
-      "summary": "Tooltip wrapper (Base UI).",
+      "status": "deprecated",
+      "summary": "Deprecated alias of Tooltip (B-39). Use Tooltip; Tip is removed on the next major.",
       "usecases": [
         "affordance"
       ],
-      "props": [
-        {
-          "name": "label",
-          "class": "content",
-          "type": "string",
-          "description": "Short tooltip text shown on hover / focus of the trigger."
-        },
-        {
-          "name": "children",
-          "class": "content",
-          "type": "ReactNode",
-          "description": "The trigger element the tooltip is attached to."
-        }
-      ],
+      "props": [],
       "composes": [],
-      "usage": "<Tip label=\"Copy\"><IconButton aria-label=\"Copy\">{Icon.dots({ size: 16 })}</IconButton></Tip>",
+      "usage": "<Tooltip label=\"Copy\"><IconButton aria-label=\"Copy\">{Icon.dots({ size: 16 })}</IconButton></Tooltip>",
       "keywords": [
         "tooltip",
+        "tip",
         "hint",
-        "hover",
-        "infotip",
-        "flyout"
+        "hover"
       ],
-      "category": "Overlay"
+      "category": "Overlay",
+      "related": [
+        "Tooltip"
+      ],
+      "deprecated": "Tooltip"
     },
     {
       "name": "Toggle",
@@ -3761,6 +3803,42 @@
         "checkbox"
       ],
       "category": "Data Input"
+    },
+    {
+      "name": "Tooltip",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Tooltip wrapper (Base UI).",
+      "usecases": [
+        "affordance"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "class": "content",
+          "type": "string",
+          "description": "Short tooltip text shown on hover / focus of the trigger."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The trigger element the tooltip is attached to."
+        }
+      ],
+      "composes": [],
+      "usage": "<Tooltip label=\"Copy\"><IconButton aria-label=\"Copy\">{Icon.dots({ size: 16 })}</IconButton></Tooltip>",
+      "keywords": [
+        "tooltip",
+        "tip",
+        "hint",
+        "hover",
+        "infotip",
+        "flyout"
+      ],
+      "category": "Overlay"
     },
     {
       "name": "TrendChip",

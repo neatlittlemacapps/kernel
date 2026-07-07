@@ -45,9 +45,9 @@ test('tools/call search ranks the obvious component first', () => {
 });
 
 test('tools/call get returns the component detail', () => {
-  const r = dispatch(req(4, 'tools/call', { name: 'get', arguments: { name: 'Btn' } }), catalog);
-  assert.equal(r.result.structuredContent.name, 'Btn');
-  assert.ok(r.result.structuredContent.usage.includes('<Btn'));
+  const r = dispatch(req(4, 'tools/call', { name: 'get', arguments: { name: 'Button' } }), catalog);
+  assert.equal(r.result.structuredContent.name, 'Button');
+  assert.ok(r.result.structuredContent.usage.includes('<Button'));
 });
 
 test('tools/call get unknown -> isError + suggestions', () => {

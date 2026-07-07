@@ -83,6 +83,7 @@ function propLine(p) {
 }
 function renderComponentDense(c) {
   const lines = [`## ${c.name}  (import from "${c.import}")`, c.summary || ''];
+  if (c.deprecated) lines.push(`DEPRECATED -> use ${c.deprecated}`);
   if (c.keywords?.length) lines.push(`keywords: ${c.keywords.join(', ')}`);
   lines.push('props:');
   if (c.props.length) for (const p of c.props) lines.push(propLine(p)); else lines.push('  (none)');
@@ -95,6 +96,7 @@ function renderComponentFull(c) {
     `${c.name}${c.category ? `   [${c.category}]` : ''}`,
     `  import   ${c.import}`,
     `  layer    ${c.layer}    scope ${JSON.stringify(c.scope)}    status ${c.status}`,
+    c.deprecated ? `  DEPRECATED -> use ${c.deprecated}` : '',
     `  summary  ${c.summary || ''}`,
     `  usecases ${(c.usecases || []).join(', ') || '(none)'}`,
   ];

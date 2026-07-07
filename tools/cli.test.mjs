@@ -37,13 +37,20 @@ test('component --list --json returns component.list with every component', () =
 });
 
 test('component <Name> --json returns component.detail with props + usage', () => {
-  const { status, json } = run('component', 'Btn', '--json');
+  const { status, json } = run('component', 'Button', '--json');
   assert.equal(status, 0);
   assert.equal(json.type, 'component.detail');
-  assert.equal(json.data.name, 'Btn');
+  assert.equal(json.data.name, 'Button');
   const variant = json.data.props.find((p) => p.name === 'variant');
   assert.deepEqual(variant.values, ['primary', 'secondary', 'tertiary']);
-  assert.ok(json.data.usage.includes('<Btn'));
+  assert.ok(json.data.usage.includes('<Button'));
+});
+
+test('deprecated alias surfaces its successor (Btn -> Button)', () => {
+  const { status, json } = run('component', 'Btn', '--json');
+  assert.equal(status, 0);
+  assert.equal(json.data.status, 'deprecated');
+  assert.equal(json.data.deprecated, 'Button');
 });
 
 test('unknown component -> ERR_UNKNOWN_COMPONENT + suggestion + non-zero exit', () => {
@@ -200,8 +207,8 @@ test('extractMetaText is comment-aware (apostrophe + brace in a comment do not b
   assert.equal(Object.keys(parseMeta(text))[0], 'X');
 });
 
-test('component detail renders enriched fields (Btn)', () => {
-  const { json } = run('component', 'Btn', '--json');
+test('component detail renders enriched fields (Button)', () => {
+  const { json } = run('component', 'Button', '--json');
   assert.ok(json.data.keywords.includes('cta'));
   assert.equal(json.data.category, 'Action');
   const variant = json.data.props.find((p) => p.name === 'variant');

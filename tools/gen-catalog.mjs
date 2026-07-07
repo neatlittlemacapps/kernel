@@ -123,6 +123,7 @@ export function buildCatalog() {
       if (Array.isArray(c.related)) entry.related = c.related;
       if (Array.isArray(c.examples)) entry.examples = c.examples;
       if (c.storybook && typeof c.storybook === 'object') entry.storybook = c.storybook; // reserved for future Storybook embedding
+      if (c.deprecated) entry.deprecated = c.deprecated; // B-39: name a deprecated alias's successor (e.g. Btn -> Button)
       components.push(entry);
     }
   }
