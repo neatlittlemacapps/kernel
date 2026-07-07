@@ -66,12 +66,15 @@ export function LabResultCard({ data, stage = 'sprout', onAcknowledge, ...rest }
 export const meta = {
   LabResultCard: {
     layer: 'composite', scope: 'global', usecases: ['lab-result', 'sprout-pattern'], status: 'experimental',
-    summary: 'FHIR Observation (laboratory) Seed/Sprout. Reference range central; Shoot rare (lab acknowledge → Rooted).',
+    category: 'Clinical',
+    keywords: ['lab', 'lab result', 'laboratory', 'observation', 'fhir', 'reference range', 'glucose', 'hba1c', 'egfr', 'cholesterol', 'trend'],
+    summary: 'FHIR Observation (laboratory) Seed/Sprout. Reference range central; Shoot rare (lab acknowledge pushed to Rooted).',
     props: {
-      data: 'object',          // { property, value, unit, status, low, high, measuredAt, trend }
-      stage: "'seed'|'sprout'|'shoot'",
-      onAcknowledge: '?fn',
+      data: { class: 'content', type: 'object', description: 'The FHIR Observation projection: { property, value, unit, status, low, high, measuredAt, trend }. low/high define the reference range rendered by the ReferenceRangeBar in Sprout.' },
+      stage: { class: 'dsPresentation', values: ['seed', 'sprout', 'shoot'], description: 'Fidelity forwarded to the underlying Card. Sprout renders the reference-range bar plus range/measured footer. Shoot is rare for labs and typically deferred to Rooted.' },
+      onAcknowledge: { class: 'event', type: 'fn', description: 'Optional handler for acknowledging an out-of-range result; lab acknowledge is generally routed to Rooted.' },
     },
     composes: ['Card', 'StatusPill', 'TrendChip', 'ValueDisplay', 'IconPill', 'ReferenceRangeBar'],
+    usage: '<LabResultCard data={lab} stage="sprout" />',
   },
 };

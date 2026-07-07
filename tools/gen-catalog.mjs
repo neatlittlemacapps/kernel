@@ -103,7 +103,7 @@ export function buildCatalog() {
         process.exit(2);
       }
       seenAt.set(name, file);
-      components.push({
+      const entry = {
         name,
         import: importFor(name),
         layer: c.layer ?? null,
@@ -114,7 +114,16 @@ export function buildCatalog() {
         props: normalizeProps(c.props),
         composes: Array.isArray(c.composes) ? c.composes : [],
         usage: c.usage ?? null,
-      });
+      };
+      // optional Astryx-style enrichment fields - carried through only when present (B-37).
+      if (Array.isArray(c.keywords)) entry.keywords = c.keywords;
+      if (c.category) entry.category = c.category;
+      if (Array.isArray(c.bestPractices)) entry.bestPractices = c.bestPractices;
+      if (Array.isArray(c.anatomy)) entry.anatomy = c.anatomy;
+      if (Array.isArray(c.related)) entry.related = c.related;
+      if (Array.isArray(c.examples)) entry.examples = c.examples;
+      if (c.storybook && typeof c.storybook === 'object') entry.storybook = c.storybook; // reserved for future Storybook embedding
+      components.push(entry);
     }
   }
 

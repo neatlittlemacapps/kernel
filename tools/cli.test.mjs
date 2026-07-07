@@ -185,6 +185,37 @@ test('catalog gate flags a non-forwardRef render target (seeded fixture)', () =>
   assert.equal((r.stdout.match(/forwardref-render-target/g) || []).length, 1);
 });
 
+test('catalog gate flags an empty summary (documentation floor)', () => {
+  const r = spawnSync('node', [path.join(ROOT, 'tools', 'catalog-gate.mjs'), path.join(ROOT, 'tools', 'fixtures')], { encoding: 'utf8' });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /missing-summary/);
+  assert.match(r.stdout, /NoSummary/);
+});
+
+test('extractMetaText is comment-aware (apostrophe + brace in a comment do not break it)', async () => {
+  const { extractMetaText, parseMeta } = await import('./lib/meta.mjs');
+  const src = "export const meta = {\n  X: { summary: 'ok', // the dev's note for { a, b }\n  props: {} },\n};\n";
+  const text = extractMetaText(src);
+  assert.ok(text, 'meta should extract despite the comment');
+  assert.equal(Object.keys(parseMeta(text))[0], 'X');
+});
+
+test('component detail renders enriched fields (Btn)', () => {
+  const { json } = run('component', 'Btn', '--json');
+  assert.ok(json.data.keywords.includes('cta'));
+  assert.equal(json.data.category, 'Action');
+  const variant = json.data.props.find((p) => p.name === 'variant');
+  assert.ok(variant.description && variant.description.length > 0);
+  const disabled = json.data.props.find((p) => p.name === 'disabled');
+  assert.equal(disabled.passthrough, 'BaseUI.Button.disabled');
+  assert.ok(Array.isArray(json.data.bestPractices) && json.data.bestPractices.length > 0);
+});
+
+test('search matches keywords (cta -> Btn)', () => {
+  const { json } = run('search', 'cta', '--json');
+  assert.ok(json.data.results.some((r) => r.name === 'Btn'));
+});
+
 test('contrast math: black on white is 21:1', () => {
   assert.equal(Math.round(contrastRatio('#000000', '#ffffff')), 21);
 });

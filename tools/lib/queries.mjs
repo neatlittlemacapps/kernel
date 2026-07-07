@@ -54,11 +54,13 @@ export function scoreComponents(query, components) {
   return components
     .map((c) => {
       const name = c.name.toLowerCase();
+      const keywords = (c.keywords || []).join(' ').toLowerCase();
       const uses = (c.usecases || []).join(' ').toLowerCase();
       const summary = (c.summary || '').toLowerCase();
       let score = 0;
       for (const t of terms) {
         if (name.includes(t)) score += 3;
+        if (keywords.includes(t)) score += 3; // explicit search synonyms rank like a name hit
         if (uses.includes(t)) score += 2;
         if (summary.includes(t)) score += 1;
       }

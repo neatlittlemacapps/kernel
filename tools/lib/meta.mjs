@@ -29,11 +29,18 @@ export function extractMetaText(src) {
   const m = src.match(/export\s+const\s+meta\s*=\s*\{/);
   if (!m) return null;
   const start = m.index + m[0].length - 1; // index of the opening {
-  let depth = 0, inStr = null, prev = '';
+  // Comment-aware brace matcher: `//` and `/* */` are skipped so a stray quote or brace in a
+  // comment (e.g. "the Kernel's API" or "// { name, dose }") can't break string/brace tracking.
+  // Comments remain in the returned slice - parseMeta evaluates it as JS, which ignores them.
+  let depth = 0, inStr = null, prev = '', inLine = false, inBlock = false;
   for (let i = start; i < src.length; i++) {
-    const c = src[i];
-    if (inStr) { if (c === inStr && prev !== '\\') inStr = null; }
-    else if (c === '"' || c === "'" || c === '`') inStr = c;
+    const c = src[i], next = src[i + 1];
+    if (inLine) { if (c === '\n') inLine = false; prev = c; continue; }
+    if (inBlock) { if (c === '*' && next === '/') { inBlock = false; i++; prev = ''; continue; } prev = c; continue; }
+    if (inStr) { if (c === inStr && prev !== '\\') inStr = null; prev = c; continue; }
+    if (c === '/' && next === '/') { inLine = true; i++; prev = ''; continue; }
+    if (c === '/' && next === '*') { inBlock = true; i++; prev = ''; continue; }
+    if (c === '"' || c === "'" || c === '`') inStr = c;
     else if (c === '{') depth++;
     else if (c === '}') { if (--depth === 0) return src.slice(start, i + 1); }
     prev = c;

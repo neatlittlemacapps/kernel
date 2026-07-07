@@ -108,8 +108,24 @@
     "$atomsNote": "atoms are leaf primitives and may render a raw control (a button-based row, etc.); only composing layers (molecule/composite/organism) that hand-roll a control instead of composing the atom are flagged. A composing layer mislabelled as an atom is a layer-integrity problem for a later check."
   },
   "meta": {
-    "$comment": "structured replacement for today's freeform meta.props strings",
+    "$comment": "structured meta shape. Props may be a freeform string (legacy) or the structured object below; gen-catalog + the CLI handle both. Documentation strictness is tiered by `status` (see docTiers).",
     "requiredFields": ["layer", "scope", "usecases", "status", "summary", "props", "composes"],
-    "propShape": { "name": "string", "class": "interactionState|passThroughControl|dsPresentation|content|event|a11y", "values": "string[]?", "passthrough": "BaseUI.<Primitive>.<prop>?", "tokenBinding": "string?" }
+    "optionalFields": {
+      "usage": "on-system JSX snippet (string) - the canonical single example",
+      "keywords": "string[] - search synonyms, feeds `kernel search`",
+      "category": "string - grouping label (e.g. 'Feedback & Status')",
+      "bestPractices": "[{ do: boolean, text: string }] - do/don't guidance",
+      "anatomy": "[{ name: string, required?: boolean, description: string }] - named parts",
+      "related": "string[] - related component names",
+      "examples": "[{ name: string, code: string, description?: string }] - named code examples. The CLI renders them; each doubles as a Storybook story seed later (reserved slot for Storybook embedding).",
+      "storybook": "{ story?: string, embed?: string } - RESERVED for future Storybook embedding (a ref to the component's stories file / embed config). Carried through the catalog now; not yet rendered."
+    },
+    "propShape": { "name": "string", "class": "interactionState|passThroughControl|dsPresentation|content|event|a11y", "type": "string?", "description": "string? - required on Kernel-invented props for stable components; omit for pass-through props (point to Base UI instead)", "values": "string[]?", "default": "string?", "required": "boolean?", "passthrough": "BaseUI.<Primitive>.<prop>? - marks a pass-through prop; the CLI renders 'see Base UI <Primitive>' instead of a description", "tokenBinding": "string?" },
+    "docTiers": {
+      "$comment": "Documentation strictness scales with `status`. Enforced by the catalog gate (guard mode).",
+      "floor": "every component (both tiers): a `meta` block and a non-empty `summary` are required (error).",
+      "stable": "official components MUST also carry `usage` and a `description` on every Kernel-invented prop (dsPresentation/content/event/a11y); missing -> error. Promotion to stable is therefore gated on full docs.",
+      "experimental": "proto/snowflake components: usage + prop descriptions are recommended (warning), not required."
+    }
   }
 }

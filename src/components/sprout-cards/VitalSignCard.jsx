@@ -118,13 +118,16 @@ function formatVitalValue(data) {
 export const meta = {
   VitalSignCard: {
     layer: 'composite', scope: 'global', usecases: ['vital-sign', 'sprout-pattern'], status: 'experimental',
+    category: 'Clinical',
+    keywords: ['vital sign', 'vitals', 'observation', 'fhir', 'heart rate', 'blood pressure', 'temperature', 'spo2', 'weight', 'sparkline', 'trend'],
     summary: 'FHIR Observation (vital-signs) at Seed/Sprout/Shoot. Handles 9 properties incl. blood pressure (multi-component).',
     props: {
-      data: 'object',          // { property, value, unit, status, history, measuredAt, reference, trend }
-      stage: "'seed'|'sprout'|'shoot'",
-      onSave: '?fn',
-      onEdit: '?fn',
+      data: { class: 'content', type: 'object', description: 'The FHIR Observation projection: { property, value, unit, status, history, measuredAt, reference, trend }. For bloodPressure, value is { systolic, diastolic }; for others value is a number.' },
+      stage: { class: 'dsPresentation', values: ['seed', 'sprout', 'shoot'], description: 'Fidelity forwarded to the underlying Card. Sprout adds sparkline plus trend; Shoot swaps the value for an editable Stepper (except bloodPressure).' },
+      onSave: { class: 'event', type: 'fn', description: 'Invoked with the new value when the Shoot-stage Stepper changes or the save CTA fires.' },
+      onEdit: { class: 'event', type: 'fn', description: 'Invoked when the user taps the edit chip in Sprout stage.' },
     },
     composes: ['Card', 'StatusPill', 'TrendChip', 'ValueDisplay', 'Stepper', 'IconPill', 'EditChip', 'Sparkline', 'PrimaryCTA'],
+    usage: '<VitalSignCard data={vital} stage="sprout" onEdit={handleEdit} />',
   },
 };

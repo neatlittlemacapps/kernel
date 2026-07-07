@@ -7,7 +7,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "stable",
-      "summary": "The one canonical action/command row (icon · label · description · chevron); gating-aware.",
+      "summary": "The one canonical action/command row (icon, label, description, chevron); gating-aware.",
       "usecases": [
         "launcher",
         "slash-menu",
@@ -16,44 +16,90 @@
       "props": [
         {
           "name": "icon",
-          "raw": "node"
+          "class": "content",
+          "type": "node",
+          "description": "Leading glyph, e.g. Icon.search({ size: 18 })."
         },
         {
           "name": "label",
-          "raw": "string"
+          "class": "content",
+          "type": "string",
+          "description": "The action name; the primary line and accessible name."
         },
         {
           "name": "description",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "required": false,
+          "description": "Secondary line beneath the label."
         },
         {
           "name": "tone",
-          "raw": "?string",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "string",
+          "required": false,
+          "description": "Semantic colour accent for the row."
         },
         {
           "name": "selected",
-          "raw": "?bool",
-          "optional": true
-        },
-        {
-          "name": "disabled",
-          "raw": "?bool",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "bool",
+          "required": false,
+          "description": "Highlights the row as the current selection (keyboard / active item)."
         },
         {
           "name": "reason",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "required": false,
+          "description": "When disabled, the gating reason shown to explain why."
         },
         {
           "name": "onClick",
-          "raw": "fn"
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the row is activated."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Button.disabled"
         }
       ],
       "composes": [],
-      "usage": "<ActionRow icon={Icon.search({ size: 18 })} label=\"Search records\" description=\"Find a patient\" onClick={run} />"
+      "usage": "<ActionRow icon={Icon.search({ size: 18 })} label=\"Search records\" description=\"Find a patient\" onClick={run} />",
+      "keywords": [
+        "action",
+        "command",
+        "row",
+        "launcher",
+        "menu",
+        "suggestion",
+        "list-item"
+      ],
+      "category": "Navigation",
+      "anatomy": [
+        {
+          "name": "Icon",
+          "required": false,
+          "description": "Leading glyph."
+        },
+        {
+          "name": "Label",
+          "required": true,
+          "description": "The action name."
+        },
+        {
+          "name": "Description",
+          "required": false,
+          "description": "Secondary supporting line."
+        },
+        {
+          "name": "Chevron",
+          "required": false,
+          "description": "Trailing affordance for drill-in rows."
+        }
+      ]
     },
     {
       "name": "AIBadge",
@@ -68,16 +114,28 @@
       "props": [
         {
           "name": "size",
-          "raw": "number"
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Pixel size of the mark."
         },
         {
           "name": "glow",
-          "raw": "?bool",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Adds the token-driven glow treatment for emphasis."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<AIBadge size={20} glow />",
+      "keywords": [
+        "ai",
+        "badge",
+        "brain",
+        "companion",
+        "mark",
+        "identity"
+      ],
+      "category": "Identity"
     },
     {
       "name": "AIMarker",
@@ -92,11 +150,22 @@
       "props": [
         {
           "name": "text",
-          "raw": "string"
+          "class": "content",
+          "type": "string",
+          "description": "The disclosure text, e.g. \"AI-generated - verify before acting\"."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<AIMarker text=\"AI-generated - verify before acting\" />",
+      "keywords": [
+        "ai",
+        "disclosure",
+        "provenance",
+        "verify",
+        "transparency",
+        "ai-act"
+      ],
+      "category": "AI"
     },
     {
       "name": "AllergyCard",
@@ -112,21 +181,25 @@
       "props": [
         {
           "name": "data",
-          "raw": "object"
+          "class": "content",
+          "type": "object",
+          "description": "The FHIR AllergyIntolerance: { substance, criticality, reactions, recordedDate, lastVerified }. substance is the title; criticality drives the status pill."
         },
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity forwarded to the underlying Card. Sprout and Shoot render the reaction list; Sprout adds recorded/verified dates; Shoot exposes the severity-update CTA."
         },
         {
           "name": "onEdit",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the user enters edit, from the Shoot edit chip or the \"Ernst bijwerken\" CTA."
         }
       ],
       "composes": [
@@ -137,7 +210,18 @@
         "ReactionList",
         "PrimaryCTA"
       ],
-      "usage": null
+      "usage": "<AllergyCard data={allergy} stage=\"sprout\" onEdit={handleEdit} />",
+      "keywords": [
+        "allergy",
+        "allergyintolerance",
+        "intolerance",
+        "fhir",
+        "substance",
+        "reaction",
+        "criticality",
+        "severity"
+      ],
+      "category": "Clinical"
     },
     {
       "name": "Btn",
@@ -152,20 +236,88 @@
       "props": [
         {
           "name": "variant",
-          "raw": "'primary'|'secondary'",
+          "class": "dsPresentation",
           "values": [
             "primary",
             "secondary"
-          ]
+          ],
+          "default": "primary",
+          "description": "Visual emphasis. Reserve primary for the single most important action in a view."
         },
         {
           "name": "size",
-          "raw": "?string",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Size step; resolves to the density / size-step tokens."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The button label. Write the action (\"Save changes\"), not \"OK\" or \"Click here\"."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Button.disabled"
         }
       ],
       "composes": [],
-      "usage": "<Btn variant=\"primary\">Save</Btn>"
+      "usage": "<Btn variant=\"primary\">Save changes</Btn>",
+      "keywords": [
+        "button",
+        "btn",
+        "cta",
+        "submit",
+        "action",
+        "primary",
+        "secondary"
+      ],
+      "category": "Action",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Reserve primary for the single most important action in the view; use secondary for the rest."
+        },
+        {
+          "do": true,
+          "text": "Write labels that describe the action (\"Save changes\", \"Delete account\"), not \"OK\"."
+        },
+        {
+          "do": false,
+          "text": "Place more than one primary button in the same view - it dilutes the hierarchy."
+        },
+        {
+          "do": false,
+          "text": "Use a Btn for navigation; if it only goes to another page, use a link."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "required": true,
+          "description": "The visible text (children); also the accessible name."
+        },
+        {
+          "name": "Icon",
+          "required": false,
+          "description": "An optional leading icon reinforcing the label."
+        }
+      ],
+      "related": [
+        "IconButton"
+      ],
+      "examples": [
+        {
+          "name": "Primary",
+          "code": "<Btn variant=\"primary\">Save changes</Btn>"
+        },
+        {
+          "name": "Secondary",
+          "code": "<Btn variant=\"secondary\">Cancel</Btn>",
+          "description": "Lower emphasis; pairs with a primary."
+        }
+      ]
     },
     {
       "name": "Card",
@@ -186,16 +338,17 @@
       "props": [
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity: seed (glance), sprout (detail), shoot (edit). Drives the intrinsic width morph."
         },
         {
           "name": "tone",
-          "raw": "'neutral'|'heart'|'breath'|'oxygen'|'temperature'|'pressure'|'body'|'lab'|'identity'|'condition'|'allergy'|'medication'",
+          "class": "dsPresentation",
           "values": [
             "neutral",
             "heart",
@@ -209,7 +362,8 @@
             "condition",
             "allergy",
             "medication"
-          ]
+          ],
+          "description": "Identity colour axis; drives the --card-tone-* bindings. Independent of status."
         },
         {
           "name": "customColor",
@@ -218,15 +372,16 @@
         },
         {
           "name": "status",
-          "raw": "?'normal'|'borderline'|'high'|'low'|'critical'",
-          "optional": true,
+          "class": "dsPresentation",
           "values": [
             "normal",
             "borderline",
             "high",
             "low",
             "critical"
-          ]
+          ],
+          "required": false,
+          "description": "Clinical interpretation; colours the StatusPill, orthogonal to the identity tone."
         },
         {
           "name": "loading",
@@ -265,13 +420,15 @@
         },
         {
           "name": "leading",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "description": "Leading slot (an IconPill or avatar)."
         },
         {
           "name": "title",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "description": "Card heading slot."
         },
         {
           "name": "trailing",
@@ -280,8 +437,9 @@
         },
         {
           "name": "value",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "description": "Primary value slot (typically a ValueDisplay)."
         },
         {
           "name": "meta",
@@ -305,8 +463,9 @@
         },
         {
           "name": "actions",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "description": "Trailing action slot (Btn / EditChip); RTL-safe."
         },
         {
           "name": "ariaLabel",
@@ -320,8 +479,9 @@
         },
         {
           "name": "onClick",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the card is activated."
         },
         {
           "name": "className",
@@ -330,7 +490,45 @@
         }
       ],
       "composes": [],
-      "usage": "<Card stage=\"sprout\" tone=\"heart\" title=\"Heart rate\" value={<ValueDisplay value=\"72\" unit=\"bpm\" />} />"
+      "usage": "<Card stage=\"sprout\" tone=\"heart\" title=\"Heart rate\" value={<ValueDisplay value=\"72\" unit=\"bpm\" />} />",
+      "keywords": [
+        "card",
+        "tile",
+        "panel",
+        "sprout",
+        "fidelity",
+        "seed",
+        "sprout",
+        "shoot"
+      ],
+      "category": "Data display",
+      "anatomy": [
+        {
+          "name": "Leading",
+          "required": false,
+          "description": "Icon / avatar at the start."
+        },
+        {
+          "name": "Title",
+          "required": false,
+          "description": "The card heading."
+        },
+        {
+          "name": "Value",
+          "required": false,
+          "description": "The primary value (e.g. a measurement)."
+        },
+        {
+          "name": "Media",
+          "required": false,
+          "description": "A sparkline / range bar / chart."
+        },
+        {
+          "name": "Actions",
+          "required": false,
+          "description": "Trailing action buttons."
+        }
+      ]
     },
     {
       "name": "ConditionCard",
@@ -338,7 +536,7 @@
       "layer": "composite",
       "scope": "global",
       "status": "experimental",
-      "summary": "FHIR Condition card. Status pill follows clinicalStatus → interpretation mapping.",
+      "summary": "FHIR Condition card. Status pill follows clinicalStatus mapped to interpretation.",
       "usecases": [
         "condition",
         "sprout-pattern"
@@ -346,26 +544,31 @@
       "props": [
         {
           "name": "data",
-          "raw": "object"
+          "class": "content",
+          "type": "object",
+          "description": "The FHIR Condition: { code, clinicalStatus, severity, onsetDate, verification, note }. code is the title; clinicalStatus drives the status pill; the rest render as a field list."
         },
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity forwarded to the underlying Card. Sprout and Shoot render the onset/severity/verification field list; Sprout adds the note; Shoot exposes the status-update CTA."
         },
         {
           "name": "onEdit",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the user taps the edit chip in Shoot stage."
         },
         {
           "name": "onStatusChange",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked with the condition when the user triggers the Shoot-stage status-update CTA."
         }
       ],
       "composes": [
@@ -376,7 +579,18 @@
         "FieldList",
         "PrimaryCTA"
       ],
-      "usage": null
+      "usage": "<ConditionCard data={condition} stage=\"sprout\" onEdit={handleEdit} />",
+      "keywords": [
+        "condition",
+        "diagnosis",
+        "problem",
+        "fhir",
+        "clinical status",
+        "severity",
+        "onset",
+        "remission"
+      ],
+      "category": "Clinical"
     },
     {
       "name": "DemographicCard",
@@ -392,26 +606,31 @@
       "props": [
         {
           "name": "data",
-          "raw": "object"
+          "class": "content",
+          "type": "object",
+          "description": "The FHIR Patient: { name, birthDate, age, gender, identifier, gp, phone, address, lastVisit }. name is the title; the remaining attributes render as a field list."
         },
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity forwarded to the underlying Card. Seed shows age only; Sprout and Shoot render the attribute field list; Sprout adds the last-contact footer; Shoot exposes the save CTA."
         },
         {
           "name": "onEdit",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the user taps the edit chip in Shoot stage."
         },
         {
           "name": "onSave",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked with the patient when the user triggers the Shoot-stage save CTA."
         }
       ],
       "composes": [
@@ -421,7 +640,20 @@
         "FieldList",
         "PrimaryCTA"
       ],
-      "usage": null
+      "usage": "<DemographicCard data={patient} stage=\"sprout\" onEdit={handleEdit} />",
+      "keywords": [
+        "demographic",
+        "patient",
+        "identity",
+        "fhir",
+        "name",
+        "age",
+        "gender",
+        "gp",
+        "contact",
+        "address"
+      ],
+      "category": "Clinical"
     },
     {
       "name": "EditChip",
@@ -429,24 +661,49 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Pencil + label trailing chip used on Shoot stage cards. Composes Base UI Button for a11y/focus.",
+      "summary": "Pencil + label trailing chip used on Shoot-stage cards. Composes Base UI Button for the a11y and focus baseline.",
       "usecases": [
         "card-trailing"
       ],
       "props": [
         {
           "name": "label",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "default": "Bewerken",
+          "description": "The chip text shown beside the pencil glyph."
         },
         {
           "name": "onClick",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the chip is activated (enters edit mode)."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<EditChip label=\"Bewerken\" onClick={startEdit} />",
+      "keywords": [
+        "edit",
+        "chip",
+        "pencil",
+        "trailing",
+        "button",
+        "shoot",
+        "bewerken"
+      ],
+      "category": "Action",
+      "anatomy": [
+        {
+          "name": "Icon",
+          "required": true,
+          "description": "The pencil glyph."
+        },
+        {
+          "name": "Label",
+          "required": true,
+          "description": "The chip text."
+        }
+      ]
     },
     {
       "name": "FFSection",
@@ -460,16 +717,33 @@
       ],
       "props": [
         {
-          "name": "value",
-          "raw": "string"
+          "name": "title",
+          "class": "content",
+          "type": "string",
+          "description": "Section heading shown on the accordion trigger."
         },
         {
-          "name": "title",
-          "raw": "string"
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The flag controls revealed when the section is open."
+        },
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Accordion.Item.value"
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<FFSection value=\"experiments\" title=\"Experiments\">{flags}</FFSection>",
+      "keywords": [
+        "feature-flag",
+        "accordion",
+        "collapsible",
+        "section",
+        "settings"
+      ],
+      "category": "Utility"
     },
     {
       "name": "FieldList",
@@ -477,7 +751,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Key-value list for demographic / condition detail bodies.",
+      "summary": "Definition list of label / value rows for demographic and condition detail bodies.",
       "usecases": [
         "card-body",
         "demographics"
@@ -485,11 +759,24 @@
       "props": [
         {
           "name": "items",
-          "raw": "object[]"
+          "class": "content",
+          "type": "Array<{ label: node, value: node }>",
+          "required": true,
+          "description": "The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<FieldList items={[{ label: \"Born\", value: \"1978-04-12\" }, { label: \"Sex\", value: \"F\" }]} />",
+      "keywords": [
+        "field-list",
+        "key-value",
+        "definition-list",
+        "details",
+        "demographics",
+        "properties",
+        "labels"
+      ],
+      "category": "Data display"
     },
     {
       "name": "IconButton",
@@ -504,12 +791,42 @@
       "props": [
         {
           "name": "active",
-          "raw": "?bool",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Renders the pressed / active visual state (e.g. a toggled toolbar button)."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The icon element, e.g. Icon.close({ size: 18 })."
+        },
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name; required since there is no visible label."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Button.disabled"
         }
       ],
       "composes": [],
-      "usage": "<IconButton aria-label=\"Close\">{Icon.close({ size: 18 })}</IconButton>"
+      "usage": "<IconButton aria-label=\"Close\">{Icon.close({ size: 18 })}</IconButton>",
+      "keywords": [
+        "icon-button",
+        "icon",
+        "button",
+        "toolbar",
+        "compact",
+        "action"
+      ],
+      "category": "Action",
+      "related": [
+        "Btn"
+      ]
     },
     {
       "name": "IconPill",
@@ -517,18 +834,36 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Rounded-square tone-tinted glyph holder for the leading slot.",
+      "summary": "Rounded-square tone-tinted glyph holder for the card leading slot.",
       "usecases": [
         "card-leading"
       ],
       "props": [
         {
+          "name": "children",
+          "class": "content",
+          "type": "node",
+          "description": "The glyph to render (an icon element); tinted by the card tone."
+        },
+        {
           "name": "label",
-          "raw": "string"
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the pill, which carries an image role."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<IconPill label=\"Hartslag\">{Icon.heart({ size: 16 })}</IconPill>",
+      "keywords": [
+        "icon",
+        "pill",
+        "glyph",
+        "leading",
+        "adornment",
+        "tone",
+        "avatar"
+      ],
+      "category": "Data display"
     },
     {
       "name": "LabResultCard",
@@ -536,7 +871,7 @@
       "layer": "composite",
       "scope": "global",
       "status": "experimental",
-      "summary": "FHIR Observation (laboratory) Seed/Sprout. Reference range central; Shoot rare (lab acknowledge → Rooted).",
+      "summary": "FHIR Observation (laboratory) Seed/Sprout. Reference range central; Shoot rare (lab acknowledge pushed to Rooted).",
       "usecases": [
         "lab-result",
         "sprout-pattern"
@@ -544,21 +879,25 @@
       "props": [
         {
           "name": "data",
-          "raw": "object"
+          "class": "content",
+          "type": "object",
+          "description": "The FHIR Observation projection: { property, value, unit, status, low, high, measuredAt, trend }. low/high define the reference range rendered by the ReferenceRangeBar in Sprout."
         },
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity forwarded to the underlying Card. Sprout renders the reference-range bar plus range/measured footer. Shoot is rare for labs and typically deferred to Rooted."
         },
         {
           "name": "onAcknowledge",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Optional handler for acknowledging an out-of-range result; lab acknowledge is generally routed to Rooted."
         }
       ],
       "composes": [
@@ -569,7 +908,21 @@
         "IconPill",
         "ReferenceRangeBar"
       ],
-      "usage": null
+      "usage": "<LabResultCard data={lab} stage=\"sprout\" />",
+      "keywords": [
+        "lab",
+        "lab result",
+        "laboratory",
+        "observation",
+        "fhir",
+        "reference range",
+        "glucose",
+        "hba1c",
+        "egfr",
+        "cholesterol",
+        "trend"
+      ],
+      "category": "Clinical"
     },
     {
       "name": "MedicationCard",
@@ -585,26 +938,31 @@
       "props": [
         {
           "name": "data",
-          "raw": "object"
+          "class": "content",
+          "type": "object",
+          "description": "The FHIR MedicationStatement: { name, dose, frequency, medicationStatus, schedule, reason, prescriber }."
         },
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity (forwarded to the underlying Card)."
         },
         {
           "name": "onEdit",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the user enters edit (Shoot stage)."
         },
         {
           "name": "onMarkTaken",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the user marks a dose taken."
         }
       ],
       "composes": [
@@ -615,7 +973,18 @@
         "ScheduleStrip",
         "PrimaryCTA"
       ],
-      "usage": null
+      "usage": "<MedicationCard data={med} stage=\"sprout\" onMarkTaken={markTaken} />",
+      "keywords": [
+        "medication",
+        "drug",
+        "prescription",
+        "medicationstatement",
+        "fhir",
+        "dose",
+        "schedule",
+        "adherence"
+      ],
+      "category": "Clinical"
     },
     {
       "name": "MeterTooltip",
@@ -623,7 +992,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Tooltip wrapper for exposing measurement metadata on hover (timestamp, source). Composes Base UI Tooltip.",
+      "summary": "Tooltip wrapper that exposes measurement metadata on hover (timestamp, source). Composes Base UI Tooltip.",
       "usecases": [
         "card-meta",
         "hover-detail"
@@ -631,23 +1000,34 @@
       "props": [
         {
           "name": "tip",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "description": "The metadata content shown in the popup; when absent the children render bare with no tooltip."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "node",
+          "description": "The trigger element the tooltip is attached to (a value or status pill)."
         },
         {
           "name": "side",
-          "raw": "?'top'|'right'|'bottom'|'left'",
-          "optional": true,
-          "values": [
-            "top",
-            "right",
-            "bottom",
-            "left"
-          ]
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tooltip.Positioner.side"
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<MeterTooltip tip=\"Gemeten 11:42 · Philips monitor\"><ValueDisplay value=\"74\" unit=\"bpm\" /></MeterTooltip>",
+      "keywords": [
+        "tooltip",
+        "meter",
+        "hover",
+        "metadata",
+        "timestamp",
+        "source",
+        "provenance"
+      ],
+      "category": "Overlay"
     },
     {
       "name": "PAv",
@@ -662,15 +1042,40 @@
       "props": [
         {
           "name": "p",
-          "raw": "patient"
+          "class": "content",
+          "type": "patient",
+          "description": "The patient record; the name drives the initials fallback when no photo is available."
         },
         {
           "name": "size",
-          "raw": "number"
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Pixel diameter of the (always circular) avatar."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<PAv p={patient} size={32} />",
+      "keywords": [
+        "avatar",
+        "patient",
+        "profile",
+        "initials",
+        "photo",
+        "identity"
+      ],
+      "category": "Identity",
+      "anatomy": [
+        {
+          "name": "Photo",
+          "required": false,
+          "description": "The patient image, shown when available."
+        },
+        {
+          "name": "Initials",
+          "required": false,
+          "description": "One or two letters from the name; shown when there is no photo."
+        }
+      ]
     },
     {
       "name": "PrimaryCTA",
@@ -678,24 +1083,41 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Primary action button used in the card actions slot.",
+      "summary": "Primary action button for the card actions slot; composes Base UI Button for the focus and keyboard baseline, styled via tokens.",
       "usecases": [
         "card-actions"
       ],
       "props": [
         {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The button label. Write the action it performs (e.g. \"Save value\"), not \"OK\"."
+        },
+        {
           "name": "onClick",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the button is activated by pointer or keyboard."
         },
         {
           "name": "disabled",
-          "raw": "?bool",
-          "optional": true
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Button.disabled"
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<PrimaryCTA onClick={save}>Save value</PrimaryCTA>",
+      "keywords": [
+        "button",
+        "cta",
+        "primary",
+        "action",
+        "save",
+        "confirm",
+        "submit"
+      ],
+      "category": "Action"
     },
     {
       "name": "PropertyList",
@@ -712,74 +1134,140 @@
       "props": [
         {
           "name": "title",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "required": false,
+          "description": "Optional list heading; also the fallback accessible name when ariaLabel is absent. Shown with a live item count."
         },
         {
           "name": "items",
-          "raw": "object[]"
+          "class": "content",
+          "type": "object[]",
+          "description": "The data records to render. Each is passed to renderItem; item.id or item.key is used as the list key."
         },
         {
           "name": "renderItem",
-          "raw": "fn"
+          "class": "content",
+          "type": "fn",
+          "description": "Render prop (item, index) returning the card for one record. The list is agnostic about which Card component it returns."
         },
         {
           "name": "layout",
-          "raw": "'rows'|'grid'|'columns'",
+          "class": "dsPresentation",
           "values": [
             "rows",
             "grid",
             "columns"
-          ]
+          ],
+          "default": "grid",
+          "description": "Arrangement: rows (single-column stack), grid (auto-fit cells at least minCard wide), columns (CSS multi-column flow). Layout belongs to the list, not the card."
         },
         {
           "name": "minCard",
-          "raw": "?number",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "number",
+          "default": 240,
+          "description": "Minimum cell width in px for grid, or the column-width for columns. Drives the --krnl-list-min-card var so the consumer never edits the stylesheet."
         },
         {
           "name": "density",
-          "raw": "?'comfortable'|'compact'|'spacious'",
-          "optional": true,
+          "class": "dsPresentation",
           "values": [
             "comfortable",
             "compact",
             "spacious"
-          ]
+          ],
+          "default": "comfortable",
+          "description": "Overrides the page density token for this list only, via the data-density attribute."
         },
         {
           "name": "filter",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "required": false,
+          "description": "Header slot for a filter control the host composes."
         },
         {
           "name": "sort",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "required": false,
+          "description": "Header slot for a sort control the host composes."
         },
         {
           "name": "action",
-          "raw": "?node",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "required": false,
+          "description": "Header slot for a primary action (e.g. an add button), placed at the end of the header."
         },
         {
           "name": "emptyLabel",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "default": "Geen items",
+          "description": "Text shown in place of the items when items is empty."
         },
         {
           "name": "ariaLabel",
-          "raw": "?string",
-          "optional": true
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the list region; falls back to title when omitted."
         },
         {
           "name": "className",
-          "raw": "?string",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Extra class names appended after the canonical list + layout classes."
         }
       ],
       "composes": [],
-      "usage": "<PropertyList items={items} renderItem={(it) => <VitalSignCard data={it} stage=\"sprout\" />} layout=\"grid\" />"
+      "usage": "<PropertyList items={items} renderItem={(it) => <VitalSignCard data={it} stage=\"sprout\" />} layout=\"grid\" />",
+      "keywords": [
+        "list",
+        "collection",
+        "grid",
+        "rows",
+        "columns",
+        "layout",
+        "sprout",
+        "cards",
+        "dashboard",
+        "property-list"
+      ],
+      "category": "Data display",
+      "anatomy": [
+        {
+          "name": "Header",
+          "required": false,
+          "description": "Shown when a title, filter, sort, or action is present."
+        },
+        {
+          "name": "Title",
+          "required": false,
+          "description": "The list heading plus a live item count."
+        },
+        {
+          "name": "Controls",
+          "required": false,
+          "description": "The filter and sort slots."
+        },
+        {
+          "name": "Action",
+          "required": false,
+          "description": "The trailing header action slot."
+        },
+        {
+          "name": "Items",
+          "required": false,
+          "description": "The rendered cards, one per record via renderItem."
+        },
+        {
+          "name": "Empty",
+          "required": false,
+          "description": "The emptyLabel message shown when there are no items."
+        }
+      ]
     },
     {
       "name": "ReactionList",
@@ -787,7 +1275,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Bulleted reaction list for allergy cards.",
+      "summary": "Bulleted list of allergy reactions, each with a leading dot marker.",
       "usecases": [
         "card-body",
         "allergy"
@@ -795,11 +1283,23 @@
       "props": [
         {
           "name": "reactions",
-          "raw": "string[]"
+          "class": "content",
+          "type": "string[]",
+          "required": true,
+          "description": "The reaction descriptions to list, one bullet each (e.g. hives, anaphylaxis)."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<ReactionList reactions={[\"Hives\", \"Anaphylaxis\"]} />",
+      "keywords": [
+        "reaction",
+        "allergy",
+        "list",
+        "symptoms",
+        "bulleted",
+        "intolerance"
+      ],
+      "category": "Data display"
     },
     {
       "name": "ReferenceRangeBar",
@@ -807,7 +1307,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Lab reference-range strip with patient marker.",
+      "summary": "Horizontal reference-range strip: a normal band plus a marker for the measured value, colour-coded in or out of range.",
       "usecases": [
         "card-media",
         "lab-range"
@@ -815,34 +1315,79 @@
       "props": [
         {
           "name": "value",
-          "raw": "number"
+          "class": "content",
+          "type": "number",
+          "required": true,
+          "description": "The measured value; positions the marker and decides its in-range or out-of-range styling."
         },
         {
           "name": "low",
-          "raw": "number"
+          "class": "content",
+          "type": "number",
+          "required": true,
+          "description": "Lower bound of the normal band, shown as the left scale tick."
         },
         {
           "name": "high",
-          "raw": "number"
+          "class": "content",
+          "type": "number",
+          "required": true,
+          "description": "Upper bound of the normal band, shown as the right scale tick."
         },
         {
           "name": "absMin",
-          "raw": "?number",
-          "optional": true
+          "class": "content",
+          "type": "number",
+          "description": "Left end of the drawn axis. Defaults to 70% of the smaller of value and low when omitted, so the marker never sits on the edge."
         },
         {
           "name": "absMax",
-          "raw": "?number",
-          "optional": true
+          "class": "content",
+          "type": "number",
+          "description": "Right end of the drawn axis. Defaults to 130% of the larger of value and high when omitted."
         },
         {
           "name": "ariaLabel",
-          "raw": "?string",
-          "optional": true
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the img-role strip, e.g. the value against its reference range in words."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<ReferenceRangeBar value={5.9} low={4} high={5.6} ariaLabel=\"HbA1c 5.9%, reference 4 to 5.6\" />",
+      "keywords": [
+        "reference-range",
+        "range",
+        "lab",
+        "marker",
+        "normal",
+        "gauge",
+        "threshold",
+        "bar"
+      ],
+      "category": "Data display",
+      "anatomy": [
+        {
+          "name": "Track",
+          "required": true,
+          "description": "The full-width axis the marker travels along."
+        },
+        {
+          "name": "Normal band",
+          "required": true,
+          "description": "The shaded span between low and high."
+        },
+        {
+          "name": "Marker",
+          "required": true,
+          "description": "The value indicator; styled in-range or out-of-range."
+        },
+        {
+          "name": "Scale",
+          "required": true,
+          "description": "The low and high numeric ticks under the track."
+        }
+      ]
     },
     {
       "name": "ScheduleStrip",
@@ -850,7 +1395,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Seven-day medication adherence strip.",
+      "summary": "Compact row of day cells for medication adherence; each cell colours by its taken / missed / upcoming / paused status.",
       "usecases": [
         "card-media",
         "medication"
@@ -858,16 +1403,45 @@
       "props": [
         {
           "name": "days",
-          "raw": "object[]"
+          "class": "content",
+          "type": "Array<{ label: string, status: string }>",
+          "required": true,
+          "description": "Ordered day cells. label is the short day name shown under each dot; status is one of taken, missed, upcoming, or paused and drives the dot colour."
         },
         {
           "name": "ariaLabel",
-          "raw": "?string",
-          "optional": true
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the img-role list, e.g. a summary of the adherence week."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<ScheduleStrip days={[{ label: \"Mo\", status: \"taken\" }, { label: \"Tu\", status: \"missed\" }]} ariaLabel=\"Adherence this week\" />",
+      "keywords": [
+        "schedule",
+        "adherence",
+        "medication",
+        "dose",
+        "week",
+        "strip",
+        "calendar",
+        "compliance"
+      ],
+      "category": "Data display",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use taken and missed for past days, upcoming for future doses, and paused for a suspended course."
+        },
+        {
+          "do": true,
+          "text": "Keep labels to one or two characters (weekday initials) so the strip stays compact."
+        },
+        {
+          "do": false,
+          "text": "Drive this from a status value outside taken, missed, upcoming, or paused; unknown values get no styled dot."
+        }
+      ]
     },
     {
       "name": "Sparkline",
@@ -875,7 +1449,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Inline SVG sparkline with gradient fill in currentColor.",
+      "summary": "Inline SVG line chart with soft gradient fill; draws in currentColor so it inherits the card tone.",
       "usecases": [
         "card-media",
         "vital-trend"
@@ -883,26 +1457,45 @@
       "props": [
         {
           "name": "data",
-          "raw": "number[]"
+          "class": "content",
+          "type": "number[]",
+          "required": true,
+          "description": "The ordered series to plot (oldest to newest). Renders nothing when empty; the axis auto-scales to the min and max."
         },
         {
           "name": "width",
-          "raw": "?number",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "number",
+          "default": 240,
+          "description": "Intrinsic viewBox width; the SVG itself scales to 100% of its container, so this only sets the drawing aspect ratio."
         },
         {
           "name": "height",
-          "raw": "?number",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "number",
+          "default": 56,
+          "description": "Rendered pixel height and viewBox height of the chart."
         },
         {
           "name": "ariaLabel",
-          "raw": "?string",
-          "optional": true
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the img-role SVG, e.g. a spoken summary of the trend. Provide a value that does not just repeat the metric name."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<Sparkline data={[72, 74, 71, 78, 75]} ariaLabel=\"Heart rate, last 5 readings\" />",
+      "keywords": [
+        "sparkline",
+        "trend",
+        "line",
+        "chart",
+        "micro-chart",
+        "graph",
+        "vital",
+        "series"
+      ],
+      "category": "Data display"
     },
     {
       "name": "SproutCard",
@@ -910,7 +1503,7 @@
       "layer": "composite",
       "scope": "global",
       "status": "experimental",
-      "summary": "Stateful wrapper that owns Seed↔Sprout↔Shoot stage state and applies the cross-stage view-transition animation. Render-prop based; per-object cards stay presentational.",
+      "summary": "Stateful wrapper that owns the Seed / Sprout / Shoot stage state and applies the cross-stage view-transition animation. Render-prop based; per-object cards stay presentational.",
       "usecases": [
         "sprout-pattern",
         "fidelity-orchestrator"
@@ -918,40 +1511,81 @@
       "props": [
         {
           "name": "initialStage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "default": "seed",
+          "description": "Starting fidelity in uncontrolled mode. Ignored once stage is passed (controlled mode)."
         },
         {
           "name": "stage",
-          "raw": "?'seed'|'sprout'|'shoot' (controlled mode)",
-          "optional": true
+          "class": "dsPresentation",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ],
+          "required": false,
+          "description": "Controlled fidelity. When set, the host owns state and no internal view transition runs; pair with onStageChange."
         },
         {
           "name": "onStageChange",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Fired with the next stage before it applies. Required in controlled mode; also useful as a change listener while uncontrolled."
         },
         {
           "name": "render",
-          "raw": "fn"
+          "class": "content",
+          "type": "fn",
+          "description": "Render prop (stage, transitions) that returns the per-object card. transitions carries toSeed / toSprout / toShoot / toggle / expand / collapse / rooted."
         },
         {
           "name": "onRooted",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the render prop calls transitions.rooted, signalling the native-application handoff (the Rooted stage lives outside this component)."
         },
         {
           "name": "className",
-          "raw": "?string",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Extra class names appended after the canonical shell + stage classes."
         }
       ],
       "composes": [],
-      "usage": "<SproutCard initialStage=\"seed\" render={(stage, t) => <VitalSignCard data={hr} stage={stage} onEdit={t.toShoot} />} />"
+      "usage": "<SproutCard initialStage=\"seed\" render={(stage, t) => <VitalSignCard data={hr} stage={stage} onEdit={t.toShoot} />} />",
+      "keywords": [
+        "sprout",
+        "card",
+        "expand",
+        "collapse",
+        "stage",
+        "fidelity",
+        "seed",
+        "shoot",
+        "orchestrator",
+        "view-transition",
+        "progressive-disclosure"
+      ],
+      "category": "Data display",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Leave the component uncontrolled for the built-in view-transition choreography; drive it via the transitions helpers from the render prop."
+        },
+        {
+          "do": true,
+          "text": "Pass stage + onStageChange together when the host must own the stage; the internal transition is skipped in that mode."
+        },
+        {
+          "do": false,
+          "text": "Model the Rooted handoff as a fourth stage here; fire onRooted and navigate the host app instead."
+        }
+      ]
     },
     {
       "name": "SproutToneProvider",
@@ -959,7 +1593,7 @@
       "layer": "composite",
       "scope": "global",
       "status": "experimental",
-      "summary": "Sets --card-tone (and optionally tint/tintStrong/on) on a wrapper so descendant cards inherit a tone. Cards that explicitly pass tone override the provider.",
+      "summary": "Sets --card-tone (and optionally tint / tintStrong / on) on a wrapper so descendant cards inherit a tone via the CSS cascade. Cards that explicitly pass their own tone override the provider default.",
       "usecases": [
         "sprout-pattern",
         "theming"
@@ -967,8 +1601,7 @@
       "props": [
         {
           "name": "tone",
-          "raw": "?'neutral'|'heart'|'breath'|'oxygen'|'temperature'|'pressure'|'body'|'lab'|'identity'|'condition'|'allergy'|'medication'",
-          "optional": true,
+          "class": "dsPresentation",
           "values": [
             "neutral",
             "heart",
@@ -982,21 +1615,37 @@
             "condition",
             "allergy",
             "medication"
-          ]
+          ],
+          "required": false,
+          "description": "Named identity tone applied to the subtree via a krnl-tone--* class; descendant cards inherit it unless they set their own tone."
         },
         {
           "name": "customColor",
-          "raw": "?string|{solid,tint,tintStrong,on}",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "string|{solid,tint,tintStrong,on}",
+          "required": false,
+          "description": "Colour escape hatch. A CSS colour string sets --card-tone; an object sets the matching --card-tone-* bindings (solid / tint / tintStrong / on) as inline vars."
         },
         {
           "name": "className",
-          "raw": "?string",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Extra class names appended after the provider class."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<SproutToneProvider tone=\"heart\"><PropertyList items={items} renderItem={renderItem} /></SproutToneProvider>",
+      "keywords": [
+        "tone",
+        "theme",
+        "color",
+        "provider",
+        "sprout",
+        "card-tone",
+        "cascade",
+        "inherit"
+      ],
+      "category": "Utility"
     },
     {
       "name": "StatusPill",
@@ -1011,23 +1660,65 @@
       "props": [
         {
           "name": "status",
-          "raw": "'normal'|'borderline'|'high'|'low'|'critical'",
+          "class": "dsPresentation",
           "values": [
             "normal",
             "borderline",
             "high",
             "low",
             "critical"
-          ]
+          ],
+          "default": "normal",
+          "description": "Clinical interpretation; drives the dot + label colour. Keep this orthogonal to the card tone, which encodes identity, not interpretation."
         },
         {
           "name": "label",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "node",
+          "description": "The pill text. Falls back to children when omitted."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "node",
+          "description": "Alternative to label; rendered as the pill text when label is not passed."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<StatusPill status=\"high\" label=\"Verhoogd\" />",
+      "keywords": [
+        "status",
+        "pill",
+        "badge",
+        "dot",
+        "interpretation",
+        "clinical",
+        "normal",
+        "critical"
+      ],
+      "category": "Feedback & Status",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Drive the pill from the measurement interpretation (normal / critical / ...), independent of the card identity tone."
+        },
+        {
+          "do": false,
+          "text": "Pass the card identity tone into status; that conflates identity and interpretation."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Dot",
+          "required": true,
+          "description": "Small status-coloured indicator dot."
+        },
+        {
+          "name": "Label",
+          "required": true,
+          "description": "The interpretation text."
+        }
+      ]
     },
     {
       "name": "Stepper",
@@ -1035,48 +1726,80 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Shoot-stage editable value (− / value / +). No save; consumer provides the CTA in the actions slot.",
+      "summary": "Shoot-stage editable value (minus / value / plus). No save; the consumer provides the CTA in the actions slot.",
       "usecases": [
         "card-value-shoot"
       ],
       "props": [
         {
           "name": "value",
-          "raw": "number"
-        },
-        {
-          "name": "unit",
-          "raw": "?string",
-          "optional": true
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.NumberField.value"
         },
         {
           "name": "min",
-          "raw": "?number",
-          "optional": true
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.NumberField.min"
         },
         {
           "name": "max",
-          "raw": "?number",
-          "optional": true
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.NumberField.max"
         },
         {
           "name": "step",
-          "raw": "?number",
-          "optional": true
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.NumberField.step"
+        },
+        {
+          "name": "unit",
+          "class": "content",
+          "type": "string",
+          "description": "Small trailing unit shown after the editable value (e.g. \"bpm\")."
         },
         {
           "name": "onChange",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Called with the new numeric value on each change; wraps the Base UI onValueChange and skips null (mid-edit) values."
         },
         {
           "name": "ariaLabel",
-          "raw": "?string",
-          "optional": true
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the number field, since there is no visible label."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<Stepper value={72} unit=\"bpm\" min={30} max={220} onChange={setBpm} ariaLabel=\"Hartslag\" />",
+      "keywords": [
+        "stepper",
+        "number",
+        "increment",
+        "decrement",
+        "edit",
+        "input",
+        "numberfield",
+        "shoot"
+      ],
+      "category": "Data Input",
+      "anatomy": [
+        {
+          "name": "Decrement",
+          "required": true,
+          "description": "The minus button."
+        },
+        {
+          "name": "Input",
+          "required": true,
+          "description": "The editable numeric field."
+        },
+        {
+          "name": "Increment",
+          "required": true,
+          "description": "The plus button."
+        }
+      ]
     },
     {
       "name": "TextInput",
@@ -1088,9 +1811,33 @@
       "usecases": [
         "control"
       ],
-      "props": [],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "HTMLInputElement.value"
+        },
+        {
+          "name": "onChange",
+          "class": "passThroughControl",
+          "passthrough": "HTMLInputElement.onChange"
+        },
+        {
+          "name": "placeholder",
+          "class": "passThroughControl",
+          "passthrough": "HTMLInputElement.placeholder"
+        }
+      ],
       "composes": [],
-      "usage": "<TextInput placeholder=\"Search records\" />"
+      "usage": "<TextInput placeholder=\"Search records\" />",
+      "keywords": [
+        "input",
+        "textfield",
+        "text",
+        "search",
+        "field"
+      ],
+      "category": "Data Input"
     },
     {
       "name": "Tip",
@@ -1105,11 +1852,27 @@
       "props": [
         {
           "name": "label",
-          "raw": "string"
+          "class": "content",
+          "type": "string",
+          "description": "Short tooltip text shown on hover / focus of the trigger."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The trigger element the tooltip is attached to."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<Tip label=\"Copy\"><IconButton aria-label=\"Copy\">{Icon.dots({ size: 16 })}</IconButton></Tip>",
+      "keywords": [
+        "tooltip",
+        "hint",
+        "hover",
+        "infotip",
+        "flyout"
+      ],
+      "category": "Overlay"
     },
     {
       "name": "Toggle",
@@ -1124,20 +1887,30 @@
       "props": [
         {
           "name": "checked",
-          "raw": "bool"
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Switch.checked"
         },
         {
           "name": "onCheckedChange",
-          "raw": "fn"
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Switch.onCheckedChange"
         },
         {
           "name": "disabled",
-          "raw": "?bool",
-          "optional": true
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Switch.disabled"
         }
       ],
       "composes": [],
-      "usage": "<Toggle checked={on} onCheckedChange={setOn} />"
+      "usage": "<Toggle checked={on} onCheckedChange={setOn} />",
+      "keywords": [
+        "switch",
+        "toggle",
+        "on-off",
+        "boolean",
+        "checkbox"
+      ],
+      "category": "Data Input"
     },
     {
       "name": "TrendChip",
@@ -1145,32 +1918,60 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Compact delta indicator (▲ / ▼ / ·).",
+      "summary": "Compact delta indicator with a direction arrow (up / down / flat).",
       "usecases": [
         "card-meta"
       ],
       "props": [
         {
           "name": "direction",
-          "raw": "'up'|'down'|'flat'",
+          "class": "dsPresentation",
           "values": [
             "up",
             "down",
             "flat"
-          ]
+          ],
+          "default": "flat",
+          "description": "Movement direction; selects the arrow glyph and the chip colour treatment."
         },
         {
           "name": "value",
-          "raw": "string"
+          "class": "content",
+          "type": "node",
+          "description": "The delta magnitude shown beside the arrow (e.g. \"+3\" or \"2 mmHg\")."
         },
         {
           "name": "label",
-          "raw": "?string",
-          "optional": true
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name for the chip; describes the trend for screen readers since the arrow is decorative."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<TrendChip direction=\"up\" value=\"+3\" label=\"Gestegen met 3\" />",
+      "keywords": [
+        "trend",
+        "chip",
+        "delta",
+        "change",
+        "arrow",
+        "direction",
+        "up",
+        "down"
+      ],
+      "category": "Data display",
+      "anatomy": [
+        {
+          "name": "Arrow",
+          "required": true,
+          "description": "Decorative direction glyph set from direction."
+        },
+        {
+          "name": "Value",
+          "required": true,
+          "description": "The delta magnitude text."
+        }
+      ]
     },
     {
       "name": "ValueDisplay",
@@ -1178,28 +1979,59 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Big numeric value + small unit; canonical value slot content.",
+      "summary": "Big numeric value + small unit; the canonical value-slot content for vitals and labs.",
       "usecases": [
         "card-value"
       ],
       "props": [
         {
           "name": "value",
-          "raw": "string|number"
+          "class": "content",
+          "type": "string|number",
+          "description": "The primary reading, rendered large (e.g. 74)."
         },
         {
           "name": "unit",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "description": "Small trailing unit shown after the value (e.g. \"bpm\")."
         },
         {
           "name": "prefix",
-          "raw": "?string",
-          "optional": true
+          "class": "content",
+          "type": "string",
+          "description": "Optional small marker before the value (e.g. a comparator like \"<\")."
         }
       ],
       "composes": [],
-      "usage": null
+      "usage": "<ValueDisplay value=\"74\" unit=\"bpm\" />",
+      "keywords": [
+        "value",
+        "measurement",
+        "number",
+        "unit",
+        "reading",
+        "vital",
+        "display"
+      ],
+      "category": "Data display",
+      "anatomy": [
+        {
+          "name": "Prefix",
+          "required": false,
+          "description": "Optional leading marker."
+        },
+        {
+          "name": "Value",
+          "required": true,
+          "description": "The large numeric reading."
+        },
+        {
+          "name": "Unit",
+          "required": false,
+          "description": "The small trailing unit."
+        }
+      ]
     },
     {
       "name": "VitalSignCard",
@@ -1215,26 +2047,31 @@
       "props": [
         {
           "name": "data",
-          "raw": "object"
+          "class": "content",
+          "type": "object",
+          "description": "The FHIR Observation projection: { property, value, unit, status, history, measuredAt, reference, trend }. For bloodPressure, value is { systolic, diastolic }; for others value is a number."
         },
         {
           "name": "stage",
-          "raw": "'seed'|'sprout'|'shoot'",
+          "class": "dsPresentation",
           "values": [
             "seed",
             "sprout",
             "shoot"
-          ]
+          ],
+          "description": "Fidelity forwarded to the underlying Card. Sprout adds sparkline plus trend; Shoot swaps the value for an editable Stepper (except bloodPressure)."
         },
         {
           "name": "onSave",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked with the new value when the Shoot-stage Stepper changes or the save CTA fires."
         },
         {
           "name": "onEdit",
-          "raw": "?fn",
-          "optional": true
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the user taps the edit chip in Sprout stage."
         }
       ],
       "composes": [
@@ -1248,7 +2085,21 @@
         "Sparkline",
         "PrimaryCTA"
       ],
-      "usage": null
+      "usage": "<VitalSignCard data={vital} stage=\"sprout\" onEdit={handleEdit} />",
+      "keywords": [
+        "vital sign",
+        "vitals",
+        "observation",
+        "fhir",
+        "heart rate",
+        "blood pressure",
+        "temperature",
+        "spo2",
+        "weight",
+        "sparkline",
+        "trend"
+      ],
+      "category": "Clinical"
     }
   ]
 }

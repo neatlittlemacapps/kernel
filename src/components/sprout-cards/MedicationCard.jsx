@@ -80,13 +80,16 @@ export function MedicationCard({ data, stage = 'sprout', onEdit, onMarkTaken, ..
 export const meta = {
   MedicationCard: {
     layer: 'composite', scope: 'global', usecases: ['medication', 'sprout-pattern'], status: 'experimental',
+    category: 'Clinical',
+    keywords: ['medication', 'drug', 'prescription', 'medicationstatement', 'fhir', 'dose', 'schedule', 'adherence'],
     summary: 'FHIR MedicationStatement. Schedule strip in Sprout; mark-taken in Shoot. Prescribing requires Rooted.',
     props: {
-      data: 'object',          // { name, dose, frequency, medicationStatus, schedule, reason, prescriber }
-      stage: "'seed'|'sprout'|'shoot'",
-      onEdit: '?fn',
-      onMarkTaken: '?fn',
+      data: { class: 'content', type: 'object', description: 'The FHIR MedicationStatement: { name, dose, frequency, medicationStatus, schedule, reason, prescriber }.' },
+      stage: { class: 'dsPresentation', values: ['seed', 'sprout', 'shoot'], description: 'Fidelity (forwarded to the underlying Card).' },
+      onEdit: { class: 'event', type: 'fn', description: 'Invoked when the user enters edit (Shoot stage).' },
+      onMarkTaken: { class: 'event', type: 'fn', description: 'Invoked when the user marks a dose taken.' },
     },
     composes: ['Card', 'StatusPill', 'IconPill', 'EditChip', 'ScheduleStrip', 'PrimaryCTA'],
+    usage: '<MedicationCard data={med} stage="sprout" onMarkTaken={markTaken} />',
   },
 };

@@ -66,16 +66,24 @@ function loadCatalog() {
 }
 
 // ── per-component rendering ──────────────────────────────────────────────────────
+// props may be legacy (name/raw/optional/values) or enriched (type/description/default/
+// required/passthrough) - render both. Pass-through props point to Base UI instead of a desc.
 function propLine(p) {
   const bits = [p.name];
-  if (p.optional) bits[0] += '?';
+  if (p.required) bits[0] += '*';
+  else if (p.optional) bits[0] += '?';
   if (p.values) bits.push(`= ${p.values.join(' | ')}`);
-  else if (p.class) bits.push(`(${p.class})`);
+  else if (p.type) bits.push(`: ${p.type}`);
   else if (p.raw) bits.push(`= ${p.raw.startsWith('?') ? p.raw.slice(1) : p.raw}`);
+  else if (p.class) bits.push(`(${p.class})`);
+  if (p.default != null) bits.push(`(default ${p.default})`);
+  if (p.passthrough) bits.push(`-> see ${p.passthrough}`);
+  else if (p.description) bits.push(`- ${p.description}`);
   return '  ' + bits.join(' ');
 }
 function renderComponentDense(c) {
   const lines = [`## ${c.name}  (import from "${c.import}")`, c.summary || ''];
+  if (c.keywords?.length) lines.push(`keywords: ${c.keywords.join(', ')}`);
   lines.push('props:');
   if (c.props.length) for (const p of c.props) lines.push(propLine(p)); else lines.push('  (none)');
   if (c.composes.length) lines.push(`composes: ${c.composes.join(', ')}`);
@@ -84,16 +92,30 @@ function renderComponentDense(c) {
 }
 function renderComponentFull(c) {
   const lines = [
-    `${c.name}`,
+    `${c.name}${c.category ? `   [${c.category}]` : ''}`,
     `  import   ${c.import}`,
     `  layer    ${c.layer}    scope ${JSON.stringify(c.scope)}    status ${c.status}`,
     `  summary  ${c.summary || ''}`,
     `  usecases ${(c.usecases || []).join(', ') || '(none)'}`,
-    '  props:',
   ];
+  if (c.keywords?.length) lines.push(`  keywords ${c.keywords.join(', ')}`);
+  lines.push('  props:');
   if (c.props.length) for (const p of c.props) lines.push('  ' + propLine(p)); else lines.push('    (none)');
+  if (c.anatomy?.length) {
+    lines.push('  anatomy:');
+    for (const a of c.anatomy) lines.push(`    ${a.name}${a.required ? '*' : ''} - ${a.description || ''}`);
+  }
+  if (c.bestPractices?.length) {
+    lines.push('  best practices:');
+    for (const b of c.bestPractices) lines.push(`    ${b.do ? 'DO   ' : "DON'T"} ${b.text}`);
+  }
   lines.push(`  composes ${c.composes.join(', ') || '(none)'}`);
+  if (c.related?.length) lines.push(`  related  ${c.related.join(', ')}`);
   lines.push(`  usage    ${c.usage || '(none yet)'}`);
+  if (c.examples?.length) {
+    lines.push('  examples:');
+    for (const ex of c.examples) lines.push(`    ${ex.name}: ${ex.code}${ex.description ? `  (${ex.description})` : ''}`);
+  }
   return lines.join('\n');
 }
 

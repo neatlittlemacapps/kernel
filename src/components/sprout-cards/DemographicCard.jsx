@@ -58,13 +58,16 @@ export function DemographicCard({ data, stage = 'sprout', onEdit, onSave, ...res
 export const meta = {
   DemographicCard: {
     layer: 'composite', scope: 'global', usecases: ['demographic', 'sprout-pattern'], status: 'experimental',
+    category: 'Clinical',
+    keywords: ['demographic', 'patient', 'identity', 'fhir', 'name', 'age', 'gender', 'gp', 'contact', 'address'],
     summary: 'FHIR Patient identity card. Seed/Sprout/Shoot. No time-series; attributes flow as a field list.',
     props: {
-      data: 'object',          // { name, birthDate, age, gender, identifier, gp, phone, address, lastVisit }
-      stage: "'seed'|'sprout'|'shoot'",
-      onEdit: '?fn',
-      onSave: '?fn',
+      data: { class: 'content', type: 'object', description: 'The FHIR Patient: { name, birthDate, age, gender, identifier, gp, phone, address, lastVisit }. name is the title; the remaining attributes render as a field list.' },
+      stage: { class: 'dsPresentation', values: ['seed', 'sprout', 'shoot'], description: 'Fidelity forwarded to the underlying Card. Seed shows age only; Sprout and Shoot render the attribute field list; Sprout adds the last-contact footer; Shoot exposes the save CTA.' },
+      onEdit: { class: 'event', type: 'fn', description: 'Invoked when the user taps the edit chip in Shoot stage.' },
+      onSave: { class: 'event', type: 'fn', description: 'Invoked with the patient when the user triggers the Shoot-stage save CTA.' },
     },
     composes: ['Card', 'IconPill', 'EditChip', 'FieldList', 'PrimaryCTA'],
+    usage: '<DemographicCard data={patient} stage="sprout" onEdit={handleEdit} />',
   },
 };

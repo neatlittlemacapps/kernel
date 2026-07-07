@@ -33,5 +33,28 @@ export function ActionRow({
 }
 
 export const meta = {
-  ActionRow: { layer:'atom', scope:'global', usecases:['launcher','slash-menu','suggestion'], status:'stable', summary:'The one canonical action/command row (icon · label · description · chevron); gating-aware.', props:{ icon:'node', label:'string', description:'?string', tone:'?string', selected:'?bool', disabled:'?bool', reason:'?string', onClick:'fn' }, composes:[], usage:'<ActionRow icon={Icon.search({ size: 18 })} label="Search records" description="Find a patient" onClick={run} />' },
+  ActionRow: {
+    layer: 'atom', scope: 'global', status: 'stable', category: 'Navigation',
+    usecases: ['launcher', 'slash-menu', 'suggestion'],
+    keywords: ['action', 'command', 'row', 'launcher', 'menu', 'suggestion', 'list-item'],
+    summary: 'The one canonical action/command row (icon, label, description, chevron); gating-aware.',
+    props: [
+      { name: 'icon', class: 'content', type: 'node', description: 'Leading glyph, e.g. Icon.search({ size: 18 }).' },
+      { name: 'label', class: 'content', type: 'string', description: 'The action name; the primary line and accessible name.' },
+      { name: 'description', class: 'content', type: 'string', required: false, description: 'Secondary line beneath the label.' },
+      { name: 'tone', class: 'dsPresentation', type: 'string', required: false, description: 'Semantic colour accent for the row.' },
+      { name: 'selected', class: 'dsPresentation', type: 'bool', required: false, description: 'Highlights the row as the current selection (keyboard / active item).' },
+      { name: 'reason', class: 'content', type: 'string', required: false, description: 'When disabled, the gating reason shown to explain why.' },
+      { name: 'onClick', class: 'event', type: 'fn', description: 'Invoked when the row is activated.' },
+      { name: 'disabled', class: 'passThroughControl', passthrough: 'BaseUI.Button.disabled' },
+    ],
+    anatomy: [
+      { name: 'Icon', required: false, description: 'Leading glyph.' },
+      { name: 'Label', required: true, description: 'The action name.' },
+      { name: 'Description', required: false, description: 'Secondary supporting line.' },
+      { name: 'Chevron', required: false, description: 'Trailing affordance for drill-in rows.' },
+    ],
+    composes: [],
+    usage: '<ActionRow icon={Icon.search({ size: 18 })} label="Search records" description="Find a patient" onClick={run} />',
+  },
 };

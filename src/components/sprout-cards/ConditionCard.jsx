@@ -68,13 +68,16 @@ export function ConditionCard({ data, stage = 'sprout', onEdit, onStatusChange, 
 export const meta = {
   ConditionCard: {
     layer: 'composite', scope: 'global', usecases: ['condition', 'sprout-pattern'], status: 'experimental',
-    summary: 'FHIR Condition card. Status pill follows clinicalStatus → interpretation mapping.',
+    category: 'Clinical',
+    keywords: ['condition', 'diagnosis', 'problem', 'fhir', 'clinical status', 'severity', 'onset', 'remission'],
+    summary: 'FHIR Condition card. Status pill follows clinicalStatus mapped to interpretation.',
     props: {
-      data: 'object',          // { code, clinicalStatus, severity, onsetDate, verification, note }
-      stage: "'seed'|'sprout'|'shoot'",
-      onEdit: '?fn',
-      onStatusChange: '?fn',
+      data: { class: 'content', type: 'object', description: 'The FHIR Condition: { code, clinicalStatus, severity, onsetDate, verification, note }. code is the title; clinicalStatus drives the status pill; the rest render as a field list.' },
+      stage: { class: 'dsPresentation', values: ['seed', 'sprout', 'shoot'], description: 'Fidelity forwarded to the underlying Card. Sprout and Shoot render the onset/severity/verification field list; Sprout adds the note; Shoot exposes the status-update CTA.' },
+      onEdit: { class: 'event', type: 'fn', description: 'Invoked when the user taps the edit chip in Shoot stage.' },
+      onStatusChange: { class: 'event', type: 'fn', description: 'Invoked with the condition when the user triggers the Shoot-stage status-update CTA.' },
     },
     composes: ['Card', 'StatusPill', 'IconPill', 'EditChip', 'FieldList', 'PrimaryCTA'],
+    usage: '<ConditionCard data={condition} stage="sprout" onEdit={handleEdit} />',
   },
 };

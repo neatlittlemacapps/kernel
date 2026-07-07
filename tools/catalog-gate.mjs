@@ -99,6 +99,36 @@ for (const { file, src, meta } of units) {
 
   if (meta) {
     for (const [name, c] of Object.entries(meta)) {
+      // documentation floor (B-37) - guard mode only: doc completeness is a Kernel-authoring rule,
+      // not part of the structural consumer audit, so it never fires on `audit:greenhouse`.
+      if (!audit && (!c.summary || !String(c.summary).trim()))
+        add('error', file, name, 'missing-summary',
+          'no summary - every component needs a one-line summary (the documentation floor).',
+          'add a non-empty `summary` to the meta.');
+
+      // full-doc tier (B-37) - official (status:'stable') components must carry usage + a
+      // description on every Kernel-invented prop. Proto (experimental) components: warn only.
+      // Guard mode only (never on the greenhouse audit).
+      if (!audit) {
+        const strict = c.status === 'stable';
+        const level = strict ? 'error' : 'warn';
+        if (!c.usage || !String(c.usage).trim())
+          add(level, file, name, 'missing-usage',
+            `${strict ? 'official (stable)' : 'proto'} component has no \`usage\` example.`,
+            'add a usage snippet (or keep status experimental while prototyping).');
+        // normalize props (array form or legacy map form) to a list of {name, class, description, passthrough}
+        const propList = Array.isArray(c.props)
+          ? c.props
+          : Object.entries(c.props || {}).map(([n, v]) => (v && typeof v === 'object' ? { name: n, ...v } : { name: n }));
+        const INVENTED = new Set(['dsPresentation', 'content', 'event', 'a11y']);
+        for (const p of propList) {
+          if (p && INVENTED.has(p.class) && !p.description && !p.passthrough)
+            add(level, file, name, 'undocumented-prop',
+              `Kernel-invented prop \`${p.name}\` (${p.class}) has no description.`,
+              'add a `description` (or, for a pass-through prop, mark it with `passthrough`).');
+        }
+      }
+
       const props = c && typeof c.props === 'object' ? Object.keys(c.props) : [];
       for (const p of props) {
         if (banned.has(p))

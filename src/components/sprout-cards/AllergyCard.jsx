@@ -65,12 +65,15 @@ export function AllergyCard({ data, stage = 'sprout', onEdit, ...rest }) {
 export const meta = {
   AllergyCard: {
     layer: 'composite', scope: 'global', usecases: ['allergy', 'sprout-pattern'], status: 'experimental',
+    category: 'Clinical',
+    keywords: ['allergy', 'allergyintolerance', 'intolerance', 'fhir', 'substance', 'reaction', 'criticality', 'severity'],
     summary: 'FHIR AllergyIntolerance card. Criticality maps to status interpretation (critical/borderline).',
     props: {
-      data: 'object',          // { substance, criticality, reactions, recordedDate, lastVerified }
-      stage: "'seed'|'sprout'|'shoot'",
-      onEdit: '?fn',
+      data: { class: 'content', type: 'object', description: 'The FHIR AllergyIntolerance: { substance, criticality, reactions, recordedDate, lastVerified }. substance is the title; criticality drives the status pill.' },
+      stage: { class: 'dsPresentation', values: ['seed', 'sprout', 'shoot'], description: 'Fidelity forwarded to the underlying Card. Sprout and Shoot render the reaction list; Sprout adds recorded/verified dates; Shoot exposes the severity-update CTA.' },
+      onEdit: { class: 'event', type: 'fn', description: 'Invoked when the user enters edit, from the Shoot edit chip or the "Ernst bijwerken" CTA.' },
     },
     composes: ['Card', 'StatusPill', 'IconPill', 'EditChip', 'ReactionList', 'PrimaryCTA'],
+    usage: '<AllergyCard data={allergy} stage="sprout" onEdit={handleEdit} />',
   },
 };

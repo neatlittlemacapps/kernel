@@ -25,7 +25,8 @@
     "standard.json",
     "catalog.json",
     "STANDARD.md",
-    "CLI.md"
+    "CLI.md",
+    "DOCS.md"
   ],
   "peerDependencies": {
     "@base-ui-components/react": "*",
