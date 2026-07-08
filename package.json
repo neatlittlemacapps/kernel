@@ -42,5 +42,8 @@
     "audit:greenhouse": "node tools/catalog-gate.mjs ../greenhouse/src --audit",
     "mcp": "node mcp/server.mjs",
     "test": "node --test"
+  },
+  "dependencies": {
+    "@awesome.me/kit-c983fdf9da": "^1.0.5"
   }
 }
