@@ -14,6 +14,7 @@
 // from the package surface (consumers never import a component's `meta` here).
 
 export * from './components/ui.jsx';
+export * from './components/Layout.jsx';
 export * from './components/Menu.jsx';
 export * from './components/ContextMenu.jsx';
 export * from './components/Popover.jsx';

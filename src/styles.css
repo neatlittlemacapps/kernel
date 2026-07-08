@@ -67,6 +67,13 @@
 
 .krnl-companion-layer, .krnl-companion-layer * { box-sizing: border-box; }
 .krnl-companion-layer { font-family: var(--font-body); color: var(--text-default); }
+
+/* Layout primitives (B-42): static display + flex-child safety only; the token-driven
+   dynamic values (gap / padding / align / columns) are set inline by the components. */
+.krnl-box { box-sizing: border-box; min-width: 0; }
+.krnl-stack { box-sizing: border-box; display: flex; flex-direction: column; min-width: 0; }
+.krnl-inline { box-sizing: border-box; display: flex; flex-direction: row; align-items: center; min-width: 0; }
+.krnl-grid { box-sizing: border-box; display: grid; min-width: 0; }
 .krnl-companion-layer ::-webkit-scrollbar { width: 5px; height: 5px; }
 .krnl-companion-layer ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: var(--krnl-radius-pill); }
 /* ── FOCUS RING — ONE colour, everywhere ──

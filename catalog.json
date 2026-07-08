@@ -365,6 +365,96 @@
       "category": "Clinical"
     },
     {
+      "name": "Box",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Primitive layout container: token-driven padding / surface / radius / border.",
+      "usecases": [
+        "container",
+        "spacing",
+        "surface"
+      ],
+      "props": [
+        {
+          "name": "p",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Padding step, resolves to var(--space-N). px/py set an axis; pt/pr/pb/pl set one side."
+        },
+        {
+          "name": "px",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Horizontal padding step (left + right)."
+        },
+        {
+          "name": "py",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Vertical padding step (top + bottom)."
+        },
+        {
+          "name": "bg",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Surface token name; resolves to var(--<bg>), e.g. bg=\"surface-raised\"."
+        },
+        {
+          "name": "radius",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Radius token step; resolves to var(--krnl-radius-<radius>), e.g. radius=\"sm\"."
+        },
+        {
+          "name": "border",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Adds a hairline token border (--border-subtle)."
+        },
+        {
+          "name": "as",
+          "class": "dsPresentation",
+          "type": "string",
+          "default": "div",
+          "description": "The HTML element to render."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The laid-out content."
+        }
+      ],
+      "composes": [],
+      "usage": "<Box p={4} bg=\"surface-raised\" radius=\"md\" border>...</Box>",
+      "keywords": [
+        "box",
+        "container",
+        "padding",
+        "surface",
+        "layout",
+        "div"
+      ],
+      "category": "Layout",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use Box for a padded / surfaced region; reach for Stack / Inline / Grid when it also arranges children."
+        },
+        {
+          "do": false,
+          "text": "Hardcode padding in px - pass a space step (p={3}) so spacing stays on the tokenset."
+        }
+      ],
+      "related": [
+        "Stack",
+        "Inline",
+        "Grid"
+      ]
+    },
+    {
       "name": "Btn",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -1663,6 +1753,58 @@
       "category": "Data Input"
     },
     {
+      "name": "Grid",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "CSS grid with a column count (or template) and a token gap.",
+      "usecases": [
+        "grid layout",
+        "card grid"
+      ],
+      "props": [
+        {
+          "name": "columns",
+          "class": "dsPresentation",
+          "type": "number | string",
+          "description": "Column count (=> repeat(n, minmax(0,1fr))) or an explicit grid-template-columns string."
+        },
+        {
+          "name": "gap",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Gap between cells; resolves to var(--space-N)."
+        },
+        {
+          "name": "p",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Padding step (var(--space-N)); px/py/pt.. also accepted."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The grid cells."
+        }
+      ],
+      "composes": [],
+      "usage": "<Grid columns={2} gap={3}>\n  <Card /> <Card />\n</Grid>",
+      "keywords": [
+        "grid",
+        "columns",
+        "gap",
+        "layout",
+        "css-grid"
+      ],
+      "category": "Layout",
+      "related": [
+        "Box",
+        "Stack"
+      ]
+    },
+    {
       "name": "IconButton",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -1748,6 +1890,88 @@
         "avatar"
       ],
       "category": "Data display"
+    },
+    {
+      "name": "Inline",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Horizontal flow with a token gap; items vertically centered by default (flex row).",
+      "usecases": [
+        "horizontal layout",
+        "toolbar",
+        "button row"
+      ],
+      "props": [
+        {
+          "name": "gap",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Space between children; resolves to var(--space-N)."
+        },
+        {
+          "name": "align",
+          "class": "dsPresentation",
+          "values": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ],
+          "description": "Cross-axis alignment (align-items); defaults to center."
+        },
+        {
+          "name": "justify",
+          "class": "dsPresentation",
+          "values": [
+            "start",
+            "center",
+            "end",
+            "between",
+            "around",
+            "evenly"
+          ],
+          "description": "Main-axis distribution (justify-content)."
+        },
+        {
+          "name": "wrap",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Allow items to wrap to the next line."
+        },
+        {
+          "name": "p",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Padding step (var(--space-N)); px/py/pt.. also accepted."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The inline content."
+        }
+      ],
+      "composes": [],
+      "usage": "<Inline gap={2} justify=\"between\">\n  <Title />\n  <Actions />\n</Inline>",
+      "keywords": [
+        "inline",
+        "hstack",
+        "row",
+        "horizontal",
+        "flex",
+        "gap",
+        "wrap",
+        "layout"
+      ],
+      "category": "Layout",
+      "related": [
+        "Stack",
+        "Box",
+        "Grid"
+      ]
     },
     {
       "name": "LabResultCard",
@@ -3509,6 +3733,87 @@
         "inherit"
       ],
       "category": "Utility"
+    },
+    {
+      "name": "Stack",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Vertical flow with a token gap (flex column).",
+      "usecases": [
+        "vertical layout",
+        "form",
+        "list"
+      ],
+      "props": [
+        {
+          "name": "gap",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Space between children; resolves to var(--space-N)."
+        },
+        {
+          "name": "align",
+          "class": "dsPresentation",
+          "values": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ],
+          "description": "Cross-axis alignment (align-items)."
+        },
+        {
+          "name": "justify",
+          "class": "dsPresentation",
+          "values": [
+            "start",
+            "center",
+            "end",
+            "between",
+            "around",
+            "evenly"
+          ],
+          "description": "Main-axis distribution (justify-content)."
+        },
+        {
+          "name": "p",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Padding step (var(--space-N)); px/py/pt.. also accepted."
+        },
+        {
+          "name": "bg",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Surface token name -> var(--<bg>)."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The stacked content."
+        }
+      ],
+      "composes": [],
+      "usage": "<Stack gap={3}>\n  <Field />\n  <Field />\n</Stack>",
+      "keywords": [
+        "stack",
+        "vstack",
+        "column",
+        "vertical",
+        "flex",
+        "gap",
+        "layout"
+      ],
+      "category": "Layout",
+      "related": [
+        "Inline",
+        "Box",
+        "Grid"
+      ]
     },
     {
       "name": "StatusPill",
