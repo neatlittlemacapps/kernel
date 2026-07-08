@@ -88,9 +88,20 @@ export function Toggle({ checked, onCheckedChange, id, disabled }) {
   );
 }
 
-export function TextInput({ className = '', ...rest }) {
-  return <input className={`krnl-input ${className}`} {...rest} />;
+// `bare` strips the krnl-input paint (border, radius, padding, full-width, box-sizing)
+// back to a plain field so a bespoke/domain class layered on top fully owns the look -
+// the input-family sibling of Button's bare variant (B-40). Keeps input semantics + a11y.
+export function TextInput({ className = '', bare = false, ...rest }) {
+  return <input className={`krnl-input${bare ? ' krnl-input--bare' : ''} ${className}`} {...rest} />;
 }
+
+// FileInput — native file picker. Base UI ships no file primitive; a plain
+// <input type="file"> already has the semantics + a11y. A leaf atom (like TextInput),
+// so it may render the raw control. Usually hidden and triggered programmatically via a
+// ref (a Button/IconButton calls fileRef.current.click()), hence forwardRef.
+export const FileInput = React.forwardRef(function FileInput({ className = '', ...rest }, ref) {
+  return <input ref={ref} type="file" className={`krnl-fileinput ${className}`.trim()} {...rest} />;
+});
 
 // FFSection — one collapsible Feature-flags section. Base UI Accordion.Item, so
 // the FF page scales as sections multiply. Wrap with <Accordion.Root openMultiple>.
@@ -128,7 +139,7 @@ export const meta = {
     keywords: ['button', 'btn', 'cta', 'submit', 'action', 'primary', 'secondary'],
     summary: 'Text button with variant (emphasis) + tone (semantic color).',
     props: [
-      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view.' },
+      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary', 'bare'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding.' },
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors.' },
       { name: 'size', class: 'dsPresentation', type: 'string', description: 'Size step; resolves to the density / size-step tokens.' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The button label. Write the action ("Save changes"), not "OK" or "Click here".' },
@@ -264,9 +275,23 @@ export const meta = {
       { name: 'value', class: 'passThroughControl', passthrough: 'HTMLInputElement.value' },
       { name: 'onChange', class: 'passThroughControl', passthrough: 'HTMLInputElement.onChange' },
       { name: 'placeholder', class: 'passThroughControl', passthrough: 'HTMLInputElement.placeholder' },
+      { name: 'bare', class: 'dsPresentation', type: 'bool', description: 'Strips the outlined-field paint (border, radius, padding, fill, full width) so a bespoke class fully owns the look - the field sibling of Button variant="bare".' },
     ],
     composes: [],
     usage: '<TextInput placeholder="Search records" />',
+  },
+  FileInput: {
+    layer: 'atom', scope: 'global', status: 'stable', category: 'Data Input',
+    usecases: ['control'],
+    keywords: ['file', 'upload', 'attachment', 'input', 'picker'],
+    summary: 'Native file picker; usually hidden and triggered via a ref (forwardRef).',
+    props: [
+      { name: 'multiple', class: 'passThroughControl', passthrough: 'HTMLInputElement.multiple' },
+      { name: 'accept', class: 'passThroughControl', passthrough: 'HTMLInputElement.accept' },
+      { name: 'onChange', class: 'passThroughControl', passthrough: 'HTMLInputElement.onChange' },
+    ],
+    composes: [],
+    usage: '<FileInput ref={fileRef} multiple onChange={onFiles} style={{ display: \'none\' }} />',
   },
   FFSection: {
     layer: 'composite', scope: 'global', status: 'stable', category: 'Utility',

@@ -407,10 +407,11 @@
           "values": [
             "primary",
             "secondary",
-            "tertiary"
+            "tertiary",
+            "bare"
           ],
           "default": "primary",
-          "description": "Visual emphasis. Reserve primary for the single most important action in a view."
+          "description": "Visual emphasis. Reserve primary for the single most important action in a view. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding."
         },
         {
           "name": "tone",
@@ -1622,6 +1623,44 @@
         "labels"
       ],
       "category": "Data display"
+    },
+    {
+      "name": "FileInput",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Native file picker; usually hidden and triggered via a ref (forwardRef).",
+      "usecases": [
+        "control"
+      ],
+      "props": [
+        {
+          "name": "multiple",
+          "class": "passThroughControl",
+          "passthrough": "HTMLInputElement.multiple"
+        },
+        {
+          "name": "accept",
+          "class": "passThroughControl",
+          "passthrough": "HTMLInputElement.accept"
+        },
+        {
+          "name": "onChange",
+          "class": "passThroughControl",
+          "passthrough": "HTMLInputElement.onChange"
+        }
+      ],
+      "composes": [],
+      "usage": "<FileInput ref={fileRef} multiple onChange={onFiles} style={{ display: 'none' }} />",
+      "keywords": [
+        "file",
+        "upload",
+        "attachment",
+        "input",
+        "picker"
+      ],
+      "category": "Data Input"
     },
     {
       "name": "IconButton",
@@ -3823,6 +3862,12 @@
           "description": "Initial visible height in text rows; the field still grows via native resize unless disabled in CSS."
         },
         {
+          "name": "bare",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Strips the outlined-field paint so a bespoke class fully owns the look - the multiline sibling of Button variant=\"bare\"."
+        },
+        {
           "name": "value",
           "class": "passThroughControl",
           "passthrough": "HTMLTextAreaElement.value"
@@ -3906,6 +3951,12 @@
           "name": "placeholder",
           "class": "passThroughControl",
           "passthrough": "HTMLInputElement.placeholder"
+        },
+        {
+          "name": "bare",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Strips the outlined-field paint (border, radius, padding, fill, full width) so a bespoke class fully owns the look - the field sibling of Button variant=\"bare\"."
         }
       ],
       "composes": [],

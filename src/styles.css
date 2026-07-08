@@ -259,8 +259,6 @@
 .krnl-composer .krnl-slash { left: 0; right: 0; }
 
 /* agent selector chip — now lives in the toolbar (was a separate bar above) */
-.krnl-agent-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 7px; border: 1px solid var(--border-subtle); border-radius: var(--krnl-radius-pill); background: var(--surface-page); color: var(--text-default); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; transition: background .14s, border-color .14s; }
-.krnl-agent-chip:hover, .krnl-agent-chip[data-popup-open] { border-color: var(--action-accent); background: var(--state-hover); }
 .krnl-agent-ic { display: flex; color: var(--action-accent); }
 .krnl-agent-name { white-space: nowrap; }
 
@@ -268,12 +266,12 @@
 .krnl-composer-field { display: flex; flex-direction: column; background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--krnl-radius-panel); padding: 10px 12px 8px; transition: border-color .15s; }
 .krnl-composer-field:focus-within { border-color: var(--focus-ring); }
 .krnl-composer-field.is-slash { border-color: var(--action-accent); }  /* command mode, not focus */
-.krnl-composer-ta { display: block; width: 100%; min-height: 22px; max-height: 132px; resize: none; border: none; outline: none; background: none; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); overflow-y: auto; }
-.krnl-composer-ta::placeholder { color: var(--text-faint); }
 .krnl-composer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
 .krnl-composer-aux, .krnl-composer-tools { display: flex; align-items: center; gap: 2px; }
 .krnl-composer-submit { width: 32px; height: 32px; flex-shrink: 0; border: none; border-radius: var(--krnl-radius-pill); background: var(--action-solid); color: var(--action-on); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity .14s, transform .1s; }
-.krnl-composer-submit:hover:not(:disabled) { opacity: .9; }
+/* keep the solid fill on hover (B-40): composed on Kernel IconButton, whose :hover
+   paints a grey ghost bg - re-assert the accent fill so the submit stays solid. */
+.krnl-composer-submit:hover:not(:disabled) { opacity: .9; background: var(--action-solid); color: var(--action-on); }
 .krnl-composer-submit:active:not(:disabled) { transform: scale(.94); }
 .krnl-composer-submit:disabled { background: var(--border-subtle); color: var(--text-faint); cursor: default; }
 
@@ -332,12 +330,6 @@
 .krnl-ff-namerow { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
 
 /* single-agent radio rows — reuse the card row; a check-dot replaces the toggle */
-.krnl-radio-row { width: 100%; text-align: left; cursor: pointer; font-family: var(--font-body); transition: border-color .14s; }
-.krnl-radio-row:hover { border-color: var(--action-accent); }
-.krnl-radio-row.is-sel { border-color: var(--action-accent); }
-.krnl-radio { width: 18px; height: 18px; flex-shrink: 0; border-radius: var(--krnl-radius-pill); border: 2px solid var(--border-strong, var(--border-subtle)); position: relative; transition: border-color .14s; }
-.krnl-radio.is-sel { border-color: var(--action-accent); }
-.krnl-radio.is-sel::after { content: ""; position: absolute; inset: 3px; border-radius: var(--krnl-radius-pill); background: var(--action-accent); }
 
 /* FF sections as accordions (Base UI Accordion) — scales as sections grow */
 .krnl-ffsec-root { display: flex; flex-direction: column; margin-top: 8px; }
@@ -356,9 +348,6 @@
 .krnl-ff-subhead { font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--text-muted); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); margin: 6px 0 -2px 2px; }
 
 /* agent selector — non-defined "Switch agent" state reads muted */
-.krnl-agent-chip.is-undefined { color: var(--text-muted); }
-.krnl-agent-chip.is-undefined .krnl-agent-ic { color: var(--text-faint); }
-.krnl-agent-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 /* "Soon" tag on a gated agent in the selector menu (still clickable → preview) */
 .krnl-menu-soon { margin-left: auto; font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); color: var(--text-muted); background: var(--surface-sunken); border: 1px solid var(--border-subtle); border-radius: var(--krnl-radius-pill); padding: 1px 7px; }
 
@@ -408,7 +397,7 @@
 .krnl-menu-rich-title { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .krnl-menu-rich-sub { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); }
 .krnl-menu-rich-ic { color: var(--text-faint); display: flex; flex-shrink: 0; }
-.krnl-menu-item.is-selected .krnl-menu-rich-ic { color: var(--action-accent); }
+.krnl-menu-item.is-selected .krnl-menu-rich-ic, .krnl-menu-item[data-selected] .krnl-menu-rich-ic { color: var(--action-accent); }
 .krnl-menu-check { margin-left: auto; color: var(--action-accent); display: flex; }
 
 /* Kernel Menu wrapper (B-38) - leading-icon slot, group, separator, disabled item.
@@ -567,11 +556,47 @@
 .krnl-btn--secondary { background: var(--button-secondary-background); border-color: var(--btn-tone-solid, var(--button-secondary-border)); color: var(--btn-tone-solid, var(--button-secondary-text)); }
 .krnl-btn--tertiary { background: var(--btn-tone-tint, var(--button-tertiary-background)); color: var(--btn-tone-solid, var(--button-tertiary-text)); }
 .krnl-btn[disabled] { background: var(--button-disabled-background); color: var(--button-disabled-text); cursor: not-allowed; border-color: transparent; }
-
+/* a bare button keeps NO fill when disabled - the bespoke class (or nothing) owns it. */
+.krnl-btn--bare[disabled] { background: none; color: inherit; border-color: transparent; }
+/* bare (B-40): a semantic/forwardRef button with NO visual opinion - it strips the
+   krnl-btn paint (font weight, line-height, padding, border, radius, fill, hover
+   filter) back to a plain button so a bespoke/domain class layered on top fully owns
+   the look. Kernel's escape hatch for one-off styled buttons that still need real
+   button behaviour + a11y + ref-forwarding (so greenhouse's bespoke controls compose
+   Kernel Button instead of a raw <button>). It keeps ONLY the focus ring. */
+.krnl-btn--bare { font: inherit; line-height: normal; border: 0; border-radius: 0; padding: 0; background: none; color: inherit; display: inline-block; gap: 0; justify-content: normal; align-items: normal; transition: none; }
+.krnl-btn--bare:hover:not([disabled]) { filter: none; }
 /* ── TEXT INPUT ── */
 .krnl-input { width: 100%; box-sizing: border-box; font-size: var(--typography-body-sm-font-size); color: var(--text-default); background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); outline: none; font-family: var(--typography-body-sm-font-family); }
 .krnl-input::placeholder { color: var(--text-faint); }
 .krnl-input:focus { border-color: var(--focus-ring); }
+/* bare input / textarea (B-40): the field-family siblings of krnl-btn--bare - strip the
+   outlined-field paint (border, radius, padding, fill, forced full width) so a bespoke
+   class fully owns the look. Placed AFTER .krnl-input / .krnl-textarea so it neutralizes
+   them; the bespoke class must be defined AFTER this rule to win back its own look. */
+.krnl-input--bare, .krnl-textarea--bare { width: auto; min-height: 0; border: 0; border-radius: 0; padding: 0; background: none; resize: none; }
+
+/* ── B-40 relocated bespoke controls ─────────────────────────────────────────────
+   These greenhouse-consumed classes were authored ABOVE the generic atom bases
+   (.krnl-btn / .krnl-textarea) they now compose onto. Moved here - AFTER those bases
+   and the --bare resets - so that when greenhouse renders them via Kernel Button /
+   TextArea (+ variant="bare" / bare), the bespoke class still wins the cascade and the
+   look is unchanged. (Candidates for promotion to first-class atoms in a later pass.) */
+.krnl-agent-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 7px; border: 1px solid var(--border-subtle); border-radius: var(--krnl-radius-pill); background: var(--surface-page); color: var(--text-default); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; transition: background .14s, border-color .14s; }
+.krnl-agent-chip:hover, .krnl-agent-chip[data-popup-open] { border-color: var(--action-accent); background: var(--state-hover); }
+.krnl-agent-chip.is-undefined { color: var(--text-muted); }
+.krnl-agent-chip.is-undefined .krnl-agent-ic { color: var(--text-faint); }
+.krnl-agent-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.krnl-composer-ta { display: block; width: 100%; min-height: 22px; max-height: 132px; resize: none; border: none; outline: none; background: none; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); overflow-y: auto; }
+.krnl-composer-ta::placeholder { color: var(--text-faint); }
+
+.krnl-radio-row { width: 100%; text-align: left; cursor: pointer; font-family: var(--font-body); transition: border-color .14s; }
+.krnl-radio-row:hover { border-color: var(--action-accent); }
+.krnl-radio-row.is-sel, .krnl-radio-row[data-selected] { border-color: var(--action-accent); }
+.krnl-radio { width: 18px; height: 18px; flex-shrink: 0; border-radius: var(--krnl-radius-pill); border: 2px solid var(--border-strong, var(--border-subtle)); position: relative; transition: border-color .14s; }
+.krnl-radio.is-sel, .krnl-radio-row[data-selected] .krnl-radio { border-color: var(--action-accent); }
+.krnl-radio.is-sel::after, .krnl-radio-row[data-selected] .krnl-radio::after { content: ""; position: absolute; inset: 3px; border-radius: var(--krnl-radius-pill); background: var(--action-accent); }
 
 /* ── SCREENS / generic ── */
 .krnl-screen { animation: krnl-fadeUp .25s ease; }
@@ -696,6 +721,9 @@
 .krnl-ans-fb { display: inline-flex; align-items: center; gap: 6px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); }
 .krnl-ans-thumb { width: 26px; height: 26px; border-radius: var(--krnl-radius-pill); border: 1px solid var(--border-subtle); background: var(--surface-page); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .krnl-ans-thumb.is-on { border-color: var(--action-accent); color: var(--action-accent); background: var(--state-selected-surface); }
+/* B-40: IconButton's pressed state is `.is-active` (via its `active` prop); mirror the
+   legacy `.is-on` accent border so the thumb migrated to <IconButton active> keeps its look. */
+.krnl-ans-thumb.is-active { border-color: var(--action-accent); }
 
 /* e-consult variant header */
 .krnl-econsult-head { display: flex; align-items: center; justify-content: space-between; font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); color: var(--action-accent); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); }
@@ -756,7 +784,9 @@
 .krnl-fu-opts { display: flex; flex-wrap: wrap; gap: 6px; }
 .krnl-fu-opt { border: 1px solid var(--border-subtle); background: var(--surface-raised); border-radius: var(--krnl-radius-pill); padding: 5px 12px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; transition: background .14s, border-color .14s; }
 .krnl-fu-opt:hover { border-color: var(--action-accent); }
-.krnl-fu-opt.is-on { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
+/* B-40: [data-selected] companion so the option migrated to <Button variant="bare"> can
+   drive its chosen state off a data attr instead of the hand-rolled .is-on class. */
+.krnl-fu-opt.is-on, .krnl-fu-opt[data-selected] { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
 .krnl-fu-opt:disabled { opacity: .6; cursor: default; }
 .krnl-fu-free { border: 1px solid var(--border-subtle); background: var(--surface-page); border-radius: var(--krnl-radius-sm); padding: 7px 10px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); }
 .krnl-fu-send { align-self: flex-start; border: none; background: var(--action-solid); color: var(--action-on); border-radius: var(--krnl-radius-pill); padding: 7px 15px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); cursor: pointer; }
