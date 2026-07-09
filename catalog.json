@@ -3423,6 +3423,117 @@
       ]
     },
     {
+      "name": "SidePanel",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer.",
+      "usecases": [
+        "assistant shell",
+        "side panel",
+        "overlay panel"
+      ],
+      "props": [
+        {
+          "name": "mode",
+          "class": "dsPresentation",
+          "values": [
+            "floating",
+            "sidebar",
+            "fullscreen",
+            "bottomsheet",
+            "embedded"
+          ],
+          "default": "sidebar",
+          "description": "How the panel is presented / anchored."
+        },
+        {
+          "name": "width",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Sidebar-mode width in px (controlled); the resize handle updates it via onWidth."
+        },
+        {
+          "name": "onWidth",
+          "class": "event",
+          "type": "(px) => void",
+          "description": "Fires while the sidebar resize handle is dragged, with the new width."
+        },
+        {
+          "name": "minWidth",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": "360",
+          "description": "Lower clamp for the sidebar resize."
+        },
+        {
+          "name": "maxWidth",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Upper clamp for the sidebar resize (default min(900, 70vw))."
+        },
+        {
+          "name": "sheetHeight",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Bottom-sheet height in px; the consumer measures its content and feeds it in."
+        },
+        {
+          "name": "sheetFull",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Bottom-sheet has reached the fullscreen takeover threshold."
+        },
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "SidePanel.Header / SidePanel.Body / SidePanel.Footer."
+        }
+      ],
+      "composes": [],
+      "usage": "<SidePanel mode=\"sidebar\" width={w} onWidth={setW}>\n  <SidePanel.Header>…</SidePanel.Header>\n  <SidePanel.Body ref={bodyRef} onScroll={onScroll} overlay={<JumpToLatest/>}>…</SidePanel.Body>\n  <SidePanel.Footer><Composer/></SidePanel.Footer>\n</SidePanel>",
+      "keywords": [
+        "sidepanel",
+        "panel",
+        "shell",
+        "drawer",
+        "sidebar",
+        "sheet",
+        "overlay",
+        "assistant"
+      ],
+      "category": "Layout",
+      "anatomy": [
+        {
+          "name": "Header",
+          "required": false,
+          "description": "The top bar region (SidePanel.Header)."
+        },
+        {
+          "name": "Body",
+          "required": true,
+          "description": "The scrollable content region with a fade-scrim (SidePanel.Body); forwards a ref + onScroll + an overlay slot."
+        },
+        {
+          "name": "Footer",
+          "required": false,
+          "description": "Non-scrolling bottom rows (SidePanel.Footer), e.g. a context chip + composer."
+        },
+        {
+          "name": "Resize",
+          "required": false,
+          "description": "The drag handle, auto-rendered in sidebar mode."
+        }
+      ],
+      "related": [
+        "Dialog",
+        "Popover",
+        "Box"
+      ]
+    },
+    {
       "name": "Slider",
       "import": "@corilus/kernel",
       "layer": "atom",
