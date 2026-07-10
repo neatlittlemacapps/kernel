@@ -498,10 +498,11 @@
             "primary",
             "secondary",
             "tertiary",
+            "text",
             "bare"
           ],
           "default": "primary",
-          "description": "Visual emphasis. Reserve primary for the single most important action in a view. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding."
+          "description": "Visual emphasis. Reserve primary for the single most important action in a view. `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding."
         },
         {
           "name": "tone",
@@ -519,8 +520,12 @@
         {
           "name": "size",
           "class": "dsPresentation",
-          "type": "string",
-          "description": "Size step; resolves to the density / size-step tokens."
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "md",
+          "description": "Size step. `sm` tightens padding + type for dense / secondary actions (orthogonal to variant + tone); md is the default."
         },
         {
           "name": "children",
@@ -719,6 +724,10 @@
           "text": "Use interactive/onClick for a clickable card; selected for a chosen state in a set."
         },
         {
+          "do": true,
+          "text": "For a dense selectable list row (citation / suggestion / radio row), compose an interactive Card with size=\"sm\" + a single Card.Header (leading | title + description | action); appearance=\"subtle\" gives a borderless row with a surface hover, appearance=\"outline\" a bordered one."
+        },
+        {
           "do": false,
           "text": "Nest an interactive Card inside another interactive Card (button-in-button)."
         }
@@ -880,6 +889,12 @@
           "class": "dsPresentation",
           "type": "bool",
           "description": "Marks the chosen state for a filter / choice chip (sets aria-pressed on the actionable form)."
+        },
+        {
+          "name": "muted",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Dims the label for an unset / placeholder chip (e.g. a selector chip with nothing chosen yet). Orthogonal to selected."
         },
         {
           "name": "onClick",
@@ -1764,6 +1779,14 @@
           "class": "dsPresentation",
           "type": "bool",
           "description": "Renders the pressed / active visual state (e.g. a toggled toolbar button)."
+        },
+        {
+          "name": "variant",
+          "class": "dsPresentation",
+          "values": [
+            "solid"
+          ],
+          "description": "Visual treatment. Default is the transparent ghost icon button; `solid` is a filled accent circle for a primary in-place submit (e.g. the composer send)."
         },
         {
           "name": "children",

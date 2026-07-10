@@ -103,6 +103,7 @@ export const meta = {
     bestPractices: [
       { do: true, text: 'Compose the base Card + fill slots for a specialised card; do not hand-roll a card wrapper.' },
       { do: true, text: 'Use interactive/onClick for a clickable card; selected for a chosen state in a set.' },
+      { do: true, text: 'For a dense selectable list row (citation / suggestion / radio row), compose an interactive Card with size="sm" + a single Card.Header (leading | title + description | action); appearance="subtle" gives a borderless row with a surface hover, appearance="outline" a bordered one.' },
       { do: false, text: 'Nest an interactive Card inside another interactive Card (button-in-button).' },
     ],
     anatomy: [

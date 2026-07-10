@@ -28,9 +28,10 @@ export const Button = React.forwardRef(function Button({ variant = 'primary', to
 /** @deprecated Use `Button`. `Btn` is kept as an alias (B-39) and removed on the next major. */
 export const Btn = Button;
 
-export const IconButton = React.forwardRef(function IconButton({ active, className = '', children, ...rest }, ref) {
+export const IconButton = React.forwardRef(function IconButton({ active, variant, className = '', children, ...rest }, ref) {
+  const varCls = variant ? ' krnl-iconbtn--' + variant : '';
   return (
-    <button ref={ref} className={`krnl-iconbtn${active ? ' is-active' : ''} ${className}`} {...rest}>
+    <button ref={ref} className={`krnl-iconbtn${varCls}${active ? ' is-active' : ''} ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -139,9 +140,9 @@ export const meta = {
     keywords: ['button', 'btn', 'cta', 'submit', 'action', 'primary', 'secondary'],
     summary: 'Text button with variant (emphasis) + tone (semantic color).',
     props: [
-      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary', 'bare'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding.' },
+      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary', 'text', 'bare'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view. `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding.' },
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors.' },
-      { name: 'size', class: 'dsPresentation', type: 'string', description: 'Size step; resolves to the density / size-step tokens.' },
+      { name: 'size', class: 'dsPresentation', values: ['sm', 'md'], default: 'md', description: 'Size step. `sm` tightens padding + type for dense / secondary actions (orthogonal to variant + tone); md is the default.' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The button label. Write the action ("Save changes"), not "OK" or "Click here".' },
       { name: 'disabled', class: 'passThroughControl', passthrough: 'BaseUI.Button.disabled' },
     ],
@@ -183,6 +184,7 @@ export const meta = {
     summary: 'Square icon button; Base UI render-target (forwardRef).',
     props: [
       { name: 'active', class: 'dsPresentation', type: 'bool', description: 'Renders the pressed / active visual state (e.g. a toggled toolbar button).' },
+      { name: 'variant', class: 'dsPresentation', values: ['solid'], description: 'Visual treatment. Default is the transparent ghost icon button; `solid` is a filled accent circle for a primary in-place submit (e.g. the composer send).' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The icon element, e.g. Icon.close({ size: 18 }).' },
       { name: 'aria-label', class: 'a11y', type: 'string', description: 'Accessible name; required since there is no visible label.' },
       { name: 'disabled', class: 'passThroughControl', passthrough: 'BaseUI.Button.disabled' },

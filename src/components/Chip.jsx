@@ -12,13 +12,13 @@ const React = window.React;
 // label (span). `onRemove` adds a trailing remove control (use for a removable tag;
 // do not combine with onClick - a chip is one or the other). `selected` marks the
 // chosen state (a filter/choice chip). `icon` is an optional leading glyph.
-export const Chip = React.forwardRef(function Chip({ icon, onRemove, onClick, selected, className = '', children, ...rest }, ref) {
+export const Chip = React.forwardRef(function Chip({ icon, onRemove, onClick, selected, muted, className = '', children, ...rest }, ref) {
   if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production' && onClick && onRemove)
     console.warn('Chip: pass onClick OR onRemove, not both - an actionable chip cannot also nest a remove button.');
   // aria-pressed only applies to a TOGGLE chip (a `selected` prop is present, even
   // when false); an action chip (no `selected`) is a plain button, not a toggle.
   const pressed = selected === undefined ? undefined : !!selected;
-  const cls = `krnl-chip${selected ? ' krnl-chip--selected' : ''} ${className}`.trim();
+  const cls = `krnl-chip${selected ? ' krnl-chip--selected' : ''}${muted ? ' krnl-chip--muted' : ''} ${className}`.trim();
   const body = (
     <>
       {icon ? <span className="krnl-chip-ic" aria-hidden="true">{icon}</span> : null}
@@ -49,6 +49,7 @@ export const meta = {
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The chip label (keep it short).' },
       { name: 'icon', class: 'content', type: 'ReactNode', description: 'Optional leading glyph; decorative (aria-hidden).' },
       { name: 'selected', class: 'dsPresentation', type: 'bool', description: 'Marks the chosen state for a filter / choice chip (sets aria-pressed on the actionable form).' },
+      { name: 'muted', class: 'dsPresentation', type: 'bool', description: 'Dims the label for an unset / placeholder chip (e.g. a selector chip with nothing chosen yet). Orthogonal to selected.' },
       { name: 'onClick', class: 'event', type: '(event) => void', description: 'Makes the chip actionable (renders a button). Use for suggestion / filter / citation chips.' },
       { name: 'onRemove', class: 'event', type: '(event) => void', description: 'Adds a trailing remove control (renders a static label + a remove button). Use for a removable tag; do not combine with onClick.' },
     ],

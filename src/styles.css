@@ -152,6 +152,13 @@
 .krnl-iconbtn:hover { background: var(--state-hover); color: var(--text-default); }
 .krnl-iconbtn.is-active, .krnl-iconbtn[data-popup-open] { background: var(--state-selected-surface); color: var(--action-accent); }
 .krnl-iconbtn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+/* solid (B-42 A.4): a filled accent circular icon button - the primary in-place submit
+   (composer send). Pill radius + action fill; press-scales; disabled goes flat. Retires
+   greenhouse's krnl-composer-submit. */
+.krnl-iconbtn--solid { background: var(--action-solid); color: var(--action-on); border-radius: var(--krnl-radius-pill); }
+.krnl-iconbtn--solid:hover:not(:disabled) { background: var(--action-solid); color: var(--action-on); opacity: .9; }
+.krnl-iconbtn--solid:active:not(:disabled) { transform: scale(.94); }
+.krnl-iconbtn--solid:disabled { background: var(--border-subtle); color: var(--text-faint); cursor: default; }
 
 /* ── AI identity badge ── */
 /* circular — the brain mark is round, so the badge (and its glow halo) must be a
@@ -520,6 +527,11 @@
    exist above; these add the generic Chip's selected + remove parts and the Base UI
    [data-pressed] companion for the segmented item (retiring the hand-rolled .is-on). */
 .krnl-chip--selected { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
+/* muted (B-42 A.4): an unset / placeholder chip (e.g. an agent selector with no agent
+   chosen). data-popup-open: while the chip's menu is open it reads as active (accent
+   border + hover surface), matching IconButton/Menu triggers. Retires krnl-agent-chip. */
+.krnl-chip--muted { color: var(--text-muted); }
+.krnl-chip[data-popup-open] { border-color: var(--action-accent); background: var(--state-hover); }
 .krnl-chip-x { display: inline-flex; align-items: center; justify-content: center; margin-left: 2px; padding: 0; border: none; background: none; color: var(--text-faint); cursor: pointer; }
 .krnl-chip-x:hover { color: var(--text-default); }
 /* self-contained focus rings - these atoms can float/portal outside the
@@ -563,6 +575,17 @@
 .krnl-btn--secondary { background: var(--button-secondary-background); border-color: var(--btn-tone-solid, var(--button-secondary-border)); color: var(--btn-tone-solid, var(--button-secondary-text)); }
 .krnl-btn--tertiary { background: var(--btn-tone-tint, var(--button-tertiary-background)); color: var(--btn-tone-solid, var(--button-tertiary-text)); }
 .krnl-btn[disabled] { background: var(--button-disabled-background); color: var(--button-disabled-text); cursor: not-allowed; border-color: transparent; }
+/* text (B-42 A.4): a paint-free label button - accent text, no fill/border, flush
+   sides - for low-emphasis inline actions ("View data"). Colour follows tone; unlike
+   `bare` it keeps the button type + a11y look and is a real DS variant, not an escape
+   hatch. Retires greenhouse's krnl-fig-data. */
+.krnl-btn--text { background: none; border-color: transparent; color: var(--btn-tone-solid, var(--action-accent)); padding-left: 0; padding-right: 0; }
+.krnl-btn--text:hover:not([disabled]) { filter: none; text-decoration: underline; }
+.krnl-btn--text[disabled] { background: none; border-color: transparent; }
+/* size steps (B-42 A.4): `sm` tightens padding + type for dense/secondary actions
+   (answer actions, pii / follow-up controls). Colour + shape come from the variant;
+   size is orthogonal. Fixed space steps (not density-scaled yet). */
+.krnl-btn--sm { font-size: var(--typography-label-md-font-size); line-height: var(--typography-label-md-line-height); padding: var(--space-1) var(--space-3); gap: var(--space-1); }
 /* a bare button keeps NO fill when disabled - the bespoke class (or nothing) owns it. */
 .krnl-btn--bare[disabled] { background: none; color: inherit; border-color: transparent; }
 /* bare (B-40): a semantic/forwardRef button with NO visual opinion - it strips the
@@ -602,8 +625,8 @@
 .krnl-radio-row:hover { border-color: var(--action-accent); }
 .krnl-radio-row.is-sel, .krnl-radio-row[data-selected] { border-color: var(--action-accent); }
 .krnl-radio { width: 18px; height: 18px; flex-shrink: 0; border-radius: var(--krnl-radius-pill); border: 2px solid var(--border-strong, var(--border-subtle)); position: relative; transition: border-color .14s; }
-.krnl-radio.is-sel, .krnl-radio-row[data-selected] .krnl-radio { border-color: var(--action-accent); }
-.krnl-radio.is-sel::after, .krnl-radio-row[data-selected] .krnl-radio::after { content: ""; position: absolute; inset: 3px; border-radius: var(--krnl-radius-pill); background: var(--action-accent); }
+.krnl-radio.is-sel, .krnl-card[data-selected] .krnl-radio { border-color: var(--action-accent); }
+.krnl-radio.is-sel::after, .krnl-card[data-selected] .krnl-radio::after { content: ""; position: absolute; inset: 3px; border-radius: var(--krnl-radius-pill); background: var(--action-accent); }
 
 /* ── SCREENS / generic ── */
 .krnl-screen { animation: krnl-fadeUp .25s ease; }
@@ -650,6 +673,14 @@
 .krnl-card--interactive:hover:not(:disabled) { border-color: var(--action-accent); }
 .krnl-card--interactive:active:not(:disabled) { background: var(--state-hover); }
 .krnl-card--interactive:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+/* selectable row (B-42 A.4): an interactive Card used as a dense list row (citation,
+   suggestion, radio row) rather than a flowed container. Drops the legacy flow-margin
+   (rows sit in a Stack / list with gap) and, on the borderless `subtle` appearance, gives
+   a surface hover instead of the border ring. Compose with Card.Header (leading | title +
+   description | action) + size="sm". Retires krnl-src / krnl-suggest / krnl-radio-row. */
+.krnl-card--interactive { margin-bottom: 0; }
+.krnl-card--subtle.krnl-card--interactive:hover:not(:disabled) { background: var(--state-hover); border-color: transparent; }
+.krnl-card--subtle.krnl-card--interactive:active:not(:disabled) { background: var(--state-selected-surface); }
 .krnl-card[data-selected] { border-color: var(--action-accent); }
 .krnl-card[data-dragging] { box-shadow: var(--elevation-modal); }
 .krnl-card[data-disabled], .krnl-card:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
