@@ -1817,7 +1817,7 @@
   background: transparent;
   color: var(--text-muted);
 }
-.krnl-trig--mobile .krnl-trig-label { font-size: 11px; font-weight: 500; }
+.krnl-trig--mobile .krnl-trig-label { font-size: var(--typography-caption-md-font-size); font-weight: 500; }
 .krnl-trig--mobile[data-state="active"] { color: var(--state-selected-text); }
 .krnl-trig--mobile[data-state="active"] .krnl-trig-mark::after {
   content: ''; position: absolute; inset: -2px;
@@ -1833,7 +1833,7 @@
 .krnl-trig--action {
   padding: 6px 10px;
   border-radius: var(--krnl-radius-sm);
-  font-size: 13px;
+  font-size: var(--typography-body-sm-font-size);
   color: var(--text-default);
 }
 .krnl-trig--action-ghost { background: transparent; }
@@ -1843,7 +1843,7 @@
 .krnl-trig--action-solid { background: var(--action-accent); color: var(--text-on-accent); }
 .krnl-trig--action-solid:hover { background: var(--action-solid); }
 .krnl-trig--action-solid .krnl-aibadge { filter: brightness(1.2); }
-.krnl-trig--action.krnl-trig--d-compact { padding: 4px 8px; font-size: 12px; }
+.krnl-trig--action.krnl-trig--d-compact { padding: 4px 8px; font-size: var(--typography-caption-md-font-size); }
 .krnl-trig--action[data-state="promotion"] { box-shadow: 0 0 0 2px var(--brand-tint-soft); }
 .krnl-trig--action[data-state="staged"]::after {
   content: ''; position: absolute; top: -2px; right: -2px;
@@ -1858,7 +1858,7 @@
   border-radius: var(--krnl-radius-pill);
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
-  font-size: 12px;
+  font-size: var(--typography-caption-md-font-size);
   box-shadow: var(--elevation-raised);
   color: var(--text-default);
 }
@@ -1884,7 +1884,7 @@
 }
 .krnl-trig-inline-action:hover { background: var(--state-selected-surface); color: var(--state-selected-text); }
 .krnl-trig-inline-action-ic { display: inline-flex; color: var(--text-muted); }
-.krnl-trig-inline-action-label { font-size: 13px; }
+.krnl-trig-inline-action-label { font-size: var(--typography-body-sm-font-size); }
 
 /* ── 6. ExplainChip ───────────────────────────────────────────────────── */
 .krnl-trig--explain {
@@ -1910,7 +1910,7 @@
   padding: var(--space-3);
   min-width: 220px; max-width: 320px;
 }
-.krnl-trig-explain-body { font-size: 13px; line-height: 1.45; }
+.krnl-trig-explain-body { font-size: var(--typography-body-sm-font-size); line-height: 1.45; }
 .krnl-trig-explain-foot {
   margin-top: var(--space-3); padding-top: var(--space-2);
   border-top: 1px solid var(--border-subtle);

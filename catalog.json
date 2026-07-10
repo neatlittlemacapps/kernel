@@ -4844,6 +4844,158 @@
       ]
     },
     {
+      "name": "Trigger",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "AI discovery-trigger: the idle/staged/promotion/active state ladder + mark / indicator / label anatomy, positioned by placement. The juglans entry surfaces (nav, fab, mobile, action, inline, explain) compose it.",
+      "usecases": [
+        "ai trigger",
+        "discoverability",
+        "entry point"
+      ],
+      "props": [
+        {
+          "name": "placement",
+          "class": "dsPresentation",
+          "values": [
+            "nav",
+            "fab",
+            "mobile",
+            "action",
+            "inline",
+            "explain"
+          ],
+          "default": "action",
+          "description": "Where the trigger sits; sets the base modifier class, the default mark size, and which indicator shows (nav/mobile/action get the dot/pulse; fab its aura + count badge; inline/explain none)."
+        },
+        {
+          "name": "discovery",
+          "class": "dsPresentation",
+          "values": [
+            "idle",
+            "staged",
+            "promotion"
+          ],
+          "default": "idle",
+          "description": "The discovery-ladder input; combined with active/disabled into the visible data-state."
+        },
+        {
+          "name": "stagedCount",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Count shown on the staged indicator (dot number / fab badge)."
+        },
+        {
+          "name": "active",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "The juglans is open from this trigger (pressed state; wins over staged/promotion)."
+        },
+        {
+          "name": "mark",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The identity glyph; defaults to <AIBadge> sized for the placement. Pass to override."
+        },
+        {
+          "name": "label",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional text label beside the mark (nav/mobile/action/inline). Also the fallback aria-label."
+        },
+        {
+          "name": "scope",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "When set, wraps the trigger in a Tooltip disclosing the data scope (C18)."
+        },
+        {
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "HTMLButtonElement.disabled"
+        },
+        {
+          "name": "disabledReason",
+          "class": "dsApi",
+          "type": "string",
+          "description": "Native title shown while disabled (why it is unavailable)."
+        },
+        {
+          "name": "onClick",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Opens the juglans / fires the trigger action."
+        },
+        {
+          "name": "onPromotionDismiss",
+          "class": "event",
+          "type": "() => void",
+          "description": "Called before onClick when firing from the promotion state (so the host can clear the promotion)."
+        },
+        {
+          "name": "ariaLabel",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name; falls back to a string label."
+        }
+      ],
+      "composes": [
+        "AIBadge",
+        "Tooltip"
+      ],
+      "usage": "<Trigger placement=\"nav\" label=\"Juglans\" discovery=\"staged\" stagedCount={2} onClick={open} />",
+      "keywords": [
+        "trigger",
+        "ai",
+        "assistant",
+        "launcher",
+        "fab",
+        "discovery",
+        "summon",
+        "entry point"
+      ],
+      "category": "Actions",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Compose Trigger for any juglans entry point; pick the placement, wire onOpen to onClick."
+        },
+        {
+          "do": true,
+          "text": "Give an icon-only placement (fab/explain) an ariaLabel or scope."
+        },
+        {
+          "do": false,
+          "text": "Hand-roll a bare button with .krnl-trig* classes - that is what this atom replaces."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "mark",
+          "required": true,
+          "description": "The identity glyph (AIBadge by default)."
+        },
+        {
+          "name": "indicator",
+          "required": false,
+          "description": "Discovery dot / pulse / fab badge, driven by state."
+        },
+        {
+          "name": "label",
+          "required": false,
+          "description": "Optional text beside the mark."
+        }
+      ],
+      "related": [
+        "Button",
+        "Fab",
+        "Chip",
+        "Popover"
+      ]
+    },
+    {
       "name": "ValueDisplay",
       "import": "@corilus/kernel",
       "layer": "atom",

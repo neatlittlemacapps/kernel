@@ -34,6 +34,7 @@ export * from './components/Progress.jsx';
 export * from './components/Chip.jsx';
 export * from './components/ToggleGroup.jsx';
 export * from './components/Fab.jsx';
+export * from './components/Trigger.jsx';
 export * from './components/ActionRow.jsx';
 export * from './components/sprout-cards/SproutCard.jsx';
 export * from './components/sprout-cards/PatientCard.jsx';
