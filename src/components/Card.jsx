@@ -9,10 +9,17 @@
 // primitive (Base UI ships no card); a hand-rolled leaf on tokens.
 const React = window.React;
 
+// tone: a named status (info/success/warning/error) maps to its token; any other
+// string is passed through as a colour (or a var). Sets --card-tone + [data-tone]
+// (the tinted treatment). PatientCard sets --card-tone itself and omits `tone`.
+const STATUS_TONES = ['info', 'success', 'warning', 'error'];
+const toneVar = (tone) => tone == null ? undefined
+  : STATUS_TONES.includes(tone) ? `var(--status-${tone}-solid)` : tone;
+
 export const Card = React.forwardRef(function Card(
-  { appearance = 'filled', orientation = 'vertical', size = 'md',
+  { appearance = 'filled', orientation = 'vertical', size = 'md', tone,
     selected, interactive, disabled, dragging, floatingAction,
-    onClick, className = '', children, ...rest }, ref) {
+    onClick, className = '', style, children, ...rest }, ref) {
   const clickable = interactive || !!onClick;
   const cls = [
     'krnl-card',
@@ -22,11 +29,14 @@ export const Card = React.forwardRef(function Card(
     clickable && 'krnl-card--interactive',
     className,
   ].filter(Boolean).join(' ');
+  const tc = toneVar(tone);
   const Tag = clickable ? 'button' : 'div';
   return (
     <Tag ref={ref} type={clickable ? 'button' : undefined}
       className={cls} onClick={onClick} disabled={clickable ? disabled : undefined}
+      style={tc ? { '--card-tone': tc, ...style } : style}
       data-selected={selected || undefined} data-dragging={dragging || undefined}
+      data-tone={tone != null ? '' : undefined}
       data-disabled={(!clickable && disabled) || undefined}
       aria-pressed={clickable && selected !== undefined ? !!selected : undefined}
       {...rest}>
@@ -73,7 +83,8 @@ export const meta = {
     keywords: ['card', 'surface', 'panel', 'tile', 'container', 'selectable', 'interactive'],
     summary: 'Neutral base card: wrapper + appearance + rest/hover/pressed/focus/selected/dragging states; fill Preview / Header / Body / Footer.',
     props: [
-      { name: 'appearance', class: 'dsPresentation', values: ['filled', 'outline', 'subtle'], default: 'filled', description: 'Surface treatment: filled (panel + border), outline (border only), subtle (no border/fill).' },
+      { name: 'appearance', class: 'dsPresentation', values: ['filled', 'outline', 'subtle', 'elevated'], default: 'filled', description: 'Surface treatment: filled (panel + border), outline (border only), subtle (no border/fill), elevated (raised ring + shadow, hover-lift - the base PatientCard is built on).' },
+      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Colour identity: a named status (info/success/warning/error) or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted.' },
       { name: 'orientation', class: 'dsPresentation', values: ['vertical', 'horizontal'], default: 'vertical', description: 'Lays the slots in a column (default) or a row.' },
       { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Padding density step.' },
       { name: 'interactive', class: 'dsPresentation', type: 'bool', description: 'Renders a focusable <button> with hover / pressed / focus states (also implied by onClick).' },

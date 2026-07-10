@@ -625,9 +625,23 @@
    existing bare .krnl-card divs keep this look; <Card> composes it + adds variants /
    states / slots. margin-bottom is a legacy flow-spacing carry-over - drops out once
    consumers wrap cards in a Stack. */
-.krnl-card { position: relative; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-card-pad); background: var(--surface-panel); margin-bottom: var(--density-gap); }
+.krnl-card { position: relative; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-card-pad); background: var(--surface-panel); margin-bottom: var(--density-gap);
+  /* tone axis (B-42): neutral by default; a `tone` sets --card-tone and these derive a
+     tint + text via color-mix (shared with PatientCard, which composes this base). */
+  --card-tone-tint: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint) * 100%), var(--surface-raised));
+  --card-tone-tint-strong: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint-strong) * 100%), var(--surface-raised));
+  --card-tone-text: var(--card-tone);
+}
 .krnl-card--outline { background: none; }
 .krnl-card--subtle { background: none; border-color: transparent; }
+/* elevated (B-42): a raised ring + shadow instead of a flat border, with a hover lift -
+   the wrapper treatment PatientCard is built on (kept accent-bar-free). */
+.krnl-card--elevated { border: none; background: var(--surface-raised); box-shadow: 0 0 0 var(--dimension-rule-hair) var(--border-subtle), var(--elevation-raised); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
+.krnl-card--elevated.krnl-card--interactive:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 0 var(--dimension-rule-hair) var(--action-accent), var(--elevation-overlay); }
+/* toned (B-42): a colour-tinted card - tinted surface + tone-coloured accent border. The
+   neutral card sets no tone; `tone` opts in. (PatientCard uses --card-tone for identity
+   without this tinted treatment, so it does not set data-tone.) */
+.krnl-card[data-tone] { background: var(--card-tone-tint); border-color: var(--card-tone); }
 .krnl-card--sm { padding: var(--space-3); }
 .krnl-card--lg { padding: var(--space-6); }
 .krnl-card--horizontal { display: flex; flex-direction: row; gap: var(--space-3); }
