@@ -23,6 +23,7 @@
 import { NumberField } from '@base-ui-components/react/number-field';
 import { Button } from '@base-ui-components/react/button';
 import { Tooltip } from '@base-ui-components/react/tooltip';
+import { Card } from '../Card.jsx';
 
 const React = window.React;
 
@@ -96,10 +97,17 @@ export function PatientCard({
   const interactive = !!onClick && !disabled && !loading;
 
   return (
-    <article
+    // Composes the neutral base Card: appearance="elevated" supplies the raised ring +
+    // shadow + tone-mix vars (single source in .krnl-card); .krnl-pcard adds only the
+    // patient-card specialisation (container-query morph, stage, pulse, layout). Rendered
+    // as an "article" element (not the base's interactive button) so it can hold a heading + nested controls
+    // and drive its own role/onClick. No `tone`/`data-tone` passed - PatientCard carries
+    // identity via .krnl-tone--* (--card-tone) and deliberately skips the tinted fill.
+    <Card
+      as="article"
+      appearance="elevated"
       className={cls}
       data-stage={stage}
-      data-tone={tone}
       data-status={status || undefined}
       role={interactive ? 'button' : role}
       tabIndex={interactive ? 0 : undefined}
@@ -149,7 +157,7 @@ export function PatientCard({
       {empty && !loading && !error && (
         <div className="krnl-pcard-empty" aria-hidden="true">—</div>
       )}
-    </article>
+    </Card>
   );
 }
 

@@ -1,8 +1,8 @@
 // Card - the neutral base card (Fluent-aligned). Owns the wrapper: surface +
 // border (appearance), and the states - rest / hover / pressed / focus / selected /
 // dragging / disabled - so specialised cards (patient cards, answer cards, setting
-// cards) just compose it and fill the slots. Interactive when onClick/interactive is
-// set (renders a real <button>); selectable via `selected`; a `floatingAction` slot
+// cards) just compose it and fill the slots. Interactive when `interactive` is set
+// (renders a real <button>); selectable via `selected`; a `floatingAction` slot
 // pins a control top-right. Slots: Card.Preview / Card.Header / Card.Body / Card.Footer.
 //
 // Token-styled via .krnl-card* (the base class = the `filled` look). Not a Base UI
@@ -18,9 +18,13 @@ const toneVar = (tone) => tone == null ? undefined
 
 export const Card = React.forwardRef(function Card(
   { appearance = 'filled', orientation = 'vertical', size = 'md', tone,
-    selected, interactive, disabled, dragging, floatingAction,
+    selected, interactive, disabled, dragging, floatingAction, as,
     onClick, className = '', style, children, ...rest }, ref) {
-  const clickable = interactive || !!onClick;
+  // Interactive (a real <button>) is opt-in via `interactive` only - NOT implied by
+  // onClick. A specialised card that must stay a non-button element (e.g. PatientCard,
+  // which contains a heading + nested controls) composes Card with `as` + its own
+  // onClick/role, and never trips button-in-button.
+  const clickable = !!interactive;
   const cls = [
     'krnl-card',
     appearance !== 'filled' && `krnl-card--${appearance}`,
@@ -30,7 +34,7 @@ export const Card = React.forwardRef(function Card(
     className,
   ].filter(Boolean).join(' ');
   const tc = toneVar(tone);
-  const Tag = clickable ? 'button' : 'div';
+  const Tag = clickable ? 'button' : (as || 'div');
   return (
     <Tag ref={ref} type={clickable ? 'button' : undefined}
       className={cls} onClick={onClick} disabled={clickable ? disabled : undefined}
@@ -87,12 +91,13 @@ export const meta = {
       { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Colour identity: a named status (info/success/warning/error) or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted.' },
       { name: 'orientation', class: 'dsPresentation', values: ['vertical', 'horizontal'], default: 'vertical', description: 'Lays the slots in a column (default) or a row.' },
       { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Padding density step.' },
-      { name: 'interactive', class: 'dsPresentation', type: 'bool', description: 'Renders a focusable <button> with hover / pressed / focus states (also implied by onClick).' },
+      { name: 'interactive', class: 'dsPresentation', type: 'bool', description: 'Renders a focusable <button> with hover / pressed / focus states. Opt-in only (not implied by onClick), so a specialised non-button card can compose Card via `as` + its own onClick.' },
+      { name: 'as', class: 'dsPresentation', type: 'string', description: 'Element tag for the non-interactive form (default div; e.g. "article"). Ignored when interactive (always a <button>).' },
       { name: 'selected', class: 'dsPresentation', type: 'bool', description: 'Marks the chosen state (accent border via [data-selected]); sets aria-pressed on the interactive form.' },
       { name: 'dragging', class: 'dsPresentation', type: 'bool', description: 'Lifted drag state (elevation via [data-dragging]).' },
       { name: 'disabled', class: 'passThroughControl', passthrough: 'HTMLButtonElement.disabled' },
       { name: 'floatingAction', class: 'content', type: 'ReactNode', description: 'A control pinned top-right (e.g. a menu button or checkbox).' },
-      { name: 'onClick', class: 'event', type: '(event) => void', description: 'Makes the card interactive.' },
+      { name: 'onClick', class: 'event', type: '(event) => void', description: 'Click handler attached to the card element. Pair with `interactive` for the focusable <button> affordance.' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content).' },
     ],
     bestPractices: [

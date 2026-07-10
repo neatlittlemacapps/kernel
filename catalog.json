@@ -653,7 +653,13 @@
           "name": "interactive",
           "class": "dsPresentation",
           "type": "bool",
-          "description": "Renders a focusable <button> with hover / pressed / focus states (also implied by onClick)."
+          "description": "Renders a focusable <button> with hover / pressed / focus states. Opt-in only (not implied by onClick), so a specialised non-button card can compose Card via `as` + its own onClick."
+        },
+        {
+          "name": "as",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Element tag for the non-interactive form (default div; e.g. \"article\"). Ignored when interactive (always a <button>)."
         },
         {
           "name": "selected",
@@ -682,7 +688,7 @@
           "name": "onClick",
           "class": "event",
           "type": "(event) => void",
-          "description": "Makes the card interactive."
+          "description": "Click handler attached to the card element. Pair with `interactive` for the focusable <button> affordance."
         },
         {
           "name": "children",

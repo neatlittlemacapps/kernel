@@ -875,6 +875,13 @@
   --card-tone: var(--text-muted);
 }
 
+/* PatientCard composes the neutral base Card (.krnl-card.krnl-card--elevated) via
+   <Card as="article" appearance="elevated">. The base owns the raised look — surface,
+   border:none, box-shadow ring, hover/lift transition, and the --card-tone-* mix vars —
+   so those are NOT repeated here (single source). This block adds only the patient-card
+   specialisation: it is a container-query host, a flex column with its own gap/padding,
+   the panel radius, and the body typography. margin-bottom is zeroed because the base's
+   legacy flow-margin is replaced by the parent Stack/Grid gap in every consumer. */
 .krnl-pcard {
   container-type: inline-size;
   position: relative;
@@ -883,29 +890,11 @@
   flex-direction: column;
   gap: var(--card-gap);
   padding: var(--card-padding);
-  background: var(--surface-raised);
-  border: none;
   border-radius: var(--krnl-radius-panel);
-  box-shadow:
-    0 0 0 var(--dimension-rule-hair) var(--border-subtle),
-    var(--elevation-raised);
-  /* No overflow:hidden — the ::before accent bar is allowed to extend ABOVE
-     the card and tuck back BEHIND it via z-index. The card body covers the
-     bottom of the bar; the top peek (~accent-rule-height pixels) is visible. */
+  margin-bottom: 0;
+  /* No overflow:hidden — kept deliberately (see the no-accent-bar note below). */
   font-family: var(--font-body);
   color: var(--text-default);
-  /* Fallback derivations (used when the tone class doesn't supply explicit
-     tints — e.g. SproutToneProvider with just a single customColor). */
-  --card-tone-tint: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint) * 100%), var(--surface-raised));
-  --card-tone-tint-strong: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint-strong) * 100%), var(--surface-raised));
-  --card-tone-text: var(--card-tone);
-  /* Hover-lift baseline. Tokens restored: var() chain now works after the
-     easing-name-collision fix (easings moved to semantic-tier only). The
-     `swift` curve gives a sharp initial reaction with a long gentle fade —
-     "quick reactive + fade from there". */
-  transition:
-    transform var(--motion-duration-base) var(--motion-easing-swift),
-    box-shadow var(--motion-duration-base) var(--motion-easing-swift);
 }
 
 /* No top accent bar. We tried it three ways (overflow-clipped, behind-card,
