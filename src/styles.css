@@ -621,7 +621,35 @@
 
 /* ── SETTINGS ── */
 .krnl-settings { animation: krnl-fadeUp .25s ease; max-width: 420px; margin: 0 auto; }
-.krnl-card { border: 1px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-card-pad); background: var(--surface-panel); margin-bottom: var(--density-gap); }
+/* Card (B-42): base class = the `filled` appearance (border + panel surface). The
+   existing bare .krnl-card divs keep this look; <Card> composes it + adds variants /
+   states / slots. margin-bottom is a legacy flow-spacing carry-over - drops out once
+   consumers wrap cards in a Stack. */
+.krnl-card { position: relative; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-card-pad); background: var(--surface-panel); margin-bottom: var(--density-gap); }
+.krnl-card--outline { background: none; }
+.krnl-card--subtle { background: none; border-color: transparent; }
+.krnl-card--sm { padding: var(--space-3); }
+.krnl-card--lg { padding: var(--space-6); }
+.krnl-card--horizontal { display: flex; flex-direction: row; gap: var(--space-3); }
+/* interactive card renders a <button>: neutralise the UA button paint, add affordances */
+.krnl-card--interactive { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; transition: border-color .14s, box-shadow .14s, background .14s; }
+.krnl-card--interactive:hover:not(:disabled) { border-color: var(--action-accent); }
+.krnl-card--interactive:active:not(:disabled) { background: var(--state-hover); }
+.krnl-card--interactive:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+.krnl-card[data-selected] { border-color: var(--action-accent); }
+.krnl-card[data-dragging] { box-shadow: var(--elevation-modal); }
+.krnl-card[data-disabled], .krnl-card:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+.krnl-card-floataction { position: absolute; top: var(--space-2); right: var(--space-2); z-index: 1; }
+.krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
+.krnl-card-preview img { display: block; width: 100%; }
+.krnl-card-header { display: flex; align-items: flex-start; gap: var(--space-2); }
+.krnl-card-header-lead { flex-shrink: 0; display: inline-flex; }
+.krnl-card-header-text { flex: 1; min-width: 0; }
+.krnl-card-header-title { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--text-default); }
+.krnl-card-header-desc { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
+.krnl-card-header-action { margin-left: auto; flex-shrink: 0; }
+.krnl-card-body { min-width: 0; }
+.krnl-card-footer { display: flex; align-items: center; gap: var(--space-2); }
 .krnl-row-between { display: flex; align-items: center; justify-content: space-between; }
 .krnl-saved { display: inline-flex; align-items: center; gap: 4px; color: var(--status-success-solid); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); }
 

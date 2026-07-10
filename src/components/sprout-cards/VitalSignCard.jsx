@@ -13,7 +13,7 @@
 //     trend: { direction, value }    // optional
 //   }
 
-import { Card, StatusPill, TrendChip, ValueDisplay, Stepper, IconPill, EditChip } from './Card.jsx';
+import { PatientCard, StatusPill, TrendChip, ValueDisplay, Stepper, IconPill, EditChip } from './PatientCard.jsx';
 import { propertyMap, propertyIcons, Sparkline, PrimaryCTA, txtNL } from './lib.jsx';
 
 const React = window.React;
@@ -57,7 +57,7 @@ export function VitalSignCard({ data, stage = 'sprout', onSave, onEdit, ...rest 
   const statusLabel = txtNL.status[data.status] || data.status;
 
   return (
-    <Card
+    <PatientCard
       stage={stage}
       tone={tone}
       status={data.status}

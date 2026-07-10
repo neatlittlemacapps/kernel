@@ -2,7 +2,7 @@
 // Demographics differ from Observations: there's no time-series; the "value" is
 // the patient's name, with attributes (age, sex, GP, phone) as a field list.
 
-import { Card, IconPill, EditChip } from './Card.jsx';
+import { PatientCard, IconPill, EditChip } from './PatientCard.jsx';
 import { propertyIcons, FieldList, PrimaryCTA, txtNL } from './lib.jsx';
 
 const React = window.React;
@@ -19,7 +19,7 @@ export function DemographicCard({ data, stage = 'sprout', onEdit, onSave, ...res
   ].filter(Boolean);
 
   return (
-    <Card
+    <PatientCard
       stage={stage}
       tone="identity"
       ariaLabel={`${data.name}, ${data.age}`}

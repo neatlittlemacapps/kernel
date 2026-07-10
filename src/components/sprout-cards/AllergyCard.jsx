@@ -1,7 +1,7 @@
 // AllergyCard — FHIR AllergyIntolerance. Seed → Sprout → Shoot.
 // Criticality (high/low) drives status pill; substance is the title.
 
-import { Card, StatusPill, IconPill, EditChip } from './Card.jsx';
+import { PatientCard, StatusPill, IconPill, EditChip } from './PatientCard.jsx';
 import { propertyIcons, ReactionList, PrimaryCTA, txtNL } from './lib.jsx';
 
 const React = window.React;
@@ -24,7 +24,7 @@ export function AllergyCard({ data, stage = 'sprout', onEdit, ...rest }) {
   const statusLabel = CRIT_LABEL[data.criticality] || data.criticality;
 
   return (
-    <Card
+    <PatientCard
       stage={stage}
       tone="allergy"
       status={statusKey}

@@ -13,7 +13,7 @@
 //     trend: { direction, value },
 //   }
 
-import { Card, StatusPill, TrendChip, ValueDisplay, IconPill } from './Card.jsx';
+import { PatientCard, StatusPill, TrendChip, ValueDisplay, IconPill } from './PatientCard.jsx';
 import { propertyMap, propertyIcons, ReferenceRangeBar, txtNL } from './lib.jsx';
 
 const React = window.React;
@@ -24,7 +24,7 @@ export function LabResultCard({ data, stage = 'sprout', onAcknowledge, ...rest }
   const statusLabel = txtNL.status[data.status] || data.status;
 
   return (
-    <Card
+    <PatientCard
       stage={stage}
       tone="lab"
       status={data.status}

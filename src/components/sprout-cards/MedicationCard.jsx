@@ -1,7 +1,7 @@
 // MedicationCard — FHIR MedicationStatement. Seed → Sprout → Shoot.
 // Schedule strip in Sprout; mark-taken toggle in Shoot. Prescribing is Rooted.
 
-import { Card, StatusPill, IconPill, EditChip } from './Card.jsx';
+import { PatientCard, StatusPill, IconPill, EditChip } from './PatientCard.jsx';
 import { propertyIcons, ScheduleStrip, PrimaryCTA, txtNL } from './lib.jsx';
 
 const React = window.React;
@@ -30,7 +30,7 @@ export function MedicationCard({ data, stage = 'sprout', onEdit, onMarkTaken, ..
   const statusLabel = MED_STATUS_LABEL[data.medicationStatus] || data.medicationStatus;
 
   return (
-    <Card
+    <PatientCard
       stage={stage}
       tone="medication"
       status={statusKey}

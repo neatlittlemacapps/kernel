@@ -1,0 +1,102 @@
+// Card - the neutral base card (Fluent-aligned). Owns the wrapper: surface +
+// border (appearance), and the states - rest / hover / pressed / focus / selected /
+// dragging / disabled - so specialised cards (patient cards, answer cards, setting
+// cards) just compose it and fill the slots. Interactive when onClick/interactive is
+// set (renders a real <button>); selectable via `selected`; a `floatingAction` slot
+// pins a control top-right. Slots: Card.Preview / Card.Header / Card.Body / Card.Footer.
+//
+// Token-styled via .krnl-card* (the base class = the `filled` look). Not a Base UI
+// primitive (Base UI ships no card); a hand-rolled leaf on tokens.
+const React = window.React;
+
+export const Card = React.forwardRef(function Card(
+  { appearance = 'filled', orientation = 'vertical', size = 'md',
+    selected, interactive, disabled, dragging, floatingAction,
+    onClick, className = '', children, ...rest }, ref) {
+  const clickable = interactive || !!onClick;
+  const cls = [
+    'krnl-card',
+    appearance !== 'filled' && `krnl-card--${appearance}`,
+    orientation === 'horizontal' && 'krnl-card--horizontal',
+    size !== 'md' && `krnl-card--${size}`,
+    clickable && 'krnl-card--interactive',
+    className,
+  ].filter(Boolean).join(' ');
+  const Tag = clickable ? 'button' : 'div';
+  return (
+    <Tag ref={ref} type={clickable ? 'button' : undefined}
+      className={cls} onClick={onClick} disabled={clickable ? disabled : undefined}
+      data-selected={selected || undefined} data-dragging={dragging || undefined}
+      data-disabled={(!clickable && disabled) || undefined}
+      aria-pressed={clickable && selected !== undefined ? !!selected : undefined}
+      {...rest}>
+      {floatingAction ? <div className="krnl-card-floataction">{floatingAction}</div> : null}
+      {children}
+    </Tag>
+  );
+});
+
+// media region (edge-to-edge image / figure)
+Card.Preview = function CardPreview({ className = '', children, ...rest }) {
+  return <div className={`krnl-card-preview ${className}`.trim()} {...rest}>{children}</div>;
+};
+
+// header row - leading (icon/avatar), title + description, trailing action
+Card.Header = function CardHeader({ leading, title, description, action, className = '', children, ...rest }) {
+  return (
+    <div className={`krnl-card-header ${className}`.trim()} {...rest}>
+      {leading ? <div className="krnl-card-header-lead">{leading}</div> : null}
+      {(title != null || description != null) ? (
+        <div className="krnl-card-header-text">
+          {title != null ? <div className="krnl-card-header-title">{title}</div> : null}
+          {description != null ? <div className="krnl-card-header-desc">{description}</div> : null}
+        </div>
+      ) : null}
+      {children}
+      {action ? <div className="krnl-card-header-action">{action}</div> : null}
+    </div>
+  );
+};
+
+Card.Body = function CardBody({ className = '', children, ...rest }) {
+  return <div className={`krnl-card-body ${className}`.trim()} {...rest}>{children}</div>;
+};
+
+Card.Footer = function CardFooter({ className = '', children, ...rest }) {
+  return <div className={`krnl-card-footer ${className}`.trim()} {...rest}>{children}</div>;
+};
+
+export const meta = {
+  Card: {
+    layer: 'atom', scope: 'global', status: 'stable', category: 'Layout',
+    usecases: ['card', 'surface', 'selectable card', 'content container'],
+    keywords: ['card', 'surface', 'panel', 'tile', 'container', 'selectable', 'interactive'],
+    summary: 'Neutral base card: wrapper + appearance + rest/hover/pressed/focus/selected/dragging states; fill Preview / Header / Body / Footer.',
+    props: [
+      { name: 'appearance', class: 'dsPresentation', values: ['filled', 'outline', 'subtle'], default: 'filled', description: 'Surface treatment: filled (panel + border), outline (border only), subtle (no border/fill).' },
+      { name: 'orientation', class: 'dsPresentation', values: ['vertical', 'horizontal'], default: 'vertical', description: 'Lays the slots in a column (default) or a row.' },
+      { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Padding density step.' },
+      { name: 'interactive', class: 'dsPresentation', type: 'bool', description: 'Renders a focusable <button> with hover / pressed / focus states (also implied by onClick).' },
+      { name: 'selected', class: 'dsPresentation', type: 'bool', description: 'Marks the chosen state (accent border via [data-selected]); sets aria-pressed on the interactive form.' },
+      { name: 'dragging', class: 'dsPresentation', type: 'bool', description: 'Lifted drag state (elevation via [data-dragging]).' },
+      { name: 'disabled', class: 'passThroughControl', passthrough: 'HTMLButtonElement.disabled' },
+      { name: 'floatingAction', class: 'content', type: 'ReactNode', description: 'A control pinned top-right (e.g. a menu button or checkbox).' },
+      { name: 'onClick', class: 'event', type: '(event) => void', description: 'Makes the card interactive.' },
+      { name: 'children', class: 'content', type: 'ReactNode', description: 'Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content).' },
+    ],
+    bestPractices: [
+      { do: true, text: 'Compose the base Card + fill slots for a specialised card; do not hand-roll a card wrapper.' },
+      { do: true, text: 'Use interactive/onClick for a clickable card; selected for a chosen state in a set.' },
+      { do: false, text: 'Nest an interactive Card inside another interactive Card (button-in-button).' },
+    ],
+    anatomy: [
+      { name: 'Preview', required: false, description: 'Edge-to-edge media (Card.Preview).' },
+      { name: 'Header', required: false, description: 'Leading + title/description + trailing action (Card.Header).' },
+      { name: 'Body', required: false, description: 'Main content (Card.Body).' },
+      { name: 'Footer', required: false, description: 'Actions row (Card.Footer).' },
+    ],
+    related: ['Box', 'PatientCard', 'Stack'],
+    composes: [],
+    usage: '<Card>\n  <Card.Header title="Prescribe a medication" action={<IconButton .../>} />\n  <Card.Body>…</Card.Body>\n  <Card.Footer><Button>Accept</Button></Card.Footer>\n</Card>',
+  },
+};

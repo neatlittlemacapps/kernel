@@ -599,212 +599,143 @@
     {
       "name": "Card",
       "import": "@corilus/kernel",
-      "layer": "composite",
+      "layer": "atom",
       "scope": "global",
-      "status": "experimental",
-      "summary": "Slot-driven base card for the Sprout pattern. Three fidelities (seed/sprout/shoot), two colour axes (tone/status), container-query intrinsic width morph.",
+      "status": "stable",
+      "summary": "Neutral base card: wrapper + appearance + rest/hover/pressed/focus/selected/dragging states; fill Preview / Header / Body / Footer.",
       "usecases": [
-        "vital-sign",
-        "lab-result",
-        "demographic",
-        "condition",
-        "allergy",
-        "medication",
-        "sprout-pattern"
+        "card",
+        "surface",
+        "selectable card",
+        "content container"
       ],
       "props": [
         {
-          "name": "stage",
+          "name": "appearance",
           "class": "dsPresentation",
           "values": [
-            "seed",
-            "sprout",
-            "shoot"
+            "filled",
+            "outline",
+            "subtle"
           ],
-          "description": "Fidelity: seed (glance), sprout (detail), shoot (edit). Drives the intrinsic width morph."
+          "default": "filled",
+          "description": "Surface treatment: filled (panel + border), outline (border only), subtle (no border/fill)."
         },
         {
-          "name": "tone",
+          "name": "orientation",
           "class": "dsPresentation",
           "values": [
-            "neutral",
-            "heart",
-            "breath",
-            "oxygen",
-            "temperature",
-            "pressure",
-            "body",
-            "lab",
-            "identity",
-            "condition",
-            "allergy",
-            "medication"
+            "vertical",
+            "horizontal"
           ],
-          "description": "Identity colour axis; drives the --card-tone-* bindings. Independent of status."
+          "default": "vertical",
+          "description": "Lays the slots in a column (default) or a row."
         },
         {
-          "name": "customColor",
-          "raw": "?string|{solid,tint,tintStrong,on}",
-          "optional": true
-        },
-        {
-          "name": "status",
+          "name": "size",
           "class": "dsPresentation",
           "values": [
-            "normal",
-            "borderline",
-            "high",
-            "low",
-            "critical"
+            "sm",
+            "md",
+            "lg"
           ],
-          "required": false,
-          "description": "Clinical interpretation; colours the StatusPill, orthogonal to the identity tone."
+          "default": "md",
+          "description": "Padding density step."
         },
         {
-          "name": "loading",
-          "raw": "?bool",
-          "optional": true
-        },
-        {
-          "name": "error",
-          "raw": "?object",
-          "optional": true
-        },
-        {
-          "name": "empty",
-          "raw": "?bool",
-          "optional": true
+          "name": "interactive",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Renders a focusable <button> with hover / pressed / focus states (also implied by onClick)."
         },
         {
           "name": "selected",
-          "raw": "?bool",
-          "optional": true
-        },
-        {
-          "name": "disabled",
-          "raw": "?bool",
-          "optional": true
-        },
-        {
-          "name": "stale",
-          "raw": "?bool",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Marks the chosen state (accent border via [data-selected]); sets aria-pressed on the interactive form."
         },
         {
           "name": "dragging",
-          "raw": "?bool",
-          "optional": true
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Lifted drag state (elevation via [data-dragging])."
         },
         {
-          "name": "leading",
+          "name": "disabled",
+          "class": "passThroughControl",
+          "passthrough": "HTMLButtonElement.disabled"
+        },
+        {
+          "name": "floatingAction",
           "class": "content",
-          "type": "node",
-          "description": "Leading slot (an IconPill or avatar)."
-        },
-        {
-          "name": "title",
-          "class": "content",
-          "type": "node",
-          "description": "Card heading slot."
-        },
-        {
-          "name": "trailing",
-          "raw": "?node",
-          "optional": true
-        },
-        {
-          "name": "value",
-          "class": "content",
-          "type": "node",
-          "description": "Primary value slot (typically a ValueDisplay)."
-        },
-        {
-          "name": "meta",
-          "raw": "?node",
-          "optional": true
-        },
-        {
-          "name": "media",
-          "raw": "?node",
-          "optional": true
-        },
-        {
-          "name": "aside",
-          "raw": "?node",
-          "optional": true
-        },
-        {
-          "name": "footer",
-          "raw": "?node",
-          "optional": true
-        },
-        {
-          "name": "actions",
-          "class": "content",
-          "type": "node",
-          "description": "Trailing action slot (Btn / EditChip); RTL-safe."
-        },
-        {
-          "name": "ariaLabel",
-          "raw": "?string",
-          "optional": true
-        },
-        {
-          "name": "role",
-          "raw": "?string",
-          "optional": true
+          "type": "ReactNode",
+          "description": "A control pinned top-right (e.g. a menu button or checkbox)."
         },
         {
           "name": "onClick",
           "class": "event",
-          "type": "fn",
-          "description": "Invoked when the card is activated."
+          "type": "(event) => void",
+          "description": "Makes the card interactive."
         },
         {
-          "name": "className",
-          "raw": "?string",
-          "optional": true
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content)."
         }
       ],
       "composes": [],
-      "usage": "<Card stage=\"sprout\" tone=\"heart\" title=\"Heart rate\" value={<ValueDisplay value=\"72\" unit=\"bpm\" />} />",
+      "usage": "<Card>\n  <Card.Header title=\"Prescribe a medication\" action={<IconButton .../>} />\n  <Card.Body>…</Card.Body>\n  <Card.Footer><Button>Accept</Button></Card.Footer>\n</Card>",
       "keywords": [
         "card",
-        "tile",
+        "surface",
         "panel",
-        "sprout",
-        "fidelity",
-        "seed",
-        "sprout",
-        "shoot"
+        "tile",
+        "container",
+        "selectable",
+        "interactive"
       ],
-      "category": "Data display",
+      "category": "Layout",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Compose the base Card + fill slots for a specialised card; do not hand-roll a card wrapper."
+        },
+        {
+          "do": true,
+          "text": "Use interactive/onClick for a clickable card; selected for a chosen state in a set."
+        },
+        {
+          "do": false,
+          "text": "Nest an interactive Card inside another interactive Card (button-in-button)."
+        }
+      ],
       "anatomy": [
         {
-          "name": "Leading",
+          "name": "Preview",
           "required": false,
-          "description": "Icon / avatar at the start."
+          "description": "Edge-to-edge media (Card.Preview)."
         },
         {
-          "name": "Title",
+          "name": "Header",
           "required": false,
-          "description": "The card heading."
+          "description": "Leading + title/description + trailing action (Card.Header)."
         },
         {
-          "name": "Value",
+          "name": "Body",
           "required": false,
-          "description": "The primary value (e.g. a measurement)."
+          "description": "Main content (Card.Body)."
         },
         {
-          "name": "Media",
+          "name": "Footer",
           "required": false,
-          "description": "A sparkline / range bar / chart."
-        },
-        {
-          "name": "Actions",
-          "required": false,
-          "description": "Trailing action buttons."
+          "description": "Actions row (Card.Footer)."
         }
+      ],
+      "related": [
+        "Box",
+        "PatientCard",
+        "Stack"
       ]
     },
     {
@@ -2410,6 +2341,217 @@
         "provenance"
       ],
       "category": "Overlay"
+    },
+    {
+      "name": "PatientCard",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "Slot-driven base card for the Sprout pattern. Three fidelities (seed/sprout/shoot), two colour axes (tone/status), container-query intrinsic width morph.",
+      "usecases": [
+        "vital-sign",
+        "lab-result",
+        "demographic",
+        "condition",
+        "allergy",
+        "medication",
+        "sprout-pattern"
+      ],
+      "props": [
+        {
+          "name": "stage",
+          "class": "dsPresentation",
+          "values": [
+            "seed",
+            "sprout",
+            "shoot"
+          ],
+          "description": "Fidelity: seed (glance), sprout (detail), shoot (edit). Drives the intrinsic width morph."
+        },
+        {
+          "name": "tone",
+          "class": "dsPresentation",
+          "values": [
+            "neutral",
+            "heart",
+            "breath",
+            "oxygen",
+            "temperature",
+            "pressure",
+            "body",
+            "lab",
+            "identity",
+            "condition",
+            "allergy",
+            "medication"
+          ],
+          "description": "Identity colour axis; drives the --card-tone-* bindings. Independent of status."
+        },
+        {
+          "name": "customColor",
+          "raw": "?string|{solid,tint,tintStrong,on}",
+          "optional": true
+        },
+        {
+          "name": "status",
+          "class": "dsPresentation",
+          "values": [
+            "normal",
+            "borderline",
+            "high",
+            "low",
+            "critical"
+          ],
+          "required": false,
+          "description": "Clinical interpretation; colours the StatusPill, orthogonal to the identity tone."
+        },
+        {
+          "name": "loading",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "raw": "?object",
+          "optional": true
+        },
+        {
+          "name": "empty",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "selected",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "stale",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "dragging",
+          "raw": "?bool",
+          "optional": true
+        },
+        {
+          "name": "leading",
+          "class": "content",
+          "type": "node",
+          "description": "Leading slot (an IconPill or avatar)."
+        },
+        {
+          "name": "title",
+          "class": "content",
+          "type": "node",
+          "description": "Card heading slot."
+        },
+        {
+          "name": "trailing",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "class": "content",
+          "type": "node",
+          "description": "Primary value slot (typically a ValueDisplay)."
+        },
+        {
+          "name": "meta",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "media",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "aside",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "footer",
+          "raw": "?node",
+          "optional": true
+        },
+        {
+          "name": "actions",
+          "class": "content",
+          "type": "node",
+          "description": "Trailing action slot (Btn / EditChip); RTL-safe."
+        },
+        {
+          "name": "ariaLabel",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "role",
+          "raw": "?string",
+          "optional": true
+        },
+        {
+          "name": "onClick",
+          "class": "event",
+          "type": "fn",
+          "description": "Invoked when the card is activated."
+        },
+        {
+          "name": "className",
+          "raw": "?string",
+          "optional": true
+        }
+      ],
+      "composes": [],
+      "usage": "<PatientCard stage=\"sprout\" tone=\"heart\" title=\"Heart rate\" value={<ValueDisplay value=\"72\" unit=\"bpm\" />} />",
+      "keywords": [
+        "card",
+        "tile",
+        "panel",
+        "sprout",
+        "fidelity",
+        "seed",
+        "sprout",
+        "shoot"
+      ],
+      "category": "Data display",
+      "anatomy": [
+        {
+          "name": "Leading",
+          "required": false,
+          "description": "Icon / avatar at the start."
+        },
+        {
+          "name": "Title",
+          "required": false,
+          "description": "The card heading."
+        },
+        {
+          "name": "Value",
+          "required": false,
+          "description": "The primary value (e.g. a measurement)."
+        },
+        {
+          "name": "Media",
+          "required": false,
+          "description": "A sparkline / range bar / chart."
+        },
+        {
+          "name": "Actions",
+          "required": false,
+          "description": "Trailing action buttons."
+        }
+      ]
     },
     {
       "name": "PAv",

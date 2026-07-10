@@ -1,4 +1,6 @@
-// Card — the base for the Sprout patient-property card system.
+// PatientCard — the base for the Sprout patient-property card system.
+// (Renamed from `Card` in B-42; the neutral base card now owns the `Card` name and
+// PatientCard will be refactored to compose it.)
 //
 // One component, three fidelities (Seed / Sprout / Shoot), token-only styling.
 // Slot-driven so per-object cards (vitals, labs, conditions, allergies, …) compose
@@ -31,7 +33,7 @@ const ALL_TONES = [
 
 const ALL_STATUSES = ['normal', 'borderline', 'high', 'low', 'critical'];
 
-export function Card({
+export function PatientCard({
   stage = 'sprout',
   tone = 'neutral',
   status,
@@ -261,7 +263,7 @@ export function MeterTooltip({ tip, children, side = 'top' }) {
 
 // catalog metadata for build/gen-components.mjs
 export const meta = {
-  Card: {
+  PatientCard: {
     layer: 'composite',
     scope: 'global',
     usecases: ['vital-sign', 'lab-result', 'demographic', 'condition', 'allergy', 'medication', 'sprout-pattern'],
@@ -295,7 +297,7 @@ export const meta = {
       { name: 'Actions', required: false, description: 'Trailing action buttons.' },
     ],
     composes: [],
-    usage: '<Card stage="sprout" tone="heart" title="Heart rate" value={<ValueDisplay value="72" unit="bpm" />} />',
+    usage: '<PatientCard stage="sprout" tone="heart" title="Heart rate" value={<ValueDisplay value="72" unit="bpm" />} />',
   },
   StatusPill: {
     layer: 'atom', scope: 'global', usecases: ['card-meta'], status: 'experimental',

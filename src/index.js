@@ -15,6 +15,7 @@
 
 export * from './components/ui.jsx';
 export * from './components/Layout.jsx';
+export * from './components/Card.jsx';
 export * from './components/SidePanel.jsx';
 export * from './components/Menu.jsx';
 export * from './components/ContextMenu.jsx';
@@ -35,7 +36,7 @@ export * from './components/ToggleGroup.jsx';
 export * from './components/Fab.jsx';
 export * from './components/ActionRow.jsx';
 export * from './components/sprout-cards/SproutCard.jsx';
-export * from './components/sprout-cards/Card.jsx';
+export * from './components/sprout-cards/PatientCard.jsx';
 export * from './components/sprout-cards/PropertyList.jsx';
 export * from './components/sprout-cards/lib.jsx';
 export * from './lib/icons.jsx';   // Icon

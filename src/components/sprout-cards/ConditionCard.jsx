@@ -1,7 +1,7 @@
 // ConditionCard — FHIR Condition. Seed → Sprout → Shoot (status transition).
 // No numeric value; the "value" is the condition text. Status = clinicalStatus.
 
-import { Card, StatusPill, IconPill, EditChip } from './Card.jsx';
+import { PatientCard, StatusPill, IconPill, EditChip } from './PatientCard.jsx';
 import { propertyIcons, FieldList, PrimaryCTA, txtNL } from './lib.jsx';
 
 const React = window.React;
@@ -36,7 +36,7 @@ export function ConditionCard({ data, stage = 'sprout', onEdit, onStatusChange, 
   ].filter(Boolean);
 
   return (
-    <Card
+    <PatientCard
       stage={stage}
       tone="condition"
       status={statusKey}
