@@ -1,28 +1,19 @@
-import { PopoverClose } from '@corilus/kernel';
+import { Popover, PopoverClose, PopoverDescription, Button } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Overlay/PopoverClose',
   component: PopoverClose,
   tags: ['autodocs'],
-  argTypes: {
-    children: {  control: 'text' , description: "The control that closes the popover on click (a Btn / IconButton)." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "A close control inside a Popover; wrap a Btn / IconButton.",
-      },
-    },
+    docs: { description: { component: 'A close control inside a Popover. Must be used within <Popover>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<PopoverClose><IconButton aria-label="Close">{Icon.close({ size: 16 })}</IconButton></PopoverClose>` },
-    },
-  },
+  render: () => (
+    <Popover title="Filters" trigger={<Button variant="secondary">Filter</Button>}>
+      <PopoverDescription>Narrow the list.</PopoverDescription>
+      <PopoverClose><Button variant="tertiary">Close</Button></PopoverClose>
+    </Popover>
+  ),
 };

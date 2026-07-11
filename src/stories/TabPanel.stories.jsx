@@ -1,30 +1,23 @@
-import { TabPanel } from '@corilus/kernel';
+import { Tabs, Tab, TabList, TabPanel } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Navigation/TabPanel',
   component: TabPanel,
   tags: ['autodocs'],
-  argTypes: {
-    value: {  control: 'text'  },
-    children: {  control: 'text' , description: "The panel content." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "The content for one tab.",
-      },
-    },
+    docs: { description: { component: 'The content panel for one tab. Must be used within <Tabs>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    value: undefined,
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<TabPanel value="overview">…</TabPanel>` },
-    },
-  },
+  render: () => (
+    <Tabs defaultValue="overview">
+      <TabList>
+        <Tab value="overview">Overview</Tab>
+        <Tab value="history">History</Tab>
+      </TabList>
+      <TabPanel value="overview">Overview content</TabPanel>
+      <TabPanel value="history">History content</TabPanel>
+    </Tabs>
+  ),
 };

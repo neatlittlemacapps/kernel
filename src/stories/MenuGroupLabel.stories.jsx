@@ -1,28 +1,21 @@
-import { MenuGroupLabel } from '@corilus/kernel';
+import { Menu, MenuItem, MenuGroup, MenuGroupLabel, IconButton, Icon } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Overlay/MenuGroupLabel',
   component: MenuGroupLabel,
   tags: ['autodocs'],
-  argTypes: {
-    children: {  control: 'text' , description: "The section heading text; associated with its group for screen readers by Base UI." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "The heading for a MenuGroup.",
-      },
-    },
+    docs: { description: { component: 'The heading for a MenuGroup. Must be used within <Menu.Group>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<MenuGroupLabel>Blocks</MenuGroupLabel>` },
-    },
-  },
+  render: () => (
+    <Menu trigger={<IconButton aria-label="Actions">{Icon.dots({ size: 18 })}</IconButton>}>
+      <MenuGroup>
+        <MenuGroupLabel>File actions</MenuGroupLabel>
+        <MenuItem onClick={() => {}}>Rename</MenuItem>
+      </MenuGroup>
+    </Menu>
+  ),
 };

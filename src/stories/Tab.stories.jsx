@@ -1,30 +1,25 @@
-import { Tab } from '@corilus/kernel';
+import { Tabs, Tab, TabList, TabPanel } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Navigation/Tab',
   component: Tab,
   tags: ['autodocs'],
-  argTypes: {
-    value: {  control: 'text'  },
-    children: {  control: 'text' , description: "The tab label (one or two words)." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "One selectable tab.",
-      },
-    },
+    docs: { description: { component: 'One selectable tab. Must be used within <Tabs> and <TabList>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    value: undefined,
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<Tab value="overview">Overview</Tab>` },
-    },
-  },
+  render: () => (
+    <Tabs defaultValue="overview">
+      <TabList>
+        <Tab value="overview">Overview</Tab>
+        <Tab value="history">History</Tab>
+        <Tab value="notes">Notes</Tab>
+      </TabList>
+      <TabPanel value="overview">Overview content</TabPanel>
+      <TabPanel value="history">History content</TabPanel>
+      <TabPanel value="notes">Notes content</TabPanel>
+    </Tabs>
+  ),
 };

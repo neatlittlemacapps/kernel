@@ -1,28 +1,18 @@
-import { PopoverDescription } from '@corilus/kernel';
+import { Popover, PopoverDescription, Button } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Overlay/PopoverDescription',
   component: PopoverDescription,
   tags: ['autodocs'],
-  argTypes: {
-    children: {  control: 'text' , description: "The descriptive text." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "A descriptive paragraph inside a Popover (wires aria-describedby).",
-      },
-    },
+    docs: { description: { component: 'A descriptive paragraph inside a Popover (wires aria-describedby). Must be used within <Popover>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<PopoverDescription>Narrow the list to unresolved items.</PopoverDescription>` },
-    },
-  },
+  render: () => (
+    <Popover title="Filters" trigger={<Button variant="secondary">Filter</Button>}>
+      <PopoverDescription>Narrow the list by date range or status.</PopoverDescription>
+    </Popover>
+  ),
 };

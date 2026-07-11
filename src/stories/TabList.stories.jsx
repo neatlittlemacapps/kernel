@@ -1,28 +1,25 @@
-import { TabList } from '@corilus/kernel';
+import { Tabs, Tab, TabList, TabPanel } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Navigation/TabList',
   component: TabList,
   tags: ['autodocs'],
-  argTypes: {
-    children: {  control: 'text' , description: "The Tab elements." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "The row of Tabs with the active indicator.",
-      },
-    },
+    docs: { description: { component: 'The row of tabs with the active indicator. Must be used within <Tabs>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<TabList><Tab value="a">A</Tab></TabList>` },
-    },
-  },
+  render: () => (
+    <Tabs defaultValue="overview">
+      <TabList>
+        <Tab value="overview">Overview</Tab>
+        <Tab value="history">History</Tab>
+        <Tab value="notes">Notes</Tab>
+      </TabList>
+      <TabPanel value="overview">Overview content</TabPanel>
+      <TabPanel value="history">History content</TabPanel>
+      <TabPanel value="notes">Notes content</TabPanel>
+    </Tabs>
+  ),
 };

@@ -1,33 +1,20 @@
-import { ContextMenuItem } from '@corilus/kernel';
+import { ContextMenu, ContextMenuItem, ContextMenuSeparator } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Overlay/ContextMenuItem',
   component: ContextMenuItem,
   tags: ['autodocs'],
-  argTypes: {
-    icon: {  control: 'text' , description: "Optional leading icon; decorative (aria-hidden)." },
-    children: {  control: 'text' , description: "The command label (the action)." },
-    onClick: {  control: false , description: "Fires on activation; the menu then closes." },
-    disabled: {  control: 'text'  },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "A single command row inside a ContextMenu.",
-      },
-    },
+    docs: { description: { component: 'A single command row inside a ContextMenu. Must be used within <ContextMenu>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    icon: "...",
-    children: "...",
-    disabled: undefined,
-  },
-  parameters: {
-    docs: {
-      source: { code: `<ContextMenuItem onClick={onDelete}>Delete</ContextMenuItem>` },
-    },
-  },
+  render: () => (
+    <ContextMenu trigger={<div style={{ padding: '1rem', border: '1px dashed', borderRadius: '4px', cursor: 'context-menu' }}>Right-click me</div>}>
+      <ContextMenuItem onClick={() => {}}>Rename</ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem onClick={() => {}}>Delete</ContextMenuItem>
+    </ContextMenu>
+  ),
 };

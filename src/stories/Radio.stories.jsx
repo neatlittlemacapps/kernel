@@ -1,32 +1,20 @@
-import { Radio } from '@corilus/kernel';
+import { RadioGroup, Radio } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Data Input/Radio',
   component: Radio,
   tags: ['autodocs'],
-  argTypes: {
-    value: {  control: 'text'  },
-    label: {  control: 'text' , description: "The clickable text beside the dot." },
-    disabled: {  control: 'text'  },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "One option inside a RadioGroup.",
-      },
-    },
+    docs: { description: { component: 'One option inside a RadioGroup. Must be used within <RadioGroup>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    value: undefined,
-    label: "...",
-    disabled: undefined,
-  },
-  parameters: {
-    docs: {
-      source: { code: `<Radio value="email" label="Email" />` },
-    },
-  },
+  render: () => (
+    <RadioGroup defaultValue="fax">
+      <Radio value="email" label="Email" />
+      <Radio value="fax" label="Fax" />
+      <Radio value="post" label="Post" />
+    </RadioGroup>
+  ),
 };

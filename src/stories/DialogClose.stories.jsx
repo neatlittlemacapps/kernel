@@ -1,28 +1,27 @@
-import { DialogClose } from '@corilus/kernel';
+import { Dialog, DialogClose, Button, TextInput } from '@corilus/kernel';
 
 export default {
   title: 'Kernel/Atom/Overlay/DialogClose',
   component: DialogClose,
   tags: ['autodocs'],
-  argTypes: {
-    children: {  control: 'text' , description: "The control that closes the dialog on click (a Btn / IconButton)." },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "A close control inside a Dialog; wrap a Btn / IconButton.",
-      },
-    },
+    docs: { description: { component: 'A close control inside a Dialog. Must be used within <Dialog>.' } },
   },
 };
 
 export const Default = {
-  args: {
-    children: "...",
-  },
-  parameters: {
-    docs: {
-      source: { code: `<DialogClose><Btn variant="secondary">Cancel</Btn></DialogClose>` },
-    },
-  },
+  render: () => (
+    <Dialog
+      title="Rename file"
+      trigger={<Button>Rename</Button>}
+      actions={
+        <>
+          <DialogClose><Button variant="secondary">Cancel</Button></DialogClose>
+          <Button>Save</Button>
+        </>
+      }
+    >
+      <TextInput defaultValue="report.pdf" />
+    </Dialog>
+  ),
 };
