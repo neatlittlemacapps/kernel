@@ -74,7 +74,12 @@ const preview = {
           data-theme={theme}
           data-density={density}
           data-breakpoint={breakpoint}
-          style={{ padding: '1rem' }}
+          style={{
+            padding: '1rem',
+            minHeight: '100vh',
+            background: 'var(--surface-page)',
+            color: 'var(--color-text-primary, inherit)',
+          }}
         >
           <Story />
         </div>
