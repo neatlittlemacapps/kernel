@@ -42,7 +42,7 @@ test('component <Name> --json returns component.detail with props + usage', () =
   assert.equal(json.type, 'component.detail');
   assert.equal(json.data.name, 'Button');
   const variant = json.data.props.find((p) => p.name === 'variant');
-  assert.deepEqual(variant.values, ['primary', 'secondary', 'tertiary', 'text', 'bare']);
+  assert.deepEqual(variant.values, ['primary', 'secondary', 'tertiary', 'text']);
   assert.ok(json.data.usage.includes('<Button'));
 });
 

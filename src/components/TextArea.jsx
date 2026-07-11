@@ -4,10 +4,11 @@
 // leaf primitive, so it may render the raw control directly (like TextInput).
 const React = window.React;
 
-// `bare` strips the krnl-textarea paint back to a plain multiline field so a bespoke
-// class fully owns the look - the multiline sibling of Button/TextInput bare (B-40).
-export const TextArea = React.forwardRef(function TextArea({ className = '', rows = 4, bare = false, ...rest }, ref) {
-  return <textarea ref={ref} rows={rows} className={`krnl-textarea${bare ? ' krnl-textarea--bare' : ''} ${className}`.trim()} {...rest} />;
+// `variant="seamless"` is a borderless, transparent, flush field meant to sit inside a
+// shell that owns the frame (e.g. the PromptField / composer card).
+export const TextArea = React.forwardRef(function TextArea({ className = '', rows = 4, variant, ...rest }, ref) {
+  const varCls = variant ? ' krnl-textarea--' + variant : '';
+  return <textarea ref={ref} rows={rows} className={`krnl-textarea${varCls} ${className}`.trim()} {...rest} />;
 });
 
 export const meta = {
@@ -19,8 +20,7 @@ export const meta = {
     props: [
       { name: 'rows', class: 'dsPresentation', type: 'number', default: '4',
         description: 'Initial visible height in text rows; the field still grows via native resize unless disabled in CSS.' },
-      { name: 'bare', class: 'dsPresentation', type: 'bool',
-        description: 'Strips the outlined-field paint so a bespoke class fully owns the look - the multiline sibling of Button variant="bare".' },
+      { name: 'variant', class: 'dsPresentation', values: ['seamless'], description: 'Visual treatment. Default is the outlined field; `seamless` is borderless / transparent / flush - for a field embedded in a shell that owns the frame (PromptField / composer).' },
       { name: 'value', class: 'passThroughControl', passthrough: 'HTMLTextAreaElement.value' },
       { name: 'defaultValue', class: 'passThroughControl', passthrough: 'HTMLTextAreaElement.defaultValue' },
       { name: 'onChange', class: 'passThroughControl', passthrough: 'HTMLTextAreaElement.onChange' },

@@ -8,3 +8,6 @@
 // build that ships no conversational surface can drop the slice. Composes the generic
 // "." primitives (TextArea, IconButton, AIBadge, …) - downward dependency only.
 export { ChatBubble } from './components/chat/ChatBubble.jsx';
+export { TypingIndicator } from './components/chat/TypingIndicator.jsx';
+export { PromptField } from './components/chat/PromptField.jsx';
+export { Transcript } from './components/chat/Transcript.jsx';

@@ -85,7 +85,7 @@
    on equal specificity. Opt-outs below: elements that signal focus another way
    (textarea + composer card border, menu-item highlight, input border). */
 .krnl-companion-layer :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-.krnl-composer-ta:focus-visible, .krnl-menu-item:focus-visible, .krnl-input:focus-visible { outline: none; }
+.krnl-menu-item:focus-visible, .krnl-input:focus-visible { outline: none; }
 /* Portalled popup CONTAINERS never show a focus frame - focus indication lives on
    the items ([data-highlighted]); Base UI focuses the popup on open (seen on ContextMenu). */
 .krnl-menu-popup:focus-visible, .krnl-popover:focus-visible, .krnl-dialog:focus-visible { outline: none; }
@@ -579,35 +579,23 @@
    (answer actions, pii / follow-up controls). Colour + shape come from the variant;
    size is orthogonal. Fixed space steps (not density-scaled yet). */
 .krnl-btn--sm { font-size: var(--typography-label-md-font-size); line-height: var(--typography-label-md-line-height); padding: var(--space-1) var(--space-3); gap: var(--space-1); }
-/* a bare button keeps NO fill when disabled - the bespoke class (or nothing) owns it. */
-.krnl-btn--bare[disabled] { background: none; color: inherit; border-color: transparent; }
-/* bare (B-40): a semantic/forwardRef button with NO visual opinion - it strips the
-   krnl-btn paint (font weight, line-height, padding, border, radius, fill, hover
-   filter) back to a plain button so a bespoke/domain class layered on top fully owns
-   the look. Kernel's escape hatch for one-off styled buttons that still need real
-   button behaviour + a11y + ref-forwarding (so greenhouse's bespoke controls compose
-   Kernel Button instead of a raw <button>). It keeps ONLY the focus ring. */
-.krnl-btn--bare { font: inherit; line-height: normal; border: 0; border-radius: 0; padding: 0; background: none; color: inherit; display: inline-block; gap: 0; justify-content: normal; align-items: normal; transition: none; }
-.krnl-btn--bare:hover:not([disabled]) { filter: none; }
 /* ── TEXT INPUT ── */
 .krnl-input { width: 100%; box-sizing: border-box; font-size: var(--typography-body-sm-font-size); color: var(--text-default); background: var(--surface-page); border: 1.5px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-control-py) var(--density-control-px); outline: none; font-family: var(--typography-body-sm-font-family); }
 .krnl-input::placeholder { color: var(--text-faint); }
 .krnl-input:focus { border-color: var(--focus-ring); }
-/* bare input / textarea (B-40): the field-family siblings of krnl-btn--bare - strip the
-   outlined-field paint (border, radius, padding, fill, forced full width) so a bespoke
-   class fully owns the look. Placed AFTER .krnl-input / .krnl-textarea so it neutralizes
-   them; the bespoke class must be defined AFTER this rule to win back its own look. */
-.krnl-input--bare, .krnl-textarea--bare { width: auto; min-height: 0; border: 0; border-radius: 0; padding: 0; background: none; resize: none; }
+/* seamless (B-44): a borderless, transparent, flush multiline field for a shell that
+   owns the frame (PromptField / composer card). Auto-grows between a one-line min and
+   a scroll cap; the shell's grow() sets the live height, this is the safety envelope. */
+.krnl-textarea--seamless { display: block; width: 100%; box-sizing: border-box; min-height: 22px; max-height: 132px; resize: none; border: 0; border-radius: 0; padding: 0; background: none; outline: none; overflow-y: auto; }
+.krnl-textarea--seamless::placeholder { color: var(--text-faint); }
 
-/* ── B-40 relocated bespoke controls ─────────────────────────────────────────────
-   These greenhouse-consumed classes were authored ABOVE the generic atom bases
-   (.krnl-btn / .krnl-textarea) they now compose onto. Moved here - AFTER those bases
-   and the --bare resets - so that when greenhouse renders them via Kernel Button /
-   TextArea (+ variant="bare" / bare), the bespoke class still wins the cascade and the
-   look is unchanged. (Candidates for promotion to first-class atoms in a later pass.) */
+/* ── greenhouse-consumed leaf classes ────────────────────────────────────────────
+   The surviving bespoke bits the reconstructed juglans still composes onto Kernel
+   atoms - leading/trailing adornments and containers (e.g. the citation index/flag,
+   the suggestion list, the agent-name span, the radio dot). The stand-alone control
+   classes they used to sit beside were retired in B-42/B-44 once the controls became
+   real atoms. (Candidates for promotion to first-class atoms in a later pass.) */
 
-.krnl-composer-ta { display: block; width: 100%; min-height: 22px; max-height: 132px; resize: none; border: none; outline: none; background: none; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); overflow-y: auto; }
-.krnl-composer-ta::placeholder { color: var(--text-faint); }
 
 /* radio dot — the single-agent picker is now a selectable Kernel Card row; this is
    its leading radio indicator, filled via the Card's [data-selected]. */
@@ -834,7 +822,6 @@
 .krnl-fu-q { display: flex; flex-direction: column; gap: 7px; }
 .krnl-fu-qlabel { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
 .krnl-fu-opts { display: flex; flex-wrap: wrap; gap: 6px; }
-.krnl-fu-free { border: 1px solid var(--border-subtle); background: var(--surface-page); border-radius: var(--krnl-radius-sm); padding: 7px 10px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); }
 
 /* prompt coach */
 .krnl-coach { display: flex; flex-direction: column; gap: 5px; padding: 10px 13px; border-radius: var(--krnl-radius-sm); background: var(--surface-page); border: 1px dashed var(--border-subtle); }

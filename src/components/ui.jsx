@@ -89,11 +89,9 @@ export function Toggle({ checked, onCheckedChange, id, disabled }) {
   );
 }
 
-// `bare` strips the krnl-input paint (border, radius, padding, full-width, box-sizing)
-// back to a plain field so a bespoke/domain class layered on top fully owns the look -
-// the input-family sibling of Button's bare variant (B-40). Keeps input semantics + a11y.
-export function TextInput({ className = '', bare = false, ...rest }) {
-  return <input className={`krnl-input${bare ? ' krnl-input--bare' : ''} ${className}`} {...rest} />;
+// Single-line text field on the .krnl-input token contract.
+export function TextInput({ className = '', ...rest }) {
+  return <input className={`krnl-input ${className}`.trim()} {...rest} />;
 }
 
 // FileInput — native file picker. Base UI ships no file primitive; a plain
@@ -140,7 +138,7 @@ export const meta = {
     keywords: ['button', 'btn', 'cta', 'submit', 'action', 'primary', 'secondary'],
     summary: 'Text button with variant (emphasis) + tone (semantic color).',
     props: [
-      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary', 'text', 'bare'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view. `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding.' },
+      { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary', 'text'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view; `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions.' },
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors.' },
       { name: 'size', class: 'dsPresentation', values: ['sm', 'md'], default: 'md', description: 'Size step. `sm` tightens padding + type for dense / secondary actions (orthogonal to variant + tone); md is the default.' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'The button label. Write the action ("Save changes"), not "OK" or "Click here".' },
@@ -277,7 +275,6 @@ export const meta = {
       { name: 'value', class: 'passThroughControl', passthrough: 'HTMLInputElement.value' },
       { name: 'onChange', class: 'passThroughControl', passthrough: 'HTMLInputElement.onChange' },
       { name: 'placeholder', class: 'passThroughControl', passthrough: 'HTMLInputElement.placeholder' },
-      { name: 'bare', class: 'dsPresentation', type: 'bool', description: 'Strips the outlined-field paint (border, radius, padding, fill, full width) so a bespoke class fully owns the look - the field sibling of Button variant="bare".' },
     ],
     composes: [],
     usage: '<TextInput placeholder="Search records" />',

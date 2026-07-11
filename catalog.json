@@ -498,11 +498,10 @@
             "primary",
             "secondary",
             "tertiary",
-            "text",
-            "bare"
+            "text"
           ],
           "default": "primary",
-          "description": "Visual emphasis. Reserve primary for the single most important action in a view. `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions. `bare` strips all button paint (weight, padding, border, fill, hover) so a bespoke/domain class layered via className fully owns the look - the escape hatch for one-off styled controls that still need real button behaviour + a11y + ref-forwarding."
+          "description": "Visual emphasis. Reserve primary for the single most important action in a view; `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions."
         },
         {
           "name": "tone",
@@ -3046,6 +3045,147 @@
       ]
     },
     {
+      "name": "PromptField",
+      "import": "@corilus/kernel",
+      "layer": "composite",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Chat composer field shell: a framed card + auto-growing seamless textarea + a toolbar (leading | trailing + submit). Owns Enter-to-send and auto-grow; the app fills the slots.",
+      "usecases": [
+        "chat",
+        "composer",
+        "prompt",
+        "message input"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.value"
+        },
+        {
+          "name": "onChange",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Fires on input (the field also auto-grows)."
+        },
+        {
+          "name": "onSubmit",
+          "class": "event",
+          "type": "(event?) => void",
+          "description": "Fires on Enter (no Shift) or the submit button."
+        },
+        {
+          "name": "onKeyDown",
+          "class": "event",
+          "type": "(event) => void",
+          "description": "Runs before the built-in Enter-to-send; call preventDefault to suppress it (e.g. a slash menu owning Enter)."
+        },
+        {
+          "name": "placeholder",
+          "class": "passThroughControl",
+          "passthrough": "HTMLTextAreaElement.placeholder"
+        },
+        {
+          "name": "leading",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Toolbar controls on the left (e.g. an attach button)."
+        },
+        {
+          "name": "trailing",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Toolbar controls on the right, before the submit button (e.g. a voice button, an agent selector)."
+        },
+        {
+          "name": "header",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Content above the textarea, inside the card (e.g. an attachment strip or a context bar)."
+        },
+        {
+          "name": "canSubmit",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Enables the submit button; defaults to \"value is non-empty\". Pass to also gate on attachments etc."
+        },
+        {
+          "name": "submitLabel",
+          "class": "a11y",
+          "type": "string",
+          "default": "Send",
+          "description": "Accessible name + tooltip for the submit button."
+        },
+        {
+          "name": "fieldClassName",
+          "class": "dsApi",
+          "type": "string",
+          "description": "Extra class on the field card (e.g. a command-mode highlight while a slash menu is open)."
+        },
+        {
+          "name": "maxHeight",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": "132",
+          "description": "Auto-grow cap in px; scrolls past it."
+        }
+      ],
+      "composes": [
+        "TextArea",
+        "IconButton",
+        "Tooltip"
+      ],
+      "usage": "<PromptField value={v} onChange={e=>setV(e.target.value)} onSubmit={send}\n  placeholder=\"Ask anything…\"\n  leading={<IconButton aria-label=\"Attach\">…</IconButton>}\n  trailing={<Chip>Switch agent</Chip>} />",
+      "keywords": [
+        "prompt",
+        "composer",
+        "chat",
+        "input",
+        "textarea",
+        "send",
+        "message"
+      ],
+      "category": "Communication",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Put app controls in leading/trailing; keep the slash menu / suggestion chips / recording UI OUTSIDE the field (around PromptField)."
+        },
+        {
+          "do": true,
+          "text": "Control value/onChange; compute canSubmit if submitting depends on more than the text (e.g. attachments)."
+        },
+        {
+          "do": false,
+          "text": "Rebuild the field card + seamless textarea by hand - that is what this shell is."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "header",
+          "required": false,
+          "description": "Content above the input (attachments / context)."
+        },
+        {
+          "name": "field",
+          "required": true,
+          "description": "The seamless auto-grow textarea."
+        },
+        {
+          "name": "toolbar",
+          "required": true,
+          "description": "leading | trailing + submit."
+        }
+      ],
+      "related": [
+        "ChatBubble",
+        "Transcript",
+        "TextArea",
+        "IconButton"
+      ]
+    },
+    {
       "name": "PropertyList",
       "import": "@corilus/kernel",
       "layer": "composite",
@@ -4535,10 +4675,12 @@
           "description": "Initial visible height in text rows; the field still grows via native resize unless disabled in CSS."
         },
         {
-          "name": "bare",
+          "name": "variant",
           "class": "dsPresentation",
-          "type": "bool",
-          "description": "Strips the outlined-field paint so a bespoke class fully owns the look - the multiline sibling of Button variant=\"bare\"."
+          "values": [
+            "seamless"
+          ],
+          "description": "Visual treatment. Default is the outlined field; `seamless` is borderless / transparent / flush - for a field embedded in a shell that owns the frame (PromptField / composer)."
         },
         {
           "name": "value",
@@ -4624,12 +4766,6 @@
           "name": "placeholder",
           "class": "passThroughControl",
           "passthrough": "HTMLInputElement.placeholder"
-        },
-        {
-          "name": "bare",
-          "class": "dsPresentation",
-          "type": "bool",
-          "description": "Strips the outlined-field paint (border, radius, padding, fill, full width) so a bespoke class fully owns the look - the field sibling of Button variant=\"bare\"."
         }
       ],
       "composes": [],
@@ -4862,6 +4998,74 @@
       "category": "Overlay"
     },
     {
+      "name": "Transcript",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Scrolling conversation container: holds the turns and scrolls the newest anchor (default: the last user bubble) to the top when a turn arrives.",
+      "usecases": [
+        "chat",
+        "conversation",
+        "transcript",
+        "scroll"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "The turns - ChatBubbles, rendered answers, a TypingIndicator, etc."
+        },
+        {
+          "name": "scrollKey",
+          "class": "dsApi",
+          "type": "any",
+          "description": "Change this when a new turn is added (e.g. the last user index or turn count) to trigger the scroll-to-latest."
+        },
+        {
+          "name": "anchorSelector",
+          "class": "dsApi",
+          "type": "string",
+          "default": ".krnl-msg--user",
+          "description": "CSS selector for the element to scroll to the top; defaults to the last user ChatBubble."
+        }
+      ],
+      "composes": [],
+      "usage": "<Transcript scrollKey={lastUserIdx}>\n  {thread.map(turn => <ChatBubble …/>)}\n</Transcript>",
+      "keywords": [
+        "transcript",
+        "conversation",
+        "chat",
+        "thread",
+        "scroll",
+        "messages"
+      ],
+      "category": "Communication",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Drive scrollKey off the thing that marks a new turn (last user index / message count)."
+        },
+        {
+          "do": false,
+          "text": "Reimplement scroll-to-latest per surface - that is what this owns."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "turns",
+          "required": true,
+          "description": "The conversation content (children)."
+        }
+      ],
+      "related": [
+        "ChatBubble",
+        "PromptField",
+        "TypingIndicator"
+      ]
+    },
+    {
       "name": "TrendChip",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -5072,6 +5276,62 @@
         "Fab",
         "Chip",
         "Popover"
+      ]
+    },
+    {
+      "name": "TypingIndicator",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "stable",
+      "summary": "Three blinking dots + an optional status label - the assistant-is-working affordance in a conversation.",
+      "usecases": [
+        "chat",
+        "loading",
+        "typing",
+        "thinking"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional status text beside the dots (e.g. \"Searching guidelines…\")."
+        }
+      ],
+      "composes": [],
+      "usage": "<TypingIndicator label=\"Searching guidelines…\" />",
+      "keywords": [
+        "typing",
+        "thinking",
+        "loading",
+        "dots",
+        "chat",
+        "status",
+        "searching"
+      ],
+      "category": "Communication",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Show while awaiting an assistant turn; replace it with the ChatBubble/answer once content arrives."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "dots",
+          "required": true,
+          "description": "The animated blinking dots."
+        },
+        {
+          "name": "label",
+          "required": false,
+          "description": "Status text."
+        }
+      ],
+      "related": [
+        "ChatBubble",
+        "Transcript"
       ]
     },
     {
