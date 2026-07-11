@@ -1,0 +1,40 @@
+import { ChatBubble, TypingIndicator, Transcript } from '@corilus/kernel/chat';
+
+export default {
+  title: 'Kernel/Molecule/Communication/ChatBubble',
+  component: ChatBubble,
+  tags: ['autodocs'],
+  argTypes: {
+    role: { control: 'select', options: ['assistant', 'user'] },
+    children: { control: 'text' },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: 'A single conversation turn. Role drives side + styling; avatar slot accepts an AIBadge or avatar image.',
+      },
+    },
+  },
+};
+
+export const Assistant = {
+  args: { role: 'assistant', children: 'How can I help you today?' },
+};
+
+export const User = {
+  args: { role: 'user', children: 'Summarise this patient record.' },
+};
+
+export const Thread = {
+  name: 'Thread (in Transcript)',
+  render: () => (
+    <Transcript style={{ height: '300px' }}>
+      <ChatBubble role="user">Summarise this patient record.</ChatBubble>
+      <ChatBubble role="assistant">
+        Based on the record, the patient has a history of hypertension and is currently on Lisinopril 10mg daily.
+      </ChatBubble>
+      <ChatBubble role="user">Any drug interactions to watch for?</ChatBubble>
+      <TypingIndicator label="Searching guidelines…" />
+    </Transcript>
+  ),
+};

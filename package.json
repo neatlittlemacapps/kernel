@@ -42,9 +42,27 @@
     "gate": "node tools/gen-catalog.mjs --check && node tools/catalog-gate.mjs src",
     "audit:greenhouse": "node tools/catalog-gate.mjs ../greenhouse/src --audit",
     "mcp": "node mcp/server.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "gen-stories": "node tools/gen-stories.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@awesome.me/kit-c983fdf9da": "^1.0.5"
+  },
+  "devDependencies": {
+    "@base-ui-components/react": "^1.0.0-rc.0",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.5.0",
+    "@storybook/addon-docs": "^10.5.0",
+    "@storybook/addon-mcp": "^0.7.0",
+    "@storybook/addon-vitest": "^10.5.0",
+    "@storybook/react-vite": "^10.5.0",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10",
+    "playwright": "^1.61.1",
+    "prop-types": "^15.8.1",
+    "storybook": "^10.5.0",
+    "vitest": "^4.1.10"
   }
 }

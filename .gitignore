@@ -5,3 +5,6 @@ node_modules/
 
 # personal GitHub token (see .gh-token.example / AUTH.md)
 .gh-token
+
+*storybook.log
+storybook-static
