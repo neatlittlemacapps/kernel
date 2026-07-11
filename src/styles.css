@@ -153,8 +153,8 @@
 .krnl-iconbtn.is-active, .krnl-iconbtn[data-popup-open] { background: var(--state-selected-surface); color: var(--action-accent); }
 .krnl-iconbtn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 /* solid (B-42 A.4): a filled accent circular icon button - the primary in-place submit
-   (composer send). Pill radius + action fill; press-scales; disabled goes flat. Retires
-   greenhouse's krnl-composer-submit. */
+   (composer send). Pill radius + action fill; press-scales; disabled goes flat. Replaces
+   greenhouse's old bespoke composer-send button. */
 .krnl-iconbtn--solid { background: var(--action-solid); color: var(--action-on); border-radius: var(--krnl-radius-pill); }
 .krnl-iconbtn--solid:hover:not(:disabled) { background: var(--action-solid); color: var(--action-on); opacity: .9; }
 .krnl-iconbtn--solid:active:not(:disabled) { transform: scale(.94); }
@@ -522,7 +522,7 @@
 .krnl-chip--selected { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
 /* muted (B-42 A.4): an unset / placeholder chip (e.g. an agent selector with no agent
    chosen). data-popup-open: while the chip's menu is open it reads as active (accent
-   border + hover surface), matching IconButton/Menu triggers. Retires krnl-agent-chip. */
+   border + hover surface), matching IconButton/Menu triggers. Replaces the old bespoke agent-selector chip. */
 .krnl-chip--muted { color: var(--text-muted); }
 .krnl-chip[data-popup-open] { border-color: var(--action-accent); background: var(--state-hover); }
 .krnl-chip-x { display: inline-flex; align-items: center; justify-content: center; margin-left: 2px; padding: 0; border: none; background: none; color: var(--text-faint); cursor: pointer; }
@@ -571,7 +571,7 @@
 /* text (B-42 A.4): a paint-free label button - accent text, no fill/border, flush
    sides - for low-emphasis inline actions ("View data"). Colour follows tone; unlike
    `bare` it keeps the button type + a11y look and is a real DS variant, not an escape
-   hatch. Retires greenhouse's krnl-fig-data. */
+   hatch. Replaces greenhouse's old bespoke figure-data link. */
 .krnl-btn--text { background: none; border-color: transparent; color: var(--btn-tone-solid, var(--action-accent)); padding-left: 0; padding-right: 0; }
 .krnl-btn--text:hover:not([disabled]) { filter: none; text-decoration: underline; }
 .krnl-btn--text[disabled] { background: none; border-color: transparent; }
@@ -652,7 +652,7 @@
    suggestion, radio row) rather than a flowed container. Drops the legacy flow-margin
    (rows sit in a Stack / list with gap) and, on the borderless `subtle` appearance, gives
    a surface hover instead of the border ring. Compose with Card.Header (leading | title +
-   description | action) + size="sm". Retires krnl-src / krnl-suggest / krnl-radio-row. */
+   description | action) + size="sm". Replaces the old bespoke citation / suggestion / radio rows. */
 .krnl-card--interactive { margin-bottom: 0; }
 .krnl-card--subtle.krnl-card--interactive:hover:not(:disabled) { background: var(--state-hover); border-color: transparent; }
 .krnl-card--subtle.krnl-card--interactive:active:not(:disabled) { background: var(--state-selected-surface); }
