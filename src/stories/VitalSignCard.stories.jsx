@@ -1,4 +1,4 @@
-import { VitalSignCard } from '@corilus/kernel';
+import { VitalSignCard } from '@corilus/kernel/clinical';
 
 export default {
   title: 'Kernel/Composite/Clinical/VitalSignCard',

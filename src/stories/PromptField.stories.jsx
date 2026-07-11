@@ -33,10 +33,7 @@ export const Default = {
       />
     );
   },
-  args: {
-    placeholder: 'Ask anything…',
-    submitLabel: 'Send',
-  },
+  args: { placeholder: 'Ask anything…', submitLabel: 'Send' },
 };
 
 export const WithContent = {

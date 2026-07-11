@@ -1,7 +1,7 @@
 import { Chip, Icon } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Action/Chip',
+  title: 'Kernel/Atom/Data Display/Chip',
   component: Chip,
   tags: ['autodocs'],
   argTypes: {
@@ -22,10 +22,7 @@ export const Default = {
 };
 
 export const WithIcon = {
-  args: {
-    icon: Icon.spark({ size: 13 }),
-    children: 'Summarize',
-  },
+  args: { icon: Icon.spark({ size: 13 }), children: 'Summarize' },
 };
 
 export const Selected = {
@@ -37,10 +34,7 @@ export const Muted = {
 };
 
 export const Removable = {
-  args: {
-    children: 'Penicillin',
-    onRemove: () => {},
-  },
+  args: { children: 'Penicillin', onRemove: () => {} },
 };
 
 export const Gallery = {

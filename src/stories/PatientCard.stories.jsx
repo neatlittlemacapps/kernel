@@ -10,7 +10,6 @@ export default {
     status: { control: 'select', options: ['normal', 'borderline', 'high', 'low', 'critical'] },
     loading: { control: 'boolean' },
     error: { control: 'boolean' },
-    empty: { control: 'boolean' },
     selected: { control: 'boolean' },
     disabled: { control: 'boolean' },
   },
@@ -24,11 +23,7 @@ export default {
 };
 
 export const Default = {
-  args: {
-    stage: 'sprout',
-    tone: 'heart',
-    title: 'Heart rate',
-  },
+  args: { stage: 'sprout', tone: 'heart', title: 'Heart rate' },
   render: (args) => (
     <PatientCard {...args} value={<ValueDisplay value="72" unit="bpm" />} />
   ),

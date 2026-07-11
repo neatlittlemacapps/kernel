@@ -30,7 +30,7 @@ const components = catalog.components ?? catalog;
 // Components that ship in the ./chat subpath
 const CHAT_COMPONENTS = new Set(['ChatBubble', 'PromptField', 'Transcript', 'TypingIndicator']);
 // Components that ship in the ./clinical subpath
-const CLINICAL_COMPONENTS = new Set(['AllergyCard', 'ConditionCard', 'DemographicCard', 'LabResultCard', 'MedicationCard']);
+const CLINICAL_COMPONENTS = new Set(['AllergyCard', 'ConditionCard', 'DemographicCard', 'LabResultCard', 'MedicationCard', 'VitalSignCard']);
 
 function importPath(name) {
   if (CHAT_COMPONENTS.has(name)) return '@corilus/kernel/chat';
