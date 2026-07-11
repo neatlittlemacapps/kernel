@@ -272,8 +272,7 @@
 .krnl-composer { position: relative; display: flex; flex-direction: column; gap: 8px; width: var(--krnl-transcript-w, 100%); margin-inline: auto; }
 .krnl-composer .krnl-slash { left: 0; right: 0; }
 
-/* agent selector chip — now lives in the toolbar (was a separate bar above) */
-.krnl-agent-ic { display: flex; color: var(--action-accent); }
+/* agent selector — the chip is now a Kernel <Chip>; this styles its name span. */
 .krnl-agent-name { white-space: nowrap; }
 
 /* prompt field — the ONE card; flex column so context · content · toolbar stack */
@@ -282,12 +281,6 @@
 .krnl-composer-field.is-slash { border-color: var(--action-accent); }  /* command mode, not focus */
 .krnl-composer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
 .krnl-composer-aux, .krnl-composer-tools { display: flex; align-items: center; gap: 2px; }
-.krnl-composer-submit { width: 32px; height: 32px; flex-shrink: 0; border: none; border-radius: var(--krnl-radius-pill); background: var(--action-solid); color: var(--action-on); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity .14s, transform .1s; }
-/* keep the solid fill on hover (B-40): composed on Kernel IconButton, whose :hover
-   paints a grey ghost bg - re-assert the accent fill so the submit stays solid. */
-.krnl-composer-submit:hover:not(:disabled) { opacity: .9; background: var(--action-solid); color: var(--action-on); }
-.krnl-composer-submit:active:not(:disabled) { transform: scale(.94); }
-.krnl-composer-submit:disabled { background: var(--border-subtle); color: var(--text-faint); cursor: default; }
 
 /* suggestion chips — single row that scrolls on overflow (no wrapping to multiple lines) */
 .krnl-composer-chips { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
@@ -612,18 +605,12 @@
    and the --bare resets - so that when greenhouse renders them via Kernel Button /
    TextArea (+ variant="bare" / bare), the bespoke class still wins the cascade and the
    look is unchanged. (Candidates for promotion to first-class atoms in a later pass.) */
-.krnl-agent-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 7px; border: 1px solid var(--border-subtle); border-radius: var(--krnl-radius-pill); background: var(--surface-page); color: var(--text-default); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; transition: background .14s, border-color .14s; }
-.krnl-agent-chip:hover, .krnl-agent-chip[data-popup-open] { border-color: var(--action-accent); background: var(--state-hover); }
-.krnl-agent-chip.is-undefined { color: var(--text-muted); }
-.krnl-agent-chip.is-undefined .krnl-agent-ic { color: var(--text-faint); }
-.krnl-agent-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 .krnl-composer-ta { display: block; width: 100%; min-height: 22px; max-height: 132px; resize: none; border: none; outline: none; background: none; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-default); overflow-y: auto; }
 .krnl-composer-ta::placeholder { color: var(--text-faint); }
 
-.krnl-radio-row { width: 100%; text-align: left; cursor: pointer; font-family: var(--font-body); transition: border-color .14s; }
-.krnl-radio-row:hover { border-color: var(--action-accent); }
-.krnl-radio-row.is-sel, .krnl-radio-row[data-selected] { border-color: var(--action-accent); }
+/* radio dot — the single-agent picker is now a selectable Kernel Card row; this is
+   its leading radio indicator, filled via the Card's [data-selected]. */
 .krnl-radio { width: 18px; height: 18px; flex-shrink: 0; border-radius: var(--krnl-radius-pill); border: 2px solid var(--border-strong, var(--border-subtle)); position: relative; transition: border-color .14s; }
 .krnl-radio.is-sel, .krnl-card[data-selected] .krnl-radio { border-color: var(--action-accent); }
 .krnl-radio.is-sel::after, .krnl-card[data-selected] .krnl-radio::after { content: ""; position: absolute; inset: 3px; border-radius: var(--krnl-radius-pill); background: var(--action-accent); }
@@ -700,12 +687,6 @@
 
 /* ── PRESCRIBE ── */
 .krnl-suggest-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
-.krnl-suggest { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: var(--density-row-py) var(--density-control-px); border-radius: var(--density-radius); border: 1px solid var(--border-subtle); background: var(--surface-panel); cursor: pointer; transition: border-color .14s; }
-.krnl-suggest:hover { border-color: var(--action-accent); }
-.krnl-suggest-main { display: flex; align-items: baseline; gap: 8px; }
-.krnl-suggest-med { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--text-default); }
-.krnl-suggest-dose { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
-.krnl-suggest-note { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); }
 .krnl-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
 .krnl-field-row { display: flex; gap: 10px; }
 .krnl-field-row .krnl-field { flex: 1; }
@@ -780,7 +761,6 @@
 .krnl-fig { margin: 0; }
 .krnl-fig-img { width: 100%; border-radius: var(--krnl-radius-sm); border: 1px solid var(--border-subtle); display: block; }
 .krnl-fig-cap { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); margin-top: 6px; display: flex; gap: 10px; align-items: baseline; }
-.krnl-fig-data { border: none; background: none; color: var(--action-accent); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; padding: 0; }
 .krnl-table-wrap { overflow-x: auto; }
 .krnl-table { width: 100%; border-collapse: collapse; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); }
 .krnl-table th, .krnl-table td { border: 1px solid var(--border-subtle); padding: 6px 9px; text-align: left; color: var(--text-default); }
@@ -796,8 +776,6 @@
 
 /* answer actions + feedback */
 .krnl-ans-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.krnl-ans-act { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-subtle); background: var(--surface-page); border-radius: var(--krnl-radius-pill); padding: 5px 11px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; }
-.krnl-ans-act:hover { border-color: var(--action-accent); }
 .krnl-ans-fb { display: inline-flex; align-items: center; gap: 6px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-muted); }
 .krnl-ans-thumb { width: 26px; height: 26px; border-radius: var(--krnl-radius-pill); border: 1px solid var(--border-subtle); background: var(--surface-page); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .krnl-ans-thumb.is-on { border-color: var(--action-accent); color: var(--action-accent); background: var(--state-selected-surface); }
@@ -815,14 +793,10 @@
 .krnl-sources-title { display: inline-flex; align-items: center; gap: 7px; font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); }
 .krnl-sources-ic { display: flex; color: var(--action-accent); }
 .krnl-sources-new { display: inline-flex; align-items: center; gap: 4px; border: none; background: none; color: var(--action-accent); font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); cursor: pointer; }
-.krnl-src { display: flex; gap: 9px; width: 100%; text-align: left; padding: 8px 9px; border: none; background: none; border-radius: var(--krnl-radius-sm); cursor: pointer; transition: background .14s; }
-.krnl-src:hover { background: var(--state-hover); }
-.krnl-src.is-hit { background: var(--state-selected-surface); }
+/* citation row — now a selectable Kernel Card row; these style the leading index and
+   the trailing country flag it still composes. */
 .krnl-src-n { flex-shrink: 0; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--action-accent); }
-.krnl-src-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.krnl-src-title { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); display: flex; align-items: center; gap: 7px; }
 .krnl-src-flag { font-family: var(--typography-micro-font-family); font-size: var(--typography-micro-font-size); font-weight: var(--typography-micro-font-weight); color: var(--text-muted); background: var(--surface-sunken); border-radius: var(--krnl-radius-sm); padding: 1px 5px; letter-spacing: var(--type-tracking-wide); }
-.krnl-src-meta { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
 
 /* ── Conversations-API flow surfaces (context toggle, disclosure, PII, follow-ups) ── */
 .krnl-clinical-in { display: flex; flex-direction: column; gap: 14px; }
@@ -852,8 +826,6 @@
 .krnl-pii-msg { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: 1.6; color: var(--text-default); background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--krnl-radius-sm); padding: 9px 11px; }
 .krnl-pii-mark { background: var(--status-error-tint); color: var(--status-error-solid); border-radius: var(--krnl-radius-sm); padding: 0 3px; font-weight: var(--type-weight-medium); }
 .krnl-pii-acts { display: flex; gap: 8px; justify-content: flex-end; }
-.krnl-pii-cancel { border: 1px solid var(--border-subtle); background: var(--surface-raised); border-radius: var(--krnl-radius-pill); padding: 6px 13px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-muted); cursor: pointer; }
-.krnl-pii-go { border: none; background: var(--action-solid); color: var(--action-on); border-radius: var(--krnl-radius-pill); padding: 6px 13px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); cursor: pointer; }
 
 /* follow-up clarifying questions */
 .krnl-fu { display: flex; flex-direction: column; gap: 12px; padding: 13px 14px; border-radius: var(--krnl-radius-panel); background: var(--surface-page); border: 1px solid var(--border-subtle); }
@@ -862,15 +834,7 @@
 .krnl-fu-q { display: flex; flex-direction: column; gap: 7px; }
 .krnl-fu-qlabel { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
 .krnl-fu-opts { display: flex; flex-wrap: wrap; gap: 6px; }
-.krnl-fu-opt { border: 1px solid var(--border-subtle); background: var(--surface-raised); border-radius: var(--krnl-radius-pill); padding: 5px 12px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); cursor: pointer; transition: background .14s, border-color .14s; }
-.krnl-fu-opt:hover { border-color: var(--action-accent); }
-/* B-40: [data-selected] companion so the option migrated to <Button variant="bare"> can
-   drive its chosen state off a data attr instead of the hand-rolled .is-on class. */
-.krnl-fu-opt.is-on, .krnl-fu-opt[data-selected] { background: var(--state-selected-surface); border-color: var(--action-accent); color: var(--action-accent); }
-.krnl-fu-opt:disabled { opacity: .6; cursor: default; }
 .krnl-fu-free { border: 1px solid var(--border-subtle); background: var(--surface-page); border-radius: var(--krnl-radius-sm); padding: 7px 10px; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); }
-.krnl-fu-send { align-self: flex-start; border: none; background: var(--action-solid); color: var(--action-on); border-radius: var(--krnl-radius-pill); padding: 7px 15px; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); cursor: pointer; }
-.krnl-fu-send:disabled { opacity: .6; cursor: default; }
 
 /* prompt coach */
 .krnl-coach { display: flex; flex-direction: column; gap: 5px; padding: 10px 13px; border-radius: var(--krnl-radius-sm); background: var(--surface-page); border: 1px dashed var(--border-subtle); }
