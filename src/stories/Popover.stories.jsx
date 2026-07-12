@@ -2,7 +2,7 @@
 import { Popover, PopoverDescription, Btn } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/Popover',
+  title: 'Core/Overlays/Popover/Popover',
   component: Popover,
   tags: ['autodocs'],
   parameters: {

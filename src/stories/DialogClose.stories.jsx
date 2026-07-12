@@ -2,7 +2,7 @@
 import { Dialog, DialogClose, Button, TextInput } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/DialogClose',
+  title: 'Core/Overlays/Dialog/DialogClose',
   component: DialogClose,
   tags: ['autodocs'],
   parameters: {

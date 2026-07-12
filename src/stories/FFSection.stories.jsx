@@ -2,7 +2,7 @@
 import { Accordion, FFSection, Toggle } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Composite/Utility/FFSection',
+  title: 'Core/Utility/FFSection',
   component: FFSection,
   tags: ['autodocs'],
   parameters: {
@@ -12,7 +12,7 @@ export default {
 
 export const Default = {
   render: () => (
-      <Accordion.Root openMultiple defaultValue={['a']}>
+      <Accordion.Root defaultValue={['a']}>
         <FFSection value="a" title="Personalisation">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Toggle checked onCheckedChange={() => {}} />

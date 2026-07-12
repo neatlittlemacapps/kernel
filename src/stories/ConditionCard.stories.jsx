@@ -4,7 +4,7 @@ import { ConditionCard } from '@corilus/kernel/clinical';
 const COND = { code: 'COPD (J44.9)', clinicalStatus: 'active', onsetDate: '2018', severity: 'Matig', verification: 'Bevestigd', note: 'Stabiel onder GOLD II behandeling.' };
 
 export default {
-  title: 'Kernel/Composite/Clinical/ConditionCard',
+  title: 'Clinical/Cards/ConditionCard',
   component: ConditionCard,
   tags: ['autodocs'],
   parameters: {

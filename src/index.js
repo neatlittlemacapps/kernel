@@ -39,6 +39,11 @@ export * from './components/ActionRow.jsx';
 export * from './components/sprout-cards/SproutCard.jsx';
 export * from './components/sprout-cards/PatientCard.jsx';
 export * from './components/sprout-cards/PropertyList.jsx';
-export * from './components/sprout-cards/lib.jsx';
+// NB: the clinical card-media primitives + FHIR helpers from sprout-cards/lib.jsx
+// (Sparkline, ReferenceRangeBar, ScheduleStrip, FieldList, ReactionList, PrimaryCTA,
+// propertyMap, propertyIcons, txtNL, iconFor) are healthcare-specific and ship behind
+// the "./clinical" subpath (see src/clinical.js), NOT on the generic "." surface — so
+// an external/client build can drop the whole clinical slice. Import them from
+// '@corilus/kernel/clinical'. (B-49: relocated out of "." 2026-07-12.)
 export * from './lib/icons.jsx';   // Icon
 export * from './lib/logo.js';     // KRNL_LOGO_SRC, brandLogoSvg, krnlLogoSvg

@@ -2,7 +2,7 @@
 import { ChatBubble, TypingIndicator, Transcript } from '@corilus/kernel/chat';
 
 export default {
-  title: 'Kernel/Molecule/Communication/ChatBubble',
+  title: 'Chat/ChatBubble',
   component: ChatBubble,
   tags: ['autodocs'],
   argTypes: {

@@ -2,7 +2,7 @@
 import { Popover, PopoverClose, PopoverDescription, Button } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/PopoverClose',
+  title: 'Core/Overlays/Popover/PopoverClose',
   component: PopoverClose,
   tags: ['autodocs'],
   parameters: {

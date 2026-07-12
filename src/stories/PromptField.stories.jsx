@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { PromptField } from '@corilus/kernel/chat';
 
 export default {
-  title: 'Kernel/Composite/Communication/PromptField',
+  title: 'Chat/PromptField',
   component: PromptField,
   tags: ['autodocs'],
   argTypes: {

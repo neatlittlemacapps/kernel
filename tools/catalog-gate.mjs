@@ -73,6 +73,12 @@ const scopeBy = {}; // componentName -> scopeKind (names are unique across the c
 const definedComponents = new Set(); // PascalCase components defined in the scanned tree
 const definedForwardRef = new Set(); // ...of those, the ones wrapped in forwardRef
 for (const file of walk(targetDir)) {
+  // Storybook stories are dev demos, not shipped design-system source: they legitimately
+  // show usage JSX and mention raw HTML in prop descriptions (e.g. Card's docs note it
+  // renders a `<button>`). The component-ownership/anti-pattern gate would raise false
+  // positives on that text, so stories are validated by Storybook (build + run-story-tests)
+  // instead of this structural gate. Skip `src/stories/`.
+  if (file.includes('/stories/')) continue;
   const src = fs.readFileSync(file, 'utf8');
   const metaText = extractMetaText(src);
   let meta = null;

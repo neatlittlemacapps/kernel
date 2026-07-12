@@ -5,7 +5,7 @@ import { VitalSignCard } from '@corilus/kernel/clinical';
 const HR = { property: 'heartRate', value: 74, unit: 'bpm', status: 'normal', history: [70, 72, 68, 73, 71, 73, 74], measuredAt: '09:14', reference: 'rust 64', trend: { direction: 'up', value: '+2' } };
 
 export default {
-  title: 'Kernel/Composite/Data display/SproutCard',
+  title: 'Core/Data Display/SproutCard',
   component: SproutCard,
   tags: ['autodocs'],
   parameters: {

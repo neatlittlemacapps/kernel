@@ -235,7 +235,7 @@ export const meta = {
     keywords: ['sparkline', 'trend', 'line', 'chart', 'micro-chart', 'graph', 'vital', 'series'],
     summary: 'Inline SVG line chart with soft gradient fill; draws in currentColor so it inherits the card tone.',
     props: {
-      data: { class: 'content', type: 'number[]', required: true, description: 'The ordered series to plot (oldest to newest). Renders nothing when empty; the axis auto-scales to the min and max.' },
+      data: { class: 'content', type: 'number[]', required: true, example: [72, 74, 71, 78, 75, 73, 76], description: 'The ordered series to plot (oldest to newest). Renders nothing when empty; the axis auto-scales to the min and max.' },
       width: { class: 'dsPresentation', type: 'number', default: 240, description: 'Intrinsic viewBox width; the SVG itself scales to 100% of its container, so this only sets the drawing aspect ratio.' },
       height: { class: 'dsPresentation', type: 'number', default: 56, description: 'Rendered pixel height and viewBox height of the chart.' },
       ariaLabel: { class: 'a11y', type: 'string', description: 'Accessible name for the img-role SVG, e.g. a spoken summary of the trend. Provide a value that does not just repeat the metric name.' },
@@ -249,9 +249,9 @@ export const meta = {
     keywords: ['reference-range', 'range', 'lab', 'marker', 'normal', 'gauge', 'threshold', 'bar'],
     summary: 'Horizontal reference-range strip: a normal band plus a marker for the measured value, colour-coded in or out of range.',
     props: {
-      value: { class: 'content', type: 'number', required: true, description: 'The measured value; positions the marker and decides its in-range or out-of-range styling.' },
-      low: { class: 'content', type: 'number', required: true, description: 'Lower bound of the normal band, shown as the left scale tick.' },
-      high: { class: 'content', type: 'number', required: true, description: 'Upper bound of the normal band, shown as the right scale tick.' },
+      value: { class: 'content', type: 'number', required: true, example: 5.9, description: 'The measured value; positions the marker and decides its in-range or out-of-range styling.' },
+      low: { class: 'content', type: 'number', required: true, example: 4, description: 'Lower bound of the normal band, shown as the left scale tick.' },
+      high: { class: 'content', type: 'number', required: true, example: 5.6, description: 'Upper bound of the normal band, shown as the right scale tick.' },
       absMin: { class: 'content', type: 'number', description: 'Left end of the drawn axis. Defaults to 70% of the smaller of value and low when omitted, so the marker never sits on the edge.' },
       absMax: { class: 'content', type: 'number', description: 'Right end of the drawn axis. Defaults to 130% of the larger of value and high when omitted.' },
       ariaLabel: { class: 'a11y', type: 'string', description: 'Accessible name for the img-role strip, e.g. the value against its reference range in words.' },
@@ -271,7 +271,7 @@ export const meta = {
     keywords: ['schedule', 'adherence', 'medication', 'dose', 'week', 'strip', 'calendar', 'compliance'],
     summary: 'Compact row of day cells for medication adherence; each cell colours by its taken / missed / upcoming / paused status.',
     props: {
-      days: { class: 'content', type: 'Array<{ label: string, status: string }>', required: true, description: 'Ordered day cells. label is the short day name shown under each dot; status is one of taken, missed, upcoming, or paused and drives the dot colour.' },
+      days: { class: 'content', type: 'Array<{ label: string, status: string }>', required: true, example: [{ label: 'Mo', status: 'taken' }, { label: 'Tu', status: 'taken' }, { label: 'We', status: 'missed' }, { label: 'Th', status: 'taken' }, { label: 'Fr', status: 'upcoming' }, { label: 'Sa', status: 'upcoming' }, { label: 'Su', status: 'paused' }], description: 'Ordered day cells. label is the short day name shown under each dot; status is one of taken, missed, upcoming, or paused and drives the dot colour.' },
       ariaLabel: { class: 'a11y', type: 'string', description: 'Accessible name for the img-role list, e.g. a summary of the adherence week.' },
     },
     bestPractices: [
@@ -288,7 +288,7 @@ export const meta = {
     keywords: ['field-list', 'key-value', 'definition-list', 'details', 'demographics', 'properties', 'labels'],
     summary: 'Definition list of label / value rows for demographic and condition detail bodies.',
     props: {
-      items: { class: 'content', type: 'Array<{ label: node, value: node }>', required: true, description: 'The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings.' },
+      items: { class: 'content', type: 'Array<{ label: node, value: node }>', required: true, example: [{ label: 'Geboortedatum', value: '12-04-1978' }, { label: 'Geslacht', value: 'Vrouw' }, { label: 'Rijksregisternr.', value: '78.04.12-006.83' }], description: 'The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings.' },
     },
     composes: [],
     usage: '<FieldList items={[{ label: "Born", value: "1978-04-12" }, { label: "Sex", value: "F" }]} />',
@@ -299,7 +299,7 @@ export const meta = {
     keywords: ['reaction', 'allergy', 'list', 'symptoms', 'bulleted', 'intolerance'],
     summary: 'Bulleted list of allergy reactions, each with a leading dot marker.',
     props: {
-      reactions: { class: 'content', type: 'string[]', required: true, description: 'The reaction descriptions to list, one bullet each (e.g. hives, anaphylaxis).' },
+      reactions: { class: 'content', type: 'string[]', required: true, example: ['Netelroos', 'Angio-oedeem', 'Anafylaxie'], description: 'The reaction descriptions to list, one bullet each (e.g. hives, anaphylaxis).' },
     },
     composes: [],
     usage: '<ReactionList reactions={["Hives", "Anaphylaxis"]} />',
@@ -310,7 +310,7 @@ export const meta = {
     keywords: ['button', 'cta', 'primary', 'action', 'save', 'confirm', 'submit'],
     summary: 'Primary action button for the card actions slot; composes Base UI Button for the focus and keyboard baseline, styled via tokens.',
     props: {
-      children: { class: 'content', type: 'ReactNode', description: 'The button label. Write the action it performs (e.g. "Save value"), not "OK".' },
+      children: { class: 'content', type: 'ReactNode', example: 'Waarde opslaan', description: 'The button label. Write the action it performs (e.g. "Save value"), not "OK".' },
       onClick: { class: 'event', type: 'fn', description: 'Invoked when the button is activated by pointer or keyboard.' },
       disabled: { class: 'passThroughControl', passthrough: 'BaseUI.Button.disabled' },
     },

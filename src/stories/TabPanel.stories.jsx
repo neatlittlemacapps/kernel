@@ -2,7 +2,7 @@
 import { Tabs, Tab, TabList, TabPanel } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Navigation/TabPanel',
+  title: 'Core/Navigation/Tabs/TabPanel',
   component: TabPanel,
   tags: ['autodocs'],
   parameters: {

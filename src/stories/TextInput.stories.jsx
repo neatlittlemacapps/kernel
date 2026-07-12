@@ -1,27 +1,14 @@
 import { TextInput } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Data Input/TextInput',
+  title: 'Core/Inputs/TextInput',
   component: TextInput,
   tags: ['autodocs'],
-  argTypes: {
-    value: {  control: 'text'  },
-    onChange: {  control: 'text'  },
-    placeholder: {  control: 'text'  },
-  },
   parameters: {
-    docs: {
-      description: {
-        component: "Outlined text field.",
-      },
-    },
+    docs: { description: { component: "Outlined text field.\n\n**Import**\n\n```ts\nimport { TextInput } from '@corilus/kernel'\n```" } },
   },
 };
 
-export const Default = {
-  parameters: {
-    docs: {
-      source: { code: `<TextInput placeholder="Search records" />` },
-    },
-  },
+export const Playground = {
+  parameters: { docs: { source: { code: `<TextInput placeholder="Search records" />` } } },
 };

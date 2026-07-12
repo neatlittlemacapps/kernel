@@ -4,7 +4,7 @@ import { LabResultCard } from '@corilus/kernel/clinical';
 const GLUCOSE = { property: 'glucose', value: 7.8, unit: 'mmol/L', status: 'high', low: 3.9, high: 6.1, measuredAt: '07:14 nuchter', trend: { direction: 'up', value: '+0.4' } };
 
 export default {
-  title: 'Kernel/Composite/Clinical/LabResultCard',
+  title: 'Clinical/Cards/LabResultCard',
   component: LabResultCard,
   tags: ['autodocs'],
   parameters: {

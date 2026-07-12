@@ -1,35 +1,27 @@
 import { Grid } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Layout/Grid',
+  title: 'Core/Layout/Grid',
   component: Grid,
   tags: ['autodocs'],
   argTypes: {
-    columns: {  control: 'text' , description: "Column count (=> repeat(n, minmax(0,1fr))) or an explicit grid-template-columns string." },
-    gap: {  control: 'number' , description: "Gap between cells; resolves to var(--space-N)." },
-    p: {  control: 'number' , description: "Padding step (var(--space-N)); px/py/pt.. also accepted." },
-    children: {  control: 'text' , description: "The grid cells." },
+    columns: { control: false, description: "Column count (=> repeat(n, minmax(0,1fr))) or an explicit grid-template-columns string.", table: { category: 'Appearance', type: { summary: "number | string" } } },
+    gap: { control: 'number', description: "Gap between cells; resolves to var(--space-N).", table: { category: 'Appearance', type: { summary: "number" } } },
+    p: { control: 'number', description: "Padding step (var(--space-N)); px/py/pt.. also accepted.", table: { category: 'Appearance', type: { summary: "number" } } },
+    children: { control: 'text', description: "The grid cells.", table: { category: 'Content', type: { summary: "ReactNode" } } },
   },
   parameters: {
-    docs: {
-      description: {
-        component: "CSS grid with a column count (or template) and a token gap.",
-      },
-    },
+    docs: { description: { component: "CSS grid with a column count (or template) and a token gap.\n\n**Import**\n\n```ts\nimport { Grid } from '@corilus/kernel'\n```" } },
   },
 };
 
-export const Default = {
+export const Playground = {
   args: {
     gap: 0,
     p: 0,
     children: "Content",
   },
-  parameters: {
-    docs: {
-      source: { code: `<Grid columns={2} gap={3}>
+  parameters: { docs: { source: { code: `<Grid columns={2} gap={3}>
   <Card /> <Card />
-</Grid>` },
-    },
-  },
+</Grid>` } } },
 };

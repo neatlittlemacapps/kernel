@@ -2,7 +2,7 @@
 import { Menu, MenuItem, MenuSeparator, IconButton, Icon } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/MenuSeparator',
+  title: 'Core/Overlays/Menu/MenuSeparator',
   component: MenuSeparator,
   tags: ['autodocs'],
   parameters: {

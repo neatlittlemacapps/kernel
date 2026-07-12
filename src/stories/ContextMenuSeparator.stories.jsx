@@ -2,7 +2,7 @@
 import { ContextMenu, ContextMenuItem, ContextMenuSeparator } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/ContextMenuSeparator',
+  title: 'Core/Overlays/ContextMenu/ContextMenuSeparator',
   component: ContextMenuSeparator,
   tags: ['autodocs'],
   parameters: {

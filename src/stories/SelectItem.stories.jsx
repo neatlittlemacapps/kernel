@@ -2,7 +2,7 @@
 import { Select, SelectItem } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Data Input/SelectItem',
+  title: 'Core/Inputs/Select/SelectItem',
   component: SelectItem,
   tags: ['autodocs'],
   parameters: {

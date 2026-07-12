@@ -2,7 +2,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Data Input/ToggleGroupItem',
+  title: 'Core/Inputs/Toggle/ToggleGroupItem',
   component: ToggleGroupItem,
   tags: ['autodocs'],
   parameters: {

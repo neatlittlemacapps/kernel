@@ -2,7 +2,7 @@
 import { Trigger } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/AI/Trigger',
+  title: 'Core/Actions/Trigger',
   component: Trigger,
   tags: ['autodocs'],
   argTypes: {

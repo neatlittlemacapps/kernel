@@ -33,8 +33,8 @@ export const meta = {
         description: 'Caption above the track; also the accessible name. If omitted you must supply aria-label instead.' },
       { name: 'aria-label', class: 'a11y', type: 'string',
         description: 'Accessible name when there is no visible label. Exactly one of label / aria-label is required - Base UI names the progressbar only from a mounted label, so a bare bar is otherwise unnamed (WCAG 4.1.2).' },
-      { name: 'value', class: 'passThroughControl', passthrough: 'BaseUI.Progress.Root.value' },
-      { name: 'max', class: 'passThroughControl', passthrough: 'BaseUI.Progress.Root.max' },
+      { name: 'value', class: 'passThroughControl', passthrough: 'BaseUI.Progress.Root.value', example: 64 },
+      { name: 'max', class: 'passThroughControl', passthrough: 'BaseUI.Progress.Root.max', example: 100 },
     ],
     bestPractices: [
       { do: true, text: 'Give every Progress a name: a visible label, or aria-label when the bar stands alone. Without one the progressbar is unnamed.' },

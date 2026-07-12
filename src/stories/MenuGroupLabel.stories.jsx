@@ -2,7 +2,7 @@
 import { Menu, MenuItem, MenuGroup, MenuGroupLabel, IconButton, Icon } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/MenuGroupLabel',
+  title: 'Core/Overlays/Menu/MenuGroupLabel',
   component: MenuGroupLabel,
   tags: ['autodocs'],
   parameters: {

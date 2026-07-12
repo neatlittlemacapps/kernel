@@ -314,7 +314,7 @@ export const meta = {
     summary: 'Interpretation pill (dot + label). Tone follows the status, not the card identity tone.',
     props: {
       status: { class: 'dsPresentation', values: ['normal', 'borderline', 'high', 'low', 'critical'], default: 'normal', description: 'Clinical interpretation; drives the dot + label colour. Keep this orthogonal to the card tone, which encodes identity, not interpretation.' },
-      label: { class: 'content', type: 'node', description: 'The pill text. Falls back to children when omitted.' },
+      label: { class: 'content', type: 'node', example: 'Normaal', description: 'The pill text. Falls back to children when omitted.' },
       children: { class: 'content', type: 'node', description: 'Alternative to label; rendered as the pill text when label is not passed.' },
     },
     anatomy: [
@@ -335,8 +335,8 @@ export const meta = {
     summary: 'Compact delta indicator with a direction arrow (up / down / flat).',
     props: {
       direction: { class: 'dsPresentation', values: ['up', 'down', 'flat'], default: 'flat', description: 'Movement direction; selects the arrow glyph and the chip colour treatment.' },
-      value: { class: 'content', type: 'node', description: 'The delta magnitude shown beside the arrow (e.g. "+3" or "2 mmHg").' },
-      label: { class: 'a11y', type: 'string', description: 'Accessible name for the chip; describes the trend for screen readers since the arrow is decorative.' },
+      value: { class: 'content', type: 'node', example: '+3', description: 'The delta magnitude shown beside the arrow (e.g. "+3" or "2 mmHg").' },
+      label: { class: 'a11y', type: 'string', example: 'Gestegen met 3', description: 'Accessible name for the chip; describes the trend for screen readers since the arrow is decorative.' },
     },
     anatomy: [
       { name: 'Arrow', required: true, description: 'Decorative direction glyph set from direction.' },
@@ -351,8 +351,8 @@ export const meta = {
     keywords: ['value', 'measurement', 'number', 'unit', 'reading', 'vital', 'display'],
     summary: 'Big numeric value + small unit; the canonical value-slot content for vitals and labs.',
     props: {
-      value: { class: 'content', type: 'string|number', description: 'The primary reading, rendered large (e.g. 74).' },
-      unit: { class: 'content', type: 'string', description: 'Small trailing unit shown after the value (e.g. "bpm").' },
+      value: { class: 'content', type: 'string|number', example: 74, description: 'The primary reading, rendered large (e.g. 74).' },
+      unit: { class: 'content', type: 'string', example: 'bpm', description: 'Small trailing unit shown after the value (e.g. "bpm").' },
       prefix: { class: 'content', type: 'string', description: 'Optional small marker before the value (e.g. a comparator like "<").' },
     },
     anatomy: [
@@ -369,10 +369,10 @@ export const meta = {
     keywords: ['stepper', 'number', 'increment', 'decrement', 'edit', 'input', 'numberfield', 'shoot'],
     summary: 'Shoot-stage editable value (minus / value / plus). No save; the consumer provides the CTA in the actions slot.',
     props: {
-      value: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.value' },
-      min: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.min' },
-      max: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.max' },
-      step: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.step' },
+      value: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.value', example: 72 },
+      min: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.min', example: 30 },
+      max: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.max', example: 220 },
+      step: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.step', example: 1 },
       unit: { class: 'content', type: 'string', description: 'Small trailing unit shown after the editable value (e.g. "bpm").' },
       onChange: { class: 'event', type: 'fn', description: 'Called with the new numeric value on each change; wraps the Base UI onValueChange and skips null (mid-edit) values.' },
       ariaLabel: { class: 'a11y', type: 'string', description: 'Accessible name for the number field, since there is no visible label.' },

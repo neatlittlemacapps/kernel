@@ -38,7 +38,7 @@ export const meta = {
       { name: 'aria-label', class: 'a11y', type: 'string',
         description: 'Accessible name; forwarded to each range-input thumb (a range slider suffixes " minimum" / " maximum"). Required - a slider has no intrinsic label. Alternatively pass aria-labelledby (it propagates to the thumbs via the Root).' },
       { name: 'value', class: 'passThroughControl', passthrough: 'BaseUI.Slider.Root.value' },
-      { name: 'defaultValue', class: 'passThroughControl', passthrough: 'BaseUI.Slider.Root.defaultValue' },
+      { name: 'defaultValue', class: 'passThroughControl', passthrough: 'BaseUI.Slider.Root.defaultValue', example: 40 },
       { name: 'onValueChange', class: 'passThroughControl', passthrough: 'BaseUI.Slider.Root.onValueChange' },
       { name: 'min', class: 'passThroughControl', passthrough: 'BaseUI.Slider.Root.min' },
       { name: 'max', class: 'passThroughControl', passthrough: 'BaseUI.Slider.Root.max' },

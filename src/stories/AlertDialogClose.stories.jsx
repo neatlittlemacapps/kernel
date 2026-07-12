@@ -2,7 +2,7 @@
 import { AlertDialog, AlertDialogClose, Button } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/AlertDialogClose',
+  title: 'Core/Overlays/AlertDialog/AlertDialogClose',
   component: AlertDialogClose,
   tags: ['autodocs'],
   parameters: {

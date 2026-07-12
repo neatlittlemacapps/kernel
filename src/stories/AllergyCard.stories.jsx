@@ -4,7 +4,7 @@ import { AllergyCard } from '@corilus/kernel/clinical';
 const ALLERGY = { substance: 'Penicilline', criticality: 'high', reactions: ['Anafylaxie', 'Urticaria', 'Larynxoedeem'], recordedDate: '12-04-2019', lastVerified: 'Maart 2026' };
 
 export default {
-  title: 'Kernel/Composite/Clinical/AllergyCard',
+  title: 'Clinical/Cards/AllergyCard',
   component: AllergyCard,
   tags: ['autodocs'],
   parameters: {

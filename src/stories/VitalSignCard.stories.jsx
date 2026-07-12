@@ -4,7 +4,7 @@ import { VitalSignCard } from '@corilus/kernel/clinical';
 const HR = { property: 'heartRate', value: 74, unit: 'bpm', status: 'normal', history: [70, 72, 68, 73, 71, 73, 74], measuredAt: '09:14', reference: 'rust 64', trend: { direction: 'up', value: '+2' } };
 
 export default {
-  title: 'Kernel/Composite/Clinical/VitalSignCard',
+  title: 'Clinical/Cards/VitalSignCard',
   component: VitalSignCard,
   tags: ['autodocs'],
   parameters: {

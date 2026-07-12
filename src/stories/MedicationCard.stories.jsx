@@ -4,7 +4,7 @@ import { MedicationCard } from '@corilus/kernel/clinical';
 const MED = { name: 'Furosemide', dose: '40 mg', frequency: '1x/dag', medicationStatus: 'active', reason: 'Hartfalen', prescriber: 'Dr. Bruno', schedule: [{ label: 'Ma', status: 'taken' }, { label: 'Di', status: 'taken' }, { label: 'Wo', status: 'taken' }, { label: 'Do', status: 'missed' }, { label: 'Vr', status: 'taken' }, { label: 'Za', status: 'taken' }, { label: 'Zo', status: 'upcoming' }] };
 
 export default {
-  title: 'Kernel/Composite/Clinical/MedicationCard',
+  title: 'Clinical/Cards/MedicationCard',
   component: MedicationCard,
   tags: ['autodocs'],
   parameters: {

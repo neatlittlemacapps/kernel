@@ -2,7 +2,7 @@
 import { PatientCard, ValueDisplay } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Clinical/PatientCard',
+  title: 'Core/Data Display/PatientCard',
   component: PatientCard,
   tags: ['autodocs'],
   argTypes: {

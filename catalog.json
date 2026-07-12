@@ -1720,7 +1720,7 @@
     },
     {
       "name": "FieldList",
-      "import": "@corilus/kernel",
+      "import": "@corilus/kernel/clinical",
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
@@ -1735,6 +1735,20 @@
           "class": "content",
           "type": "Array<{ label: node, value: node }>",
           "required": true,
+          "example": [
+            {
+              "label": "Geboortedatum",
+              "value": "12-04-1978"
+            },
+            {
+              "label": "Geslacht",
+              "value": "Vrouw"
+            },
+            {
+              "label": "Rijksregisternr.",
+              "value": "78.04.12-006.83"
+            }
+          ],
           "description": "The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings."
         }
       ],
@@ -2922,7 +2936,7 @@
     },
     {
       "name": "PrimaryCTA",
-      "import": "@corilus/kernel",
+      "import": "@corilus/kernel/clinical",
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
@@ -2935,6 +2949,7 @@
           "name": "children",
           "class": "content",
           "type": "ReactNode",
+          "example": "Waarde opslaan",
           "description": "The button label. Write the action it performs (e.g. \"Save value\"), not \"OK\"."
         },
         {
@@ -2990,12 +3005,14 @@
         {
           "name": "value",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.Progress.Root.value"
+          "passthrough": "BaseUI.Progress.Root.value",
+          "example": 64
         },
         {
           "name": "max",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.Progress.Root.max"
+          "passthrough": "BaseUI.Progress.Root.max",
+          "example": 100
         }
       ],
       "composes": [],
@@ -3455,7 +3472,7 @@
     },
     {
       "name": "ReactionList",
-      "import": "@corilus/kernel",
+      "import": "@corilus/kernel/clinical",
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
@@ -3470,6 +3487,11 @@
           "class": "content",
           "type": "string[]",
           "required": true,
+          "example": [
+            "Netelroos",
+            "Angio-oedeem",
+            "Anafylaxie"
+          ],
           "description": "The reaction descriptions to list, one bullet each (e.g. hives, anaphylaxis)."
         }
       ],
@@ -3487,7 +3509,7 @@
     },
     {
       "name": "ReferenceRangeBar",
-      "import": "@corilus/kernel",
+      "import": "@corilus/kernel/clinical",
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
@@ -3502,6 +3524,7 @@
           "class": "content",
           "type": "number",
           "required": true,
+          "example": 5.9,
           "description": "The measured value; positions the marker and decides its in-range or out-of-range styling."
         },
         {
@@ -3509,6 +3532,7 @@
           "class": "content",
           "type": "number",
           "required": true,
+          "example": 4,
           "description": "Lower bound of the normal band, shown as the left scale tick."
         },
         {
@@ -3516,6 +3540,7 @@
           "class": "content",
           "type": "number",
           "required": true,
+          "example": 5.6,
           "description": "Upper bound of the normal band, shown as the right scale tick."
         },
         {
@@ -3575,7 +3600,7 @@
     },
     {
       "name": "ScheduleStrip",
-      "import": "@corilus/kernel",
+      "import": "@corilus/kernel/clinical",
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
@@ -3590,6 +3615,36 @@
           "class": "content",
           "type": "Array<{ label: string, status: string }>",
           "required": true,
+          "example": [
+            {
+              "label": "Mo",
+              "status": "taken"
+            },
+            {
+              "label": "Tu",
+              "status": "taken"
+            },
+            {
+              "label": "We",
+              "status": "missed"
+            },
+            {
+              "label": "Th",
+              "status": "taken"
+            },
+            {
+              "label": "Fr",
+              "status": "upcoming"
+            },
+            {
+              "label": "Sa",
+              "status": "upcoming"
+            },
+            {
+              "label": "Su",
+              "status": "paused"
+            }
+          ],
           "description": "Ordered day cells. label is the short day name shown under each dot; status is one of taken, missed, upcoming, or paused and drives the dot colour."
         },
         {
@@ -3956,7 +4011,8 @@
         {
           "name": "defaultValue",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.Slider.Root.defaultValue"
+          "passthrough": "BaseUI.Slider.Root.defaultValue",
+          "example": 40
         },
         {
           "name": "onValueChange",
@@ -4040,7 +4096,7 @@
     },
     {
       "name": "Sparkline",
-      "import": "@corilus/kernel",
+      "import": "@corilus/kernel/clinical",
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
@@ -4055,6 +4111,15 @@
           "class": "content",
           "type": "number[]",
           "required": true,
+          "example": [
+            72,
+            74,
+            71,
+            78,
+            75,
+            73,
+            76
+          ],
           "description": "The ordered series to plot (oldest to newest). Renders nothing when empty; the axis auto-scales to the min and max."
         },
         {
@@ -4351,6 +4416,7 @@
           "name": "label",
           "class": "content",
           "type": "node",
+          "example": "Normaal",
           "description": "The pill text. Falls back to children when omitted."
         },
         {
@@ -4410,22 +4476,26 @@
         {
           "name": "value",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.NumberField.value"
+          "passthrough": "BaseUI.NumberField.value",
+          "example": 72
         },
         {
           "name": "min",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.NumberField.min"
+          "passthrough": "BaseUI.NumberField.min",
+          "example": 30
         },
         {
           "name": "max",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.NumberField.max"
+          "passthrough": "BaseUI.NumberField.max",
+          "example": 220
         },
         {
           "name": "step",
           "class": "passThroughControl",
-          "passthrough": "BaseUI.NumberField.step"
+          "passthrough": "BaseUI.NumberField.step",
+          "example": 1
         },
         {
           "name": "unit",
@@ -5091,12 +5161,14 @@
           "name": "value",
           "class": "content",
           "type": "node",
+          "example": "+3",
           "description": "The delta magnitude shown beside the arrow (e.g. \"+3\" or \"2 mmHg\")."
         },
         {
           "name": "label",
           "class": "a11y",
           "type": "string",
+          "example": "Gestegen met 3",
           "description": "Accessible name for the chip; describes the trend for screen readers since the arrow is decorative."
         }
       ],
@@ -5349,12 +5421,14 @@
           "name": "value",
           "class": "content",
           "type": "string|number",
+          "example": 74,
           "description": "The primary reading, rendered large (e.g. 74)."
         },
         {
           "name": "unit",
           "class": "content",
           "type": "string",
+          "example": "bpm",
           "description": "Small trailing unit shown after the value (e.g. \"bpm\")."
         },
         {

@@ -2,7 +2,7 @@
 import { RadioGroup, Radio } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Data Input/Radio',
+  title: 'Core/Inputs/Radio/Radio',
   component: Radio,
   tags: ['autodocs'],
   parameters: {

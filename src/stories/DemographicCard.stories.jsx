@@ -4,7 +4,7 @@ import { DemographicCard } from '@corilus/kernel/clinical';
 const PATIENT = { name: 'Mr. Bakker', birthDate: '15-03-1942', age: 84, gender: 'male', identifier: '420315-145-23', gp: 'Dr. Bruno', phone: '+31 6 1234 5678', address: 'Kerkstraat 12, Utrecht', lastVisit: '2 dagen geleden' };
 
 export default {
-  title: 'Kernel/Composite/Clinical/DemographicCard',
+  title: 'Clinical/Cards/DemographicCard',
   component: DemographicCard,
   tags: ['autodocs'],
   parameters: {

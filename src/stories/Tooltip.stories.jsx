@@ -2,11 +2,11 @@
 import { Tooltip, IconButton, Icon } from '@corilus/kernel';
 
 export default {
-  title: 'Kernel/Atom/Overlay/Tooltip',
+  title: 'Core/Overlays/Tooltip/Tooltip',
   component: Tooltip,
   tags: ['autodocs'],
   parameters: {
-    docs: { description: { component: "Tooltip wrapper (Base UI)." } },
+    docs: { description: { component: "Tooltip wrapper (Base UI).\n\n> **Deprecated alias:** `Tip` is a deprecated alias of `Tooltip` — use `Tooltip`. It will be removed in the next major and has no separate story." } },
   },
 };
 
