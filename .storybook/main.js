@@ -1,20 +1,26 @@
-
-// Vite transform plugin: Kernel source files do `const React = window.React` at the
-// top of each module with no ESM import. In Rolldown production builds (Vite 6+),
-// these chunks can evaluate before preview.jsx has set window.React. This plugin
-// injects the global assignment *inside* each affected module so it is guaranteed
-// to run before the window.React read in the same module evaluation context.
+// Kernel components read React off a global -- `const React = window.React;` at
+// module top-level, with no ESM import. This is intentional in the shipped source
+// (the extraction-boundary design: components bind to a host-provided window.React).
+//
+// But for the Storybook gallery build it's a hazard: in Rolldown production builds
+// (Vite 6+) component chunks can evaluate before preview.jsx sets window.React,
+// yielding `undefined is not an object (evaluating '$.createContext')`.
+//
+// Fix, scoped to the Storybook build only (source on disk is untouched): rewrite the
+// two uniform global reads into real ESM imports. Vite dedupes `react`, so every
+// module gets the same singleton binding the working dev path already uses -- minus
+// the evaluation-order hazard, since there's no longer any global to read.
 const kernelReactGlobalPlugin = {
   name: 'kernel-react-global',
+  enforce: 'pre',
   transform(code, id) {
-    if (id.includes('/kernel/src/') && code.includes('window.React')) {
-      const shim =
-        `import * as __krnlReact__ from 'react';\n` +
-        `import * as __krnlReactDOM__ from 'react-dom';\n` +
-        `if (!globalThis.React) globalThis.React = __krnlReact__;\n` +
-        `if (!globalThis.ReactDOM) globalThis.ReactDOM = __krnlReactDOM__;\n`;
-      return { code: shim + code, map: null };
-    }
+    if (!id.includes('/kernel/src/')) return;
+    if (!code.includes('window.React')) return;
+    const next = code
+      .replace(/const React = window\.React;/g, `import * as React from 'react';`)
+      .replace(/const ReactDOM = window\.ReactDOM;/g, `import * as ReactDOM from 'react-dom';`);
+    if (next === code) return;
+    return { code: next, map: null };
   },
 };
 
