@@ -21,10 +21,9 @@ export default {
 
 export const Default = {
   args: {
-    columns: undefined,
     gap: 0,
     p: 0,
-    children: "...",
+    children: "Content",
   },
   parameters: {
     docs: {

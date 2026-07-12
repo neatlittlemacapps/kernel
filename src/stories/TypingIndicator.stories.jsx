@@ -18,7 +18,7 @@ export default {
 
 export const Default = {
   args: {
-    label: "...",
+    label: "label",
   },
   parameters: {
     docs: {

@@ -19,7 +19,7 @@ export default {
 
 export const Default = {
   args: {
-    children: "...",
+    children: "Content",
     label: "label",
   },
   parameters: {

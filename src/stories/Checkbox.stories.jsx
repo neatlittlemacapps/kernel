@@ -24,13 +24,7 @@ export default {
 
 export const Default = {
   args: {
-    label: "...",
-    checked: undefined,
-    defaultChecked: undefined,
-    onCheckedChange: undefined,
-    indeterminate: undefined,
-    disabled: undefined,
-    required: undefined,
+    label: "label",
   },
   parameters: {
     docs: {

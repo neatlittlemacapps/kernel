@@ -21,10 +21,9 @@ export default {
 
 export const Default = {
   args: {
-    data: undefined,
     width: 0,
     height: 0,
-    ariaLabel: undefined,
+    ariaLabel: "ariaLabel",
   },
   parameters: {
     docs: {

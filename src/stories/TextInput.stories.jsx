@@ -19,11 +19,6 @@ export default {
 };
 
 export const Default = {
-  args: {
-    value: undefined,
-    onChange: undefined,
-    placeholder: undefined,
-  },
   parameters: {
     docs: {
       source: { code: `<TextInput placeholder="Search records" />` },

@@ -17,9 +17,6 @@ export default {
 };
 
 export const Default = {
-  args: {
-    reactions: undefined,
-  },
   parameters: {
     docs: {
       source: { code: `<ReactionList reactions={["Hives", "Anaphylaxis"]} />` },

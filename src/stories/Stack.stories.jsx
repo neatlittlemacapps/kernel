@@ -27,8 +27,8 @@ export const Default = {
     align: "start",
     justify: "start",
     p: 0,
-    bg: undefined,
-    children: "...",
+    bg: "bg",
+    children: "Content",
   },
   parameters: {
     docs: {

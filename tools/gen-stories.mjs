@@ -55,17 +55,23 @@ function propToControl(prop) {
   return { control: 'text' };
 }
 
-// Build a plausible default arg value from a prop
+// Build a default arg value from a prop, or return null to OMIT it.
+// Only primitives + a couple of safe string slots get a baseline value; element /
+// object / function / unknown-shaped props are omitted rather than filled with a
+// placeholder, because a bogus value (the old "...") either renders as junk text or
+// crashes components that forward it into a Base UI render= prop or dereference it.
+// Components that genuinely need a real element/object/function get a hand-authored
+// story instead (see the @hand-authored guard).
 function defaultArg(prop) {
   const t = (prop.type || '').toLowerCase();
+  if (prop.name === 'className' || prop.name === 'style') return null;   // never a meaningful baseline arg
   if (prop.values && prop.values.length > 0) return JSON.stringify(prop.values[0]);
   if (t === 'bool' || t === 'boolean') return 'false';
   if (t === 'number') return '0';
-  if (t === 'fn' || t.startsWith('(')) return '() => {}';
-  if (t === 'node' || t === 'reactnode' || t === 'reactelement') return '"..."';
   if (prop.name === 'children') return '"Content"';
   if (prop.name === 'label' || prop.name === 'title') return `"${prop.name}"`;
-  return 'undefined';
+  if (t === 'string') return `"${prop.name}"`;
+  return null;   // node / element / object / fn / unknown -> omit
 }
 
 mkdirSync(outDir, { recursive: true });
@@ -76,9 +82,13 @@ let skipped = 0;
 for (const comp of components) {
   const outFile = join(outDir, `${comp.name}.stories.jsx`);
 
-  if (existsSync(outFile) && !force) {
-    skipped++;
-    continue;
+  if (existsSync(outFile)) {
+    // default: never touch an existing file. --force: refresh generated baselines
+    // but still skip anything a human took over (marked `@hand-authored`).
+    if (!force || readFileSync(outFile, 'utf8').includes('@hand-authored')) {
+      skipped++;
+      continue;
+    }
   }
 
   const layer = capitalize(comp.layer ?? 'atom');
@@ -103,15 +113,14 @@ for (const comp of components) {
     return `    ${key}: { ${ctrlStr.slice(1, -1)}${desc ? `, description: "${desc}"` : ''} },`;
   });
 
-  // Build default args block (skip fn props)
+  // Build default args block - only props with a safe baseline value (defaultArg
+  // returns null for element/object/fn/unknown props, which are omitted).
   const argLines = contentProps
-    .filter(p => {
-      const t = (p.type || '').toLowerCase();
-      return !t.startsWith('(') && t !== 'fn';
-    })
-    .map(p => {
+    .map(p => ({ p, v: defaultArg(p) }))
+    .filter(({ v }) => v !== null)
+    .map(({ p, v }) => {
       const key = /[^a-zA-Z0-9_$]/.test(p.name) ? `'${p.name}'` : p.name;
-      return `    ${key}: ${defaultArg(p)},`;
+      return `    ${key}: ${v},`;
     });
 
   // Escape usage snippet for embedding as a code string

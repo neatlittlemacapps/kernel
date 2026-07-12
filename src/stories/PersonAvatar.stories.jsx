@@ -19,7 +19,6 @@ export default {
 
 export const Default = {
   args: {
-    p: undefined,
     size: 0,
   },
   parameters: {

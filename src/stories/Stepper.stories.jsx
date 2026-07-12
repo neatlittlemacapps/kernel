@@ -24,12 +24,8 @@ export default {
 
 export const Default = {
   args: {
-    value: undefined,
-    min: undefined,
-    max: undefined,
-    step: undefined,
-    unit: undefined,
-    ariaLabel: undefined,
+    unit: "unit",
+    ariaLabel: "ariaLabel",
   },
   parameters: {
     docs: {

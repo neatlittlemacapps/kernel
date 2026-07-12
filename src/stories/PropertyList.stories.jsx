@@ -30,16 +30,11 @@ export default {
 export const Default = {
   args: {
     title: "title",
-    items: undefined,
     layout: "rows",
     minCard: 0,
     density: "comfortable",
-    filter: "...",
-    sort: "...",
-    action: "...",
-    emptyLabel: undefined,
-    ariaLabel: undefined,
-    className: undefined,
+    emptyLabel: "emptyLabel",
+    ariaLabel: "ariaLabel",
   },
   parameters: {
     docs: {

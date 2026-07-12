@@ -22,11 +22,7 @@ export default {
 
 export const Default = {
   args: {
-    children: "...",
-    value: undefined,
-    defaultValue: undefined,
-    onValueChange: undefined,
-    toggleMultiple: undefined,
+    children: "Content",
   },
   parameters: {
     docs: {

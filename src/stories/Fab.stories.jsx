@@ -21,10 +21,9 @@ export default {
 
 export const Default = {
   args: {
-    children: "...",
+    children: "Content",
     pulse: false,
-    'aria-label': undefined,
-    disabled: undefined,
+    'aria-label': "aria-label",
   },
   parameters: {
     docs: {

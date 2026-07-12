@@ -31,7 +31,7 @@ export const Default = {
     maxWidth: 0,
     sheetHeight: 0,
     sheetFull: false,
-    children: "...",
+    children: "Content",
   },
   parameters: {
     docs: {

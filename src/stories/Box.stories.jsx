@@ -28,11 +28,11 @@ export const Default = {
     p: 0,
     px: 0,
     py: 0,
-    bg: undefined,
-    radius: undefined,
+    bg: "bg",
+    radius: "radius",
     border: false,
-    as: undefined,
-    children: "...",
+    as: "as",
+    children: "Content",
   },
   parameters: {
     docs: {

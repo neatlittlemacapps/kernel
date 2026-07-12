@@ -19,8 +19,7 @@ export default {
 
 export const Default = {
   args: {
-    days: undefined,
-    ariaLabel: undefined,
+    ariaLabel: "ariaLabel",
   },
   parameters: {
     docs: {

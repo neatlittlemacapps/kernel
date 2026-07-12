@@ -21,8 +21,8 @@ export default {
 export const Default = {
   args: {
     status: "normal",
-    label: "...",
-    children: "...",
+    label: "label",
+    children: "Content",
   },
   parameters: {
     docs: {

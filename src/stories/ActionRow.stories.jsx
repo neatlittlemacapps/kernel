@@ -25,13 +25,11 @@ export default {
 
 export const Default = {
   args: {
-    icon: "...",
     label: "label",
-    description: undefined,
-    tone: undefined,
+    description: "description",
+    tone: "tone",
     selected: false,
-    reason: undefined,
-    disabled: undefined,
+    reason: "reason",
   },
   parameters: {
     docs: {

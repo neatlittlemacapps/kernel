@@ -24,9 +24,8 @@ export const Default = {
   args: {
     active: false,
     variant: "solid",
-    children: "...",
-    'aria-label': undefined,
-    disabled: undefined,
+    children: "Content",
+    'aria-label': "aria-label",
   },
   parameters: {
     docs: {

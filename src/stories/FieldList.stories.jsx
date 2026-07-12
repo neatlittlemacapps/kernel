@@ -17,9 +17,6 @@ export default {
 };
 
 export const Default = {
-  args: {
-    items: undefined,
-  },
   parameters: {
     docs: {
       source: { code: `<FieldList items={[{ label: "Born", value: "1978-04-12" }, { label: "Sex", value: "F" }]} />` },

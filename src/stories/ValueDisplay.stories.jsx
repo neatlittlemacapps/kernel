@@ -20,9 +20,8 @@ export default {
 
 export const Default = {
   args: {
-    value: undefined,
-    unit: undefined,
-    prefix: undefined,
+    unit: "unit",
+    prefix: "prefix",
   },
   parameters: {
     docs: {

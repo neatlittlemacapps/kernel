@@ -28,7 +28,7 @@ export const Default = {
     justify: "start",
     wrap: false,
     p: 0,
-    children: "...",
+    children: "Content",
   },
   parameters: {
     docs: {

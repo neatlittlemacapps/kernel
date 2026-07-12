@@ -20,9 +20,8 @@ export default {
 
 export const Default = {
   args: {
-    children: "...",
-    scrollKey: undefined,
-    anchorSelector: undefined,
+    children: "Content",
+    anchorSelector: "anchorSelector",
   },
   parameters: {
     docs: {

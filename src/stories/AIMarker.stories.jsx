@@ -18,7 +18,7 @@ export default {
 
 export const Default = {
   args: {
-    text: undefined,
+    text: "text",
   },
   parameters: {
     docs: {

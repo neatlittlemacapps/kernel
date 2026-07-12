@@ -21,8 +21,6 @@ export default {
 export const Default = {
   args: {
     tone: "neutral",
-    customColor: undefined,
-    className: undefined,
   },
   parameters: {
     docs: {

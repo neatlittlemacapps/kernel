@@ -28,7 +28,7 @@ export const Default = {
     high: 0,
     absMin: 0,
     absMax: 0,
-    ariaLabel: undefined,
+    ariaLabel: "ariaLabel",
   },
   parameters: {
     docs: {

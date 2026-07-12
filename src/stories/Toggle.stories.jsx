@@ -19,11 +19,6 @@ export default {
 };
 
 export const Default = {
-  args: {
-    checked: undefined,
-    onCheckedChange: undefined,
-    disabled: undefined,
-  },
   parameters: {
     docs: {
       source: { code: `<Toggle checked={on} onCheckedChange={setOn} />` },

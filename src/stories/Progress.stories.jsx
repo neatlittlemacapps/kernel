@@ -21,10 +21,8 @@ export default {
 
 export const Default = {
   args: {
-    label: "...",
-    'aria-label': undefined,
-    value: undefined,
-    max: undefined,
+    label: "label",
+    'aria-label': "aria-label",
   },
   parameters: {
     docs: {

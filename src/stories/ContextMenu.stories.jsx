@@ -22,11 +22,7 @@ export default {
 
 export const Default = {
   args: {
-    trigger: "...",
-    children: "...",
-    className: undefined,
-    open: undefined,
-    onOpenChange: undefined,
+    children: "Content",
   },
   parameters: {
     docs: {

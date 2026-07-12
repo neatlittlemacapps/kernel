@@ -17,9 +17,6 @@ export default {
 };
 
 export const Default = {
-  args: {
-    orientation: undefined,
-  },
   parameters: {
     docs: {
       source: { code: `<Separator />` },

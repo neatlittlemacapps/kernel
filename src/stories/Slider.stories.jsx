@@ -25,14 +25,7 @@ export default {
 
 export const Default = {
   args: {
-    'aria-label': undefined,
-    value: undefined,
-    defaultValue: undefined,
-    onValueChange: undefined,
-    min: undefined,
-    max: undefined,
-    step: undefined,
-    disabled: undefined,
+    'aria-label': "aria-label",
   },
   parameters: {
     docs: {

@@ -24,13 +24,8 @@ export default {
 
 export const Default = {
   args: {
-    placeholder: undefined,
-    children: "...",
-    className: undefined,
-    value: undefined,
-    defaultValue: undefined,
-    onValueChange: undefined,
-    disabled: undefined,
+    placeholder: "placeholder",
+    children: "Content",
   },
   parameters: {
     docs: {

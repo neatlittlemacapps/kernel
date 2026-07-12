@@ -26,11 +26,6 @@ export const Default = {
   args: {
     rows: 0,
     variant: "seamless",
-    value: undefined,
-    defaultValue: undefined,
-    onChange: undefined,
-    placeholder: undefined,
-    disabled: undefined,
   },
   parameters: {
     docs: {

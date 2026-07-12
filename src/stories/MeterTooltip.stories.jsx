@@ -20,9 +20,7 @@ export default {
 
 export const Default = {
   args: {
-    tip: "...",
-    children: "...",
-    side: undefined,
+    children: "Content",
   },
   parameters: {
     docs: {

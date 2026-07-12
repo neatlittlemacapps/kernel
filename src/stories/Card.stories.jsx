@@ -30,16 +30,14 @@ export default {
 export const Default = {
   args: {
     appearance: "filled",
-    tone: undefined,
+    tone: "tone",
     orientation: "vertical",
     size: "sm",
     interactive: false,
-    as: undefined,
+    as: "as",
     selected: false,
     dragging: false,
-    disabled: undefined,
-    floatingAction: "...",
-    children: "...",
+    children: "Content",
   },
   parameters: {
     docs: {

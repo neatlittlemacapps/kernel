@@ -20,8 +20,7 @@ export default {
 
 export const Default = {
   args: {
-    children: "...",
-    disabled: undefined,
+    children: "Content",
   },
   parameters: {
     docs: {

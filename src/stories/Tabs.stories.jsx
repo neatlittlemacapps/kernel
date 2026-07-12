@@ -21,10 +21,7 @@ export default {
 
 export const Default = {
   args: {
-    children: "...",
-    value: undefined,
-    defaultValue: undefined,
-    onValueChange: undefined,
+    children: "Content",
   },
   parameters: {
     docs: {

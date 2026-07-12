@@ -19,11 +19,6 @@ export default {
 };
 
 export const Default = {
-  args: {
-    multiple: undefined,
-    accept: undefined,
-    onChange: undefined,
-  },
   parameters: {
     docs: {
       source: { code: `<FileInput ref={fileRef} multiple onChange={onFiles} style={{ display: 'none' }} />` },

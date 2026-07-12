@@ -21,7 +21,6 @@ export default {
 export const Default = {
   args: {
     direction: "up",
-    value: "...",
     label: "label",
   },
   parameters: {
