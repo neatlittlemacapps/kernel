@@ -28,9 +28,10 @@ const fa = (data) => (p = {}) => {
   );
 };
 
-// Inline stroke fallback — kept ONLY for the view-mode glyphs the Kit doesn't have
-// yet (floating / bottomsheet are pending custom uploads; sidebar stays inline too
-// so the view-switcher trio renders in one consistent style until the customs land).
+// Kernel-original view-mode glyphs. `floating` and `bottomsheet` are OFFICIAL Kernel icons
+// (no Font Awesome equivalent exists), drawn as inline stroke SVG in the same 24x24 regular
+// style as the Kit so the view-switcher set reads as one family. (`sidebar` DOES exist in the
+// Kit and uses its flipped variant below, since the assistant docks on the right.)
 const S = (props) => (
   <svg width={props.size || 16} height={props.size || 16} viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth={props.w || 1.8} strokeLinecap="round" strokeLinejoin="round"
@@ -68,9 +69,9 @@ export const Icon = {
   image: fa(ICON_DATA.faImage),
   heart: fa(ICON_DATA.faHeart),
   shield: fa(ICON_DATA.faShieldHalved),
+  sidebar: fa(ICON_DATA.faSidebarFlip),   // view-mode: flipped — the assistant docks on the right
 
-  // ── inline fallback: view-mode glyphs (pending Kit custom icons) ──
+  // ── Kernel-original view-mode glyphs (official icons; no Font Awesome equivalent) ──
   floating: (p) => <S {...p}><rect x="2" y="6" width="20" height="14" rx="2" /><path d="M8 6V4" /><path d="M16 6V4" /></S>,
-  sidebar: (p) => <S {...p}><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M9 3v18" /></S>,
   bottomsheet: (p) => <S {...p}><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 14h18" /></S>,
 };
