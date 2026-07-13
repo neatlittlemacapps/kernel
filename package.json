@@ -44,12 +44,12 @@
     "mcp": "node mcp/server.mjs",
     "test": "node --test",
     "gen-stories": "node tools/gen-stories.mjs",
+    "gen-icons": "node tools/gen-icons.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "dependencies": {
-    "@awesome.me/kit-c983fdf9da": "^1.0.5"
-  },
+  "comment:dependencies": "Zero runtime dependencies - the client-shippable goal. Font Awesome icon path data is VENDORED into src/lib/icons-data.js (see tools/gen-icons.mjs); the FA kit is NOT a dependency. Regenerating icons is the only step that needs the FA .npmrc token.",
+  "dependencies": {},
   "devDependencies": {
     "@base-ui-components/react": "^1.0.0-rc.0",
     "@chromatic-com/storybook": "^5.2.1",
