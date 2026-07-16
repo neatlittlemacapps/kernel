@@ -486,7 +486,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "stable",
-      "summary": "Text button with variant (emphasis) + tone (semantic color). (sync test - Dena)",
+      "summary": "Text button with variant (emphasis) + tone (semantic color).",
       "usecases": [
         "action"
       ],
