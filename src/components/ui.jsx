@@ -136,7 +136,7 @@ export const meta = {
     layer: 'atom', scope: 'global', status: 'stable', category: 'Action',
     usecases: ['action'],
     keywords: ['button', 'btn', 'cta', 'submit', 'action', 'primary', 'secondary'],
-    summary: 'Text button with variant (emphasis) + tone (semantic color).',
+    summary: 'Text button with variant (emphasis) + tone (semantic color). (sync test - Dena)',
     props: [
       { name: 'variant', class: 'dsPresentation', values: ['primary', 'secondary', 'tertiary', 'text'], default: 'primary', description: 'Visual emphasis. Reserve primary for the single most important action in a view; `text` is a paint-free label button (accent text, no fill/border, flush sides) for low-emphasis inline actions.' },
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic color, orthogonal to variant. neutral = the default action accent; error = a destructive confirm (e.g. Delete). Maps to --status-{tone}-solid/on/tint; neutral has no status token and keeps the default button colors.' },
