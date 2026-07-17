@@ -88,6 +88,31 @@ const preview = {
   ],
 
   parameters: {
+    options: {
+      // Tier is fixed (Core, Chat, Clinical); everything under a tier (category, family,
+      // component name) sorts A-Z; within one component, Docs then Playground always lead,
+      // then the rest keep their declared order.
+      storySort: (a, b) => {
+        const TIER_ORDER = ['Core', 'Chat', 'Clinical'];
+        const tierRank = (title) => {
+          const idx = TIER_ORDER.indexOf(title.split('/')[0]);
+          return idx === -1 ? TIER_ORDER.length : idx;
+        };
+
+        if (a.title !== b.title) {
+          const diff = tierRank(a.title) - tierRank(b.title);
+          if (diff !== 0) return diff;
+          return a.title.localeCompare(b.title, 'en-US', { numeric: true });
+        }
+
+        const STORY_ORDER = ['Docs', 'Playground'];
+        const storyRank = (name) => {
+          const idx = STORY_ORDER.indexOf(name);
+          return idx === -1 ? STORY_ORDER.length : idx;
+        };
+        return storyRank(a.name) - storyRank(b.name);
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
