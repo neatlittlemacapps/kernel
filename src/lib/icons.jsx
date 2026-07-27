@@ -70,6 +70,9 @@ export const Icon = {
   heart: fa(ICON_DATA.faHeart),
   shield: fa(ICON_DATA.faShieldHalved),
   sidebar: fa(ICON_DATA.faSidebarFlip),   // view-mode: flipped — the assistant docks on the right
+  gear: fa(ICON_DATA.faGear),
+  chart: fa(ICON_DATA.faChartSimple),
+  creditCard: fa(ICON_DATA.faCreditCard),
 
   // ── Kernel-original view-mode glyphs (official icons; no Font Awesome equivalent) ──
   floating: (p) => <S {...p}><rect x="2" y="6" width="20" height="14" rx="2" /><path d="M8 6V4" /><path d="M16 6V4" /></S>,

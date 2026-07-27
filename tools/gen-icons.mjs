@@ -25,6 +25,7 @@ const ICON_NAMES = [
   'faBars', 'faMicrophone', 'faCapsules', 'faMagnifyingGlass', 'faPaperPlane', 'faShieldHalved',
   'faSparkles', 'faUser', 'faUsers',
   'faSidebarFlip', // view-mode switcher: the assistant docks on the RIGHT, so the flipped variant
+  'faGear', 'faChartSimple', 'faCreditCard',
 ];
 
 const kit = await import('@awesome.me/kit-c983fdf9da/icons/classic/regular').catch((e) => {
