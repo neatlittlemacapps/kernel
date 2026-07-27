@@ -1,8 +1,8 @@
 # Design tokens — system documentation
 
-_Last regenerated: 2026-07-07._
+_Last regenerated: 2026-07-27._
 _Spec: W3C Design Tokens 2025.10._  
-_Discovered: 767 tokens across 23 file(s); 1 resolver(s)._
+_Discovered: 770 tokens across 23 file(s); 1 resolver(s)._
 
 This document is the canonical reference for the token system. It is regenerated automatically — do not hand-edit; instead update the source `.tokens.json` files and re-run `scripts/generate_docs.py`.
 
@@ -191,7 +191,7 @@ _56 token(s)._
 
 ### Base / color
 
-_193 token(s)._
+_194 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -204,6 +204,7 @@ _193 token(s)._
 | `color.alpha.black-55` | color | `srgb(0.0784, 0.0784, 0.0784)` (`#141414`) |  |
 | `color.alpha.white-08` | color | `srgb(1, 1, 1)` (`#ffffff`) |  |
 | `color.alpha.white-16` | color | `srgb(1, 1, 1)` (`#ffffff`) |  |
+| `color.alpha.white-55` | color | `srgb(1, 1, 1)` (`#ffffff`) | The white mirror of black-55. Washes content OUT toward a light surface rather than dimming it down; paired with black-55 so a veil can flip polarity per theme. |
 | `color.amber.100` | color | `oklch(0.936, 0.0523, 75.0)` (`#ffe6c4`) |  |
 | `color.amber.200` | color | `oklch(0.881, 0.1005, 75.0)` (`#ffcf8c`) |  |
 | `color.amber.300` | color | `oklch(0.827, 0.1512, 75.0)` (`#ffb743`) |  |
@@ -475,7 +476,7 @@ _16 token(s)._
 
 ### Other
 
-_404 token(s)._
+_406 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -725,6 +726,8 @@ _404 token(s)._
 | `inverted.text` | color | `{brand.ink.100}` |  |
 | `overlay.scrim` | color | `{color.alpha.black-55}` |  |
 | `overlay.scrim` | color | `{color.alpha.black-55}` | Dimming backdrop behind modals, dialogs, drawers (hueless structural). |
+| `overlay.veil` | color | `{color.alpha.black-55}` | Flips polarity vs light: the dark page surface is the thing content should fade TOWARD, so the veil darkens here. In dark theme veil and scrim converge on the same value - fading out and dimming down are the same direction against a dark ground. |
+| `overlay.veil` | color | `{color.alpha.white-55}` | Veil over content that is set aside but STILL VISIBLE - e.g. the panel content peeking past an open navigation drawer. Unlike scrim it washes the content OUT toward the surface behind it (reads as inactive/faded) instead of dimming it DOWN (reads as backgrounded behind a modal). Flips polarity per theme: white in light, dark in dark, so it always fades toward that theme's page surface. |
 | `pill.dot-size` | dimension | `6px` | Status dot inside a pill (success/warning/error/info indicator). |
 | `pill.padding-block` | dimension | `3px` |  |
 | `pill.padding-block-dense` | dimension | `2px` | Tighter variant for dense rows or in-card adornments. |

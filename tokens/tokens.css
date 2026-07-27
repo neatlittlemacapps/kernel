@@ -181,6 +181,7 @@
   --color-alpha-black-55: rgb(20 20 20 / 0.55);
   --color-alpha-white-08: rgb(255 255 255 / 0.08);
   --color-alpha-white-16: rgb(255 255 255 / 0.16);
+  --color-alpha-white-55: rgb(255 255 255 / 0.55);
   --color-transparent: rgb(0 0 0 / 0);
   --color-rust-50: #fff5f3;
   --color-rust-100: #ffe3db;
@@ -440,7 +441,9 @@
   --state-selected-text: var(--action-solid);
   --state-disabled-surface: var(--brand-neutral-muted-light);
   --state-disabled-text: var(--brand-ink-500);
+  --state-disabled-opacity: 0.5;
   --overlay-scrim: var(--color-alpha-black-55);
+  --overlay-veil: var(--color-alpha-white-55);
   --elevation-raised: 0px 1px 2px 0px var(--color-alpha-black-10), 0px 1px 1px 0px var(--color-alpha-black-06);
   --elevation-overlay: 0px 4px 12px -2px var(--color-alpha-black-12), 0px 2px 6px -2px var(--color-alpha-black-10);
   --elevation-modal: 0px 12px 32px -8px var(--color-alpha-black-18), 0px 4px 12px -4px var(--color-alpha-black-12);
@@ -772,6 +775,7 @@
   --state-disabled-surface: var(--brand-fill-700);
   --state-disabled-text: var(--brand-fill-300);
   --overlay-scrim: var(--color-alpha-black-55);
+  --overlay-veil: var(--color-alpha-black-55);
   --elevation-raised: 0px 1px 2px 0px var(--color-alpha-black-30), 0px 1px 1px 0px var(--color-alpha-black-24);
   --elevation-overlay: 0px 4px 12px -2px var(--color-alpha-black-30), 0px 2px 6px -2px var(--color-alpha-black-24);
   --elevation-modal: 0px 12px 32px -8px var(--color-alpha-black-55), 0px 4px 12px -4px var(--color-alpha-black-30);

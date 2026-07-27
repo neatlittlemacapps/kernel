@@ -3880,11 +3880,12 @@
       "layer": "atom",
       "scope": "global",
       "status": "stable",
-      "summary": "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer.",
+      "summary": "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer, with an optional slide-away navigation drawer underneath.",
       "usecases": [
         "assistant shell",
         "side panel",
-        "overlay panel"
+        "overlay panel",
+        "navigation drawer"
       ],
       "props": [
         {
@@ -3942,10 +3943,56 @@
           "class": "content",
           "type": "ReactNode",
           "description": "SidePanel.Header / SidePanel.Body / SidePanel.Footer."
+        },
+        {
+          "name": "drawer",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Navigation content revealed underneath when the panel content slides right. Supplying it enables the drawer layer; omit it and the panel renders exactly as before. Use SidePanel.DrawerBody / SidePanel.DrawerFooter inside it for a scrolling list with a sticky bottom row."
+        },
+        {
+          "name": "drawerOpen",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": "false",
+          "description": "Whether the drawer is revealed (controlled). The panel content translates right by the drawer width."
+        },
+        {
+          "name": "onDrawerOpenChange",
+          "class": "event",
+          "type": "(open: boolean) => void",
+          "description": "Fires when the drawer requests a close — the scrim over the peeking content is clicked, or Escape is pressed inside the drawer."
+        },
+        {
+          "name": "drawerWidth",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": "320",
+          "description": "Requested drawer width in px. Clamped to (panel width − drawerPeek), so a narrow sidebar or phone gets a near-full-width drawer with the content peeking instead."
+        },
+        {
+          "name": "drawerPeek",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": "56",
+          "description": "Minimum strip of panel content left visible when the drawer is open; the clamp floor for drawerWidth."
+        },
+        {
+          "name": "drawerLabel",
+          "class": "a11y",
+          "type": "string",
+          "default": "Menu",
+          "description": "Accessible name for the drawer region and its close scrim."
+        },
+        {
+          "name": "drawerId",
+          "class": "a11y",
+          "type": "string",
+          "description": "id on the drawer region, so an external toggle can point at it with aria-controls."
         }
       ],
       "composes": [],
-      "usage": "<SidePanel mode=\"sidebar\" width={w} onWidth={setW}>\n  <SidePanel.Header>…</SidePanel.Header>\n  <SidePanel.Body ref={bodyRef} onScroll={onScroll} overlay={<JumpToLatest/>}>…</SidePanel.Body>\n  <SidePanel.Footer><Composer/></SidePanel.Footer>\n</SidePanel>",
+      "usage": "<SidePanel mode=\"sidebar\" width={w} onWidth={setW}\n  drawer={<><SidePanel.DrawerBody>…history…</SidePanel.DrawerBody><SidePanel.DrawerFooter><Account/></SidePanel.DrawerFooter></>}\n  drawerOpen={navOpen} onDrawerOpenChange={setNavOpen} drawerId=\"nav\">\n  <SidePanel.Header>…</SidePanel.Header>\n  <SidePanel.Body ref={bodyRef} onScroll={onScroll} overlay={<JumpToLatest/>}>…</SidePanel.Body>\n  <SidePanel.Footer><Composer/></SidePanel.Footer>\n</SidePanel>",
       "keywords": [
         "sidepanel",
         "panel",
@@ -3954,7 +4001,9 @@
         "sidebar",
         "sheet",
         "overlay",
-        "assistant"
+        "assistant",
+        "navigation",
+        "slide-away"
       ],
       "category": "Layout",
       "anatomy": [
@@ -3977,6 +4026,26 @@
           "name": "Resize",
           "required": false,
           "description": "The drag handle, auto-rendered in sidebar mode."
+        },
+        {
+          "name": "Drawer",
+          "required": false,
+          "description": "The slide-away navigation layer under the panel content (the `drawer` prop)."
+        },
+        {
+          "name": "DrawerBody",
+          "required": false,
+          "description": "Scrolling region inside the drawer (SidePanel.DrawerBody)."
+        },
+        {
+          "name": "DrawerFooter",
+          "required": false,
+          "description": "Sticky bottom row of the drawer, e.g. an account / settings trigger (SidePanel.DrawerFooter)."
+        },
+        {
+          "name": "Scrim",
+          "required": false,
+          "description": "Click-to-close overlay on the peeking content while the drawer is open."
         }
       ],
       "related": [

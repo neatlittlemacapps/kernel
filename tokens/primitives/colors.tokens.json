@@ -2016,6 +2016,19 @@
           "alpha": 0.16,
           "hex": "#ffffff"
         }
+      },
+      "white-55": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.55,
+          "hex": "#ffffff"
+        },
+        "$description": "The white mirror of black-55. Washes content OUT toward a light surface rather than dimming it down; paired with black-55 so a veil can flip polarity per theme."
       }
     },
     "transparent": {

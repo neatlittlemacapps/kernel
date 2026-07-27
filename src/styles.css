@@ -137,6 +137,90 @@
 .krnl-resize span { position: absolute; right: 0; top: 0; width: 3px; height: 100%; background: var(--action-accent); opacity: 0; transition: opacity .15s; }
 .krnl-resize:hover span { opacity: 1; }
 
+/* ── DRAWER (slide-away navigation) ──────────────────────────────────────────
+   The panel content is wrapped in a .krnl-panel-slider that translates right to
+   reveal a .krnl-drawer underneath. Rendered only when SidePanel gets a `drawer`
+   prop, so drawer-less consumers keep the exact DOM they had.
+
+   The stage owns the CLIPPING, not the panel: .krnl-panel--sidebar above must stay
+   overflow:visible so the -16px resize handle isn't cut off, and the handle is a
+   SIBLING of the stage — outside its clip. That's the whole trick.
+
+   NOTE: while open the slider carries a transform, making it a containing block for
+   any position:fixed descendant. Nothing in the panel is fixed today; keep it that
+   way (portal instead). Closed state is transform:none and there is deliberately NO
+   will-change, so the containing block only exists while the drawer is out. */
+.krnl-panel-stage {
+  /* Requested width, floored so a narrow panel becomes "full width + peek" instead of
+     a useless 320px drawer in a 360px sidebar. One rule, no mode branching: a 900px
+     fullscreen panel gets 320px; a 400px sidebar or a phone gets 100% − peek. */
+  --krnl-drawer-req: 320px;
+  --krnl-drawer-peek: 56px;
+  --krnl-drawer-w: min(var(--krnl-drawer-req), calc(100% - var(--krnl-drawer-peek)));
+  position: relative; flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.krnl-drawer {
+  position: absolute; inset: 0 auto 0 0; z-index: 0;
+  width: var(--krnl-drawer-w);
+  display: flex; flex-direction: column;
+  /* the neutral base surface (#fff in light), NOT --surface-panel: the drawer is the
+     layer the panel sits ON, so it reads as the page beneath rather than another
+     tinted panel stacked on one. */
+  background: var(--surface-page);
+  /* visibility (not display) so the drawer keeps its layout for a clean reveal, but
+     leaves the a11y tree + tab order while closed. Delayed on close so it doesn't
+     vanish mid-slide. */
+  visibility: hidden;
+  transition: visibility 0s linear var(--motion-duration-base);
+}
+.krnl-drawer-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-2) var(--space-2) var(--space-4); }
+.krnl-drawer-foot { flex-shrink: 0; padding: var(--space-2); border-top: var(--dimension-rule-hair) solid var(--border-subtle); background: var(--surface-page); }
+
+/* The sliding content. MUST be a flex column with min-height:0 — SidePanel.Footer is
+   display:contents, so its rows (context chip, composer) now flex HERE rather than on
+   .krnl-panel; without this the composer stops sticking and the body stops scrolling. */
+.krnl-panel-slider {
+  position: relative; z-index: 1;
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+  background: var(--surface-raised);
+  transform: none;
+  transition: transform var(--motion-duration-base) var(--motion-easing-emphasized),
+              box-shadow var(--motion-duration-base) var(--motion-easing-standard);
+}
+[data-drawer-open] .krnl-drawer { visibility: visible; transition-delay: 0s; }
+[data-drawer-open] .krnl-panel-slider {
+  transform: translate3d(var(--krnl-drawer-w), 0, 0);
+  box-shadow: var(--elevation-overlay);
+}
+
+/* Click-to-close over the peeking content. A real button, and a SIBLING of the slider
+   rather than a child — so the slider can be inert while the scrim stays operable.
+   --overlay-veil, NOT --overlay-scrim: the content behind this is still VISIBLE, so it
+   should wash out toward the page surface (reads as inactive) rather than dim down
+   behind a modal. The token flips polarity per theme. */
+.krnl-panel-scrim {
+  position: absolute; z-index: 2; top: 0; bottom: 0; right: 0; left: var(--krnl-drawer-w);
+  border: none; padding: 0; cursor: pointer;
+  background: var(--overlay-veil); opacity: 0;
+  animation: krnl-fadeIn var(--motion-duration-base) var(--motion-easing-standard) forwards;
+}
+/* inset ring: an outset one on this edge-flush element would be clipped by the stage */
+.krnl-panel-scrim:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -4px; }
+
+/* A content-hugging sheet can't host a drawer — the consumer forces sheetFull while it's
+   open; this stops the height transition fighting the slide. */
+.krnl-panel--bottomsheet[data-drawer-open] { transition: none; }
+
+/* A ~320px translate is exactly the large-transform case the reduced-motion guidance
+   targets, so the slide becomes a cut. The scrim fade stays (opacity isn't vestibular). */
+@media (prefers-reduced-motion: reduce) {
+  .krnl-panel-slider { transition-duration: 1ms; }
+  .krnl-drawer { transition-delay: 0s; }
+}
+
 /* ── HEADER ── */
 .krnl-header { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
 .krnl-header-title { flex: 1; min-width: 0; margin-left: 6px; font-size: var(--typography-title-sm-font-size); font-weight: var(--typography-title-sm-font-weight); color: var(--text-default); font-family: var(--typography-title-sm-font-family); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

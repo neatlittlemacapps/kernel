@@ -73,6 +73,11 @@ follows [SemVer](https://semver.org/).
   - *Affects:* Menu items now; convergence target for Checkbox/RadioGroup/Select/Slider (B-38) and the drifting .45/.5/.6 literals in switch/chip/action-row (B-scope retrofit, not done here)
   - *Rationale:* DS had no opacity token; styling-bridge forbids inlining opacity literals. One semantic token stops the drift and serves B-38 disabled states.
   - *Migration:* Use var(--state-disabled-opacity) for [data-disabled] dimming instead of a literal.
+- overlay.veil - a wash-out veil for content set aside but still visible, plus the color.alpha.white-55 primitive it needs
+  - Before: `only overlay.scrim (alpha-black-55) existed` → After: `overlay.veil = alpha-white-55 (light) / alpha-black-55 (dark); new primitive color.alpha.white-55`
+  - *Affects:* surfaces family. First consumer is .krnl-panel-scrim in the new SidePanel drawer. No existing token changed value, so nothing currently rendered moves.
+  - *Rationale:* scrim dims content DOWN behind a modal; the drawer leaves panel content VISIBLE alongside it, which needs the opposite polarity - washing OUT toward the page surface so it reads inactive rather than backgrounded. Reusing scrim there put a 55% black overlay on visible content, which read as a modal backdrop. white-55 mirrors the existing black-55 so the pair can flip per theme; in dark the two converge because fading-out and dimming-down are the same direction against a dark ground.
+  - *Migration:* None. Purely additive - no existing token changed.
 
 ### Changed
 - `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Warmed and lightened the six neutral primitives (cool greys -> warm greige, hue 75, lifted lightness)

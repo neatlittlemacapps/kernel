@@ -1,4 +1,6 @@
-import { SidePanel } from '@corilus/kernel';
+// @hand-authored - argTypes generated, Drawer story hand-crafted; not regenerated.
+import { useState } from 'react';
+import { SidePanel, IconButton, ActionRow, Button, Icon } from '@corilus/kernel';
 
 export default {
   title: 'Core/Layout/SidePanel',
@@ -13,9 +15,16 @@ export default {
     sheetHeight: { control: 'number', description: "Bottom-sheet height in px; the consumer measures its content and feeds it in.", table: { category: 'Appearance', type: { summary: "number" } } },
     sheetFull: { control: 'boolean', description: "Bottom-sheet has reached the fullscreen takeover threshold.", table: { category: 'Appearance', type: { summary: "bool" } } },
     children: { control: 'text', description: "SidePanel.Header / SidePanel.Body / SidePanel.Footer.", table: { category: 'Content', type: { summary: "ReactNode" } } },
+    drawer: { control: false, description: "Navigation content revealed underneath when the panel content slides right. Supplying it enables the drawer layer; omit it and the panel renders exactly as before. Use SidePanel.DrawerBody / SidePanel.DrawerFooter inside it for a scrolling list with a sticky bottom row.", table: { category: 'Content', type: { summary: "ReactNode" } } },
+    drawerOpen: { control: 'boolean', description: "Whether the drawer is revealed (controlled). The panel content translates right by the drawer width.", table: { category: 'Appearance', defaultValue: { summary: "false" }, type: { summary: "bool" } } },
+    onDrawerOpenChange: { control: false, description: "Fires when the drawer requests a close — the scrim over the peeking content is clicked, or Escape is pressed inside the drawer.", table: { category: 'Events', type: { summary: "(open: boolean) => void" } } },
+    drawerWidth: { control: 'number', description: "Requested drawer width in px. Clamped to (panel width − drawerPeek), so a narrow sidebar or phone gets a near-full-width drawer with the content peeking instead.", table: { category: 'Appearance', defaultValue: { summary: "320" }, type: { summary: "number" } } },
+    drawerPeek: { control: 'number', description: "Minimum strip of panel content left visible when the drawer is open; the clamp floor for drawerWidth.", table: { category: 'Appearance', defaultValue: { summary: "56" }, type: { summary: "number" } } },
+    drawerLabel: { control: 'text', description: "Accessible name for the drawer region and its close scrim.", table: { category: 'Accessibility', defaultValue: { summary: "Menu" }, type: { summary: "string" } } },
+    drawerId: { control: 'text', description: "id on the drawer region, so an external toggle can point at it with aria-controls.", table: { category: 'Accessibility', type: { summary: "string" } } },
   },
   parameters: {
-    docs: { description: { component: "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer.\n\n**Import**\n\n```ts\nimport { SidePanel } from '@corilus/kernel'\n```\n\n**Anatomy**\n- **Header** _(optional)_ — The top bar region (SidePanel.Header).\n- **Body** — The scrollable content region with a fade-scrim (SidePanel.Body); forwards a ref + onScroll + an overlay slot.\n- **Footer** _(optional)_ — Non-scrolling bottom rows (SidePanel.Footer), e.g. a context chip + composer.\n- **Resize** _(optional)_ — The drag handle, auto-rendered in sidebar mode." } },
+    docs: { description: { component: "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer, with an optional slide-away navigation drawer underneath.\n\n**Import**\n\n```ts\nimport { SidePanel } from '@corilus/kernel'\n```\n\n**Anatomy**\n- **Header** _(optional)_ — The top bar region (SidePanel.Header).\n- **Body** — The scrollable content region with a fade-scrim (SidePanel.Body); forwards a ref + onScroll + an overlay slot.\n- **Footer** _(optional)_ — Non-scrolling bottom rows (SidePanel.Footer), e.g. a context chip + composer.\n- **Resize** _(optional)_ — The drag handle, auto-rendered in sidebar mode.\n- **Drawer** _(optional)_ — The slide-away navigation layer under the panel content (the `drawer` prop).\n- **DrawerBody** _(optional)_ — Scrolling region inside the drawer (SidePanel.DrawerBody).\n- **DrawerFooter** _(optional)_ — Sticky bottom row of the drawer, e.g. an account / settings trigger (SidePanel.DrawerFooter).\n- **Scrim** _(optional)_ — Click-to-close overlay on the peeking content while the drawer is open." } },
   },
 };
 
@@ -28,8 +37,14 @@ export const Playground = {
     sheetHeight: 0,
     sheetFull: false,
     children: "Content",
+    drawerOpen: "false",
+    drawerWidth: "320",
+    drawerPeek: "56",
+    drawerLabel: "Menu",
   },
-  parameters: { docs: { source: { code: `<SidePanel mode="sidebar" width={w} onWidth={setW}>
+  parameters: { docs: { source: { code: `<SidePanel mode="sidebar" width={w} onWidth={setW}
+  drawer={<><SidePanel.DrawerBody>…history…</SidePanel.DrawerBody><SidePanel.DrawerFooter><Account/></SidePanel.DrawerFooter></>}
+  drawerOpen={navOpen} onDrawerOpenChange={setNavOpen} drawerId="nav">
   <SidePanel.Header>…</SidePanel.Header>
   <SidePanel.Body ref={bodyRef} onScroll={onScroll} overlay={<JumpToLatest/>}>…</SidePanel.Body>
   <SidePanel.Footer><Composer/></SidePanel.Footer>
@@ -45,4 +60,54 @@ export const Gallery = {
       ))}
     </div>
   ),
+};
+
+/* The drawer, with a REAL Header/Body/Footer composition — the generated Gallery above
+   passes a bare string child, which never exercises the display:contents footer that the
+   slider has to flex. Switch `mode` in the toolbar to check all five; in sidebar mode
+   confirm the resize handle still surfaces OUTSIDE the panel edge on hover (the drawer's
+   clip lives on the stage precisely so that keeps working). */
+export const Drawer = {
+  // width matters: .krnl-panel--sidebar is position:fixed with no intrinsic width, so
+  // without it the panel shrink-to-fits its content and the clamp has nothing to clamp to.
+  args: { mode: 'sidebar', width: 420, drawerWidth: 320, drawerPeek: 56 },
+  argTypes: { children: { control: false }, drawer: { control: false }, drawerOpen: { control: false } },
+  render: (args) => {
+    const [open, setOpen] = useState(true);
+    return (
+      <SidePanel {...args} drawerOpen={open} onDrawerOpenChange={setOpen}
+        drawerId="sp-drawer" drawerLabel="History"
+        drawer={<>
+          <div style={{ padding: 'var(--space-3) var(--space-3) var(--space-2)' }}>
+            <Button variant="secondary" onClick={() => setOpen(false)}>{Icon.plus({ size: 13 })}New chat</Button>
+          </div>
+          <SidePanel.DrawerBody>
+            <nav aria-label="Recent">
+              {['Prescription renewal', 'Referral letter', 'HbA1c targets', 'Absence certificate'].map((c) => (
+                <ActionRow key={c} icon={Icon.chat({ size: 14 })} label={c} onClick={() => setOpen(false)} />
+              ))}
+            </nav>
+          </SidePanel.DrawerBody>
+          <SidePanel.DrawerFooter>
+            <ActionRow icon={Icon.user({ size: 14 })} label="Dr. Vermeulen" description="Manage assistant" />
+          </SidePanel.DrawerFooter>
+        </>}>
+        <SidePanel.Header>
+          <IconButton aria-label="Menu" active={open} aria-expanded={open} aria-controls="sp-drawer"
+            onClick={() => setOpen((v) => !v)}>{Icon.menu({ size: 16, w: 2 })}</IconButton>
+          <div className="krnl-header-title">Assistant</div>
+        </SidePanel.Header>
+        <SidePanel.Body>
+          <div className="krnl-page" style={{ padding: 'var(--space-3)' }}>
+            {Array.from({ length: 12 }, (_, i) => <p key={i}>Body line {i + 1} — scrolls independently of the drawer.</p>)}
+          </div>
+        </SidePanel.Body>
+        <SidePanel.Footer>
+          <div className="krnl-inputbar" style={{ padding: 'var(--space-3)', borderTop: '1px solid var(--border-subtle)' }}>
+            Composer — must stay pinned while the panel slides.
+          </div>
+        </SidePanel.Footer>
+      </SidePanel>
+    );
+  },
 };

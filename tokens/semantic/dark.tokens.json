@@ -157,6 +157,10 @@
   "overlay": {
     "scrim": {
       "$value": "{color.alpha.black-55}"
+    },
+    "veil": {
+      "$value": "{color.alpha.black-55}",
+      "$description": "Flips polarity vs light: the dark page surface is the thing content should fade TOWARD, so the veil darkens here. In dark theme veil and scrim converge on the same value - fading out and dimming down are the same direction against a dark ground."
     }
   },
   "elevation": {

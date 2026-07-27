@@ -211,6 +211,10 @@
     "scrim": {
       "$value": "{color.alpha.black-55}",
       "$description": "Dimming backdrop behind modals, dialogs, drawers (hueless structural)."
+    },
+    "veil": {
+      "$value": "{color.alpha.white-55}",
+      "$description": "Veil over content that is set aside but STILL VISIBLE - e.g. the panel content peeking past an open navigation drawer. Unlike scrim it washes the content OUT toward the surface behind it (reads as inactive/faded) instead of dimming it DOWN (reads as backgrounded behind a modal). Flips polarity per theme: white in light, dark in dark, so it always fades toward that theme's page surface."
     }
   },
   "elevation": {
