@@ -177,6 +177,15 @@
 }
 .krnl-drawer-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-2) var(--space-2) var(--space-4); }
 .krnl-drawer-foot { flex-shrink: 0; padding: var(--space-2); border-top: var(--dimension-rule-hair) solid var(--border-subtle); background: var(--surface-page); }
+/* Drawer content furniture. Named krnl-drawer-* deliberately: the bottom-sheet sizing
+   pass sums .krnl-header/.krnl-context/.krnl-inputbar as non-scrolling chrome, and the
+   drawer must never collide with those names or it double-counts and mis-sizes. */
+.krnl-drawer-top { flex-shrink: 0; padding: var(--space-3) var(--space-3) var(--space-2); }
+.krnl-drawer-section + .krnl-drawer-section { margin-top: var(--space-3); }
+.krnl-drawer-section-label { padding: var(--space-2) var(--space-2) var(--space-1); font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); letter-spacing: var(--type-tracking-wide); text-transform: uppercase; color: var(--text-faint); }
+.krnl-drawer-account .krnl-collapsible-trigger { width: 100%; padding: var(--space-2); border-radius: var(--krnl-radius-sm); }
+.krnl-drawer-account .krnl-collapsible-trigger:hover { background: var(--state-hover); }
+.krnl-drawer-account-id { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
 
 /* The sliding content. MUST be a flex column with min-height:0 — SidePanel.Footer is
    display:contents, so its rows (context chip, composer) now flex HERE rather than on
@@ -527,6 +536,55 @@
   box-shadow: var(--elevation-modal); font-family: var(--font-body); animation: krnl-fadeUp .18s ease;
 }
 .krnl-dialog--alert { width: min(400px, calc(100vw - var(--space-6))); }
+/* Management-surface geometries. Same Dialog (focus trap / Escape / scroll lock /
+   backdrop), two shapes: --sheet is the mobile bottom sheet, --takeover the
+   Claude-style fullscreen settings overlay. A fat-client host that can't host a
+   takeover uses the consumer's in-panel branch instead and never mounts a Dialog. */
+.krnl-dialog--sheet {
+  top: auto; bottom: 0; left: 0; transform: none;
+  width: 100%; max-width: 100%; max-height: 85vh;
+  border-radius: var(--krnl-radius-panel) var(--krnl-radius-panel) 0 0;
+  border-left: none; border-right: none; border-bottom: none;
+  animation: krnl-fadeUp var(--motion-duration-base) var(--motion-easing-decelerate);
+}
+.krnl-dialog--takeover {
+  top: 0; left: 0; transform: none;
+  width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh;
+  border: none; border-radius: 0; padding: var(--space-6);
+  animation: krnl-fadeIn var(--motion-duration-fast) var(--motion-easing-standard);
+}
+/* The takeover is a page, not a card — keep its content in a readable centred column.
+   Doubled class for specificity: .krnl-dialog-title sets `margin: 0` further down the
+   sheet, which at equal specificity would win on source order and reset the centring,
+   leaving the title flush-left while the body sat centred. */
+.krnl-dialog--takeover.krnl-dialog--takeover > * { width: min(100%, 760px); margin-inline: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .krnl-dialog--sheet, .krnl-dialog--takeover { animation-duration: 1ms; }
+}
+
+/* ── CREDIT NOTICE ── nearing / at the credit limit (AIP-47 F4.1). A footer row above
+   the composer, so it is the last thing seen before spending another credit. Tone is
+   set by the caller from the threshold ladder via .krnl-tone--*. */
+.krnl-creditnotice {
+  display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0;
+  margin: 0 var(--space-3) var(--space-2); padding: var(--space-2) var(--space-3);
+  border: var(--dimension-rule-hair) solid var(--row-tone, var(--border-subtle));
+  border-radius: var(--krnl-radius-md);
+  background: var(--state-selected-surface);
+  animation: krnl-fadeUp var(--motion-duration-fast) var(--motion-easing-decelerate);
+}
+.krnl-creditnotice-ic { display: flex; flex-shrink: 0; color: var(--row-tone, var(--action-accent)); }
+.krnl-creditnotice-tx {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;
+  border: none; background: none; padding: 0; cursor: pointer; text-align: left;
+  font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size);
+  font-weight: var(--typography-label-md-font-weight); color: var(--text-default);
+}
+.krnl-creditnotice-tx:hover { color: var(--row-tone, var(--action-accent)); }
+.krnl-creditnotice-sub { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); font-weight: var(--type-weight-regular); color: var(--text-muted); }
+
+/* ── MANAGE (billing / usage / feature flags) ── shared by all three presentations */
+.krnl-manage { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-3); }
 .krnl-dialog-title { font-family: var(--typography-title-md-font-family); font-size: var(--typography-title-md-font-size); font-weight: var(--typography-title-md-font-weight); color: var(--text-default); margin: 0; }
 .krnl-dialog-desc { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); margin: 0; }
 .krnl-dialog-body { font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); display: flex; flex-direction: column; gap: var(--space-3); }

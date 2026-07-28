@@ -51,26 +51,36 @@ export const SidePanel = React.forwardRef(function SidePanel(
   const onStageKeyDown = (e) => {
     if (e.key === 'Escape' && open) { e.stopPropagation(); onDrawerOpenChange && onDrawerOpenChange(false); }
   };
-  /* `inert` must be CONDITIONALLY SPREAD, never passed a falsy value. This component runs
-     under React 19 (Kernel/Storybook) and React 18.2 (the greenhouse UMD bundle), and the
-     two disagree about every other form:
-       inert=""      → React 19 treats it as FALSE, silently dropping the protection.
+  /* `inert` is set IMPERATIVELY on the DOM node, never as a JSX prop. This component
+     runs under React 19 (Kernel/Storybook) and React 18.2 (the greenhouse UMD bundle),
+     and every JSX form breaks on one of them — verified in both, not assumed:
+       inert=""      → React 19 treats it as FALSE. Protection silently absent.
+       inert={true}  → React 18 does not know `inert` as a boolean attribute, so it
+                       DROPS it entirely. Silently, because production strips the warning.
        inert={false} → React 18 emits inert="false"; HTML boolean attributes are
                        presence-based, so the content would be permanently inert.
-     Spreading `{ inert: true }` or nothing works on both: React 19 sets the real boolean,
-     React 18 emits inert="true", and the absent case emits no attribute at all.
-     Closed drawer: inert + visibility:hidden (the widely-supported belt). Open: the
-     slid-away content goes inert — NOT aria-hidden, since it's still visible (peeking)
-     and aria-hidden on visible content is a WCAG failure. */
-  const inertIf = (on) => (on ? { inert: true } : null);
+       inert="true"  → works on both, but React 19 warns about a string on a boolean attr.
+     Setting the property sidesteps React's attribute handling on both versions.
+     Before the effect runs, the closed drawer is still covered by visibility:hidden,
+     which already takes it out of the a11y tree and the tab order.
+
+     Open state: the slid-away content goes inert — NOT aria-hidden, since it is still
+     visible (peeking) and aria-hidden on visible content is a WCAG failure. */
+  const drawerElRef = React.useRef(null);
+  const sliderElRef = React.useRef(null);
+  React.useEffect(() => {
+    if (drawerElRef.current) drawerElRef.current.inert = !open;
+    if (sliderElRef.current) sliderElRef.current.inert = open;
+  }, [open, drawer]);
+
   const body = !drawer ? children : (
     <div className="krnl-panel-stage" onKeyDown={onStageKeyDown}
       style={{
         '--krnl-drawer-req': drawerWidth != null ? drawerWidth + 'px' : undefined,
         '--krnl-drawer-peek': drawerPeek != null ? drawerPeek + 'px' : undefined,
       }}>
-      <aside className="krnl-drawer" id={drawerId} aria-label={drawerLabel} {...inertIf(!open)}>{drawer}</aside>
-      <div className="krnl-panel-slider" {...inertIf(open)}>{children}</div>
+      <aside ref={drawerElRef} className="krnl-drawer" id={drawerId} aria-label={drawerLabel}>{drawer}</aside>
+      <div ref={sliderElRef} className="krnl-panel-slider">{children}</div>
       {open && (
         <button type="button" className="krnl-panel-scrim" aria-label={`Close ${drawerLabel}`}
           onClick={() => onDrawerOpenChange && onDrawerOpenChange(false)} />
