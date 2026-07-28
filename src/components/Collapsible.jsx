@@ -9,9 +9,13 @@ const React = window.React;
 
 // Collapsible - `trigger` is the always-visible header; `children` is the region
 // revealed when open. open/defaultOpen/onOpenChange pass through.
-export function Collapsible({ trigger, children, className = '', ...rest }) {
+// `variant="plain"` drops the trigger's box (border/background/radius) for a header
+// that already sits inside a frame (a settings pane, a Card, a drawer footer).
+export function Collapsible({ trigger, children, variant = 'framed', className = '', ...rest }) {
   return (
-    <BaseCollapsible.Root className={`krnl-collapsible ${className}`.trim()} {...rest}>
+    <BaseCollapsible.Root
+      className={['krnl-collapsible', variant !== 'framed' && `krnl-collapsible--${variant}`, className]
+        .filter(Boolean).join(' ')} {...rest}>
       <BaseCollapsible.Trigger className="krnl-collapsible-trigger">
         <span>{trigger}</span>
         <span className="krnl-collapsible-chev" aria-hidden="true">{Icon.chevron({ size: 16 })}</span>
@@ -34,6 +38,8 @@ export const meta = {
         description: 'The always-visible header that toggles the region (a chevron is added automatically).' },
       { name: 'children', class: 'content', type: 'ReactNode',
         description: 'The content revealed when open.' },
+      { name: 'variant', class: 'dsPresentation', type: "'framed' | 'plain'", default: 'framed',
+        description: 'framed (default) draws the trigger as a bordered control; plain drops the box so the header reads as a heading row inside a frame that already exists (a settings pane, a Card, a drawer footer).' },
       { name: 'open', class: 'passThroughControl', passthrough: 'BaseUI.Collapsible.Root.open' },
       { name: 'defaultOpen', class: 'passThroughControl', passthrough: 'BaseUI.Collapsible.Root.defaultOpen' },
       { name: 'onOpenChange', class: 'passThroughControl', passthrough: 'BaseUI.Collapsible.Root.onOpenChange' },

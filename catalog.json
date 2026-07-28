@@ -1073,6 +1073,13 @@
           "description": "The content revealed when open."
         },
         {
+          "name": "variant",
+          "class": "dsPresentation",
+          "type": "'framed' | 'plain'",
+          "default": "framed",
+          "description": "framed (default) draws the trigger as a bordered control; plain drops the box so the header reads as a heading row inside a frame that already exists (a settings pane, a Card, a drawer footer)."
+        },
+        {
           "name": "open",
           "class": "passThroughControl",
           "passthrough": "BaseUI.Collapsible.Root.open"
@@ -1456,6 +1463,25 @@
           "description": "Extra class(es) appended to the dialog surface (e.g. a wider variant)."
         },
         {
+          "name": "onBack",
+          "class": "event",
+          "type": "fn",
+          "description": "When set, a back control is rendered before the title and invoked on activation. Use for a drill-down surface (a section list -> one section) where back should return a level instead of closing the dialog."
+        },
+        {
+          "name": "backLabel",
+          "class": "a11y",
+          "type": "string",
+          "default": "Back",
+          "description": "Accessible label for the back control; pass a localized string."
+        },
+        {
+          "name": "headerAction",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Controls pinned to the end of the title row, typically a DialogClose-wrapped IconButton. The title row only renders when onBack or headerAction is set; otherwise the title stays a bare child and existing dialogs are unchanged."
+        },
+        {
           "name": "open",
           "class": "passThroughControl",
           "passthrough": "BaseUI.Dialog.Root.open"
@@ -1471,7 +1497,9 @@
           "passthrough": "BaseUI.Dialog.Root.onOpenChange"
         }
       ],
-      "composes": [],
+      "composes": [
+        "IconButton"
+      ],
       "usage": "<Dialog title=\"Rename file\" trigger={<Btn>Rename</Btn>}\n  actions={<><DialogClose><Btn variant=\"secondary\">Cancel</Btn></DialogClose><Btn>Save</Btn></>}>\n  <TextInput defaultValue=\"report.pdf\" />\n</Dialog>",
       "keywords": [
         "dialog",
@@ -1497,6 +1525,11 @@
           "name": "Backdrop",
           "required": true,
           "description": "The scrim behind the dialog; dims and blocks the page."
+        },
+        {
+          "name": "Header",
+          "required": false,
+          "description": "The title row when onBack / headerAction is set: back control, title, trailing actions."
         },
         {
           "name": "Title",
@@ -4749,6 +4782,12 @@
           "name": "onValueChange",
           "class": "passThroughControl",
           "passthrough": "BaseUI.Tabs.Root.onValueChange"
+        },
+        {
+          "name": "orientation",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Tabs.Root.orientation",
+          "description": "horizontal (default) or vertical. Vertical turns the TabList into a left nav rail: Base UI flips the arrow-key axis and sets data-orientation, and Kernel styles it from that attribute — no extra class needed."
         }
       ],
       "composes": [],
@@ -4766,6 +4805,10 @@
         {
           "do": true,
           "text": "Use for a handful of peer views the user switches between; keep tab labels to one or two words."
+        },
+        {
+          "do": true,
+          "text": "Use orientation=\"vertical\" for a settings rail; add krnl-tabs--settings for the rail + scrolling-pane split."
         },
         {
           "do": false,

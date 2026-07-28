@@ -64,6 +64,12 @@
 @keyframes krnl-fadeIn { from { opacity: 0 } to { opacity: 1 } }
 @keyframes krnl-fadeUp { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
 @keyframes krnl-blink { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+/* krnl-fadeUp cannot be used on a translate(-50%,-50%)-centred element — its
+   translateY keyframe overrides the centring transform for the animation's duration,
+   so the dialog enters offset by half its own size and snaps at the end. These two
+   preserve (or intentionally replace) the centring/positioning transform instead. */
+@keyframes krnl-dialogIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 8px)) } to { opacity: 1; transform: translate(-50%, -50%) } }
+@keyframes krnl-sheetUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
 
 .krnl-companion-layer, .krnl-companion-layer * { box-sizing: border-box; }
 .krnl-companion-layer { font-family: var(--font-body); color: var(--text-default); }
@@ -183,8 +189,9 @@
 .krnl-drawer-top { flex-shrink: 0; padding: var(--space-3) var(--space-3) var(--space-2); }
 .krnl-drawer-section + .krnl-drawer-section { margin-top: var(--space-3); }
 .krnl-drawer-section-label { padding: var(--space-2) var(--space-2) var(--space-1); font-family: var(--typography-overline-font-family); font-size: var(--typography-overline-font-size); font-weight: var(--typography-overline-font-weight); letter-spacing: var(--type-tracking-wide); text-transform: uppercase; color: var(--text-faint); }
-.krnl-drawer-account .krnl-collapsible-trigger { width: 100%; padding: var(--space-2); border-radius: var(--krnl-radius-sm); }
-.krnl-drawer-account .krnl-collapsible-trigger:hover { background: var(--state-hover); }
+/* the account row's Collapsible now uses variant="plain" (see Collapsible.jsx); it just
+   needs to fill the drawer-footer's width, which the plain variant doesn't presume. */
+.krnl-drawer-account .krnl-collapsible-trigger { width: 100%; }
 .krnl-drawer-account-id { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
 
 /* The sliding content. MUST be a flex column with min-height:0 — SidePanel.Footer is
@@ -329,9 +336,18 @@
 .krnl-action-reason { color: var(--text-faint); white-space: normal; }
 .krnl-action-chevron { color: var(--row-tone); display: flex; flex-shrink: 0; }
 /* tones — decorative icon + selected accent, token-only */
-.krnl-tone--accent { --row-tone: var(--action-accent); }
-.krnl-tone--violet { --row-tone: var(--data-series-3); }
-.krnl-tone--indigo { --row-tone: var(--data-series-2); }
+.krnl-tone--accent { --row-tone: var(--action-accent); --row-tone-tint: var(--state-selected-surface); }
+.krnl-tone--violet { --row-tone: var(--data-series-3); --row-tone-tint: var(--state-selected-surface); }
+.krnl-tone--indigo { --row-tone: var(--data-series-2); --row-tone-tint: var(--state-selected-surface); }
+
+/* Status tones on the same --row-tone contract as the accent tones, plus a matching
+   --row-tone-tint so a toned surface can FILL as well as outline. Vocabulary matches the
+   tokens and Card's `tone` (info | success | warning | error) — deliberately NO `danger`
+   alias: one word per concept. Consumers emitting 'danger' are corrected instead. */
+.krnl-tone--info    { --row-tone: var(--status-info-solid);    --row-tone-tint: var(--status-info-tint); }
+.krnl-tone--success { --row-tone: var(--status-success-solid); --row-tone-tint: var(--status-success-tint); }
+.krnl-tone--warning { --row-tone: var(--status-warning-solid); --row-tone-tint: var(--status-warning-tint); }
+.krnl-tone--error   { --row-tone: var(--status-error-solid);   --row-tone-tint: var(--status-error-tint); }
 /* Two list mechanics — same ActionRow, only the container differs:
    • .krnl-action-list (default, FRAMED): one bordered card, rows divided by the
      global .krnl-action + .krnl-action hairline; mirrors the slash popup.
@@ -461,7 +477,11 @@
 /* Base UI portals popups to document.body — a sibling of the fixed companion
    panel (z 2147483000). Without a z-index the popup paints BEHIND the panel.
    Lift every portalled positioner above the panel. */
-.krnl-positioner { z-index: 2147483646; }
+/* Must match .krnl-dialog (2147483647), not the backdrop (…646): a Menu opened INSIDE a
+   Dialog portals after it, so at equal z-index later DOM order wins and the popup paints
+   above the dialog surface. At …646 it paints under it (the ebsVersion dropdown inside
+   Feature flags). */
+.krnl-positioner { z-index: 2147483647; }
 
 /* ── SLASH menu (header + ActionRows + keyboard-hint footer) ── */
 .krnl-slash { position: absolute; bottom: calc(100% + 6px); left: 14px; right: 14px; background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--density-radius); box-shadow: var(--elevation-overlay); overflow: hidden; animation: krnl-fadeUp .18s ease; z-index: 60; }
@@ -562,6 +582,46 @@
   .krnl-dialog--sheet, .krnl-dialog--takeover { animation-duration: 1ms; }
 }
 
+/* ── SETTINGS SURFACE (two more geometries, same Dialog) ──
+   --settings   : the desktop WINDOWED settings dialog. Deliberately NOT --takeover:
+                  takeover clamps every direct child to min(100%,760px) above, which
+                  centres a narrow column and makes a left rail structurally impossible.
+                  A settings window is a window, not a page.
+   --sheet-full : the mobile FULL-HEIGHT sheet. Not a modifier stacked on --sheet — it
+                  would have to reverse --sheet's max-height, top radius and padding, and
+                  6 duplicated lines beat a two-class call site whose second class exists
+                  only to undo the first.
+   Both drop the popup's own padding + gap and hand the body to the rail-split /
+   drill-track; the head row and body supply their own spacing. */
+.krnl-dialog--settings {
+  width: min(920px, calc(100vw - var(--space-7)));
+  height: min(680px, calc(100vh - var(--space-7)));
+  max-height: calc(100vh - var(--space-7));
+  padding: 0; gap: 0; overflow: hidden;
+  animation: krnl-dialogIn var(--motion-duration-fast) var(--motion-easing-decelerate);
+}
+.krnl-dialog--sheet-full {
+  top: 0; left: 0; bottom: 0; transform: none;
+  width: 100vw; max-width: 100vw;
+  height: 100vh; max-height: 100vh;
+  height: 100dvh; max-height: 100dvh;   /* dvh where supported: iOS toolbars */
+  border: none; border-radius: 0;
+  padding: 0; gap: 0; overflow: hidden;
+  animation: krnl-sheetUp var(--motion-duration-base) var(--motion-easing-decelerate);
+}
+.krnl-dialog--settings > .krnl-dialog-head,
+.krnl-dialog--sheet-full > .krnl-dialog-head {
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-bottom: var(--dimension-rule-hair) solid var(--border-subtle);
+}
+.krnl-dialog--settings > .krnl-dialog-body,
+.krnl-dialog--sheet-full > .krnl-dialog-body {
+  flex: 1 1 auto; min-height: 0; gap: 0; overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .krnl-dialog--settings, .krnl-dialog--sheet-full { animation-duration: 1ms; }
+}
+
 /* ── CREDIT NOTICE ── nearing / at the credit limit (AIP-47 F4.1). A footer row above
    the composer, so it is the last thing seen before spending another credit. Tone is
    set by the caller from the threshold ladder via .krnl-tone--*. */
@@ -570,7 +630,9 @@
   margin: 0 var(--space-3) var(--space-2); padding: var(--space-2) var(--space-3);
   border: var(--dimension-rule-hair) solid var(--row-tone, var(--border-subtle));
   border-radius: var(--krnl-radius-md);
-  background: var(--state-selected-surface);
+  /* the tone's own tint, so warning/error actually READ as warning/error; falls back to
+     the neutral selected surface when no .krnl-tone--* is set (the "approaching" level). */
+  background: var(--row-tone-tint, var(--state-selected-surface));
   animation: krnl-fadeUp var(--motion-duration-fast) var(--motion-easing-decelerate);
 }
 .krnl-creditnotice-ic { display: flex; flex-shrink: 0; color: var(--row-tone, var(--action-accent)); }
@@ -586,6 +648,10 @@
 /* ── MANAGE (billing / usage / feature flags) ── shared by all three presentations */
 .krnl-manage { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-3); }
 .krnl-dialog-title { font-family: var(--typography-title-md-font-family); font-size: var(--typography-title-md-font-size); font-weight: var(--typography-title-md-font-weight); color: var(--text-default); margin: 0; }
+/* Dialog HEADER ROW — only present when the Dialog gets onBack / headerAction. */
+.krnl-dialog-head { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; min-height: 32px; }
+.krnl-dialog-head .krnl-dialog-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.krnl-dialog-head-action { display: flex; align-items: center; gap: var(--space-1); flex-shrink: 0; margin-left: auto; }
 .krnl-dialog-desc { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); margin: 0; }
 .krnl-dialog-body { font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); display: flex; flex-direction: column; gap: var(--space-3); }
 .krnl-dialog-foot { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-2); }
@@ -632,10 +698,70 @@
 .krnl-tablist { position: relative; display: flex; gap: var(--space-2); border-bottom: var(--dimension-rule-hair) solid var(--border-subtle); }
 .krnl-tab { appearance: none; background: none; border: none; cursor: pointer; padding: var(--space-2) var(--space-1); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-muted); transition: color .14s; }
 .krnl-tab:hover { color: var(--text-default); }
-.krnl-tab[data-selected] { color: var(--action-accent); }
+/* data-active, NOT data-selected — verified against the installed Base UI
+   (TabsTabDataAttributes only defines activationDirection/orientation/disabled/active).
+   data-selected doesn't exist on Tab at all, so this rule (and its vertical sibling
+   below) were silently dead before this fix — no error, just a tab that never
+   recoloured on selection. */
+.krnl-tab[data-active] { color: var(--action-accent); }
 .krnl-tab:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: -2px; border-radius: var(--krnl-radius-sm); }
 .krnl-tab-indicator { position: absolute; bottom: calc(-1 * var(--dimension-rule-thin)); left: var(--active-tab-left); width: var(--active-tab-width); height: var(--dimension-rule-thin); background: var(--action-solid); transition: left .2s ease, width .2s ease; }
 .krnl-tabpanel { padding: var(--space-3) 0; font-family: var(--typography-body-md-font-family); font-size: var(--typography-body-md-font-size); line-height: var(--typography-body-md-line-height); color: var(--text-default); }
+
+/* Vertical orientation — the settings nav rail. Base UI flips the arrow-key axis, sets
+   data-orientation on Root + List, and the Indicator publishes --active-tab-top /
+   --active-tab-height alongside left/width. Pure CSS: no JS, no new class. */
+.krnl-tabs[data-orientation="vertical"] { flex-direction: row; }
+.krnl-tablist[data-orientation="vertical"] { flex-direction: column; align-items: stretch; gap: var(--space-1); border-bottom: none; }
+.krnl-tablist[data-orientation="vertical"] .krnl-tab { display: flex; align-items: center; gap: var(--space-2); padding: var(--density-control-py) var(--density-control-px); text-align: left; border-radius: var(--density-radius); }
+.krnl-tablist[data-orientation="vertical"] .krnl-tab:hover { background: var(--state-hover); }
+.krnl-tablist[data-orientation="vertical"] .krnl-tab[data-active] { background: var(--state-selected-surface); color: var(--state-selected-text); }
+.krnl-tablist[data-orientation="vertical"] .krnl-tab-indicator {
+  top: var(--active-tab-top); bottom: auto; left: 0;
+  width: var(--dimension-rule-thin); height: var(--active-tab-height);
+  transition: top .2s ease, height .2s ease;
+}
+.krnl-tab-ic { display: inline-flex; flex-shrink: 0; }
+
+/* Settings split — the Tabs Root IS the two-column layout: TabList = rail, TabPanel =
+   scrolling pane. No Grid: it would add a box needing min-height:0 twice. */
+.krnl-tabs--settings { flex: 1 1 auto; height: 100%; min-height: 0; }
+.krnl-tabs--settings > .krnl-tablist {
+  flex: 0 0 var(--krnl-rail-w, 208px);
+  padding: var(--space-3) var(--space-2);
+  background: var(--surface-sunken);
+  border-right: var(--dimension-rule-hair) solid var(--border-subtle);
+  overflow-y: auto;
+}
+.krnl-tabs--settings > .krnl-tabpanel {
+  flex: 1 1 auto; min-width: 0; overflow-y: auto;
+  padding: var(--space-4) var(--space-5) var(--space-6);
+}
+/* The three content trees were authored for the NARROW in-panel column: .krnl-settings
+   pins max-width:420px + auto margins and .krnl-manage adds its own padding. Unclamp
+   them so the same tree fills the wide pane instead of hugging its middle. */
+.krnl-tabs--settings > .krnl-tabpanel .krnl-settings { max-width: none; margin: 0; }
+.krnl-tabs--settings > .krnl-tabpanel .krnl-manage { padding: 0; }
+
+/* ── DRILL-DOWN TRACK (mobile) ── two panes on one horizontal track; the parent clips.
+   Level is a data attribute so a level change is one transform, not a remount.
+   The CONSUMER must set `inert` on the inactive pane — the Dialog focus trap would
+   otherwise Tab into the off-screen one, and focusing an element in an overflow:auto box
+   scrolls it into view, dragging the track sideways. Set it imperatively on the node,
+   never as a JSX prop (see the SidePanel.jsx comment for why every JSX form breaks on
+   React 18 or 19). `inert` is right here, not aria-hidden: the pane is fully clipped, so
+   removing it from the a11y tree matches what a sighted user perceives. */
+.krnl-drill { display: flex; width: 200%; height: 100%; min-height: 0; transform: translateX(0); transition: transform var(--motion-duration-base) var(--motion-easing-standard); }
+.krnl-drill[data-level="detail"] { transform: translateX(-50%); }
+.krnl-drill-pane { flex: 0 0 50%; min-width: 0; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.krnl-drill-pane:focus { outline: none; }
+.krnl-drill-list { padding: var(--space-3) var(--space-3) var(--space-6); }
+
+@media (prefers-reduced-motion: reduce) {
+  .krnl-drill { transition-duration: 1ms; }
+  .krnl-tab-indicator { transition-duration: 1ms; }   /* the existing left/width transition was never covered */
+  .krnl-settings { animation-duration: 1ms; }         /* re-fires on every rail switch now that keepMounted=false */
+}
 
 /* ── Collapsible (B-38, Base UI) ── */
 .krnl-collapsible { display: flex; flex-direction: column; }
@@ -645,6 +771,11 @@
 .krnl-collapsible-trigger[data-panel-open] .krnl-collapsible-chev { transform: rotate(90deg); }
 .krnl-collapsible-panel { overflow: hidden; }
 .krnl-collapsible-panel-inner { padding: var(--space-3) var(--space-1) var(--space-1); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); }
+/* Borderless variant — drops the trigger's box so the header reads as a heading row
+   inside a frame that already exists. */
+.krnl-collapsible--plain > .krnl-collapsible-trigger { padding: var(--space-2) 0; background: none; border: none; border-radius: var(--krnl-radius-sm); }
+.krnl-collapsible--plain > .krnl-collapsible-trigger:hover { color: var(--action-accent); }
+.krnl-collapsible--plain > .krnl-collapsible-panel .krnl-collapsible-panel-inner { padding: var(--space-2) 0 var(--space-1); }
 
 /* ── Separator (B-38, Base UI) ── */
 .krnl-separator { border: none; background: var(--border-subtle); flex-shrink: 0; }

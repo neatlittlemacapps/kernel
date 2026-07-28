@@ -42,9 +42,12 @@ export const meta = {
       { name: 'value', class: 'passThroughControl', passthrough: 'BaseUI.Tabs.Root.value' },
       { name: 'defaultValue', class: 'passThroughControl', passthrough: 'BaseUI.Tabs.Root.defaultValue' },
       { name: 'onValueChange', class: 'passThroughControl', passthrough: 'BaseUI.Tabs.Root.onValueChange' },
+      { name: 'orientation', class: 'passThroughControl', passthrough: 'BaseUI.Tabs.Root.orientation',
+        description: 'horizontal (default) or vertical. Vertical turns the TabList into a left nav rail: Base UI flips the arrow-key axis and sets data-orientation, and Kernel styles it from that attribute — no extra class needed.' },
     ],
     bestPractices: [
       { do: true, text: 'Use for a handful of peer views the user switches between; keep tab labels to one or two words.' },
+      { do: true, text: 'Use orientation="vertical" for a settings rail; add krnl-tabs--settings for the rail + scrolling-pane split.' },
       { do: false, text: 'Use Tabs for a linear multi-step flow - that is a stepper/wizard. Tabs imply the sections are independent and equal.' },
     ],
     anatomy: [
