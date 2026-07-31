@@ -69,7 +69,6 @@
    so the dialog enters offset by half its own size and snaps at the end. These two
    preserve (or intentionally replace) the centring/positioning transform instead. */
 @keyframes krnl-dialogIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 8px)) } to { opacity: 1; transform: translate(-50%, -50%) } }
-@keyframes krnl-sheetUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
 
 .krnl-companion-layer, .krnl-companion-layer * { box-sizing: border-box; }
 .krnl-companion-layer { font-family: var(--font-body); color: var(--text-default); }
@@ -112,6 +111,11 @@
   position: fixed; z-index: 2147483000; display: flex; flex-direction: column;
   background: var(--surface-raised); color: var(--text-default);
   overflow: hidden; animation: krnl-fadeIn .2s ease; font-family: var(--font-body);
+  /* the .krnl-inputbar horizontal padding — the single source both footer rows
+     (.krnl-context, .krnl-creditnotice) clamp against so they share ONE left/right
+     edge with the composer at every panel width instead of drifting apart on wide
+     panels (see the two rules below for why they used to diverge). */
+  --krnl-footer-inset: 14px;
 }
 .krnl-panel--floating { bottom: 20px; right: 20px; width: 400px; height: min(640px, calc(100vh - 40px)); border: 1px solid var(--border-subtle); border-radius: var(--krnl-radius-panel); box-shadow: var(--elevation-modal); }
 .krnl-panel--sidebar { top: 0; right: 0; height: 100%; border-left: 1px solid var(--border-subtle); box-shadow: var(--elevation-overlay); overflow: visible; }
@@ -226,9 +230,51 @@
 /* inset ring: an outset one on this edge-flush element would be clipped by the stage */
 .krnl-panel-scrim:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -4px; }
 
-/* A content-hugging sheet can't host a drawer — the consumer forces sheetFull while it's
-   open; this stops the height transition fighting the slide. */
-.krnl-panel--bottomsheet[data-drawer-open] { transition: none; }
+/* ── COVER (in-panel takeover) ──────────────────────────────────────────────
+   Fills the PANEL rectangle, never the viewport, so an injected assistant can host a
+   settings surface without covering the host application: in a 400px right-docked
+   sidebar a viewport-centred Dialog blanks the whole EMR behind it.
+
+   Lives in the stage, so .krnl-panel--sidebar's overflow:visible (needed for the -16px
+   resize handle) can't let it bleed over the host — the stage clips it, and the handle
+   stays a SIBLING of the stage and therefore operable while the cover is up. That is
+   deliberate: dragging the sidebar wider flips the settings surface from drill to rail
+   live, with no remount. Do not "fix" this by moving the handle inside the stage.
+
+   Opacity only, no transform: a transformed element becomes a containing block for any
+   position:fixed descendant (same trap as .krnl-panel-slider), and a transform would
+   expose a strip of the slider mid-entrance. */
+.krnl-panel-cover {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; flex-direction: column;
+  background: var(--surface-raised); color: var(--text-default);
+  animation: krnl-fadeIn var(--motion-duration-fast) var(--motion-easing-standard);
+}
+.krnl-panel-cover:focus { outline: none; }   /* programmatic focus target (tabIndex=-1) */
+
+.krnl-cover-head {
+  flex-shrink: 0; display: flex; align-items: center; gap: var(--space-2); min-height: 32px;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-bottom: var(--dimension-rule-hair) solid var(--border-subtle);
+}
+.krnl-cover-head-title {
+  flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--typography-title-md-font-family); font-size: var(--typography-title-md-font-size);
+  font-weight: var(--typography-title-md-font-weight); color: var(--text-default);
+}
+.krnl-cover-head-action { display: flex; align-items: center; gap: var(--space-1); flex-shrink: 0; margin-left: auto; }
+
+/* hidden, NOT auto — the cover hosts sub-layouts that own their own scrolling (a
+   two-pane drill track is width:200% and would raise a horizontal scrollbar otherwise) */
+.krnl-cover-body { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.krnl-cover-body--scroll { overflow-y: auto; }
+
+@media (prefers-reduced-motion: reduce) { .krnl-panel-cover { animation-duration: 1ms; } }
+
+/* A content-hugging sheet can't host a drawer or cover — the consumer forces sheetFull
+   while either is open; this stops the height transition fighting it. */
+.krnl-panel--bottomsheet[data-drawer-open],
+.krnl-panel--bottomsheet[data-cover-open] { transition: none; }
 
 /* A ~320px translate is exactly the large-transform case the reduced-motion guidance
    targets, so the slide becomes a cut. The scrim fade stays (opacity isn't vestibular). */
@@ -365,7 +411,15 @@
    Follows the same centred reading column as .krnl-page / .krnl-composer
    (--krnl-transcript-w) so the chip sits under the composer's left edge instead of
    the panel edge. */
-.krnl-context { display: flex; align-items: center; gap: 9px; flex-shrink: 0; padding: 12px 14px 6px; width: var(--krnl-transcript-w, 100%); margin-inline: auto; }
+/* Width: capped against panelWidth MINUS the footer inset (not just the transcript
+   preset), matching .krnl-composer's effective content width (which gets that inset
+   from its wrapping .krnl-inputbar's own padding, not from its own width rule). Without
+   the cap the two diverge once the panel is wider than --krnl-transcript-w — exactly
+   wide-sidebar / fullscreen — because .krnl-composer's inset comes from its PARENT's
+   padding while .krnl-context's used to come from its own (now removed): a chip that
+   set its OWN padding was 14px narrower on each side than one whose inset is inherited
+   from a wrapper, at every width past that crossover. */
+.krnl-context { display: flex; align-items: center; gap: 9px; flex-shrink: 0; padding: 12px 0 6px; width: min(var(--krnl-transcript-w, 100%), calc(100% - 2 * var(--krnl-footer-inset))); margin-inline: auto; }
 .krnl-context-chip { position: relative; display: inline-flex; align-items: center; gap: 9px; min-width: 0; padding: 6px 12px 6px 8px; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); background: var(--surface-raised); }
 .krnl-context-label { flex-shrink: 0; font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); font-weight: var(--typography-caption-md-font-weight); }
 .krnl-context-name { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -373,7 +427,7 @@
 .krnl-context-x:hover { background: var(--text-default); }
 
 /* ── INPUT bar ── (no divider — the body's scrim fades content behind it instead) */
-.krnl-inputbar { padding: 9px 14px 12px; flex-shrink: 0; background: var(--surface-raised); position: relative; }
+.krnl-inputbar { padding: 9px var(--krnl-footer-inset) 12px; flex-shrink: 0; background: var(--surface-raised); position: relative; }
 
 /* ── COMPOSER (prompt-area organism: agent indicator · field · aux · chips) ── */
 /* the prompt follows the same centred reading column as the transcript
@@ -553,7 +607,16 @@
   overflow-y: auto; padding: var(--space-5);
   background: var(--surface-raised); color: var(--text-default);
   border: var(--dimension-rule-hair) solid var(--border-subtle); border-radius: var(--krnl-radius-panel);
-  box-shadow: var(--elevation-modal); font-family: var(--font-body); animation: krnl-fadeUp .18s ease;
+  box-shadow: var(--elevation-modal); font-family: var(--font-body);
+  /* krnl-dialogIn, NOT krnl-fadeUp: fadeUp's translateY keyframe overrides this rule's
+     OWN translate(-50%,-50%) centring transform for the full animation duration (CSS
+     animations resolve above the author origin), so the popup's top-left corner sits at
+     viewport centre and every dialog entered offset by half its own size, snapping into
+     place on the last frame. krnl-dialogIn's keyframes preserve the centring transform
+     instead of clobbering it. --alert inherits this fix (same centring); --sheet and
+     --takeover already set transform:none with their own animations, so they're
+     unaffected either way. */
+  animation: krnl-dialogIn var(--motion-duration-fast) var(--motion-easing-decelerate);
 }
 .krnl-dialog--alert { width: min(400px, calc(100vw - var(--space-6))); }
 /* Management-surface geometries. Same Dialog (focus trap / Escape / scroll lock /
@@ -579,47 +642,7 @@
    leaving the title flush-left while the body sat centred. */
 .krnl-dialog--takeover.krnl-dialog--takeover > * { width: min(100%, 760px); margin-inline: auto; }
 @media (prefers-reduced-motion: reduce) {
-  .krnl-dialog--sheet, .krnl-dialog--takeover { animation-duration: 1ms; }
-}
-
-/* ── SETTINGS SURFACE (two more geometries, same Dialog) ──
-   --settings   : the desktop WINDOWED settings dialog. Deliberately NOT --takeover:
-                  takeover clamps every direct child to min(100%,760px) above, which
-                  centres a narrow column and makes a left rail structurally impossible.
-                  A settings window is a window, not a page.
-   --sheet-full : the mobile FULL-HEIGHT sheet. Not a modifier stacked on --sheet — it
-                  would have to reverse --sheet's max-height, top radius and padding, and
-                  6 duplicated lines beat a two-class call site whose second class exists
-                  only to undo the first.
-   Both drop the popup's own padding + gap and hand the body to the rail-split /
-   drill-track; the head row and body supply their own spacing. */
-.krnl-dialog--settings {
-  width: min(920px, calc(100vw - var(--space-7)));
-  height: min(680px, calc(100vh - var(--space-7)));
-  max-height: calc(100vh - var(--space-7));
-  padding: 0; gap: 0; overflow: hidden;
-  animation: krnl-dialogIn var(--motion-duration-fast) var(--motion-easing-decelerate);
-}
-.krnl-dialog--sheet-full {
-  top: 0; left: 0; bottom: 0; transform: none;
-  width: 100vw; max-width: 100vw;
-  height: 100vh; max-height: 100vh;
-  height: 100dvh; max-height: 100dvh;   /* dvh where supported: iOS toolbars */
-  border: none; border-radius: 0;
-  padding: 0; gap: 0; overflow: hidden;
-  animation: krnl-sheetUp var(--motion-duration-base) var(--motion-easing-decelerate);
-}
-.krnl-dialog--settings > .krnl-dialog-head,
-.krnl-dialog--sheet-full > .krnl-dialog-head {
-  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
-  border-bottom: var(--dimension-rule-hair) solid var(--border-subtle);
-}
-.krnl-dialog--settings > .krnl-dialog-body,
-.krnl-dialog--sheet-full > .krnl-dialog-body {
-  flex: 1 1 auto; min-height: 0; gap: 0; overflow: hidden;
-}
-@media (prefers-reduced-motion: reduce) {
-  .krnl-dialog--settings, .krnl-dialog--sheet-full { animation-duration: 1ms; }
+  .krnl-dialog, .krnl-dialog--sheet, .krnl-dialog--takeover { animation-duration: 1ms; }
 }
 
 /* ── CREDIT NOTICE ── nearing / at the credit limit (AIP-47 F4.1). A footer row above
@@ -627,7 +650,12 @@
    set by the caller from the threshold ladder via .krnl-tone--*. */
 .krnl-creditnotice {
   display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0;
-  margin: 0 var(--space-3) var(--space-2); padding: var(--space-2) var(--space-3);
+  /* width/margin, NOT the old fixed `margin: 0 var(--space-3)`: that spanned the full
+     panel width regardless of --krnl-transcript-w, so on a wide panel the notice visibly
+     overhung the composer and context chip below it, which both clamp to the reading
+     column. Same formula as .krnl-context, for the same reason (see its comment). */
+  width: min(var(--krnl-transcript-w, 100%), calc(100% - 2 * var(--krnl-footer-inset)));
+  margin: 0 auto var(--space-2); padding: var(--space-2) var(--space-3);
   border: var(--dimension-rule-hair) solid var(--row-tone, var(--border-subtle));
   border-radius: var(--krnl-radius-md);
   /* the tone's own tint, so warning/error actually READ as warning/error; falls back to
@@ -737,28 +765,63 @@
   flex: 1 1 auto; min-width: 0; overflow-y: auto;
   padding: var(--space-4) var(--space-5) var(--space-6);
 }
-/* The three content trees were authored for the NARROW in-panel column: .krnl-settings
-   pins max-width:420px + auto margins and .krnl-manage adds its own padding. Unclamp
-   them so the same tree fills the wide pane instead of hugging its middle. */
-.krnl-tabs--settings > .krnl-tabpanel .krnl-settings { max-width: none; margin: 0; }
+/* Content measure. The three content trees were authored for the NARROW in-panel
+   column: .krnl-settings pins max-width:420px + auto margins, too narrow for the pane;
+   fully unclamped is too WIDE at 1280 fullscreen, where the pane is ~1000px and a
+   label/control row's control drifts far from its label. 720, not the takeover's 760
+   (that is a PROSE measure — settings rows are denser). Inert below the ~640px rail
+   threshold (drill layout), where the pane is always narrower than the cap anyway. */
+.krnl-tabs--settings > .krnl-tabpanel .krnl-settings,
+.krnl-tabs--settings > .krnl-tabpanel .krnl-manage {
+  max-width: var(--krnl-settings-measure, 720px);
+  margin-inline: auto;
+}
 .krnl-tabs--settings > .krnl-tabpanel .krnl-manage { padding: 0; }
 
-/* ── DRILL-DOWN TRACK (mobile) ── two panes on one horizontal track; the parent clips.
-   Level is a data attribute so a level change is one transform, not a remount.
-   The CONSUMER must set `inert` on the inactive pane — the Dialog focus trap would
-   otherwise Tab into the off-screen one, and focusing an element in an overflow:auto box
-   scrolls it into view, dragging the track sideways. Set it imperatively on the node,
-   never as a JSX prop (see the SidePanel.jsx comment for why every JSX form breaks on
-   React 18 or 19). `inert` is right here, not aria-hidden: the pane is fully clipped, so
-   removing it from the a11y tree matches what a sighted user perceives. */
-.krnl-drill { display: flex; width: 200%; height: 100%; min-height: 0; transform: translateX(0); transition: transform var(--motion-duration-base) var(--motion-easing-standard); }
-.krnl-drill[data-level="detail"] { transform: translateX(-50%); }
-.krnl-drill-pane { flex: 0 0 50%; min-width: 0; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.krnl-drill-pane:focus { outline: none; }
-.krnl-drill-list { padding: var(--space-3) var(--space-3) var(--space-6); }
+/* Rail-only furniture: the description sub-line and chevron belong to the drill list. */
+.krnl-tab-tx { display: flex; flex-direction: column; min-width: 0; }
+.krnl-tab-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.krnl-tab-desc, .krnl-tab-chev { display: none; }
+
+/* ── DRILL layout — the SAME Tabs tree, reshaped. The vertical TabList becomes the
+   level-1 pane and the TabPanel the level-2 pane on one 200%-wide track; level is a
+   data attribute so a level change is one transform, not a remount. Reshaping rather
+   than swapping DOM keeps Base UI's roving tabindex, arrow-key axis and
+   tablist/tab/tabpanel ARIA in BOTH form factors — a hand-rolled list would lose all
+   three. activateOnFocus defaults to false in the installed Base UI, so arrow keys
+   move focus and Enter/Space drills in; nothing to override.
+   The parent (.krnl-cover-body) clips — that is why it is overflow:hidden.
+   The CONSUMER must set `inert` on the inactive pane, in DRILL layout only (both panes
+   are on screen simultaneously in rail) — focusing inside an overflow:auto box scrolls
+   it into view, dragging the track out of sync with data-level. Set it imperatively on
+   the node, never as a JSX prop (see the SidePanel.jsx comment for why every JSX form
+   breaks on React 18 or 19). */
+.krnl-tabs--settings[data-layout="drill"] {
+  width: 200%; transform: translateX(0);
+  transition: transform var(--motion-duration-base) var(--motion-easing-standard);
+}
+.krnl-tabs--settings[data-layout="drill"][data-level="detail"] { transform: translateX(-50%); }
+.krnl-tabs--settings[data-layout="drill"] > .krnl-tablist {
+  flex: 0 0 50%; min-width: 0; overflow-y: auto;
+  padding: var(--space-3); background: none; border-right: none;
+}
+.krnl-tabs--settings[data-layout="drill"] > .krnl-tabpanel {
+  flex: 0 0 50%; min-width: 0; overflow-y: auto;
+  padding: var(--space-3) var(--space-3) var(--space-6);
+}
+/* a selection bar and a highlighted "current" row are noise in a drill list */
+.krnl-tabs--settings[data-layout="drill"] .krnl-tab-indicator { display: none; }
+.krnl-tabs--settings[data-layout="drill"] .krnl-tab[data-active] { background: none; color: var(--text-default); }
+.krnl-tabs--settings[data-layout="drill"] .krnl-tab-desc {
+  display: block; font-family: var(--typography-caption-md-font-family);
+  font-size: var(--typography-caption-md-font-size); color: var(--text-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.krnl-tabs--settings[data-layout="drill"] .krnl-tab-chev { display: flex; margin-left: auto; color: var(--text-faint); }
+.krnl-tabs--settings[data-layout="drill"] .krnl-tab-tx { flex: 1 1 auto; }
 
 @media (prefers-reduced-motion: reduce) {
-  .krnl-drill { transition-duration: 1ms; }
+  .krnl-tabs--settings[data-layout="drill"] { transition-duration: 1ms; }
   .krnl-tab-indicator { transition-duration: 1ms; }   /* the existing left/width transition was never covered */
   .krnl-settings { animation-duration: 1ms; }         /* re-fires on every rail switch now that keepMounted=false */
 }

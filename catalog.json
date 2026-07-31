@@ -3913,12 +3913,13 @@
       "layer": "atom",
       "scope": "global",
       "status": "stable",
-      "summary": "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer, with an optional slide-away navigation drawer underneath.",
+      "summary": "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer, with an optional slide-away navigation drawer underneath and an optional in-panel cover above everything.",
       "usecases": [
         "assistant shell",
         "side panel",
         "overlay panel",
-        "navigation drawer"
+        "navigation drawer",
+        "in-panel settings surface"
       ],
       "props": [
         {
@@ -4022,10 +4023,42 @@
           "class": "a11y",
           "type": "string",
           "description": "id on the drawer region, so an external toggle can point at it with aria-controls."
+        },
+        {
+          "name": "cover",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "A layer that fills the PANEL rectangle (never the viewport), above both the content and the drawer. Supplying it enables the cover layer; omit it and the panel renders exactly as before. Use for a settings / management surface an injected assistant must not cover the host application with. Compose SidePanel.CoverHeader + SidePanel.CoverBody inside it."
+        },
+        {
+          "name": "coverOpen",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": "false",
+          "description": "Whether the cover is up (controlled). While open the panel content and the drawer are set inert — non-interactive, out of the tab order and out of the a11y tree — and the drawer scrim is not rendered."
+        },
+        {
+          "name": "onCoverOpenChange",
+          "class": "event",
+          "type": "(open: boolean) => void",
+          "description": "Fires when the cover requests a close — Escape pressed inside it. The cover takes Escape before the drawer; a consumer that needs Escape to mean \"go back a level\" stops propagation on its own descendant handler."
+        },
+        {
+          "name": "coverLabel",
+          "class": "a11y",
+          "type": "string",
+          "default": "Panel cover",
+          "description": "Accessible name for the cover region. The cover is a labelled region, NOT role=\"dialog\": it covers the panel but the host page behind stays reachable and there is no focus trap, so aria-modal would misdescribe it. Render the CoverHeader title as a heading with the same text."
+        },
+        {
+          "name": "coverId",
+          "class": "a11y",
+          "type": "string",
+          "description": "id on the cover region, so an external trigger can point at it with aria-controls."
         }
       ],
       "composes": [],
-      "usage": "<SidePanel mode=\"sidebar\" width={w} onWidth={setW}\n  drawer={<><SidePanel.DrawerBody>…history…</SidePanel.DrawerBody><SidePanel.DrawerFooter><Account/></SidePanel.DrawerFooter></>}\n  drawerOpen={navOpen} onDrawerOpenChange={setNavOpen} drawerId=\"nav\">\n  <SidePanel.Header>…</SidePanel.Header>\n  <SidePanel.Body ref={bodyRef} onScroll={onScroll} overlay={<JumpToLatest/>}>…</SidePanel.Body>\n  <SidePanel.Footer><Composer/></SidePanel.Footer>\n</SidePanel>",
+      "usage": "<SidePanel mode=\"sidebar\" width={w} onWidth={setW}\n  drawer={<><SidePanel.DrawerBody>…history…</SidePanel.DrawerBody><SidePanel.DrawerFooter><Account/></SidePanel.DrawerFooter></>}\n  drawerOpen={navOpen} onDrawerOpenChange={setNavOpen} drawerId=\"nav\"\n  cover={coverOpen ? <><SidePanel.CoverHeader><h2>Settings</h2></SidePanel.CoverHeader><SidePanel.CoverBody>…</SidePanel.CoverBody></> : null}\n  coverOpen={coverOpen} onCoverOpenChange={setCoverOpen} coverId=\"settings\">\n  <SidePanel.Header>…</SidePanel.Header>\n  <SidePanel.Body ref={bodyRef} onScroll={onScroll} overlay={<JumpToLatest/>}>…</SidePanel.Body>\n  <SidePanel.Footer><Composer/></SidePanel.Footer>\n</SidePanel>",
       "keywords": [
         "sidepanel",
         "panel",
@@ -4036,7 +4069,10 @@
         "overlay",
         "assistant",
         "navigation",
-        "slide-away"
+        "slide-away",
+        "cover",
+        "settings",
+        "takeover"
       ],
       "category": "Layout",
       "anatomy": [
@@ -4079,6 +4115,21 @@
           "name": "Scrim",
           "required": false,
           "description": "Click-to-close overlay on the peeking content while the drawer is open."
+        },
+        {
+          "name": "Cover",
+          "required": false,
+          "description": "A layer filling the panel rectangle above the content and the drawer (the `cover` prop); the panel-scoped alternative to a viewport-filling Dialog."
+        },
+        {
+          "name": "CoverHeader",
+          "required": false,
+          "description": "Non-scrolling top row of the cover — back control, title, trailing actions (SidePanel.CoverHeader)."
+        },
+        {
+          "name": "CoverBody",
+          "required": false,
+          "description": "The cover content region (SidePanel.CoverBody); clips by default (overflow:hidden) since the cover typically hosts a sub-layout that owns its own scrolling — pass `scroll` to make it a plain scrolling column instead."
         }
       ],
       "related": [

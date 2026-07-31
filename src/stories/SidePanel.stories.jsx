@@ -22,9 +22,14 @@ export default {
     drawerPeek: { control: 'number', description: "Minimum strip of panel content left visible when the drawer is open; the clamp floor for drawerWidth.", table: { category: 'Appearance', defaultValue: { summary: "56" }, type: { summary: "number" } } },
     drawerLabel: { control: 'text', description: "Accessible name for the drawer region and its close scrim.", table: { category: 'Accessibility', defaultValue: { summary: "Menu" }, type: { summary: "string" } } },
     drawerId: { control: 'text', description: "id on the drawer region, so an external toggle can point at it with aria-controls.", table: { category: 'Accessibility', type: { summary: "string" } } },
+    cover: { control: false, description: "A layer that fills the PANEL rectangle (never the viewport), above both the content and the drawer. Supplying it enables the cover layer; omit it and the panel renders exactly as before. Use for a settings / management surface an injected assistant must not cover the host application with. Compose SidePanel.CoverHeader + SidePanel.CoverBody inside it.", table: { category: 'Content', type: { summary: "ReactNode" } } },
+    coverOpen: { control: 'boolean', description: "Whether the cover is up (controlled). While open the panel content and the drawer are set inert — non-interactive, out of the tab order and out of the a11y tree — and the drawer scrim is not rendered.", table: { category: 'Appearance', defaultValue: { summary: "false" }, type: { summary: "bool" } } },
+    onCoverOpenChange: { control: false, description: "Fires when the cover requests a close — Escape pressed inside it. The cover takes Escape before the drawer; a consumer that needs Escape to mean \"go back a level\" stops propagation on its own descendant handler.", table: { category: 'Events', type: { summary: "(open: boolean) => void" } } },
+    coverLabel: { control: 'text', description: "Accessible name for the cover region. The cover is a labelled region, NOT role=\"dialog\": it covers the panel but the host page behind stays reachable and there is no focus trap, so aria-modal would misdescribe it. Render the CoverHeader title as a heading with the same text.", table: { category: 'Accessibility', defaultValue: { summary: "Panel cover" }, type: { summary: "string" } } },
+    coverId: { control: 'text', description: "id on the cover region, so an external trigger can point at it with aria-controls.", table: { category: 'Accessibility', type: { summary: "string" } } },
   },
   parameters: {
-    docs: { description: { component: "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer, with an optional slide-away navigation drawer underneath.\n\n**Import**\n\n```ts\nimport { SidePanel } from '@corilus/kernel'\n```\n\n**Anatomy**\n- **Header** _(optional)_ — The top bar region (SidePanel.Header).\n- **Body** — The scrollable content region with a fade-scrim (SidePanel.Body); forwards a ref + onScroll + an overlay slot.\n- **Footer** _(optional)_ — Non-scrolling bottom rows (SidePanel.Footer), e.g. a context chip + composer.\n- **Resize** _(optional)_ — The drag handle, auto-rendered in sidebar mode.\n- **Drawer** _(optional)_ — The slide-away navigation layer under the panel content (the `drawer` prop).\n- **DrawerBody** _(optional)_ — Scrolling region inside the drawer (SidePanel.DrawerBody).\n- **DrawerFooter** _(optional)_ — Sticky bottom row of the drawer, e.g. an account / settings trigger (SidePanel.DrawerFooter).\n- **Scrim** _(optional)_ — Click-to-close overlay on the peeking content while the drawer is open." } },
+    docs: { description: { component: "Injectable assistant shell: five modes (floating/sidebar/fullscreen/bottomsheet/embedded) laying out Header / Body / Footer, with an optional slide-away navigation drawer underneath and an optional in-panel cover above everything.\n\n**Import**\n\n```ts\nimport { SidePanel } from '@corilus/kernel'\n```\n\n**Anatomy**\n- **Header** _(optional)_ — The top bar region (SidePanel.Header).\n- **Body** — The scrollable content region with a fade-scrim (SidePanel.Body); forwards a ref + onScroll + an overlay slot.\n- **Footer** _(optional)_ — Non-scrolling bottom rows (SidePanel.Footer), e.g. a context chip + composer.\n- **Resize** _(optional)_ — The drag handle, auto-rendered in sidebar mode.\n- **Drawer** _(optional)_ — The slide-away navigation layer under the panel content (the `drawer` prop).\n- **DrawerBody** _(optional)_ — Scrolling region inside the drawer (SidePanel.DrawerBody).\n- **DrawerFooter** _(optional)_ — Sticky bottom row of the drawer, e.g. an account / settings trigger (SidePanel.DrawerFooter).\n- **Scrim** _(optional)_ — Click-to-close overlay on the peeking content while the drawer is open.\n- **Cover** _(optional)_ — A layer filling the panel rectangle above the content and the drawer (the `cover` prop); the panel-scoped alternative to a viewport-filling Dialog.\n- **CoverHeader** _(optional)_ — Non-scrolling top row of the cover (SidePanel.CoverHeader).\n- **CoverBody** _(optional)_ — The cover content region (SidePanel.CoverBody)." } },
   },
 };
 
@@ -105,6 +110,56 @@ export const Drawer = {
         <SidePanel.Footer>
           <div className="krnl-inputbar" style={{ padding: 'var(--space-3)', borderTop: '1px solid var(--border-subtle)' }}>
             Composer — must stay pinned while the panel slides.
+          </div>
+        </SidePanel.Footer>
+      </SidePanel>
+    );
+  },
+};
+
+/* The cover — an in-panel settings-style takeover. Resize the panel (drag the handle in
+   sidebar mode, or switch `mode` in the toolbar) while the cover is open: the handle
+   stays outside the stage's clip and therefore operable, which is the whole point — a
+   real consumer uses this to flip a settings surface between drill-down and rail
+   layouts live, with nothing unmounting. Tab through the body: focus must stay inside
+   the cover (the underlying content is inert), and Escape must close it. */
+export const Cover = {
+  args: { mode: 'sidebar', width: 420 },
+  argTypes: { children: { control: false }, cover: { control: false }, coverOpen: { control: false } },
+  render: (args) => {
+    const [open, setOpen] = useState(true);
+    return (
+      <SidePanel {...args} coverOpen={open} onCoverOpenChange={setOpen}
+        coverId="sp-cover" coverLabel="Settings"
+        cover={open ? (
+          <>
+            <SidePanel.CoverHeader>
+              <h2 className="krnl-cover-head-title">Settings</h2>
+              <div className="krnl-cover-head-action">
+                <IconButton aria-label="Close" onClick={() => setOpen(false)}>{Icon.close({ size: 15, w: 2 })}</IconButton>
+              </div>
+            </SidePanel.CoverHeader>
+            <SidePanel.CoverBody scroll>
+              <div style={{ padding: 'var(--space-4)' }}>
+                {['Billing', 'Usage', 'Feature flags'].map((c) => (
+                  <ActionRow key={c} icon={Icon.flag({ size: 14 })} label={c} description="Example settings row" />
+                ))}
+              </div>
+            </SidePanel.CoverBody>
+          </>
+        ) : null}>
+        <SidePanel.Header>
+          <IconButton aria-label="Open settings" onClick={() => setOpen(true)}>{Icon.dots({ size: 15, w: 2 })}</IconButton>
+          <div className="krnl-header-title">Assistant</div>
+        </SidePanel.Header>
+        <SidePanel.Body>
+          <div className="krnl-page" style={{ padding: 'var(--space-3)' }}>
+            {Array.from({ length: 12 }, (_, i) => <p key={i}>Body line {i + 1} — inert and unreachable while the cover is open.</p>)}
+          </div>
+        </SidePanel.Body>
+        <SidePanel.Footer>
+          <div className="krnl-inputbar" style={{ padding: 'var(--space-3)', borderTop: '1px solid var(--border-subtle)' }}>
+            Composer — inert while the cover is open.
           </div>
         </SidePanel.Footer>
       </SidePanel>
