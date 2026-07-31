@@ -84,7 +84,7 @@ export const meta = {
       { name: 'title', class: 'content', type: 'ReactNode', description: 'The banner headline. Required - rendered in Card.Header’s title slot.' },
       { name: 'description', class: 'content', type: 'ReactNode', description: 'Supporting text below the title, rendered in Card.Header’s description slot. Falls back to `children` when omitted, so a single-line banner can just pass text as children.' },
       { name: 'icon', class: 'content', type: 'ReactNode', description: 'Overrides the tone-derived default icon (info/success/warning/error each have one). Pass null to render no icon.' },
-      { name: 'action', class: 'content', type: 'ReactNode', description: 'A Button rendered in Card.Header’s trailing action slot, alongside the dismiss control when both are present.' },
+      { name: 'action', class: 'content', type: 'ReactNode', description: 'A Button rendered in Card.Header’s trailing action slot, alongside the dismiss control when both are present. Use variant="secondary" (the banner itself carries the emphasis) with tone matching the Banner’s own tone, so the action reads as part of the same status, not a competing primary CTA.' },
       { name: 'detail', class: 'content', type: 'ReactNode', description: 'Optional extra detail, revealed behind a "Review details" Collapsible below the header - Astryx’s collapsible-banner variant. Omit for a single-row banner.' },
       { name: 'fullWidth', class: 'dsPresentation', type: 'bool', description: 'Flush, no-radius, edge-to-edge treatment for a page-level notice. A Banner-only style override (not a new Card appearance) - Card has no flush concept and other Card consumers should not gain one by association.' },
       { name: 'onDismiss', class: 'event', type: '(event) => void', description: 'Renders an IconButton "Dismiss" close control in the action slot when supplied (opt-in, like Chip’s onRemove - no separate boolean gates it). Make info/success banners dismissible; leave error banners persistent until the underlying problem is resolved.' },
@@ -105,7 +105,7 @@ export const meta = {
     ],
     related: ['Card', 'Collapsible', 'IconButton'],
     composes: ['Card', 'Collapsible', 'IconButton'],
-    usage: '<Banner tone="warning" title="Renewal needed" description="Your certificate expires in 3 days." action={<Button size="sm">Renew</Button>} onDismiss={dismiss} />',
+    usage: '<Banner tone="warning" title="Renewal needed" description="Your certificate expires in 3 days." action={<Button size="sm" variant="secondary" tone="warning">Renew</Button>} onDismiss={dismiss} />',
     examples: [
       { name: 'Single line', code: '<Banner tone="info" title="New version available" />', description: 'Title only, no description - a compact status row.' },
       { name: 'With detail', code: '<Banner tone="error" title="3 items failed to sync" detail={<ul>...</ul>} />', description: 'Persistent error banner with a collapsible detail list; no onDismiss, so it stays until resolved.' },

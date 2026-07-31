@@ -434,7 +434,7 @@
           "name": "action",
           "class": "content",
           "type": "ReactNode",
-          "description": "A Button rendered in Card.Header’s trailing action slot, alongside the dismiss control when both are present."
+          "description": "A Button rendered in Card.Header’s trailing action slot, alongside the dismiss control when both are present. Use variant=\"secondary\" (the banner itself carries the emphasis) with tone matching the Banner’s own tone, so the action reads as part of the same status, not a competing primary CTA."
         },
         {
           "name": "detail",
@@ -470,7 +470,7 @@
         "Collapsible",
         "IconButton"
       ],
-      "usage": "<Banner tone=\"warning\" title=\"Renewal needed\" description=\"Your certificate expires in 3 days.\" action={<Button size=\"sm\">Renew</Button>} onDismiss={dismiss} />",
+      "usage": "<Banner tone=\"warning\" title=\"Renewal needed\" description=\"Your certificate expires in 3 days.\" action={<Button size=\"sm\" variant=\"secondary\" tone=\"warning\">Renew</Button>} onDismiss={dismiss} />",
       "keywords": [
         "banner",
         "notice",

@@ -28,9 +28,10 @@ export default {
   },
 };
 
-const renderBanner = ({ withAction, dismissible, ...rest }) => (
+const renderBanner = ({ withAction, dismissible, tone, ...rest }) => (
   <Banner
-    action={withAction ? <Button size="sm" variant="secondary">Review</Button> : undefined}
+    tone={tone}
+    action={withAction ? <Button size="sm" variant="secondary" tone={tone}>Review</Button> : undefined}
     onDismiss={dismissible ? () => {} : undefined}
     {...rest}
   />
@@ -51,7 +52,7 @@ export const Gallery = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: 480 }}>
       <Banner tone="info" title="New version available" description="Refresh to pick up the latest changes." onDismiss={() => {}} />
       <Banner tone="success" title="Changes saved" onDismiss={() => {}} />
-      <Banner tone="warning" title="Renewal needed" description="Your certificate expires in 3 days." action={<Button size="sm" variant="secondary">Renew</Button>} />
+      <Banner tone="warning" title="Renewal needed" description="Your certificate expires in 3 days." action={<Button size="sm" variant="secondary" tone="warning">Renew</Button>} />
       <Banner tone="error" title="3 items failed to sync" description="Fix the errors below and try again." />
       <Banner tone="success" variant="strong" appearance="elevated" title="Payment received" onDismiss={() => {}} />
     </div>
