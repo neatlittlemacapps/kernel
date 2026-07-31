@@ -26,6 +26,7 @@ const ICON_NAMES = [
   'faSparkles', 'faUser', 'faUsers',
   'faSidebarFlip', // view-mode switcher: the assistant docks on the RIGHT, so the flipped variant
   'faGear', 'faChartSimple', 'faCreditCard',
+  'faCircleInfo', 'faCircleCheck', 'faCircleExclamation', 'faCircleXmark',
 ];
 
 const kit = await import('@awesome.me/kit-c983fdf9da/icons/classic/regular').catch((e) => {

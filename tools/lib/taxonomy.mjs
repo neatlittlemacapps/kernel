@@ -50,7 +50,7 @@ const CORE_CATEGORY = {
   Chip: 'Data Display', IconPill: 'Data Display', TrendChip: 'Data Display', ValueDisplay: 'Data Display',
   PropertyList: 'Data Display', PatientCard: 'Data Display', SproutCard: 'Data Display',
   // Feedback & Status
-  Progress: 'Feedback & Status', StatusPill: 'Feedback & Status',
+  Progress: 'Feedback & Status', StatusPill: 'Feedback & Status', Banner: 'Feedback & Status',
   // Structure
   Collapsible: 'Structure', Separator: 'Structure',
   // AI & Identity

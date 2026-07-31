@@ -31,6 +31,7 @@ export * from './components/Tabs.jsx';
 export * from './components/Collapsible.jsx';
 export * from './components/Separator.jsx';
 export * from './components/Progress.jsx';
+export * from './components/Banner.jsx';
 export * from './components/Chip.jsx';
 export * from './components/ToggleGroup.jsx';
 export * from './components/Fab.jsx';

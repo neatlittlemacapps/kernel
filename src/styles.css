@@ -996,6 +996,15 @@
 .krnl-card[data-dragging] { box-shadow: var(--elevation-modal); }
 .krnl-card[data-disabled], .krnl-card:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
 .krnl-card-floataction { position: absolute; top: var(--space-2); right: var(--space-2); z-index: 1; }
+/* Banner (B-45): composes Card, so its look rides Card's own appearance/tone CSS above.
+   Only two things are Banner-specific: `variant="strong"` (a solid tone fill Card has no
+   appearance for) and the action slot holding two controls (action button + dismiss). */
+.krnl-banner-card[data-tone].krnl-banner-card--strong { background: var(--card-tone); border-color: var(--card-tone); color: var(--text-on-accent); }
+.krnl-banner-card[data-tone].krnl-banner-card--strong .krnl-card-header-title,
+.krnl-banner-card[data-tone].krnl-banner-card--strong .krnl-card-header-desc { color: var(--text-on-accent); }
+.krnl-banner-card .krnl-card-header-action { display: flex; align-items: center; gap: var(--space-2); }
+/* fullWidth (Banner-only, not a Card appearance): flush edge-to-edge page notice. */
+.krnl-banner-card--flush { border-radius: 0; border-left: none; border-right: none; margin-bottom: 0; width: 100%; }
 .krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
 .krnl-card-preview img { display: block; width: 100%; }
 .krnl-card-header { display: flex; align-items: flex-start; gap: var(--space-2); }

@@ -73,6 +73,10 @@ export const Icon = {
   gear: fa(ICON_DATA.faGear),
   chart: fa(ICON_DATA.faChartSimple),
   creditCard: fa(ICON_DATA.faCreditCard),
+  statusInfo: fa(ICON_DATA.faCircleInfo),
+  statusSuccess: fa(ICON_DATA.faCircleCheck),
+  statusWarning: fa(ICON_DATA.faCircleExclamation),
+  statusError: fa(ICON_DATA.faCircleXmark),
 
   // ── Kernel-original view-mode glyphs (official icons; no Font Awesome equivalent) ──
   floating: (p) => <S {...p}><rect x="2" y="6" width="20" height="14" rx="2" /><path d="M8 6V4" /><path d="M16 6V4" /></S>,
