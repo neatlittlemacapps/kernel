@@ -645,33 +645,6 @@
   .krnl-dialog, .krnl-dialog--sheet, .krnl-dialog--takeover { animation-duration: 1ms; }
 }
 
-/* ── CREDIT NOTICE ── nearing / at the credit limit (AIP-47 F4.1). A footer row above
-   the composer, so it is the last thing seen before spending another credit. Tone is
-   set by the caller from the threshold ladder via .krnl-tone--*. */
-.krnl-creditnotice {
-  display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0;
-  /* width/margin, NOT the old fixed `margin: 0 var(--space-3)`: that spanned the full
-     panel width regardless of --krnl-transcript-w, so on a wide panel the notice visibly
-     overhung the composer and context chip below it, which both clamp to the reading
-     column. Same formula as .krnl-context, for the same reason (see its comment). */
-  width: min(var(--krnl-transcript-w, 100%), calc(100% - 2 * var(--krnl-footer-inset)));
-  margin: 0 auto var(--space-2); padding: var(--space-2) var(--space-3);
-  border: var(--dimension-rule-hair) solid var(--row-tone, var(--border-subtle));
-  border-radius: var(--krnl-radius-md);
-  /* the tone's own tint, so warning/error actually READ as warning/error; falls back to
-     the neutral selected surface when no .krnl-tone--* is set (the "approaching" level). */
-  background: var(--row-tone-tint, var(--state-selected-surface));
-  animation: krnl-fadeUp var(--motion-duration-fast) var(--motion-easing-decelerate);
-}
-.krnl-creditnotice-ic { display: flex; flex-shrink: 0; color: var(--row-tone, var(--action-accent)); }
-.krnl-creditnotice-tx {
-  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;
-  border: none; background: none; padding: 0; cursor: pointer; text-align: left;
-  font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size);
-  font-weight: var(--typography-label-md-font-weight); color: var(--text-default);
-}
-.krnl-creditnotice-tx:hover { color: var(--row-tone, var(--action-accent)); }
-.krnl-creditnotice-sub { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); font-weight: var(--type-weight-regular); color: var(--text-muted); }
 
 /* ── MANAGE (billing / usage / feature flags) ── shared by all three presentations */
 .krnl-manage { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-3); }
@@ -1005,6 +978,20 @@
 .krnl-banner-card .krnl-card-header-action { display: flex; align-items: center; gap: var(--space-2); }
 /* fullWidth (Banner-only, not a Card appearance): flush edge-to-edge page notice. */
 .krnl-banner-card--flush { border-radius: 0; border-left: none; border-right: none; margin-bottom: 0; width: 100%; }
+/* ── CREDIT NOTICE (greenhouse) ── a Banner used as a footer row above the composer, so
+   it must share the SAME left/right edge as the composer / context chip below it (see
+   .krnl-panel's --krnl-footer-inset comment) rather than Card's own flow margin. Placed
+   after Banner's rules so this margin override wins the cascade over .krnl-card's
+   margin-bottom at equal specificity. */
+.krnl-creditnotice {
+  width: min(var(--krnl-transcript-w, 100%), calc(100% - 2 * var(--krnl-footer-inset)));
+  margin: 0 auto var(--space-2);
+  animation: krnl-fadeUp var(--motion-duration-fast) var(--motion-easing-decelerate);
+}
+/* the clickable title — Banner's Card.Header wraps `title` in a plain div, so a nested
+   <button> needs its own reset to inherit that slot's type instead of UA button chrome. */
+.krnl-creditnotice-tx { display: block; width: 100%; border: none; background: none; padding: 0; margin: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.krnl-creditnotice-tx:hover { color: var(--card-tone-text, var(--action-accent)); }
 .krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
 .krnl-card-preview img { display: block; width: 100%; }
 .krnl-card-header { display: flex; align-items: flex-start; gap: var(--space-2); }
