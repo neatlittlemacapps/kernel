@@ -143,13 +143,22 @@
       }
     },
     "status": {
-      "$description": "The four status hue families, each exposing the steps both themes consume. Light uses 100 (soft tint) + 700 (solid); dark flips to 900 (dark tint) + 300 (light solid). A brand may shift these hues, but red=error / green=success conventions are near-universal \u2014 change with care.",
+      "$description": "The four status hue families, each exposing the steps both themes consume. Light uses 100 (soft tint) + 200 (icon-tile backing) + 500 (vivid accent) + 700 (solid); dark flips to 900 (dark tint) + 700 (backing) + 400 (accent) + 300 (light solid). Mirrors the property ramp's 5-step vivid exposure so cards/banners/buttons read vibrant on light bodies while text stays AA. A brand may shift these hues, but red=error / green=success conventions are near-universal \u2014 change with care.",
       "info": {
         "100": {
           "$value": "{color.sky.100}"
         },
+        "200": {
+          "$value": "{color.sky.200}"
+        },
         "300": {
           "$value": "{color.sky.300}"
+        },
+        "400": {
+          "$value": "{color.sky.400}"
+        },
+        "500": {
+          "$value": "{color.sky.500}"
         },
         "700": {
           "$value": "{color.sky.700}"
@@ -162,8 +171,17 @@
         "100": {
           "$value": "{color.green.100}"
         },
+        "200": {
+          "$value": "{color.green.200}"
+        },
         "300": {
           "$value": "{color.green.300}"
+        },
+        "400": {
+          "$value": "{color.green.400}"
+        },
+        "500": {
+          "$value": "{color.green.500}"
         },
         "700": {
           "$value": "{color.green.700}"
@@ -176,8 +194,17 @@
         "100": {
           "$value": "{color.amber.100}"
         },
+        "200": {
+          "$value": "{color.amber.200}"
+        },
         "300": {
           "$value": "{color.amber.300}"
+        },
+        "400": {
+          "$value": "{color.amber.400}"
+        },
+        "500": {
+          "$value": "{color.amber.500}"
         },
         "700": {
           "$value": "{color.amber.700}"
@@ -190,8 +217,17 @@
         "100": {
           "$value": "{color.red.100}"
         },
+        "200": {
+          "$value": "{color.red.200}"
+        },
         "300": {
           "$value": "{color.red.300}"
+        },
+        "400": {
+          "$value": "{color.red.400}"
+        },
+        "500": {
+          "$value": "{color.red.500}"
         },
         "700": {
           "$value": "{color.red.700}"
@@ -243,7 +279,8 @@
         "$value": "{color.magenta.500}"
       },
       "5": {
-        "$value": "{color.amber.500}"
+        "$value": "{color.mint.500}",
+        "$description": "Was {color.amber.500} — identical hue to status.warning, contradicting this group's own \"avoids the four status hues\" rule. Retargeted to mint: the only chromatic hue with the widest hue-angle margin (25°+) from all four status hues that wasn't already used elsewhere in this set (2026-08 token audit)."
       },
       "6": {
         "$value": "{color.lime.500}"
@@ -264,10 +301,67 @@
         "$value": "{color.magenta.400}"
       },
       "5": {
-        "$value": "{color.amber.400}"
+        "$value": "{color.mint.400}"
       },
       "6": {
         "$value": "{color.lime.400}"
+      }
+    },
+    "data-tone": {
+      "$description": "Card-tone form of the six data-viz hues (teal/indigo/violet/magenta/mint/lime, series 1-6) — same 100/200/300/400/500/700/900 step shape as status.*, so Card/Banner can take tone=\"data-1\"..\"data-6\" for categorical (non-status) identity, exactly like the four status tones (tint .100 / tint-strong .200 / accent .500 / solid .700; dark flips to .900 / .700 / .400 / .300). Kept as a separate group from data.*/data-bright.* (the flat .500/.400 raw chart-line values) rather than restructuring them, so existing --brand-data-* / --data-series-* chart consumers are untouched.",
+      "1": {
+        "100": { "$value": "{color.teal.100}" },
+        "200": { "$value": "{color.teal.200}" },
+        "300": { "$value": "{color.teal.300}" },
+        "400": { "$value": "{color.teal.400}" },
+        "500": { "$value": "{color.teal.500}" },
+        "700": { "$value": "{color.teal.700}" },
+        "900": { "$value": "{color.teal.900}" }
+      },
+      "2": {
+        "100": { "$value": "{color.indigo.100}" },
+        "200": { "$value": "{color.indigo.200}" },
+        "300": { "$value": "{color.indigo.300}" },
+        "400": { "$value": "{color.indigo.400}" },
+        "500": { "$value": "{color.indigo.500}" },
+        "700": { "$value": "{color.indigo.700}" },
+        "900": { "$value": "{color.indigo.900}" }
+      },
+      "3": {
+        "100": { "$value": "{color.violet.100}" },
+        "200": { "$value": "{color.violet.200}" },
+        "300": { "$value": "{color.violet.300}" },
+        "400": { "$value": "{color.violet.400}" },
+        "500": { "$value": "{color.violet.500}" },
+        "700": { "$value": "{color.violet.700}" },
+        "900": { "$value": "{color.violet.900}" }
+      },
+      "4": {
+        "100": { "$value": "{color.magenta.100}" },
+        "200": { "$value": "{color.magenta.200}" },
+        "300": { "$value": "{color.magenta.300}" },
+        "400": { "$value": "{color.magenta.400}" },
+        "500": { "$value": "{color.magenta.500}" },
+        "700": { "$value": "{color.magenta.700}" },
+        "900": { "$value": "{color.magenta.900}" }
+      },
+      "5": {
+        "100": { "$value": "{color.mint.100}" },
+        "200": { "$value": "{color.mint.200}" },
+        "300": { "$value": "{color.mint.300}" },
+        "400": { "$value": "{color.mint.400}" },
+        "500": { "$value": "{color.mint.500}" },
+        "700": { "$value": "{color.mint.700}" },
+        "900": { "$value": "{color.mint.900}" }
+      },
+      "6": {
+        "100": { "$value": "{color.lime.100}" },
+        "200": { "$value": "{color.lime.200}" },
+        "300": { "$value": "{color.lime.300}" },
+        "400": { "$value": "{color.lime.400}" },
+        "500": { "$value": "{color.lime.500}" },
+        "700": { "$value": "{color.lime.700}" },
+        "900": { "$value": "{color.lime.900}" }
       }
     },
     "tint": {

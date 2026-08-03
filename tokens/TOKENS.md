@@ -1,8 +1,8 @@
-# Design tokens — system documentation
+# Design tokens — Kernel
 
-_Last regenerated: 2026-07-27._
+_Last regenerated: 2026-08-03._
 _Spec: W3C Design Tokens 2025.10._  
-_Discovered: 770 tokens across 23 file(s); 1 resolver(s)._
+_Discovered: 904 tokens across 23 file(s); 1 resolver(s)._
 
 This document is the canonical reference for the token system. It is regenerated automatically — do not hand-edit; instead update the source `.tokens.json` files and re-run `scripts/generate_docs.py`.
 
@@ -70,7 +70,7 @@ _18 token(s)._
 
 _See [USAGE.md#surfaces](./USAGE.md#surfaces) for usage recommendations and CSS snippets._
 
-_20 token(s)._
+_22 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -85,6 +85,8 @@ _20 token(s)._
 | `state.disabled.surface` | color | `{brand.neutral.muted-light}` |  |
 | `state.selected.surface` | color | `{brand.tint.strong}` |  |
 | `state.selected.surface` | color | `{brand.tint.soft}` | Background of a selected row, tab, menu item (brand-tinted). |
+| `surface.bright` | color | `{brand.fill.800}` | Dark counterpart of the light pure-white bright surface: a clean raised dark surface (bright is a light-mode concept, so it tracks raised here rather than going literally white). |
+| `surface.bright` | color | `{color.graphite.0}` | Pure white (#fff). Deliberately hueless — bypasses the brand surface-tint (slate/sage/taupe) so an accent card reads as a clean white sheet. Theme-aware: flips to the raised dark surface in dark (a bright card is a light-mode concept). |
 | `surface.none` | color | `{color.transparent}` |  |
 | `surface.page` | color | `{brand.fill.950}` |  |
 | `surface.page` | color | `{brand.neutral.paper}` |  |
@@ -107,7 +109,7 @@ _20 token(s)._
 | `brand.data.2` | color | `{color.indigo.500}` |  |
 | `brand.data.3` | color | `{color.violet.500}` |  |
 | `brand.data.4` | color | `{color.magenta.500}` |  |
-| `brand.data.5` | color | `{color.amber.500}` |  |
+| `brand.data.5` | color | `{color.mint.500}` | Was {color.amber.500} — identical hue to status.warning, contradicting this group's own "avoids the four status hues" rule. Retargeted to mint: the only chromatic hue with the widest hue-angle margin (25°+) from all four status hues that wasn't already used elsewhere in this set (2026-08 token audit). |
 | `brand.data.6` | color | `{color.lime.500}` |  |
 | `chart.grid` | color | `{brand.ink.800}` |  |
 | `chart.grid` | color | `{brand.ink.400}` |  |
@@ -476,7 +478,7 @@ _16 token(s)._
 
 ### Other
 
-_406 token(s)._
+_538 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -502,8 +504,50 @@ _406 token(s)._
 | `brand.data-bright.2` | color | `{color.indigo.400}` |  |
 | `brand.data-bright.3` | color | `{color.violet.400}` |  |
 | `brand.data-bright.4` | color | `{color.magenta.400}` |  |
-| `brand.data-bright.5` | color | `{color.amber.400}` |  |
+| `brand.data-bright.5` | color | `{color.mint.400}` |  |
 | `brand.data-bright.6` | color | `{color.lime.400}` |  |
+| `brand.data-tone.1.100` | color | `{color.teal.100}` |  |
+| `brand.data-tone.1.200` | color | `{color.teal.200}` |  |
+| `brand.data-tone.1.300` | color | `{color.teal.300}` |  |
+| `brand.data-tone.1.400` | color | `{color.teal.400}` |  |
+| `brand.data-tone.1.500` | color | `{color.teal.500}` |  |
+| `brand.data-tone.1.700` | color | `{color.teal.700}` |  |
+| `brand.data-tone.1.900` | color | `{color.teal.900}` |  |
+| `brand.data-tone.2.100` | color | `{color.indigo.100}` |  |
+| `brand.data-tone.2.200` | color | `{color.indigo.200}` |  |
+| `brand.data-tone.2.300` | color | `{color.indigo.300}` |  |
+| `brand.data-tone.2.400` | color | `{color.indigo.400}` |  |
+| `brand.data-tone.2.500` | color | `{color.indigo.500}` |  |
+| `brand.data-tone.2.700` | color | `{color.indigo.700}` |  |
+| `brand.data-tone.2.900` | color | `{color.indigo.900}` |  |
+| `brand.data-tone.3.100` | color | `{color.violet.100}` |  |
+| `brand.data-tone.3.200` | color | `{color.violet.200}` |  |
+| `brand.data-tone.3.300` | color | `{color.violet.300}` |  |
+| `brand.data-tone.3.400` | color | `{color.violet.400}` |  |
+| `brand.data-tone.3.500` | color | `{color.violet.500}` |  |
+| `brand.data-tone.3.700` | color | `{color.violet.700}` |  |
+| `brand.data-tone.3.900` | color | `{color.violet.900}` |  |
+| `brand.data-tone.4.100` | color | `{color.magenta.100}` |  |
+| `brand.data-tone.4.200` | color | `{color.magenta.200}` |  |
+| `brand.data-tone.4.300` | color | `{color.magenta.300}` |  |
+| `brand.data-tone.4.400` | color | `{color.magenta.400}` |  |
+| `brand.data-tone.4.500` | color | `{color.magenta.500}` |  |
+| `brand.data-tone.4.700` | color | `{color.magenta.700}` |  |
+| `brand.data-tone.4.900` | color | `{color.magenta.900}` |  |
+| `brand.data-tone.5.100` | color | `{color.mint.100}` |  |
+| `brand.data-tone.5.200` | color | `{color.mint.200}` |  |
+| `brand.data-tone.5.300` | color | `{color.mint.300}` |  |
+| `brand.data-tone.5.400` | color | `{color.mint.400}` |  |
+| `brand.data-tone.5.500` | color | `{color.mint.500}` |  |
+| `brand.data-tone.5.700` | color | `{color.mint.700}` |  |
+| `brand.data-tone.5.900` | color | `{color.mint.900}` |  |
+| `brand.data-tone.6.100` | color | `{color.lime.100}` |  |
+| `brand.data-tone.6.200` | color | `{color.lime.200}` |  |
+| `brand.data-tone.6.300` | color | `{color.lime.300}` |  |
+| `brand.data-tone.6.400` | color | `{color.lime.400}` |  |
+| `brand.data-tone.6.500` | color | `{color.lime.500}` |  |
+| `brand.data-tone.6.700` | color | `{color.lime.700}` |  |
+| `brand.data-tone.6.900` | color | `{color.lime.900}` |  |
 | `brand.fill.100` | color | `{color.slate.100}` |  |
 | `brand.fill.100` | color | `{color.taupe.100}` |  |
 | `brand.fill.100` | color | `{color.sage.100}` |  |
@@ -655,19 +699,31 @@ _406 token(s)._
 | `brand.signal.success` | color | `{color.green.500}` |  |
 | `brand.signal.warning` | color | `{color.amber.500}` |  |
 | `brand.status.error.100` | color | `{color.red.100}` |  |
+| `brand.status.error.200` | color | `{color.red.200}` |  |
 | `brand.status.error.300` | color | `{color.red.300}` |  |
+| `brand.status.error.400` | color | `{color.red.400}` |  |
+| `brand.status.error.500` | color | `{color.red.500}` |  |
 | `brand.status.error.700` | color | `{color.red.700}` |  |
 | `brand.status.error.900` | color | `{color.red.900}` |  |
 | `brand.status.info.100` | color | `{color.sky.100}` |  |
+| `brand.status.info.200` | color | `{color.sky.200}` |  |
 | `brand.status.info.300` | color | `{color.sky.300}` |  |
+| `brand.status.info.400` | color | `{color.sky.400}` |  |
+| `brand.status.info.500` | color | `{color.sky.500}` |  |
 | `brand.status.info.700` | color | `{color.sky.700}` |  |
 | `brand.status.info.900` | color | `{color.sky.900}` |  |
 | `brand.status.success.100` | color | `{color.green.100}` |  |
+| `brand.status.success.200` | color | `{color.green.200}` |  |
 | `brand.status.success.300` | color | `{color.green.300}` |  |
+| `brand.status.success.400` | color | `{color.green.400}` |  |
+| `brand.status.success.500` | color | `{color.green.500}` |  |
 | `brand.status.success.700` | color | `{color.green.700}` |  |
 | `brand.status.success.900` | color | `{color.green.900}` |  |
 | `brand.status.warning.100` | color | `{color.amber.100}` |  |
+| `brand.status.warning.200` | color | `{color.amber.200}` |  |
 | `brand.status.warning.300` | color | `{color.amber.300}` |  |
+| `brand.status.warning.400` | color | `{color.amber.400}` |  |
+| `brand.status.warning.500` | color | `{color.amber.500}` |  |
 | `brand.status.warning.700` | color | `{color.amber.700}` |  |
 | `brand.status.warning.900` | color | `{color.amber.900}` |  |
 | `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 219.1)` (`#0088a4`) |  |
@@ -681,6 +737,66 @@ _406 token(s)._
 | `chart.axis` | color | `{brand.ink.500}` |  |
 | `chart.label` | color | `{brand.ink.300}` |  |
 | `chart.label` | color | `{brand.ink.700}` |  |
+| `data-tone.1.accent` | color | `{brand.data-tone.1.400}` |  |
+| `data-tone.1.accent` | color | `{brand.data-tone.1.500}` |  |
+| `data-tone.1.on` | color | `{brand.ink.950}` |  |
+| `data-tone.1.on` | color | `{brand.neutral.on-light}` |  |
+| `data-tone.1.solid` | color | `{brand.data-tone.1.300}` |  |
+| `data-tone.1.solid` | color | `{brand.data-tone.1.700}` |  |
+| `data-tone.1.tint` | color | `{brand.data-tone.1.900}` |  |
+| `data-tone.1.tint` | color | `{brand.data-tone.1.100}` |  |
+| `data-tone.1.tint-strong` | color | `{brand.data-tone.1.700}` |  |
+| `data-tone.1.tint-strong` | color | `{brand.data-tone.1.200}` |  |
+| `data-tone.2.accent` | color | `{brand.data-tone.2.400}` |  |
+| `data-tone.2.accent` | color | `{brand.data-tone.2.500}` |  |
+| `data-tone.2.on` | color | `{brand.ink.950}` |  |
+| `data-tone.2.on` | color | `{brand.neutral.on-light}` |  |
+| `data-tone.2.solid` | color | `{brand.data-tone.2.300}` |  |
+| `data-tone.2.solid` | color | `{brand.data-tone.2.700}` |  |
+| `data-tone.2.tint` | color | `{brand.data-tone.2.900}` |  |
+| `data-tone.2.tint` | color | `{brand.data-tone.2.100}` |  |
+| `data-tone.2.tint-strong` | color | `{brand.data-tone.2.700}` |  |
+| `data-tone.2.tint-strong` | color | `{brand.data-tone.2.200}` |  |
+| `data-tone.3.accent` | color | `{brand.data-tone.3.400}` |  |
+| `data-tone.3.accent` | color | `{brand.data-tone.3.500}` |  |
+| `data-tone.3.on` | color | `{brand.ink.950}` |  |
+| `data-tone.3.on` | color | `{brand.neutral.on-light}` |  |
+| `data-tone.3.solid` | color | `{brand.data-tone.3.300}` |  |
+| `data-tone.3.solid` | color | `{brand.data-tone.3.700}` |  |
+| `data-tone.3.tint` | color | `{brand.data-tone.3.900}` |  |
+| `data-tone.3.tint` | color | `{brand.data-tone.3.100}` |  |
+| `data-tone.3.tint-strong` | color | `{brand.data-tone.3.700}` |  |
+| `data-tone.3.tint-strong` | color | `{brand.data-tone.3.200}` |  |
+| `data-tone.4.accent` | color | `{brand.data-tone.4.400}` |  |
+| `data-tone.4.accent` | color | `{brand.data-tone.4.500}` |  |
+| `data-tone.4.on` | color | `{brand.ink.950}` |  |
+| `data-tone.4.on` | color | `{brand.neutral.on-light}` |  |
+| `data-tone.4.solid` | color | `{brand.data-tone.4.300}` |  |
+| `data-tone.4.solid` | color | `{brand.data-tone.4.700}` |  |
+| `data-tone.4.tint` | color | `{brand.data-tone.4.900}` |  |
+| `data-tone.4.tint` | color | `{brand.data-tone.4.100}` |  |
+| `data-tone.4.tint-strong` | color | `{brand.data-tone.4.700}` |  |
+| `data-tone.4.tint-strong` | color | `{brand.data-tone.4.200}` |  |
+| `data-tone.5.accent` | color | `{brand.data-tone.5.400}` |  |
+| `data-tone.5.accent` | color | `{brand.data-tone.5.500}` |  |
+| `data-tone.5.on` | color | `{brand.ink.950}` |  |
+| `data-tone.5.on` | color | `{brand.neutral.on-light}` |  |
+| `data-tone.5.solid` | color | `{brand.data-tone.5.300}` |  |
+| `data-tone.5.solid` | color | `{brand.data-tone.5.700}` |  |
+| `data-tone.5.tint` | color | `{brand.data-tone.5.900}` |  |
+| `data-tone.5.tint` | color | `{brand.data-tone.5.100}` |  |
+| `data-tone.5.tint-strong` | color | `{brand.data-tone.5.700}` |  |
+| `data-tone.5.tint-strong` | color | `{brand.data-tone.5.200}` |  |
+| `data-tone.6.accent` | color | `{brand.data-tone.6.400}` |  |
+| `data-tone.6.accent` | color | `{brand.data-tone.6.500}` |  |
+| `data-tone.6.on` | color | `{brand.ink.950}` |  |
+| `data-tone.6.on` | color | `{brand.neutral.on-light}` |  |
+| `data-tone.6.solid` | color | `{brand.data-tone.6.300}` |  |
+| `data-tone.6.solid` | color | `{brand.data-tone.6.700}` |  |
+| `data-tone.6.tint` | color | `{brand.data-tone.6.900}` |  |
+| `data-tone.6.tint` | color | `{brand.data-tone.6.100}` |  |
+| `data-tone.6.tint-strong` | color | `{brand.data-tone.6.700}` |  |
+| `data-tone.6.tint-strong` | color | `{brand.data-tone.6.200}` |  |
 | `density.card-pad` | dimension | `{space.4}` |  |
 | `density.card-pad` | dimension | `{space.3}` |  |
 | `density.card-pad` | dimension | `{space.5}` |  |
@@ -703,6 +819,8 @@ _406 token(s)._
 | `dimension.touch-target.compact` | dimension | `40px` |  |
 | `dimension.touch-target.regular` | dimension | `48px` |  |
 | `dimension.touch-target.small` | dimension | `32px` |  |
+| `elevation.floating` | shadow | `array[2]` |  |
+| `elevation.floating` | shadow | `array[2]` |  |
 | `elevation.overlay` | shadow | `array[2]` |  |
 | `elevation.overlay` | shadow | `array[2]` |  |
 | `elevation.raised` | shadow | `array[2]` |  |
@@ -855,30 +973,46 @@ _406 token(s)._
 | `state.hover` | color | `{color.alpha.black-06}` | Overlay layered over a surface on hover. |
 | `state.selected.text` | color | `{action.accent}` |  |
 | `state.selected.text` | color | `{action.solid}` | Text/icon colour when selected. |
+| `status.error.accent` | color | `{brand.status.error.400}` |  |
+| `status.error.accent` | color | `{brand.status.error.500}` |  |
 | `status.error.on` | color | `{brand.ink.950}` |  |
 | `status.error.on` | color | `{brand.neutral.on-light}` |  |
 | `status.error.solid` | color | `{brand.status.error.300}` |  |
 | `status.error.solid` | color | `{brand.status.error.700}` |  |
 | `status.error.tint` | color | `{brand.status.error.900}` |  |
 | `status.error.tint` | color | `{brand.status.error.100}` |  |
+| `status.error.tint-strong` | color | `{brand.status.error.700}` |  |
+| `status.error.tint-strong` | color | `{brand.status.error.200}` |  |
+| `status.info.accent` | color | `{brand.status.info.400}` |  |
+| `status.info.accent` | color | `{brand.status.info.500}` |  |
 | `status.info.on` | color | `{brand.ink.950}` |  |
 | `status.info.on` | color | `{brand.neutral.on-light}` |  |
 | `status.info.solid` | color | `{brand.status.info.300}` |  |
 | `status.info.solid` | color | `{brand.status.info.700}` |  |
 | `status.info.tint` | color | `{brand.status.info.900}` |  |
 | `status.info.tint` | color | `{brand.status.info.100}` |  |
+| `status.info.tint-strong` | color | `{brand.status.info.700}` |  |
+| `status.info.tint-strong` | color | `{brand.status.info.200}` |  |
+| `status.success.accent` | color | `{brand.status.success.400}` |  |
+| `status.success.accent` | color | `{brand.status.success.500}` |  |
 | `status.success.on` | color | `{brand.ink.950}` |  |
 | `status.success.on` | color | `{brand.neutral.on-light}` |  |
 | `status.success.solid` | color | `{brand.status.success.300}` |  |
 | `status.success.solid` | color | `{brand.status.success.700}` |  |
 | `status.success.tint` | color | `{brand.status.success.900}` |  |
 | `status.success.tint` | color | `{brand.status.success.100}` |  |
+| `status.success.tint-strong` | color | `{brand.status.success.700}` |  |
+| `status.success.tint-strong` | color | `{brand.status.success.200}` |  |
+| `status.warning.accent` | color | `{brand.status.warning.400}` |  |
+| `status.warning.accent` | color | `{brand.status.warning.500}` |  |
 | `status.warning.on` | color | `{brand.ink.950}` |  |
 | `status.warning.on` | color | `{brand.neutral.on-light}` |  |
 | `status.warning.solid` | color | `{brand.status.warning.300}` |  |
 | `status.warning.solid` | color | `{brand.status.warning.700}` |  |
 | `status.warning.tint` | color | `{brand.status.warning.900}` |  |
 | `status.warning.tint` | color | `{brand.status.warning.100}` |  |
+| `status.warning.tint-strong` | color | `{brand.status.warning.700}` |  |
+| `status.warning.tint-strong` | color | `{brand.status.warning.200}` |  |
 | `text.default` | color | `{brand.ink.100}` |  |
 | `text.default` | color | `{brand.ink.950}` |  |
 | `text.faint` | color | `{brand.ink.400}` | Tertiary / placeholder / functional-icon ink. |

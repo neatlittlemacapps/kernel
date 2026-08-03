@@ -18,10 +18,16 @@
     }
   },
   "status": {
-    "$description": "Dark-mode status. The light theme's tints render as glaring light chips on dark, and its solids are illegible as foreground on dark. Flipped: soft form = dark tint (brand.status.*.900) + light solid (brand.status.*.300); bold form = light solid fill + dark `on` (brand ink).",
+    "$description": "Dark-mode status. The light theme's tints render as glaring light chips on dark, and its solids are illegible as foreground on dark. Flipped (mirrors property dark): tint = dark tint (.900), tint-strong = .700 (icon-tile backing on dark), accent = .400 (vivid decorative, reads on dark), solid = light solid (.300); on = dark ink for a light solid fill.",
     "info": {
       "tint": {
         "$value": "{brand.status.info.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.status.info.700}"
+      },
+      "accent": {
+        "$value": "{brand.status.info.400}"
       },
       "solid": {
         "$value": "{brand.status.info.300}"
@@ -34,6 +40,12 @@
       "tint": {
         "$value": "{brand.status.success.900}"
       },
+      "tint-strong": {
+        "$value": "{brand.status.success.700}"
+      },
+      "accent": {
+        "$value": "{brand.status.success.400}"
+      },
       "solid": {
         "$value": "{brand.status.success.300}"
       },
@@ -44,6 +56,12 @@
     "warning": {
       "tint": {
         "$value": "{brand.status.warning.900}"
+      },
+      "tint-strong": {
+        "$value": "{brand.status.warning.700}"
+      },
+      "accent": {
+        "$value": "{brand.status.warning.400}"
       },
       "solid": {
         "$value": "{brand.status.warning.300}"
@@ -56,12 +74,63 @@
       "tint": {
         "$value": "{brand.status.error.900}"
       },
+      "tint-strong": {
+        "$value": "{brand.status.error.700}"
+      },
+      "accent": {
+        "$value": "{brand.status.error.400}"
+      },
       "solid": {
         "$value": "{brand.status.error.300}"
       },
       "on": {
         "$value": "{brand.ink.950}"
       }
+    }
+  },
+  "data-tone": {
+    "$description": "Dark-mode data-tone (see semantic/light.tokens.json data-tone). Flipped like status: tint = .900, tint-strong = .700, accent = .400, solid = .300; on = dark ink for the light solid.",
+    "1": {
+      "tint": { "$value": "{brand.data-tone.1.900}" },
+      "tint-strong": { "$value": "{brand.data-tone.1.700}" },
+      "accent": { "$value": "{brand.data-tone.1.400}" },
+      "solid": { "$value": "{brand.data-tone.1.300}" },
+      "on": { "$value": "{brand.ink.950}" }
+    },
+    "2": {
+      "tint": { "$value": "{brand.data-tone.2.900}" },
+      "tint-strong": { "$value": "{brand.data-tone.2.700}" },
+      "accent": { "$value": "{brand.data-tone.2.400}" },
+      "solid": { "$value": "{brand.data-tone.2.300}" },
+      "on": { "$value": "{brand.ink.950}" }
+    },
+    "3": {
+      "tint": { "$value": "{brand.data-tone.3.900}" },
+      "tint-strong": { "$value": "{brand.data-tone.3.700}" },
+      "accent": { "$value": "{brand.data-tone.3.400}" },
+      "solid": { "$value": "{brand.data-tone.3.300}" },
+      "on": { "$value": "{brand.ink.950}" }
+    },
+    "4": {
+      "tint": { "$value": "{brand.data-tone.4.900}" },
+      "tint-strong": { "$value": "{brand.data-tone.4.700}" },
+      "accent": { "$value": "{brand.data-tone.4.400}" },
+      "solid": { "$value": "{brand.data-tone.4.300}" },
+      "on": { "$value": "{brand.ink.950}" }
+    },
+    "5": {
+      "tint": { "$value": "{brand.data-tone.5.900}" },
+      "tint-strong": { "$value": "{brand.data-tone.5.700}" },
+      "accent": { "$value": "{brand.data-tone.5.400}" },
+      "solid": { "$value": "{brand.data-tone.5.300}" },
+      "on": { "$value": "{brand.ink.950}" }
+    },
+    "6": {
+      "tint": { "$value": "{brand.data-tone.6.900}" },
+      "tint-strong": { "$value": "{brand.data-tone.6.700}" },
+      "accent": { "$value": "{brand.data-tone.6.400}" },
+      "solid": { "$value": "{brand.data-tone.6.300}" },
+      "on": { "$value": "{brand.ink.950}" }
     }
   },
   "surface": {
@@ -73,6 +142,10 @@
     },
     "raised": {
       "$value": "{brand.fill.800}"
+    },
+    "bright": {
+      "$value": "{brand.fill.800}",
+      "$description": "Dark counterpart of the light pure-white bright surface: a clean raised dark surface (bright is a light-mode concept, so it tracks raised here rather than going literally white)."
     },
     "sunken": {
       "$value": "{brand.fill.700}"
@@ -165,6 +238,24 @@
   },
   "elevation": {
     "$type": "shadow",
+    "floating": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-30}",
+          "offsetX": { "value": 0, "unit": "px" },
+          "offsetY": { "value": 4, "unit": "px" },
+          "blur": { "value": 20, "unit": "px" },
+          "spread": { "value": 0, "unit": "px" }
+        },
+        {
+          "color": "{color.alpha.black-24}",
+          "offsetX": { "value": 0, "unit": "px" },
+          "offsetY": { "value": 1, "unit": "px" },
+          "blur": { "value": 3, "unit": "px" },
+          "spread": { "value": 0, "unit": "px" }
+        }
+      ]
+    },
     "raised": {
       "$value": [
         {

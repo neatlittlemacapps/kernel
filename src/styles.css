@@ -797,6 +797,7 @@
   .krnl-tabs--settings[data-layout="drill"] { transition-duration: 1ms; }
   .krnl-tab-indicator { transition-duration: 1ms; }   /* the existing left/width transition was never covered */
   .krnl-settings { animation-duration: 1ms; }         /* re-fires on every rail switch now that keepMounted=false */
+  .krnl-card-panel, .krnl-card-chev, .krnl-card--collapsible { transition-duration: 1ms; }  /* collapsible card expand + hover-lift (B-46) */
 }
 
 /* ── Collapsible (B-38, Base UI) ── */
@@ -938,13 +939,24 @@
   --card-tone-tint: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint) * 100%), var(--surface-raised));
   --card-tone-tint-strong: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint-strong) * 100%), var(--surface-raised));
   --card-tone-text: var(--card-tone);
+  /* accent strip + elevation are LAYERED into one box-shadow via two vars so they compose
+     (B-46). Both default to a transparent no-op; `appearance`/state set --card-elevation,
+     `accent` sets --card-strip. The strip is an INSET shadow → the browser clips it to
+     border-radius automatically (no overflow/inner-radius hack). --card-strip-edge is the
+     top edge by default; Banner overrides it to the left edge. `var(--card-tone, transparent)`
+     keeps elevation intact when `accent` is set without a `tone`. */
+  --card-strip-w: 3px;
+  --card-strip-edge: inset 0 var(--card-strip-w) 0 0 var(--card-accent, var(--card-tone, transparent));
+  --card-strip: 0 0 #0000;
+  --card-elevation: 0 0 #0000;
+  box-shadow: var(--card-strip), var(--card-elevation);
 }
 .krnl-card--outline { background: none; }
 .krnl-card--subtle { background: none; border-color: transparent; }
 /* elevated (B-42): a raised ring + shadow instead of a flat border, with a hover lift -
    the wrapper treatment PatientCard is built on (kept accent-bar-free). */
-.krnl-card--elevated { border: none; background: var(--surface-raised); box-shadow: 0 0 0 var(--dimension-rule-hair) var(--border-subtle), var(--elevation-raised); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
-.krnl-card--elevated.krnl-card--interactive:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 0 var(--dimension-rule-hair) var(--action-accent), var(--elevation-overlay); }
+.krnl-card--elevated { border: none; background: var(--surface-raised); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--border-subtle), var(--elevation-raised); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
+.krnl-card--elevated.krnl-card--interactive:hover:not(:disabled) { transform: translateY(-1px); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--action-accent), var(--elevation-overlay); }
 /* toned (B-42): a colour-tinted card - tinted surface + tone-coloured accent border. The
    neutral card sets no tone; `tone` opts in. (PatientCard uses --card-tone for identity
    without this tinted treatment, so it does not set data-tone.) */
@@ -966,12 +978,59 @@
 .krnl-card--subtle.krnl-card--interactive:hover:not(:disabled) { background: var(--state-hover); border-color: transparent; }
 .krnl-card--subtle.krnl-card--interactive:active:not(:disabled) { background: var(--state-selected-surface); }
 .krnl-card[data-selected] { border-color: var(--action-accent); }
-.krnl-card[data-dragging] { box-shadow: var(--elevation-modal); }
+.krnl-card[data-dragging] { --card-elevation: var(--elevation-modal); }
 .krnl-card[data-disabled], .krnl-card:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
 .krnl-card-floataction { position: absolute; top: var(--space-2); right: var(--space-2); z-index: 1; }
+/* accent strip (B-46): a tone-coloured bar on one edge, opt-in via the `accent` prop
+   (data-accent="strip" | "strip-border"). Inset box-shadow → auto corner-clipped. Reads
+   --card-tone, so `accent` needs a `tone` to show. strip-border also keeps the tone border
+   that [data-tone] already supplies. The edge is --card-strip-edge (top here; Banner flips
+   it left). accent + Card.Preview are mutually exclusive (the inset shadow paints under a
+   full-bleed preview image). */
+.krnl-card[data-accent="strip"], .krnl-card[data-accent="strip-border"] { --card-strip: var(--card-strip-edge); }
+/* strip-border's border matches the reference: a HAIRLINE (1px, same weight as the base
+   card's own default border - not a heavier ring) in the vivid accent SOFTENED toward the
+   surface (~= the reference's "accentColor at 38% alpha"), so it hugs the body as a light
+   tone tint rather than a heavy solid .700 rule. */
+.krnl-card[data-accent="strip-border"][data-tone] { border-width: var(--dimension-rule-hair); border-color: color-mix(in oklch, var(--card-accent) 45%, var(--surface-bright)); }
+/* An accent card carries its tone in the strip + icon-tile + accents, NOT a tinted body:
+   the surface is `bright` — PURE WHITE in light (theme-aware in dark) — like the reference's
+   crisp white cards, which also makes the vivid strip/icon read stronger. Overrides both
+   [data-tone]'s tinted fill AND the appearance surface; a toned card WITHOUT an accent keeps
+   the tint. Covers toned and neutral accent cards/banners alike. */
+.krnl-card[data-accent] { background: var(--surface-bright); }
+/* collapsible card (B-46): `detail` makes the summary a Base UI Collapsible.Trigger and
+   reveals `detail` in an animated panel below. Padding moves off the root onto the trigger +
+   panel-inner, so the divider spans edge-to-edge and the accent strip hugs the very top edge. */
+.krnl-card--collapsible { padding: 0; }
+/* accent + collapsible cards FLOAT (soft ambient shadow, the reference look) instead of the
+   tight `raised` contact shadow; collapsible cards lift on hover and pop when open (they are
+   clickable to expand). Non-accent, non-collapsible cards keep their existing elevation. */
+.krnl-card[data-accent], .krnl-card--collapsible { --card-elevation: var(--elevation-floating); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
+.krnl-card--collapsible:hover:not([data-disabled]) { transform: translateY(-2px); --card-elevation: var(--elevation-overlay); }
+.krnl-card--collapsible:has(.krnl-card-trigger[data-panel-open]) { --card-elevation: var(--elevation-overlay); }
+.krnl-card-trigger { position: relative; display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: none; border: none; border-radius: inherit; cursor: pointer; padding: var(--density-card-pad); padding-bottom: calc(var(--density-card-pad) + var(--space-3)); }
+.krnl-card-trigger:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: -2px; }
+.krnl-card-trigger:disabled { cursor: not-allowed; }
+/* chevron hint centred on the summary's bottom edge; points down, flips up when open */
+.krnl-card-chev { position: absolute; left: 50%; bottom: var(--space-1); display: inline-flex; color: var(--text-faint); transform: translateX(-50%) rotate(90deg); transition: transform var(--motion-duration-fast) var(--motion-easing-standard); }
+.krnl-card-trigger[data-panel-open] .krnl-card-chev { transform: translateX(-50%) rotate(-90deg); }
+/* height-animated panel — Base UI supplies the measured --collapsible-panel-height */
+.krnl-card-panel { overflow: hidden; height: var(--collapsible-panel-height); transition: height var(--motion-duration-base) var(--motion-easing-decelerate); }
+.krnl-card-panel[data-starting-style], .krnl-card-panel[data-ending-style] { height: 0; }
+.krnl-card-panel-inner { padding: var(--space-3) var(--density-card-pad) var(--density-card-pad); border-top: var(--dimension-rule-hair) solid var(--border-subtle); }
 /* Banner (B-45): composes Card, so its look rides Card's own appearance/tone CSS above.
    Only two things are Banner-specific: `variant="strong"` (a solid tone fill Card has no
    appearance for) and the action slot holding two controls (action button + dismiss). */
+/* Banner flips the accent strip to the LEFT edge (cards keep it on top), and gives a
+   neutral (tone-less) banner a quiet grey strip instead of a transparent one (B-46). */
+.krnl-banner-card { --card-strip-w: 4px; --card-strip-edge: inset var(--card-strip-w) 0 0 0 var(--card-accent, var(--card-tone, var(--border-subtle))); }
+/* Border colour/width for strip-border now comes from the shared Card rule above (same
+   softened-accent hairline for Card and Banner alike) - no Banner-specific override needed. */
+/* Banner icon = a vivid tone glyph in a light tone tile (the reference's icon-tile), matching
+   the vitals-card leading treatment. Neutral (tone-less) banners get a quiet grey tile. */
+.krnl-banner-icon { width: 34px; height: 34px; border-radius: var(--krnl-radius-sm); align-items: center; justify-content: center; flex-shrink: 0; background: var(--surface-sunken); color: var(--text-muted); }
+.krnl-banner-card[data-tone] .krnl-banner-icon { background: var(--card-tone-tint-strong); color: var(--card-tone-text); }
 .krnl-banner-card[data-tone].krnl-banner-card--strong { background: var(--card-tone); border-color: var(--card-tone); color: var(--text-on-accent); }
 .krnl-banner-card[data-tone].krnl-banner-card--strong .krnl-card-header-title,
 .krnl-banner-card[data-tone].krnl-banner-card--strong .krnl-card-header-desc { color: var(--text-on-accent); }

@@ -32,7 +32,7 @@ const TONE_ICON = {
 const TONE_LIVE = { error: 'assertive', neutral: 'off' };
 
 export function Banner({
-  tone, appearance = 'filled', variant = 'subtle', icon,
+  tone, appearance = 'filled', variant = 'subtle', accent = 'strip-border', icon,
   title, description, children, action, detail, fullWidth,
   onDismiss, live, className = '', ...rest
 }) {
@@ -47,7 +47,7 @@ export function Banner({
 
   return (
     <Card
-      appearance={appearance} tone={tone} className={cls}
+      appearance={appearance} tone={tone} accent={accent} className={cls}
       role={resolvedLive === 'off' ? undefined : (resolvedLive === 'assertive' ? 'alert' : 'status')}
       aria-live={resolvedLive === 'off' ? undefined : resolvedLive}
       {...rest}>
@@ -81,6 +81,7 @@ export const meta = {
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], description: 'Semantic color, passed through to Card. Also selects the default icon and the default `live` politeness. Omit for a neutral banner (Card’s default surface, no icon).' },
       { name: 'variant', class: 'dsPresentation', values: ['subtle', 'strong'], default: 'subtle', description: 'subtle (default) is Card’s tinted surface (--status-{tone}-tint background). strong is a solid fill (--status-{tone}-solid background + --text-on-accent) for a banner that must dominate the view.' },
       { name: 'appearance', class: 'dsPresentation', values: ['filled', 'outline', 'subtle', 'elevated'], default: 'filled', description: 'Passthrough to Card’s surface treatment. elevated gives Astryx’s "Floating" raised variant (shadow + ring, no border) - confirmed against Card’s existing elevated CSS rather than assumed.' },
+      { name: 'accent', class: 'dsPresentation', values: ['strip', 'strip-border'], default: 'strip-border', description: 'Passthrough to Card’s accent, but flipped to the LEFT edge (cards put the strip on top). Default strip-border = a tone-coloured left bar + tone border; a tone-less (neutral) banner gets a quiet grey strip. Pass null to drop the accent.' },
       { name: 'title', class: 'content', type: 'ReactNode', description: 'The banner headline. Required - rendered in Card.Header’s title slot.' },
       { name: 'description', class: 'content', type: 'ReactNode', description: 'Supporting text below the title, rendered in Card.Header’s description slot. Falls back to `children` when omitted, so a single-line banner can just pass text as children.' },
       { name: 'icon', class: 'content', type: 'ReactNode', description: 'Overrides the tone-derived default icon (info/success/warning/error each have one). Pass null to render no icon.' },

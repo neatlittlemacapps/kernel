@@ -413,6 +413,16 @@
           "description": "Passthrough to Card’s surface treatment. elevated gives Astryx’s \"Floating\" raised variant (shadow + ring, no border) - confirmed against Card’s existing elevated CSS rather than assumed."
         },
         {
+          "name": "accent",
+          "class": "dsPresentation",
+          "values": [
+            "strip",
+            "strip-border"
+          ],
+          "default": "strip-border",
+          "description": "Passthrough to Card’s accent, but flipped to the LEFT edge (cards put the strip on top). Default strip-border = a tone-coloured left bar + tone border; a tone-less (neutral) banner gets a quiet grey strip. Pass null to drop the accent."
+        },
+        {
           "name": "title",
           "class": "content",
           "type": "ReactNode",
@@ -817,7 +827,7 @@
           "name": "tone",
           "class": "dsPresentation",
           "type": "string",
-          "description": "Colour identity: a named status (info/success/warning/error) or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted."
+          "description": "Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for \"one of several categories\" identity without implying status), or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted. Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation."
         },
         {
           "name": "orientation",
@@ -850,7 +860,16 @@
           "name": "as",
           "class": "dsPresentation",
           "type": "string",
-          "description": "Element tag for the non-interactive form (default div; e.g. \"article\"). Ignored when interactive (always a <button>)."
+          "description": "Element tag for the non-interactive form (default div; e.g. \"article\"). Ignored when interactive (always a <button>) or collapsible (always a Collapsible root div)."
+        },
+        {
+          "name": "accent",
+          "class": "dsPresentation",
+          "values": [
+            "strip",
+            "strip-border"
+          ],
+          "description": "Opt-in tone-coloured accent (needs a `tone`): strip = a bar on one edge (top on a Card; Banner flips it to the left); strip-border also keeps the tone border. Inset box-shadow, so it is auto-clipped to the corner radius. Mutually exclusive with Card.Preview (the inset paints under a full-bleed image)."
         },
         {
           "name": "selected",
@@ -870,6 +889,27 @@
           "passthrough": "HTMLButtonElement.disabled"
         },
         {
+          "name": "detail",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Opts the card into collapse: the summary (children) becomes a click/keyboard toggle and this content is revealed in an animated panel below. Composes Base UI collapsible (owns aria-expanded/controls + the height var). Keep interactive controls OUT of the summary when using detail (the summary is the trigger button) - put actions here in detail. Ignores `interactive`/`onClick` (the toggle is the interaction; use onExpandedChange for side-effects)."
+        },
+        {
+          "name": "expanded",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Collapsible.Root.open"
+        },
+        {
+          "name": "defaultExpanded",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Collapsible.Root.defaultOpen"
+        },
+        {
+          "name": "onExpandedChange",
+          "class": "passThroughControl",
+          "passthrough": "BaseUI.Collapsible.Root.onOpenChange"
+        },
+        {
           "name": "floatingAction",
           "class": "content",
           "type": "ReactNode",
@@ -879,17 +919,17 @@
           "name": "onClick",
           "class": "event",
           "type": "(event) => void",
-          "description": "Click handler attached to the card element. Pair with `interactive` for the focusable <button> affordance."
+          "description": "Click handler attached to the card element. Pair with `interactive` for the focusable <button> affordance. Ignored when `detail` is set (the toggle owns the click - use onExpandedChange)."
         },
         {
           "name": "children",
           "class": "content",
           "type": "ReactNode",
-          "description": "Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content)."
+          "description": "Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content). When `detail` is set, children are the always-visible summary and must stay display-only (no nested buttons/links)."
         }
       ],
       "composes": [],
-      "usage": "<Card>\n  <Card.Header title=\"Prescribe a medication\" action={<IconButton .../>} />\n  <Card.Body>…</Card.Body>\n  <Card.Footer><Button>Accept</Button></Card.Footer>\n</Card>",
+      "usage": "<Card accent=\"strip\" tone=\"info\" detail={<Chart/>}>\n  <Card.Header leading={icon} title=\"Blood pressure\" description=\"152/94 mmHg\" />\n</Card>",
       "keywords": [
         "card",
         "surface",
@@ -911,11 +951,15 @@
         },
         {
           "do": true,
-          "text": "For a dense selectable list row (citation / suggestion / radio row), compose an interactive Card with size=\"sm\" + a single Card.Header (leading | title + description | action); appearance=\"subtle\" gives a borderless row with a surface hover, appearance=\"outline\" a bordered one."
+          "text": "For a collapsible card, put the compact teaser (icon / title / status / value) in children and the expandable content in `detail`; keep the summary display-only (actions live in detail). Coordinate one-open-at-a-time with the controlled expanded/onExpandedChange triad."
+        },
+        {
+          "do": true,
+          "text": "Use accent=\"strip\" (needs a tone) for the vibrant top-edge bar; the accent + icon-tile carry the colour so the body can stay light and text stays AA."
         },
         {
           "do": false,
-          "text": "Nest an interactive Card inside another interactive Card (button-in-button)."
+          "text": "Nest an interactive Card inside another interactive Card, or put a button/link inside a collapsible card's summary (button-in-button)."
         }
       ],
       "anatomy": [
@@ -938,12 +982,18 @@
           "name": "Footer",
           "required": false,
           "description": "Actions row (Card.Footer)."
+        },
+        {
+          "name": "Detail",
+          "required": false,
+          "description": "Collapsible panel revealed below the summary when `detail` is set."
         }
       ],
       "related": [
         "Box",
         "PatientCard",
-        "Stack"
+        "Stack",
+        "Collapsible"
       ]
     },
     {

@@ -47,10 +47,16 @@
     }
   },
   "status": {
-    "$description": "Four semantic roles. Each has a soft form (tint background + solid text/icon) and a bold form (solid fill + white on-colour). Hues owned by brand.status.*.",
+    "$description": "Four semantic roles. Each exposes tint (.100 soft background) + tint-strong (.200 icon-tile backing) + accent (.500 vivid decorative — strip/sparkline/icon glyph) + solid (.700 AA text/border) + on (text on a solid fill). Mirrors the property-ramp vivid exposure so cards/banners/buttons read vibrant on light bodies while text stays AA. Hues owned by brand.status.*.",
     "info": {
       "tint": {
         "$value": "{brand.status.info.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.status.info.200}"
+      },
+      "accent": {
+        "$value": "{brand.status.info.500}"
       },
       "solid": {
         "$value": "{brand.status.info.700}"
@@ -63,6 +69,12 @@
       "tint": {
         "$value": "{brand.status.success.100}"
       },
+      "tint-strong": {
+        "$value": "{brand.status.success.200}"
+      },
+      "accent": {
+        "$value": "{brand.status.success.500}"
+      },
       "solid": {
         "$value": "{brand.status.success.700}"
       },
@@ -73,6 +85,12 @@
     "warning": {
       "tint": {
         "$value": "{brand.status.warning.100}"
+      },
+      "tint-strong": {
+        "$value": "{brand.status.warning.200}"
+      },
+      "accent": {
+        "$value": "{brand.status.warning.500}"
       },
       "solid": {
         "$value": "{brand.status.warning.700}"
@@ -85,12 +103,63 @@
       "tint": {
         "$value": "{brand.status.error.100}"
       },
+      "tint-strong": {
+        "$value": "{brand.status.error.200}"
+      },
+      "accent": {
+        "$value": "{brand.status.error.500}"
+      },
       "solid": {
         "$value": "{brand.status.error.700}"
       },
       "on": {
         "$value": "{brand.neutral.on-light}"
       }
+    }
+  },
+  "data-tone": {
+    "$description": "Card-tone form of the six data-viz hues (series 1-6) — same tint/tint-strong/accent/solid/on shape as status.*, for tone=\"data-1\"..\"data-6\" on Card/Banner. Light uses 100 (tint) + 200 (tint-strong) + 500 (accent) + 700 (solid), mirroring status.",
+    "1": {
+      "tint": { "$value": "{brand.data-tone.1.100}" },
+      "tint-strong": { "$value": "{brand.data-tone.1.200}" },
+      "accent": { "$value": "{brand.data-tone.1.500}" },
+      "solid": { "$value": "{brand.data-tone.1.700}" },
+      "on": { "$value": "{brand.neutral.on-light}" }
+    },
+    "2": {
+      "tint": { "$value": "{brand.data-tone.2.100}" },
+      "tint-strong": { "$value": "{brand.data-tone.2.200}" },
+      "accent": { "$value": "{brand.data-tone.2.500}" },
+      "solid": { "$value": "{brand.data-tone.2.700}" },
+      "on": { "$value": "{brand.neutral.on-light}" }
+    },
+    "3": {
+      "tint": { "$value": "{brand.data-tone.3.100}" },
+      "tint-strong": { "$value": "{brand.data-tone.3.200}" },
+      "accent": { "$value": "{brand.data-tone.3.500}" },
+      "solid": { "$value": "{brand.data-tone.3.700}" },
+      "on": { "$value": "{brand.neutral.on-light}" }
+    },
+    "4": {
+      "tint": { "$value": "{brand.data-tone.4.100}" },
+      "tint-strong": { "$value": "{brand.data-tone.4.200}" },
+      "accent": { "$value": "{brand.data-tone.4.500}" },
+      "solid": { "$value": "{brand.data-tone.4.700}" },
+      "on": { "$value": "{brand.neutral.on-light}" }
+    },
+    "5": {
+      "tint": { "$value": "{brand.data-tone.5.100}" },
+      "tint-strong": { "$value": "{brand.data-tone.5.200}" },
+      "accent": { "$value": "{brand.data-tone.5.500}" },
+      "solid": { "$value": "{brand.data-tone.5.700}" },
+      "on": { "$value": "{brand.neutral.on-light}" }
+    },
+    "6": {
+      "tint": { "$value": "{brand.data-tone.6.100}" },
+      "tint-strong": { "$value": "{brand.data-tone.6.200}" },
+      "accent": { "$value": "{brand.data-tone.6.500}" },
+      "solid": { "$value": "{brand.data-tone.6.700}" },
+      "on": { "$value": "{brand.neutral.on-light}" }
     }
   },
   "data": {
@@ -115,7 +184,7 @@
     }
   },
   "surface": {
-    "$description": "Background fills, furthest back to nearest front. page = app canvas; panel = a section/card; raised = a card lifted above its panel, or a menu/popover/toast body; sunken = an inset well, input field, or track; none = transparent.",
+    "$description": "Background fills, furthest back to nearest front. page = app canvas; panel = a section/card; raised = a card lifted above its panel, or a menu/popover/toast body; bright = the cleanest, brightest card surface — PURE WHITE in light (no brand surface-tint), used for accent/floating cards that should read crisp against the page; sunken = an inset well, input field, or track; none = transparent.",
     "page": {
       "$value": "{brand.neutral.paper}"
     },
@@ -124,6 +193,10 @@
     },
     "raised": {
       "$value": "{brand.neutral.panel-raised}"
+    },
+    "bright": {
+      "$value": "{color.graphite.0}",
+      "$description": "Pure white (#fff). Deliberately hueless — bypasses the brand surface-tint (slate/sage/taupe) so an accent card reads as a clean white sheet. Theme-aware: flips to the raised dark surface in dark (a bright card is a light-mode concept)."
     },
     "sunken": {
       "$value": "{brand.neutral.panel-sunken}"
@@ -219,7 +292,25 @@
   },
   "elevation": {
     "$type": "shadow",
-    "$description": "Box-shadow levels. raised = cards and raised surfaces; overlay = menus, popovers, toasts; modal = dialogs. Shadow ink is hueless structural (primitives).",
+    "$description": "Box-shadow levels. raised = a tight contact shadow for grounded cards; floating = a soft, wide ambient lift for cards that visibly float above the page (collapsible / accent cards); overlay = menus, popovers, toasts; modal = dialogs. Shadow ink is hueless structural (primitives).",
+    "floating": {
+      "$value": [
+        {
+          "color": "{color.alpha.black-10}",
+          "offsetX": { "value": 0, "unit": "px" },
+          "offsetY": { "value": 4, "unit": "px" },
+          "blur": { "value": 20, "unit": "px" },
+          "spread": { "value": 0, "unit": "px" }
+        },
+        {
+          "color": "{color.alpha.black-06}",
+          "offsetX": { "value": 0, "unit": "px" },
+          "offsetY": { "value": 1, "unit": "px" },
+          "blur": { "value": 3, "unit": "px" },
+          "spread": { "value": 0, "unit": "px" }
+        }
+      ]
+    },
     "raised": {
       "$value": [
         {
