@@ -1116,10 +1116,6 @@
   margin: 0 auto var(--space-2);
   animation: krnl-fadeUp var(--motion-duration-fast) var(--motion-easing-decelerate);
 }
-/* the clickable title — Banner's Card.Header wraps `title` in a plain div, so a nested
-   <button> needs its own reset to inherit that slot's type instead of UA button chrome. */
-.krnl-creditnotice-tx { display: block; width: 100%; border: none; background: none; padding: 0; margin: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; }
-.krnl-creditnotice-tx:hover { color: var(--card-tone-text, var(--action-accent)); }
 /* ── USAGE PANEL (greenhouse) ── the "Manage → Usage" pane's own layout glue, so the
    balance hero + breakdown lead with real component typography (ValueDisplay / Meter /
    Table) instead of borrowing the feature-flag / form-field / agent-screen classes. Pure

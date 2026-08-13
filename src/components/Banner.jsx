@@ -79,10 +79,6 @@ function resolveBannerChrome({ tone, toneScope, surface }) {
   if (isStatus) {
     vars['--banner-icon-tint'] = `var(--${slug}-tint-strong)`;
     vars['--banner-icon-text'] = `var(--${slug}-solid)`;
-    // Back-compat: styles.css's `.krnl-creditnotice-tx:hover` reads --card-tone-text
-    // with an --action-accent fallback. Keep supplying it so that consumer doesn't
-    // need its own change just because Banner stopped riding Card's tone vars.
-    vars['--card-tone-text'] = `var(--${slug}-solid)`;
   }
   return vars;
 }
