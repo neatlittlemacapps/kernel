@@ -56,6 +56,13 @@ them as props is the "hand-roll behaviour Base UI ships" violation.
 The error tone value is **`error`** — it matches the token stem `--status-error-*` 1:1, with no
 prop-value→token lookup table.
 
+Surface/visualisation components read a wider tone set than the base dictionary above: **Card**
+additionally accepts `data-1..6` (categorical data-viz hues) and arbitrary colour/`var()`
+passthrough; **Progress / Meter / DonutGauge** additionally accept `data-1..6`, `primary` (the
+brand action colour), and arbitrary colour/`var()` passthrough, resolved via the shared
+`src/lib/tone.js` helper — these read the vivid `-accent` (.500) rung rather than Card's `-solid`
+(.700 AA text rung), since a bar/ring fill is a decorative colour, not text.
+
 Rules:
 - **Mutually-exclusive options are one enum, never N booleans** (Polaris Button v12).
 - **`variant` = visual style, `tone` = semantic color.** Orthogonal, so neither explodes: 5 tones × N

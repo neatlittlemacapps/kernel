@@ -1880,6 +1880,146 @@
       ]
     },
     {
+      "name": "DonutGauge",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "A circular level gauge (role=\"meter\") - a compact ring reporting a static quantity, with an optional colour-escalation ramp as it nears a limit. Fills once on mount and holds; never animates on change.",
+      "usecases": [
+        "credit/usage balance ring",
+        "ambient status carrier",
+        "compact score or level indicator"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "content",
+          "type": "number",
+          "required": true,
+          "description": "The current level."
+        },
+        {
+          "name": "max",
+          "class": "content",
+          "type": "number",
+          "default": 100,
+          "description": "The upper bound of the scale."
+        },
+        {
+          "name": "size",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": 44,
+          "description": "Diameter in pixels."
+        },
+        {
+          "name": "thickness",
+          "class": "dsPresentation",
+          "type": "number",
+          "description": "Stroke width in pixels. Defaults to roughly size / 6."
+        },
+        {
+          "name": "tone",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Static fill colour when thresholds are omitted: a named status tone, a data tone (data-1..data-6), \"primary\", or any colour/var."
+        },
+        {
+          "name": "thresholds",
+          "class": "content",
+          "type": "Array<{at: number, tone: string}>",
+          "example": "USAGE_THRESHOLDS",
+          "description": "An escalation ramp: the fill uses the highest threshold whose `at` (percent used) has been reached, else `tone`. Configurable, not hard-coded - see the exported USAGE_THRESHOLDS default ramp (info -> warning at 75% -> error at 90%)."
+        },
+        {
+          "name": "unbounded",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "For a quantity with no real ceiling (e.g. an Unlimited tier): the ring never closes, its arc is capped short and the trailing end fades via gradient instead of a hard edge."
+        },
+        {
+          "name": "valueText",
+          "class": "a11y",
+          "type": "string",
+          "description": "The aria-valuetext announced by assistive tech, in real units - the ring carries no visible text of its own."
+        },
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name when valueText alone should not carry it."
+        }
+      ],
+      "composes": [],
+      "usage": "<DonutGauge value={31} max={50} thresholds={USAGE_THRESHOLDS} valueText=\"31 of 50 credits remaining\" />",
+      "keywords": [
+        "gauge",
+        "ring",
+        "donut",
+        "meter",
+        "usage",
+        "credits",
+        "level",
+        "circular",
+        "progress"
+      ],
+      "category": "Feedback & Status",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use the exported USAGE_THRESHOLDS (info -> warning at 75% -> error at 90%) as the default escalation ramp for a usage/credit gauge, or pass your own - keep the break points configurable, never hard-coded into a consuming component."
+        },
+        {
+          "do": true,
+          "text": "Always supply valueText in real units - the gauge is unlabelled by design; everything readable lives in the accessible name."
+        },
+        {
+          "do": false,
+          "text": "Animate the fill on value change, or add a spin/pulse/sweep - it is a gauge that happens to be round, not a loader. Fill once on mount and hold."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Track",
+          "required": true,
+          "description": "The background ring."
+        },
+        {
+          "name": "Fill",
+          "required": true,
+          "description": "The value arc, sized to value/max."
+        },
+        {
+          "name": "Full marker",
+          "required": false,
+          "description": "A struck-through cross overlaid when value reaches max (colour-independent \"full\" signal)."
+        }
+      ],
+      "related": [
+        "Meter",
+        "Progress",
+        "Sparkline"
+      ],
+      "examples": [
+        {
+          "name": "Static tone",
+          "code": "<DonutGauge value={38} max={100} tone=\"info\" valueText=\"38 of 100 used\" />",
+          "description": "A single colour throughout, no escalation."
+        },
+        {
+          "name": "Full",
+          "code": "<DonutGauge value={50} max={50} thresholds={USAGE_THRESHOLDS} valueText=\"No credits left\" />",
+          "description": "Closed ring + struck-through cross - \"full\" reads without relying on colour."
+        },
+        {
+          "name": "Unbounded",
+          "code": "<DonutGauge value={12} max={100} tone=\"primary\" unbounded valueText=\"12 credits used - no cap\" />",
+          "description": "Arc fades out rather than implying a ceiling that does not exist."
+        }
+      ]
+    },
+    {
       "name": "EditChip",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -2751,6 +2891,136 @@
       ]
     },
     {
+      "name": "Meter",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "A static level or quantity (role=\"meter\") - a quota, balance, or score. Shares Progress's track/fill visual; use Progress instead for a task advancing to completion.",
+      "usecases": [
+        "credit/usage balance",
+        "quota remaining",
+        "static score or level"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "class": "content",
+          "type": "number",
+          "required": true,
+          "description": "The current level."
+        },
+        {
+          "name": "max",
+          "class": "content",
+          "type": "number",
+          "default": 100,
+          "description": "The upper bound of the scale."
+        },
+        {
+          "name": "tone",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\", or any colour/var. Omit for the default --action-solid fill."
+        },
+        {
+          "name": "size",
+          "class": "dsPresentation",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "description": "Track thickness: sm 4px, md 6px (default), lg 10px."
+        },
+        {
+          "name": "unbounded",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Fades the fill's trailing edge instead of a hard cap, for a quantity with no real ceiling."
+        },
+        {
+          "name": "label",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Optional caption above the track. Not the accessible name - see valueText."
+        },
+        {
+          "name": "valueText",
+          "class": "a11y",
+          "type": "string",
+          "description": "The aria-valuetext announced by assistive tech, in real units (e.g. \"1.5 of 50 credits remaining, resets 1 September\") - not just a bare percentage. Required unless aria-label fully describes the value."
+        },
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "description": "Accessible name when there is no visible label and valueText alone should not carry it."
+        }
+      ],
+      "composes": [],
+      "usage": "<Meter value={1.5} max={50} tone=\"error\" label=\"Credits\" valueText=\"1.5 of 50 credits remaining, resets 1 September\" />",
+      "keywords": [
+        "meter",
+        "gauge",
+        "level",
+        "quota",
+        "usage",
+        "balance",
+        "score",
+        "credits"
+      ],
+      "category": "Feedback & Status",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Use for a static quantity - credits remaining, storage used, a risk score - never a task advancing toward completion (that's Progress)."
+        },
+        {
+          "do": true,
+          "text": "Always supply valueText in real units so assistive tech announces the actual meaning, not a bare percentage."
+        },
+        {
+          "do": false,
+          "text": "Animate the fill on every value change (a live decrementing \"taxi-meter\" tally) - a meter reports a snapshot level, not a countdown. Update it silently between renders."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "required": false,
+          "description": "Optional caption above the track."
+        },
+        {
+          "name": "Track",
+          "required": true,
+          "description": "The rail."
+        },
+        {
+          "name": "Indicator",
+          "required": true,
+          "description": "The fill, sized to value/max."
+        }
+      ],
+      "related": [
+        "Progress",
+        "DonutGauge"
+      ],
+      "examples": [
+        {
+          "name": "Healthy",
+          "code": "<Meter value={38} max={100} tone=\"info\" valueText=\"38 of 100 used\" />",
+          "description": "A quiet, low-emphasis level."
+        },
+        {
+          "name": "Unbounded tier",
+          "code": "<Meter value={12} max={100} tone=\"primary\" unbounded valueText=\"12 credits used - no cap\" />",
+          "description": "Fill fades out rather than implying a ceiling that does not exist."
+        }
+      ]
+    },
+    {
       "name": "MeterTooltip",
       "import": "@corilus/kernel",
       "layer": "atom",
@@ -3326,6 +3596,29 @@
           "description": "Accessible name when there is no visible label. Exactly one of label / aria-label is required - Base UI names the progressbar only from a mounted label, so a bare bar is otherwise unnamed (WCAG 4.1.2)."
         },
         {
+          "name": "size",
+          "class": "dsPresentation",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "description": "Track thickness: sm 4px, md 6px (default), lg 10px."
+        },
+        {
+          "name": "tone",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\" (the brand action colour), or any colour/var. Omit to keep the default --action-solid fill."
+        },
+        {
+          "name": "unbounded",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Fades the fill's trailing edge instead of a hard right cap, for a quantity that has no real ceiling (e.g. an Unlimited tier's own usage bar)."
+        },
+        {
           "name": "value",
           "class": "passThroughControl",
           "passthrough": "BaseUI.Progress.Root.value",
@@ -3381,7 +3674,21 @@
         }
       ],
       "related": [
-        "Slider"
+        "Slider",
+        "Meter",
+        "DonutGauge"
+      ],
+      "examples": [
+        {
+          "name": "Toned, large",
+          "code": "<Progress aria-label=\"Import\" value={40} size=\"lg\" tone=\"success\" />",
+          "description": "A fatter bar in a semantic tone."
+        },
+        {
+          "name": "Unbounded",
+          "code": "<Progress aria-label=\"Storage\" value={82} tone=\"primary\" unbounded />",
+          "description": "Fill fades at the trailing edge instead of terminating - use for a quantity with no real ceiling."
+        }
       ]
     },
     {
@@ -5023,6 +5330,84 @@
       "related": [
         "Tabs",
         "TabPanel"
+      ]
+    },
+    {
+      "name": "Table",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "A real semantic <table> (Table / Caption / Header / Body / Footer / Row / Head / Cell), borderless by default - the first tabular-data primitive in Kernel.",
+      "usecases": [
+        "tabular data",
+        "usage/consumption breakdown",
+        "comparison rows"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "class": "content",
+          "type": "ReactNode",
+          "description": "Table.Header + Table.Body, plus optional Table.Caption and Table.Footer."
+        }
+      ],
+      "composes": [],
+      "usage": "<Table>\n  <Table.Caption>Credits used this month by AI service</Table.Caption>\n  <Table.Header>\n    <Table.Row><Table.Head>Use case</Table.Head><Table.Head numeric>Uses</Table.Head><Table.Head numeric>Credits</Table.Head></Table.Row>\n  </Table.Header>\n  <Table.Body>\n    <Table.Row><Table.Cell>Consult notes</Table.Cell><Table.Cell numeric>21</Table.Cell><Table.Cell numeric>21.00</Table.Cell></Table.Row>\n  </Table.Body>\n</Table>",
+      "keywords": [
+        "table",
+        "data table",
+        "rows",
+        "columns",
+        "tabular",
+        "grid",
+        "ledger"
+      ],
+      "category": "Data Display",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Always include a Table.Caption describing the table's content, even if visually hidden - it is the table's accessible name (WCAG 1.3.1) and screen-reader users hear it before any row."
+        },
+        {
+          "do": true,
+          "text": "Use Table.Head with `numeric` on any column of figures so it right-aligns and sets tabular-nums - alignment on the decimal is what makes a borderless table legible without rules."
+        },
+        {
+          "do": false,
+          "text": "Reach for divs styled to look like a grid - if the content is genuinely tabular data, use the real element so screen readers get row/column semantics for free."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Caption",
+          "required": false,
+          "description": "The table's accessible name (<caption>). Can be visually hidden."
+        },
+        {
+          "name": "Header",
+          "required": true,
+          "description": "Table.Header wraps one Table.Row of Table.Head cells (<thead>/<th scope=\"col\">)."
+        },
+        {
+          "name": "Body",
+          "required": true,
+          "description": "Table.Body wraps the data Table.Row / Table.Cell rows (<tbody>)."
+        },
+        {
+          "name": "Footer",
+          "required": false,
+          "description": "Table.Footer for a totals/summary row (<tfoot>)."
+        },
+        {
+          "name": "numeric alignment",
+          "required": false,
+          "description": "Table.Head / Table.Cell take a `numeric` bool: right-aligns the column and applies tabular-nums, for a column of figures."
+        }
+      ],
+      "related": [
+        "FieldList",
+        "PropertyList"
       ]
     },
     {

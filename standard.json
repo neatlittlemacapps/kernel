@@ -38,7 +38,8 @@
           "text": "--text-muted",
           "$comment": "no --status-neutral-* token exists"
         }
-      }
+      },
+      "$comment": "Surface/visualisation components read a wider set via src/lib/tone.js: Card additionally accepts data-1..6 + arbitrary colour/var passthrough; Progress/Meter/DonutGauge additionally accept data-1..6, 'primary' (--action-accent), + arbitrary colour/var passthrough, resolved to the vivid -accent (.500) rung rather than Card's -solid (.700) text rung."
     },
     "size": {
       "values": ["sm", "md", "lg"],

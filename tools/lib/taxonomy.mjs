@@ -48,9 +48,10 @@ const CORE_CATEGORY = {
   Tabs: 'Navigation', Tab: 'Navigation', TabList: 'Navigation', TabPanel: 'Navigation', ActionRow: 'Navigation',
   // Data Display
   Chip: 'Data Display', IconPill: 'Data Display', TrendChip: 'Data Display', ValueDisplay: 'Data Display',
-  PropertyList: 'Data Display', PatientCard: 'Data Display', SproutCard: 'Data Display',
+  PropertyList: 'Data Display', PatientCard: 'Data Display', SproutCard: 'Data Display', Table: 'Data Display',
   // Feedback & Status
   Progress: 'Feedback & Status', StatusPill: 'Feedback & Status', Banner: 'Feedback & Status',
+  Meter: 'Feedback & Status', DonutGauge: 'Feedback & Status',
   // Structure
   Collapsible: 'Structure', Separator: 'Structure',
   // AI & Identity

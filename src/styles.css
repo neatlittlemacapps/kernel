@@ -820,10 +820,45 @@
 .krnl-separator[data-orientation="vertical"] { width: var(--dimension-rule-hair); align-self: stretch; margin: 0 var(--space-2); }
 
 /* ── Progress (B-38, Base UI) - Base UI sets the indicator width from value/max ── */
-.krnl-progress { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; }
-.krnl-progress-label { font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-muted); }
+/* Progress + Meter share one visual: both roots carry the same layout, and both use the
+   literal .krnl-progress-track/-ind part classes (Meter is not a copy, it reuses these
+   rules directly - see Meter.jsx). :where() keeps the grouping at zero specificity so
+   nothing here fights a more specific override. */
+:where(.krnl-progress, .krnl-meter) { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; }
+:where(.krnl-progress-label) { font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-muted); }
 .krnl-progress-track { height: 6px; border-radius: var(--krnl-radius-pill); background: var(--surface-sunken); overflow: hidden; }
-.krnl-progress-ind { height: 100%; background: var(--action-solid); border-radius: var(--krnl-radius-pill); transition: width .3s ease; }
+.krnl-progress-ind { height: 100%; background: var(--bar-fill, var(--action-solid)); border-radius: var(--krnl-radius-pill); transition: width .3s ease; }
+/* size (B-48): track thickness. md is the pre-existing 6px default, unchanged. */
+:where(.krnl-progress, .krnl-meter)[data-size="sm"] .krnl-progress-track { height: 4px; }
+:where(.krnl-progress, .krnl-meter)[data-size="lg"] .krnl-progress-track { height: 10px; }
+/* unbounded (B-48): a quantity with no real ceiling fades out instead of terminating
+   in a hard edge - the same "never show a bar approaching a wall with no wall" idea
+   the credit-usage research names for an Unlimited tier. */
+:where(.krnl-progress, .krnl-meter)[data-unbounded] .krnl-progress-ind { mask-image: linear-gradient(90deg, #000 70%, transparent); -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent); }
+
+/* ── DonutGauge (B-48) - hand-rolled SVG ring, fills once and holds (never animates:
+   no transition here is intentional, not an oversight - see the component's own
+   "never animate" rule). Sized via the `size`/`thickness` props, not tokens (same
+   dimensions-via-props precedent as Sparkline). ── */
+.krnl-gauge { display: inline-flex; flex-shrink: 0; }
+.krnl-gauge svg { display: block; }
+
+/* ── Table (B-48) - a real <table>, borderless by default: one hairline under the
+   header row, none between cells/columns/rows. Horizontal padding on th/td (not a
+   vertical rule) is what separates columns; [data-numeric] right-aligns + sets
+   tabular-nums for a column of figures. Wrap in an overflow-x:auto div so a wide
+   table scrolls in place instead of the page.
+   NB: classes are `krnl-tbl*`, not `krnl-table*` - `.krnl-table` below (medication
+   scheme panel) is a pre-existing, unrelated full-grid-border convention already
+   consumed by greenhouse; this atom deliberately does not reuse that class name. ── */
+.krnl-tbl-wrap { overflow-x: auto; }
+.krnl-tbl { width: 100%; border-collapse: collapse; }
+.krnl-tbl-caption { text-align: left; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-muted); padding-bottom: var(--space-2); }
+.krnl-tbl-head { text-align: left; font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-muted); padding: 0 var(--space-3) var(--space-2) 0; border-bottom: var(--dimension-rule-hair) solid var(--border-subtle); }
+.krnl-tbl-cell { text-align: left; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); color: var(--text-default); padding: var(--space-2) var(--space-3) var(--space-2) 0; vertical-align: baseline; }
+.krnl-tbl-head:last-child, .krnl-tbl-cell:last-child { padding-right: 0; }
+.krnl-tbl-head[data-numeric], .krnl-tbl-cell[data-numeric] { text-align: right; font-variant-numeric: tabular-nums; }
+.krnl-tbl-footer .krnl-tbl-cell { font-weight: var(--type-weight-semibold); border-top: var(--dimension-rule-hair) solid var(--border-subtle); }
 
 /* ── Chip / ToggleGroup / Fab (B-40 atoms) - extend the extraction classes.
    .krnl-chip, .krnl-chip-ic, .krnl-segmented, .krnl-seg, .krnl-fab(-pulse) already
