@@ -2,19 +2,33 @@
 // Astryx "Properties" model: ONE Playground sandbox (toggle every combination via
 // controls) + a Gallery hero. Detail/action/dismiss are genuinely distinct scenarios
 // (they change the anatomy, not just a control value) so they get named Examples too.
+//
+// The Gallery below IS the decision table from STANDARD.md's Banner worked example,
+// rendered - every distinct chrome combination gets its own labeled cell so a reviewer
+// can eyeball whether the table (and resolveBannerChrome in Banner.jsx) tells the
+// truth, rather than trusting the prose. `accent` and `detail` previously had no
+// Playground control at all, which is exactly how the white-instead-of-tinted default
+// went unnoticed for a whole commit cycle - every prop gets a control here.
 import { Banner, Button } from '@corilus/kernel';
+
+const React = window.React;
 
 export default {
   title: 'Core/Feedback & Status/Banner',
   component: Banner,
   tags: ['autodocs'],
   argTypes: {
-    tone: { control: 'select', options: ['neutral', 'info', 'success', 'warning', 'error'], description: 'Semantic color, passed through to Card. Also selects the default icon and the default `live` politeness.', table: { category: 'Appearance' } },
-    variant: { control: 'radio', options: ['subtle', 'strong'], description: 'subtle (tinted surface) or strong (solid tone fill).', table: { category: 'Appearance' } },
-    appearance: { control: 'select', options: ['filled', 'outline', 'subtle', 'elevated'], description: 'Passthrough to Card’s surface treatment. elevated = Astryx’s "Floating" raised variant.', table: { category: 'Appearance' } },
-    fullWidth: { control: 'boolean', description: 'Flush, no-radius, edge-to-edge treatment for a page-level notice.', table: { category: 'Appearance' } },
+    tone: { control: 'select', options: ['neutral', 'info', 'success', 'warning', 'error'], description: 'Semantic meaning. Always drives the icon + icon-tile colour and the default `live`. Paints the box too when toneScope="box".', table: { category: 'Appearance', defaultValue: { summary: 'neutral' } } },
+    toneScope: { control: 'radio', options: ['box', 'content'], description: '"box": `tone` paints background/border/strip. "content": the box stays neutral; only the icon stays tone-coloured.', table: { category: 'Appearance', defaultValue: { summary: 'box' } } },
+    surface: { control: 'radio', options: ['plain', 'tinted'], description: 'plain = white. tinted = a light wash - the semantic tone tint (toneScope="box") or a neutral tint (toneScope="content" / tone="neutral").', table: { category: 'Appearance', defaultValue: { summary: 'plain' } } },
+    accent: { control: 'boolean', description: 'The 4px left accent strip.', table: { category: 'Appearance', defaultValue: { summary: 'true' } } },
+    bordered: { control: 'boolean', description: 'The hairline border.', table: { category: 'Appearance', defaultValue: { summary: 'true' } } },
+    elevated: { control: 'boolean', description: 'Drop shadow (--elevation-raised).', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
+    dense: { control: 'boolean', description: 'Compact density scope (data-density="compact" on this Banner) - shrinks padding/radius/gap and the icon tile.', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
+    fullWidth: { control: 'boolean', description: 'Flush, no-radius, edge-to-edge treatment for a page-level notice. Renders correctly only in a fullscreen canvas (see the dedicated FullWidth story) - Playground\'s padded canvas will show it inset, which is a canvas limitation, not a component bug.', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     title: { control: 'text', description: 'The banner headline.', table: { category: 'Content' } },
     description: { control: 'text', description: 'Supporting text below the title.', table: { category: 'Content' } },
+    detail: { control: 'boolean', description: 'Show a "Review details" collapsible region below the header.', table: { category: 'Content' } },
     withAction: { control: 'boolean', description: 'Show a trailing action button.', table: { category: 'Content' } },
     dismissible: { control: 'boolean', description: 'Show the dismiss control (calls onDismiss).', table: { category: 'Content' } },
   },
@@ -22,39 +36,112 @@ export default {
     docs: {
       description: {
         component:
-          'Persistent status message (info/success/warning/error), composed from Card + Collapsible.\n\n**Import**\n\n```ts\nimport { Banner } from \'@corilus/kernel\'\n```\n\n**Do**\n- Pick tone by message severity: info for updates, success for confirmations, warning for caution, error for problems.\n- Make info/success banners dismissible; keep error banners persistent until resolved.\n\n**Don\'t**\n- Use Banner for an auto-expiring notification - that\'s a Toast (not built yet).\n- Use Banner for a block notice with its own header + body + footer actions row - that\'s the separate `Callout` atom.',
+          'Persistent status message (info/success/warning/error), composed from Card + Collapsible.\n\n**Import**\n\n```ts\nimport { Banner } from \'@corilus/kernel\'\n```\n\n**Do**\n- Pick tone by message severity: info for updates, success for confirmations, warning for caution, error for problems.\n- Make info/success banners dismissible; keep error banners persistent until resolved.\n- Use `toneScope="content"` when the surrounding UI shouldn\'t gain a coloured box just because one status message needs a coloured icon.\n\n**Don\'t**\n- Use Banner for an auto-expiring notification - that\'s a Toast (not built yet).\n- Use Banner for a block notice with its own header + body + footer actions row - that\'s the separate `Callout` atom.',
       },
     },
   },
 };
 
-const renderBanner = ({ withAction, dismissible, tone, ...rest }) => (
+const renderBanner = ({ withAction, dismissible, detail, tone, ...rest }) => (
   <Banner
     tone={tone}
     action={withAction ? <Button size="sm" variant="secondary" tone={tone}>Review</Button> : undefined}
     onDismiss={dismissible ? () => {} : undefined}
+    detail={detail ? <ul style={{ margin: 0, paddingLeft: '1.1rem' }}><li>Patient 4021 - network timeout</li><li>Patient 4088 - validation error</li></ul> : undefined}
     {...rest}
   />
 );
 
 export const Playground = {
   args: {
-    tone: 'info', variant: 'subtle', appearance: 'filled', fullWidth: false,
+    tone: 'info', toneScope: 'box', surface: 'plain',
+    accent: true, bordered: true, elevated: false, dense: false, fullWidth: false,
     title: 'New version available', description: 'Refresh to pick up the latest changes.',
-    withAction: true, dismissible: true,
+    withAction: true, dismissible: true, detail: false,
   },
   render: renderBanner,
 };
 
+// ── a labeled cell so the Gallery reads as the decision table, not a wall of banners ──
+const Cell = ({ label, children }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+    <span style={{ fontFamily: 'var(--typography-caption-md-font-family)', fontSize: 'var(--typography-caption-md-font-size)', color: 'var(--text-muted)' }}>{label}</span>
+    {children}
+  </div>
+);
+
 export const Gallery = {
   parameters: { controls: { disable: true } },
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: 480 }}>
-      <Banner tone="info" title="New version available" description="Refresh to pick up the latest changes." onDismiss={() => {}} />
-      <Banner tone="success" title="Changes saved" onDismiss={() => {}} />
-      <Banner tone="warning" title="Renewal needed" description="Your certificate expires in 3 days." action={<Button size="sm" variant="secondary" tone="warning">Renew</Button>} />
-      <Banner tone="error" title="3 items failed to sync" description="Fix the errors below and try again." />
-      <Banner tone="success" variant="strong" appearance="elevated" title="Payment received" onDismiss={() => {}} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: 560 }}>
+
+      <div>
+        <h4 style={{ margin: '0 0 0.5rem' }}>Five tones, default chrome</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <Banner tone="neutral" title="Draft saved locally" description="Not yet synced to the server." />
+          <Banner tone="info" title="New version available" description="Refresh to pick up the latest changes." onDismiss={() => {}} />
+          <Banner tone="success" title="Changes saved" onDismiss={() => {}} />
+          <Banner tone="warning" title="Renewal needed" description="Your certificate expires in 3 days." action={<Button size="sm" variant="secondary" tone="warning">Renew</Button>} />
+          <Banner tone="error" title="3 items failed to sync" description="Fix the errors below and try again." />
+        </div>
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 0.5rem' }}>surface × toneScope (tone="warning")</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
+          <Cell label='surface="plain" toneScope="box" (default)'>
+            <Banner tone="warning" surface="plain" toneScope="box" title="Renewal needed" />
+          </Cell>
+          <Cell label='surface="tinted" toneScope="box"'>
+            <Banner tone="warning" surface="tinted" toneScope="box" title="Renewal needed" />
+          </Cell>
+          <Cell label='surface="plain" toneScope="content"'>
+            <Banner tone="warning" surface="plain" toneScope="content" title="Renewal needed" />
+          </Cell>
+          <Cell label='surface="tinted" toneScope="content"'>
+            <Banner tone="warning" surface="tinted" toneScope="content" title="Renewal needed" />
+          </Cell>
+        </div>
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 0.5rem' }}>accent / bordered / elevated (independent toggles)</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <Cell label="all default (accent + bordered, not elevated)">
+            <Banner tone="info" title="Default chrome" />
+          </Cell>
+          <Cell label="accent={false}">
+            <Banner tone="info" accent={false} title="No strip" />
+          </Cell>
+          <Cell label="bordered={false}">
+            <Banner tone="info" bordered={false} title="No border" />
+          </Cell>
+          <Cell label="accent={false} bordered={false}">
+            <Banner tone="info" accent={false} bordered={false} title="Neither strip nor border" />
+          </Cell>
+          <Cell label="elevated">
+            <Banner tone="info" elevated title="Floating" />
+          </Cell>
+        </div>
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 0.5rem' }}>tone="neutral" × elevated — the regression check</h4>
+        <p style={{ margin: '0 0 0.5rem', fontSize: 'var(--typography-caption-md-font-size)', color: 'var(--text-muted)' }}>
+          Must show a visible drop shadow and a soft `--border-subtle` border, not the old
+          near-black `currentColor` border with no shadow at all.
+        </p>
+        <Banner tone="neutral" elevated title="No dropped connection detected" />
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 0.5rem' }}>dense</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <Banner tone="warning" title="Session expires in 2 minutes" action={<Button size="sm" variant="secondary" tone="warning">Extend</Button>} />
+          <Banner tone="warning" dense title="Session expires in 2 minutes" action={<Button size="sm" variant="secondary" tone="warning">Extend</Button>} />
+        </div>
+      </div>
+
     </div>
   ),
 };
@@ -80,5 +167,17 @@ export const FullWidth = {
   parameters: { controls: { disable: true }, layout: 'fullscreen' },
   render: () => (
     <Banner fullWidth tone="warning" title="Scheduled maintenance tonight at 22:00" onDismiss={() => {}} />
+  ),
+};
+
+// Deprecated-prop regression check: `variant`/`appearance` must still render via the
+// runtime alias translation in Banner.jsx, for the one release before callers migrate.
+export const LegacyProps = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: 480 }}>
+      <Banner tone="success" variant="strong" appearance="elevated" title="Payment received (variant/appearance aliases)" onDismiss={() => {}} />
+      <Banner tone="info" appearance="subtle" title="appearance=&quot;subtle&quot; -> bordered=false" />
+    </div>
   ),
 };

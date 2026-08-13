@@ -18,13 +18,16 @@
     }
   },
   "status": {
-    "$description": "Dark-mode status. The light theme's tints render as glaring light chips on dark, and its solids are illegible as foreground on dark. Flipped (mirrors property dark): tint = dark tint (.900), tint-strong = .700 (icon-tile backing on dark), accent = .400 (vivid decorative, reads on dark), solid = light solid (.300); on = dark ink for a light solid fill.",
+    "$description": "Dark-mode status. The light theme's tints render as glaring light chips on dark, and its solids are illegible as foreground on dark. Flipped (mirrors property dark): tint = dark tint (.900), tint-strong = .700 (icon-tile backing on dark), border = .500 (soft hairline — sits between the .400 vivid accent and the .700 backing, so a toned box's stroke reads gently against a dark body), accent = .400 (vivid decorative, reads on dark), solid = light solid (.300); on = dark ink for a light solid fill.",
     "info": {
       "tint": {
         "$value": "{brand.status.info.900}"
       },
       "tint-strong": {
         "$value": "{brand.status.info.700}"
+      },
+      "border": {
+        "$value": "{brand.status.info.500}"
       },
       "accent": {
         "$value": "{brand.status.info.400}"
@@ -43,6 +46,9 @@
       "tint-strong": {
         "$value": "{brand.status.success.700}"
       },
+      "border": {
+        "$value": "{brand.status.success.500}"
+      },
       "accent": {
         "$value": "{brand.status.success.400}"
       },
@@ -60,6 +66,9 @@
       "tint-strong": {
         "$value": "{brand.status.warning.700}"
       },
+      "border": {
+        "$value": "{brand.status.warning.500}"
+      },
       "accent": {
         "$value": "{brand.status.warning.400}"
       },
@@ -76,6 +85,9 @@
       },
       "tint-strong": {
         "$value": "{brand.status.error.700}"
+      },
+      "border": {
+        "$value": "{brand.status.error.500}"
       },
       "accent": {
         "$value": "{brand.status.error.400}"

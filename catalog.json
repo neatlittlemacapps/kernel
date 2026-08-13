@@ -388,39 +388,56 @@
             "warning",
             "error"
           ],
-          "description": "Semantic color, passed through to Card. Also selects the default icon and the default `live` politeness. Omit for a neutral banner (Card’s default surface, no icon)."
+          "default": "neutral",
+          "description": "Semantic meaning. Always selects the default icon + icon-tile colour and the default `live` politeness. Also paints the box (background/border/strip) when `toneScope=\"box\"` - see `toneScope`."
         },
         {
-          "name": "variant",
+          "name": "toneScope",
           "class": "dsPresentation",
           "values": [
-            "subtle",
-            "strong"
+            "box",
+            "content"
           ],
-          "default": "subtle",
-          "description": "subtle (default) is Card’s tinted surface (--status-{tone}-tint background). strong is a solid fill (--status-{tone}-solid background + --text-on-accent) for a banner that must dominate the view."
+          "default": "box",
+          "description": "\"box\" (default) lets `tone` paint the background/border/strip. \"content\" keeps the box neutral (a plain or neutral-tinted surface with the soft --border-subtle border) while the icon and its tile stay tone-coloured - use when the message needs to read as calm chrome with a coloured status glyph, not a coloured alert box."
         },
         {
-          "name": "appearance",
+          "name": "surface",
           "class": "dsPresentation",
           "values": [
-            "filled",
-            "outline",
-            "subtle",
-            "elevated"
+            "plain",
+            "tinted"
           ],
-          "default": "filled",
-          "description": "Passthrough to Card’s surface treatment. elevated gives Astryx’s \"Floating\" raised variant (shadow + ring, no border) - confirmed against Card’s existing elevated CSS rather than assumed."
+          "default": "plain",
+          "description": "Body fill: plain is white (--surface-bright); tinted is a light wash - the semantic tone tint when toneScope=\"box\", or a neutral tint (--surface-sunken) when toneScope=\"content\" or tone=\"neutral\". Replaces the old `variant` prop, with the corrected meaning: neither value is ever a solid/inverted fill."
         },
         {
           "name": "accent",
           "class": "dsPresentation",
-          "values": [
-            "strip",
-            "strip-border"
-          ],
-          "default": "strip-border",
-          "description": "Passthrough to Card’s accent, but flipped to the LEFT edge (cards put the strip on top). Default strip-border = a tone-coloured left bar + tone border; a tone-less (neutral) banner gets a quiet grey strip. Pass null to drop the accent."
+          "type": "bool",
+          "default": true,
+          "description": "The 4px left accent strip. Coloured by `tone` (when toneScope=\"box\") or the soft neutral border colour otherwise."
+        },
+        {
+          "name": "bordered",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": true,
+          "description": "The hairline border, in the same colour the strip uses."
+        },
+        {
+          "name": "elevated",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": false,
+          "description": "A drop shadow (--elevation-raised) for a banner that should float above the page."
+        },
+        {
+          "name": "dense",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": false,
+          "description": "A compact density scope: sets data-density=\"compact\" on this Banner, shrinking its padding/radius/gap and cascading into the header, the action/dismiss controls, and `detail` - not a parallel spacing system, just a local scope over the existing --density-* tokens (STANDARD.md: density is a token modifier, not its own prop system)."
         },
         {
           "name": "title",
@@ -473,6 +490,28 @@
             "assertive"
           ],
           "description": "Maps to role/aria-live. Defaults from tone when omitted: error -> assertive, neutral -> off, info/success/warning -> polite."
+        },
+        {
+          "name": "variant",
+          "class": "dsPresentation",
+          "values": [
+            "subtle",
+            "strong"
+          ],
+          "deprecated": true,
+          "description": "Deprecated - use `surface`. `subtle` -> surface=\"plain\", `strong` -> surface=\"tinted\"."
+        },
+        {
+          "name": "appearance",
+          "class": "dsPresentation",
+          "values": [
+            "filled",
+            "outline",
+            "subtle",
+            "elevated"
+          ],
+          "deprecated": true,
+          "description": "Deprecated - use `bordered`/`elevated`. `elevated` -> elevated={true}, `subtle` -> bordered={false}, `filled`/`outline` are a no-op."
         }
       ],
       "composes": [
@@ -501,6 +540,10 @@
         {
           "do": true,
           "text": "Make info/success banners dismissible; keep error banners persistent (no onDismiss) until the user resolves the underlying problem."
+        },
+        {
+          "do": true,
+          "text": "Use toneScope=\"content\" when the surrounding UI shouldn’t gain a coloured box just because one status message needs a coloured icon - e.g. a neutral settings-panel notice with an info glyph."
         },
         {
           "do": false,
@@ -555,9 +598,19 @@
           "description": "Persistent error banner with a collapsible detail list; no onDismiss, so it stays until resolved."
         },
         {
-          "name": "Strong + floating",
-          "code": "<Banner tone=\"success\" variant=\"strong\" appearance=\"elevated\" title=\"Changes saved\" onDismiss={dismiss} />",
-          "description": "Solid-fill, raised banner for a confirmation that should stand out."
+          "name": "Tinted + elevated",
+          "code": "<Banner tone=\"success\" surface=\"tinted\" elevated title=\"Changes saved\" onDismiss={dismiss} />",
+          "description": "A light success tint, raised above the page, for a confirmation that should stand out without shouting."
+        },
+        {
+          "name": "Neutral box, toned icon",
+          "code": "<Banner tone=\"info\" toneScope=\"content\" title=\"Auto-save is on\" />",
+          "description": "The box stays neutral chrome; only the icon and its tile carry the info tone."
+        },
+        {
+          "name": "Dense",
+          "code": "<Banner tone=\"warning\" dense title=\"Session expires in 2 minutes\" />",
+          "description": "A compact density scope for a tight space (e.g. a toolbar or a side panel footer)."
         }
       ]
     },
@@ -827,7 +880,7 @@
           "name": "tone",
           "class": "dsPresentation",
           "type": "string",
-          "description": "Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for \"one of several categories\" identity without implying status), or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted. Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation."
+          "description": "Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for \"one of several categories\" identity without implying status), or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted, and tone=\"neutral\" is equivalent to omitting it (there is no --status-neutral-* token family, so it never sets --card-tone/[data-tone] either). Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation."
         },
         {
           "name": "orientation",

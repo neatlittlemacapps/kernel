@@ -984,9 +984,10 @@
 /* accent strip (B-46): a tone-coloured bar on one edge, opt-in via the `accent` prop
    (data-accent="strip" | "strip-border"). Inset box-shadow → auto corner-clipped. Reads
    --card-tone, so `accent` needs a `tone` to show. strip-border also keeps the tone border
-   that [data-tone] already supplies. The edge is --card-strip-edge (top here; Banner flips
-   it left). accent + Card.Preview are mutually exclusive (the inset shadow paints under a
-   full-bleed preview image). */
+   that [data-tone] already supplies. The edge is --card-strip-edge (top here). accent +
+   Card.Preview are mutually exclusive (the inset shadow paints under a full-bleed preview
+   image). NOTE: Banner (below) no longer uses this mechanism at all - it resolves its own
+   left-edge strip via --banner-* vars, independent of Card's tone/accent props (B-47). */
 .krnl-card[data-accent="strip"], .krnl-card[data-accent="strip-border"] { --card-strip: var(--card-strip-edge); }
 /* strip-border's border matches the reference: a HAIRLINE (1px, same weight as the base
    card's own default border - not a heavier ring) in the vivid accent SOFTENED toward the
@@ -1005,7 +1006,13 @@
 .krnl-card--collapsible { padding: 0; }
 /* accent + collapsible cards FLOAT (soft ambient shadow, the reference look) instead of the
    tight `raised` contact shadow; collapsible cards lift on hover and pop when open (they are
-   clickable to expand). Non-accent, non-collapsible cards keep their existing elevation. */
+   clickable to expand). Non-accent, non-collapsible cards keep their existing elevation.
+   KNOWN BUG (tracked for a follow-up, not fixed here - out of scope for the Banner rework):
+   `.krnl-card[data-accent]` is (0,2,0) vs `.krnl-card--elevated`'s (0,1,0), so on any Card
+   with BOTH `accent` and `appearance="elevated"` set, this rule always wins regardless of
+   source order - `elevated`'s own --card-elevation (and its border-none / raised-surface
+   look) never applies. Not a cascade a reorder can fix; would need the same
+   resolved-custom-props treatment Banner got (B-47). */
 .krnl-card[data-accent], .krnl-card--collapsible { --card-elevation: var(--elevation-floating); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
 .krnl-card--collapsible:hover:not([data-disabled]) { transform: translateY(-2px); --card-elevation: var(--elevation-overlay); }
 .krnl-card--collapsible:has(.krnl-card-trigger[data-panel-open]) { --card-elevation: var(--elevation-overlay); }
@@ -1019,21 +1026,39 @@
 .krnl-card-panel { overflow: hidden; height: var(--collapsible-panel-height); transition: height var(--motion-duration-base) var(--motion-easing-decelerate); }
 .krnl-card-panel[data-starting-style], .krnl-card-panel[data-ending-style] { height: 0; }
 .krnl-card-panel-inner { padding: var(--space-3) var(--density-card-pad) var(--density-card-pad); border-top: var(--dimension-rule-hair) solid var(--border-subtle); }
-/* Banner (B-45): composes Card, so its look rides Card's own appearance/tone CSS above.
-   Only two things are Banner-specific: `variant="strong"` (a solid tone fill Card has no
-   appearance for) and the action slot holding two controls (action button + dismiss). */
-/* Banner flips the accent strip to the LEFT edge (cards keep it on top), and gives a
-   neutral (tone-less) banner a quiet grey strip instead of a transparent one (B-46). */
-.krnl-banner-card { --card-strip-w: 4px; --card-strip-edge: inset var(--card-strip-w) 0 0 0 var(--card-accent, var(--card-tone, var(--border-subtle))); }
-/* Border colour/width for strip-border now comes from the shared Card rule above (same
-   softened-accent hairline for Card and Banner alike) - no Banner-specific override needed. */
+/* Banner (B-45, reworked B-47): composes Card for the Header/Body slots + Collapsible
+   `detail`, but NOT Card's own tone/accent cascade - Banner's JS (resolveBannerChrome)
+   resolves the whole chrome matrix (surface / border / strip / icon) into --banner-*
+   custom properties up front, and this stylesheet only ever reads those. Banner passes
+   Card neither `tone` nor `accent`, so none of `.krnl-card[data-tone]` /
+   `.krnl-card[data-accent]` above ever match a Banner root - those rules are tuned for
+   Card's own defaults (a solid .700 border; an accent strip that always wins the
+   elevation fight on specificity) and previously collided with Banner's needs in ways
+   more CSS couldn't fix. The strip sits on the LEFT edge (Card's own accent defaults to
+   the top); `accent`/`bordered`/`elevated` are independent on/off switches, each its
+   own data-attribute so no single rule has to reason about the other two. */
+.krnl-banner-card {
+  --banner-surface: var(--surface-bright);
+  --banner-border-color: var(--border-subtle);
+  --banner-strip-color: var(--border-subtle);
+  --banner-strip: 0 0 #0000;
+  --banner-elevation: 0 0 #0000;
+  background: var(--banner-surface);
+  border: var(--dimension-rule-hair) solid var(--banner-border-color);
+  box-shadow: var(--banner-strip), var(--banner-elevation);
+}
+.krnl-banner-card[data-strip] { --banner-strip: inset 4px 0 0 0 var(--banner-strip-color); }
+.krnl-banner-card:not([data-bordered]) { border-color: transparent; }
+.krnl-banner-card[data-elevated] { --banner-elevation: var(--elevation-raised); }
 /* Banner icon = a vivid tone glyph in a light tone tile (the reference's icon-tile), matching
-   the vitals-card leading treatment. Neutral (tone-less) banners get a quiet grey tile. */
-.krnl-banner-icon { width: 34px; height: 34px; border-radius: var(--krnl-radius-sm); align-items: center; justify-content: center; flex-shrink: 0; background: var(--surface-sunken); color: var(--text-muted); }
-.krnl-banner-card[data-tone] .krnl-banner-icon { background: var(--card-tone-tint-strong); color: var(--card-tone-text); }
-.krnl-banner-card[data-tone].krnl-banner-card--strong { background: var(--card-tone); border-color: var(--card-tone); color: var(--text-on-accent); }
-.krnl-banner-card[data-tone].krnl-banner-card--strong .krnl-card-header-title,
-.krnl-banner-card[data-tone].krnl-banner-card--strong .krnl-card-header-desc { color: var(--text-on-accent); }
+   the vitals-card leading treatment. --banner-icon-tint/-text are only set (inline, by JS)
+   when there's a real status tone; the var() fallback here IS the neutral (tone-less) look -
+   a quiet grey tile - so there is no separate neutral rule to keep in sync. */
+.krnl-banner-icon { width: 34px; height: 34px; border-radius: var(--krnl-radius-sm); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--banner-icon-tint, var(--surface-sunken)); color: var(--banner-icon-text, var(--text-muted)); }
+/* dense (data-density="compact", set by Banner's own `dense` prop - not a global density
+   change): shrink the icon tile to match the tighter padding the ancestor token modifier
+   already gives the header via --density-card-pad/--density-radius. */
+.krnl-banner-card[data-density="compact"] .krnl-banner-icon { width: 28px; height: 28px; }
 .krnl-banner-card .krnl-card-header-action { display: flex; align-items: center; gap: var(--space-2); }
 /* fullWidth (Banner-only, not a Card appearance): flush edge-to-edge page notice. */
 .krnl-banner-card--flush { border-radius: 0; border-left: none; border-right: none; margin-bottom: 0; width: 100%; }
@@ -1076,7 +1101,12 @@
 .krnl-banner { font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); border-radius: var(--density-radius); padding: 9px 12px; margin-top: 12px; display: flex; align-items: center; gap: 7px; }
 .krnl-banner--info { background: var(--status-info-tint); color: var(--status-info-solid); }
 .krnl-banner--success { background: var(--status-success-tint); color: var(--status-success-solid); font-weight: var(--type-weight-semibold); }
-.krnl-banner-icon { display: flex; }
+/* NOTE: this legacy `.krnl-banner*` block is the OLD prescribe-panel notice, unrelated to
+   the <Banner> component above (`.krnl-banner-card`) despite the near-identical class name.
+   It used to also declare `.krnl-banner-icon { display: flex }`, which the real Banner
+   component's icon tile silently depended on for centering (no `display` of its own) -
+   removed now that `.krnl-banner-icon` above sets `display: inline-flex` explicitly. Retire
+   this whole block once the prescribe panel migrates onto <Banner>. */
 
 /* ── TABLE (medication scheme panel) ── */
 .krnl-table { width: 100%; border-collapse: collapse; font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); margin-top: 4px; }

@@ -46,7 +46,7 @@
     },
     "variant": {
       "perComponent": true,
-      "$comment": "style/emphasis enum; values defined per component (e.g. Banner: subtle|strong, Btn: primary|secondary)"
+      "$comment": "style/emphasis enum; values defined per component (e.g. Btn: primary|secondary). Independent boolean axes (Banner: accent|bordered|elevated|dense) are NOT this - see notProps and the DS-presentation rules in STANDARD.md #3."
     },
     "booleans": {
       "passThrough": { "form": "bare", "examples": ["disabled", "required", "readOnly", "checked"] },

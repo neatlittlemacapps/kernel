@@ -47,13 +47,16 @@
     }
   },
   "status": {
-    "$description": "Four semantic roles. Each exposes tint (.100 soft background) + tint-strong (.200 icon-tile backing) + accent (.500 vivid decorative — strip/sparkline/icon glyph) + solid (.700 AA text/border) + on (text on a solid fill). Mirrors the property-ramp vivid exposure so cards/banners/buttons read vibrant on light bodies while text stays AA. Hues owned by brand.status.*.",
+    "$description": "Four semantic roles. Each exposes tint (.100 soft background) + tint-strong (.200 icon-tile backing) + border (.300 soft hairline — a toned box's stroke on a plain/tinted body, softer than the vivid accent) + accent (.500 vivid decorative — strip/sparkline/icon glyph) + solid (.700 AA text/border) + on (text on a solid fill). Mirrors the property-ramp vivid exposure so cards/banners/buttons read vibrant on light bodies while text stays AA. Hues owned by brand.status.*.",
     "info": {
       "tint": {
         "$value": "{brand.status.info.100}"
       },
       "tint-strong": {
         "$value": "{brand.status.info.200}"
+      },
+      "border": {
+        "$value": "{brand.status.info.300}"
       },
       "accent": {
         "$value": "{brand.status.info.500}"
@@ -72,6 +75,9 @@
       "tint-strong": {
         "$value": "{brand.status.success.200}"
       },
+      "border": {
+        "$value": "{brand.status.success.300}"
+      },
       "accent": {
         "$value": "{brand.status.success.500}"
       },
@@ -89,6 +95,9 @@
       "tint-strong": {
         "$value": "{brand.status.warning.200}"
       },
+      "border": {
+        "$value": "{brand.status.warning.300}"
+      },
       "accent": {
         "$value": "{brand.status.warning.500}"
       },
@@ -105,6 +114,9 @@
       },
       "tint-strong": {
         "$value": "{brand.status.error.200}"
+      },
+      "border": {
+        "$value": "{brand.status.error.300}"
       },
       "accent": {
         "$value": "{brand.status.error.500}"

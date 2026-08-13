@@ -49,7 +49,7 @@ them as props is the "hand-roll behaviour Base UI ships" violation.
 
 | Prop | Values | Token binding |
 |---|---|---|
-| `variant` | component-specific style/emphasis set, e.g. `subtle \| strong` (Banner), `primary \| secondary` (Btn) | per component |
+| `variant` | component-specific style/emphasis set, e.g. `primary \| secondary` (Btn) | per component |
 | `tone` | `neutral \| info \| success \| warning \| error` | `--status-{tone}-tint` (bg), `--status-{tone}-solid` (icon/rule), `--status-{tone}-on` (text). **`neutral` has no status token** → `--surface-panel` + `--text-muted`. |
 | `size` | `sm \| md \| lg` | `--density-*` / size-step tokens |
 
@@ -61,9 +61,20 @@ Rules:
 - **`variant` = visual style, `tone` = semantic color.** Orthogonal, so neither explodes: 5 tones × N
   variants from one component, zero extra classes.
 - **`density` is NOT a prop** — it is an orthogonal token modifier (`--density-*`) applied at an
-  ancestor. A `compact` prop would duplicate the token layer.
+  ancestor. A `compact` prop would duplicate the token layer. A boolean that merely opts a single
+  component into the *existing* modifier (e.g. Banner's `dense`, which sets `data-density="compact"`
+  on itself) is sugar over the token layer, not a parallel one, and is fine — the line is "does this
+  introduce new spacing values" (not allowed) vs "does this scope an existing modifier locally"
+  (allowed).
 - **`radius`, elevation, spacing are NOT props** — they resolve to tokens at the component's class. Add a
-  prop only when a genuine variant axis exists (and then it maps to tokens, never literals).
+  prop only when a genuine variant axis exists (and then it maps to tokens, never literals). A boolean
+  that toggles a token lookup on/off (Banner's `elevated`: off → `0 0 #0000`, on → `var(--elevation-raised)`)
+  is such an axis; it never carries a literal shadow/radius/spacing value itself.
+- **Independent booleans are not "N booleans for one enum."** The "one enum, never N booleans" rule
+  (above) is about *mutually-exclusive* options. Orthogonal switches that can each be on or off without
+  implying the others — Banner's `accent` / `bordered` / `elevated` are three independent yes/no
+  questions, not three options for one question — are correctly N separate booleans. Collapsing them
+  into one enum (`chrome="strip-border-elevated"`) would just recreate combinatorial-string soup.
 
 ### Booleans, events, controlled state
 
@@ -86,21 +97,38 @@ Rules:
 
 Single-line icon + message + optional trailing action; collapses the six Juglans status strips.
 
+Banner's chrome is **seven independent switches**, not one style enum — `tone` and `toneScope`
+are mutually exclusive per axis (values), so they're enums; `surface` is likewise an enum (its two
+values are mutually exclusive); `accent` / `bordered` / `elevated` / `dense` are each an
+independent yes-or-no, so they're plain booleans (§3, "independent booleans are not N booleans for
+one enum").
+
 | Prop | Class | Values | Token / behaviour |
 |---|---|---|---|
-| `tone` | DS presentation | `neutral \| info \| success \| warning \| error` | `--status-{tone}-tint/solid/on`; `neutral` → `--surface-panel` + `--text-muted` |
-| `variant` | DS presentation | `subtle \| strong` | `subtle` = `-tint` bg; `strong` = `-solid` bg + `--text-on-accent` |
-| `icon` | Content (slot) | ReactNode | leading visual; color inherits `--status-{tone}-solid` via `currentColor` |
+| `tone` | DS presentation | `neutral \| info \| success \| warning \| error` | Always drives the icon + icon-tile colour and the default `live`. Paints the box too when `toneScope="box"`. |
+| `toneScope` | DS presentation | `box \| content` | `box` (default): `tone` also paints background/border/strip. `content`: the box stays neutral (soft `--border-subtle` border, plain/neutral-tinted surface) while the icon stays tone-coloured. |
+| `surface` | DS presentation | `plain \| tinted` | `plain` = `--surface-bright` (white). `tinted` = the semantic `--status-{tone}-tint` when `toneScope="box"`, else a neutral `--surface-sunken` wash. **Never** a solid/inverted fill — that reading of the old `variant="strong"` was a bug, not a design intent. |
+| `accent` | DS presentation | `bool` (default `true`) | The 4px left strip; colour follows the same box-tone resolution as `bordered`. |
+| `bordered` | DS presentation | `bool` (default `true`) | The hairline border. |
+| `elevated` | DS presentation | `bool` (default `false`) | Toggles `--elevation-raised` on/off — no literal shadow value in the component. |
+| `dense` | DS presentation | `bool` (default `false`) | Sets `data-density="compact"` on the Banner itself — a *local scope* over the existing token modifier (§3), not a new spacing system. |
+| `icon` | Content (slot) | ReactNode | leading visual; colour comes from the resolved `--banner-icon-text` (falls back to `--text-muted` when there's no status tone) |
 | `children` | Content (text) | string / node | the message (block notices are `Callout`, not `Banner`) |
 | `action` | Content (slot) | ReactNode (a `Btn` / `IconButton`) | **trailing**, RTL-safe |
 | `onDismiss` | Event | `fn` | optional; renders an `IconButton` close; focus ring `--focus-ring` |
 | `live` | a11y | `off \| polite \| assertive` | maps `role` / `aria-live`; `error` defaults `assertive`, `neutral` defaults `off` |
 
-**Not props, by design:** `density` (token modifier), `radius` (defaults to `--radius-panel`), and any
-open/closed/dismissed **state** (presentational atom; dismissal is the parent's concern via `onDismiss`).
+**Not props, by design:** `radius` (defaults to `--radius-panel`), and any open/closed/dismissed
+**state** (presentational atom; dismissal is the parent's concern via `onDismiss`). `dense` is not an
+exception to "density is not a prop" — see §3.
 
 Maps the six strips with zero value change: `krnl-ctxbar` → `tone="neutral"`; `krnl-banner--info` →
-`tone="info" variant="subtle"`; `krnl-pii` (alert) → `tone="error" variant="strong" live="assertive"`.
+`tone="info" surface="tinted"`; `krnl-pii` (alert) → `tone="error" surface="tinted" elevated live="assertive"`.
+
+`variant` (`subtle | strong`) and `appearance` (`filled | outline | subtle | elevated`) are
+**deprecated aliases**, translated onto the props above at runtime for one release
+(`variant="strong"` → `surface="tinted"`, `appearance="elevated"` → `elevated`, etc. — see the
+`Banner` `meta` export). New code should use the table above directly.
 
 ## 5. Scope tiering + promotion gate (multi-agent)
 

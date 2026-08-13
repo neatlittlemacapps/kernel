@@ -28,7 +28,14 @@ const toneSlug = (tone) =>
   STATUS_TONES.includes(tone) ? `status-${tone}`
   : DATA_TONES.includes(tone) ? tone.replace('data-', 'data-tone-')
   : null;
-const toneVar = (tone) => tone == null ? undefined
+// `neutral` has no status token family (STANDARD.md: neutral -> --surface-panel +
+// --text-muted, not --status-neutral-*), so it must behave exactly like `tone` being
+// omitted - no --card-tone, no [data-tone]. Without this, `neutral` fell into the
+// "arbitrary colour" branch below and set `--card-tone: neutral`, which is invalid CSS:
+// every declaration referencing it (the tone border, the strip+elevation box-shadow)
+// became invalid-at-computed-value-time and dropped, producing a near-black
+// `currentColor` border and NO drop shadow at all.
+const toneVar = (tone) => (tone == null || tone === 'neutral') ? undefined
   : toneSlug(tone) ? `var(--${toneSlug(tone)}-solid)` : tone;
 // A named tone binds the whole vivid family to the card vars so accents read at full
 // ramp saturation (B-46): tint (.100 body) / tint-strong (.200 icon-tile) / accent
@@ -75,7 +82,7 @@ export const Card = React.forwardRef(function Card(
   const dataAttrs = {
     'data-selected': selected || undefined,
     'data-dragging': dragging || undefined,
-    'data-tone': tone != null ? '' : undefined,
+    'data-tone': tc != null ? '' : undefined,
     'data-accent': accent || undefined,
   };
 
@@ -154,7 +161,7 @@ export const meta = {
     summary: 'Neutral base card: wrapper + appearance + rest/hover/pressed/focus/selected/dragging states; fill Preview / Header / Body / Footer.',
     props: [
       { name: 'appearance', class: 'dsPresentation', values: ['filled', 'outline', 'subtle', 'elevated'], default: 'filled', description: 'Surface treatment: filled (panel + border), outline (border only), subtle (no border/fill), elevated (raised ring + shadow, hover-lift - the base PatientCard is built on).' },
-      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for "one of several categories" identity without implying status), or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted. Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation.' },
+      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for "one of several categories" identity without implying status), or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted, and tone="neutral" is equivalent to omitting it (there is no --status-neutral-* token family, so it never sets --card-tone/[data-tone] either). Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation.' },
       { name: 'orientation', class: 'dsPresentation', values: ['vertical', 'horizontal'], default: 'vertical', description: 'Lays the slots in a column (default) or a row.' },
       { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Padding density step.' },
       { name: 'interactive', class: 'dsPresentation', type: 'bool', description: 'Renders a focusable <button> with hover / pressed / focus states. Opt-in only (not implied by onClick), so a specialised non-button card can compose Card via `as` + its own onClick.' },
