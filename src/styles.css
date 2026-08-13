@@ -70,8 +70,17 @@
    preserve (or intentionally replace) the centring/positioning transform instead. */
 @keyframes krnl-dialogIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 8px)) } to { opacity: 1; transform: translate(-50%, -50%) } }
 
-.krnl-companion-layer, .krnl-companion-layer * { box-sizing: border-box; }
-.krnl-companion-layer { font-family: var(--font-body); color: var(--text-default); }
+.krnl-companion-layer, .krnl-companion-layer *, .krnl-juglans-layer, .krnl-juglans-layer * { box-sizing: border-box; }
+/* Establish the design-system font across the whole injected layer AND every descendant
+   (both mount-class names), so a HOST page's font can't bleed into elements that don't set
+   their own family (ValueDisplay's number, table wrappers, use-case labels …) and mix with
+   the token-styled siblings. This is a deliberate `*` reset to var(--font-body): the per-
+   component role rules further down this sheet come LATER at equal specificity, so headings
+   still resolve to var(--font-heading) — only the otherwise-unstyled elements are pinned,
+   which is exactly the "one font, no host bleed" behaviour an injected companion needs. */
+.krnl-companion-layer, .krnl-companion-layer *,
+.krnl-juglans-layer, .krnl-juglans-layer * { font-family: var(--font-body); }
+.krnl-companion-layer, .krnl-juglans-layer { color: var(--text-default); }
 
 /* Layout primitives (B-42): static display + flex-child safety only; the token-driven
    dynamic values (gap / padding / align / columns) are set inline by the components. */
@@ -1111,6 +1120,38 @@
    <button> needs its own reset to inherit that slot's type instead of UA button chrome. */
 .krnl-creditnotice-tx { display: block; width: 100%; border: none; background: none; padding: 0; margin: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; }
 .krnl-creditnotice-tx:hover { color: var(--card-tone-text, var(--action-accent)); }
+/* ── USAGE PANEL (greenhouse) ── the "Manage → Usage" pane's own layout glue, so the
+   balance hero + breakdown lead with real component typography (ValueDisplay / Meter /
+   Table) instead of borrowing the feature-flag / form-field / agent-screen classes. Pure
+   layout on tokens; every type-bearing element is a Kernel component. */
+.krnl-usage-hero { display: flex; flex-direction: column; gap: var(--space-2); }
+.krnl-usage-hero > p { margin: 0; }                 /* the muted sub/reset lines - space comes from the flex gap, not their own margins */
+.krnl-usage-hero > .krnl-usage-hero-sub { margin-top: calc(-1 * var(--space-1)); }   /* tuck the "of N · tier" line up under the big number (child+class beats `> p` on specificity) */
+.krnl-usage-usecase { display: inline-flex; align-items: center; gap: var(--space-2); }
+.krnl-usage-usecase-ic { display: inline-flex; flex-shrink: 0; color: var(--action-accent); }
+/* ── COMPOSER META ROW + CREDIT RING (greenhouse) ── a thin row under the composer
+   (shares the composer's centred transcript width): the AI disclaimer at the leading
+   edge, the ambient DonutGauge credit ring at the trailing end. The ring is a real
+   <button> with a >=32px hit area (WCAG 2.5.8) around a 20px gauge; no visible label -
+   its accessible name + tooltip carry the value. */
+.krnl-inputmeta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); width: var(--krnl-transcript-w, 100%); margin: var(--space-1) auto 0; }
+.krnl-inputmeta-note { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-faint); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.krnl-creditring { display: inline-flex; flex-shrink: 0; border: none; background: none; padding: var(--space-1); margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-1)) calc(-1 * var(--space-1)) 0; cursor: pointer; border-radius: var(--krnl-radius-pill); color: inherit; }
+.krnl-creditring:hover { background: var(--state-hover); }
+.krnl-creditring:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 1px; }
+.krnl-creditring-tip { display: flex; flex-direction: column; gap: 2px; }
+/* ── PLAN LADDER (greenhouse usage panel) ── three tiers on one shared scale, so tier
+   CAPACITY reads as a physical length: `.krnl-ladder-track`'s width is set inline per row
+   (cap / sharedMax) - a shorter tier draws a shorter track. The Meter INSIDE that track
+   fills against the row's OWN cap, not the shared one - fill and track length are two
+   different ratios on purpose, or a fully-used shorter tier could never read as empty. */
+.krnl-ladder { display: flex; flex-direction: column; gap: var(--space-3); padding-top: var(--space-2); }
+.krnl-ladder-row { display: flex; flex-direction: column; gap: var(--space-1); }
+.krnl-ladder-track { min-width: 0; }
+.krnl-ladder-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+.krnl-ladder-name { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
+.krnl-ladder-price { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.krnl-ladder-note { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
 .krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
 .krnl-card-preview img { display: block; width: 100%; }
 .krnl-card-header { display: flex; align-items: flex-start; gap: var(--space-2); }
