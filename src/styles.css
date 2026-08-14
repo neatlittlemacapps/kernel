@@ -1125,6 +1125,10 @@
 .krnl-usage-hero > .krnl-usage-hero-sub { margin-top: calc(-1 * var(--space-1)); }   /* tuck the "of N · tier" line up under the big number (child+class beats `> p` on specificity) */
 .krnl-usage-usecase { display: inline-flex; align-items: center; gap: var(--space-2); }
 .krnl-usage-usecase-ic { display: inline-flex; flex-shrink: 0; color: var(--action-accent); }
+/* A bare section title (reuses Card.Header's own title role/class - see "Compare plans"
+   above it) sitting directly in the panel flow, not inside a Card, so it needs its own
+   bottom space rather than relying on a Card.Header's internal gap. */
+.krnl-usage-section-title { margin-bottom: var(--space-1); }
 /* ── COMPOSER META ROW + CREDIT RING (greenhouse) ── a thin row under the composer
    (shares the composer's centred transcript width): the AI disclaimer at the leading
    edge, the ambient DonutGauge credit ring at the trailing end. The ring is a real
