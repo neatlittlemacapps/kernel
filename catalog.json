@@ -6373,6 +6373,106 @@
         "trend"
       ],
       "category": "Clinical"
+    },
+    {
+      "name": "VoiceWaveform",
+      "import": "@corilus/kernel",
+      "layer": "atom",
+      "scope": "global",
+      "status": "experimental",
+      "summary": "A compact row of bars that rise with the live input level and rest as blinking dots when quiet - the \"listening to you\" counterpart to TypingIndicator.",
+      "usecases": [
+        "voice input",
+        "listening",
+        "recording",
+        "mic level"
+      ],
+      "props": [
+        {
+          "name": "level",
+          "class": "content",
+          "type": "number",
+          "default": 0,
+          "description": "Current input loudness, 0..1 (clamped). The app feeds this from its mic metering; at/below ~0.08 the bars rest as blinking dots."
+        },
+        {
+          "name": "bars",
+          "class": "dsPresentation",
+          "type": "number",
+          "default": 3,
+          "description": "How many bars/dots to render. Odd counts read best (the centre bar peaks)."
+        },
+        {
+          "name": "tone",
+          "class": "dsPresentation",
+          "type": "string",
+          "description": "Bar colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\", or any colour/var. Omit for the default --action-accent fill."
+        },
+        {
+          "name": "size",
+          "class": "dsPresentation",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "description": "Overall height: sm 16px, md 22px (default), lg 30px. Bar width and dot size stay constant."
+        },
+        {
+          "name": "aria-label",
+          "class": "a11y",
+          "type": "string",
+          "default": "Voice input level",
+          "description": "Accessible name for the indicator (role=\"img\"); the bars themselves are aria-hidden."
+        }
+      ],
+      "composes": [],
+      "usage": "<VoiceWaveform level={0.6} bars={3} />",
+      "keywords": [
+        "voice",
+        "waveform",
+        "wave",
+        "audio",
+        "mic",
+        "microphone",
+        "listening",
+        "recording",
+        "level",
+        "bars",
+        "dots"
+      ],
+      "category": "Communication",
+      "bestPractices": [
+        {
+          "do": true,
+          "text": "Drive level from real mic metering (0..1) and update it on a timer (~every 80ms); the bars transition smoothly between renders."
+        },
+        {
+          "do": true,
+          "text": "Show it in the composer while the mic is live - it is the user-speaking mirror of TypingIndicator (assistant working)."
+        },
+        {
+          "do": false,
+          "text": "Use it as a scrubbable seek/waveform for recorded audio - this is a live level meter, not a track timeline."
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "bars",
+          "required": true,
+          "description": "The animated bars; their height maps from level with a centre-weighted bell."
+        },
+        {
+          "name": "dots",
+          "required": false,
+          "description": "The idle state - each bar collapses to a round blinking dot when level is near zero."
+        }
+      ],
+      "related": [
+        "TypingIndicator",
+        "PromptField"
+      ]
     }
   ]
 }

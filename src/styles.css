@@ -1221,6 +1221,35 @@
 .krnl-searching-dots i:nth-child(2) { animation-delay: .2s; }
 .krnl-searching-dots i:nth-child(3) { animation-delay: .4s; }
 
+/* VoiceWaveform - listening/voice-activity: --wave-level (0..1) sets each bar's
+   height envelope (centre-weighted), while every bar also dances independently on a
+   staggered scaleY loop; collapses to blinking dots (.is-idle) when the input goes
+   quiet. NB class is krnl-voicewave, NOT krnl-wave - the latter is the waving-hand
+   emoji (krnl-handWave) at the top of this file. Reuses the krnl-blink keyframe. */
+.krnl-voicewave { display: inline-flex; align-items: center; gap: 3px; height: 22px; --wave-dot: 4px; --wave-level: 0; }
+.krnl-voicewave[data-size="sm"] { height: 16px; }
+.krnl-voicewave[data-size="lg"] { height: 30px; }
+.krnl-voicewave i { width: 4px; border-radius: var(--krnl-radius-pill); background: var(--wave-fill, var(--action-accent)); display: inline-block; transform-origin: center;
+  height: calc(var(--wave-dot) + (100% - var(--wave-dot)) * var(--w, 1) * clamp(0, var(--wave-level) * 2.2, 1));
+  /* Two waves radiating from the centre: ALL bars share one period; the per-bar phase
+     offset (--wave-delay, set by the component from each bar's distance to centre) makes
+     the centre bar lead and the edges lag, so the peak emanates outward - left and right
+     at once. Equal periods are required or the halves beat and drift. */
+  animation: krnl-voicewave-bar 0.8s infinite;
+  animation-delay: var(--wave-delay, 0s);
+  transition: height 120ms ease-out, opacity .2s linear; }
+/* Asymmetric bob (VU-meter release): a quick snap UP to the peak by 30% of the cycle,
+   then a long decelerating fade DOWN over the remaining 70%. Per-keyframe easing does
+   the two halves. Swing 0.22..1 stays lively at the 16-22px size; --wave-level scales
+   the height envelope on top. */
+@keyframes krnl-voicewave-bar {
+  0%   { transform: scaleY(0.22); animation-timing-function: cubic-bezier(0.15, 0.85, 0.25, 1); }
+  30%  { transform: scaleY(1);    animation-timing-function: cubic-bezier(0.25, 0, 0.35, 1); }
+  100% { transform: scaleY(0.22); }
+}
+.krnl-voicewave.is-idle i { height: var(--wave-dot); transform: none; animation: krnl-blink 1.2s infinite ease-in-out; animation-delay: calc(var(--i, 0) * .16s); }
+@media (prefers-reduced-motion: reduce) { .krnl-voicewave i { animation: none; transform: none; } }
+
 /* the answer */
 .krnl-answer { display: flex; flex-direction: column; gap: 14px; }
 .krnl-ans-bd { display: flex; flex-direction: column; gap: 12px; }

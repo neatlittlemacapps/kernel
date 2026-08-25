@@ -9,5 +9,6 @@
 // "." primitives (TextArea, IconButton, AIBadge, …) - downward dependency only.
 export { ChatBubble } from './components/chat/ChatBubble.jsx';
 export { TypingIndicator } from './components/chat/TypingIndicator.jsx';
+export { VoiceWaveform } from './components/chat/VoiceWaveform.jsx';
 export { PromptField } from './components/chat/PromptField.jsx';
 export { Transcript } from './components/chat/Transcript.jsx';

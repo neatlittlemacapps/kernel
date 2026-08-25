@@ -19,7 +19,7 @@ export const ALIAS_SKIP = new Set(['Btn', 'PAv', 'Tip']);
 export const ALIAS_OF = { Btn: 'Button', PAv: 'PersonAvatar', Tip: 'Tooltip' };
 
 // Chat tier (the ./chat subpath — gen-catalog doesn't tag these, so name-list them).
-const CHAT = new Set(['ChatBubble', 'PromptField', 'Transcript', 'TypingIndicator']);
+const CHAT = new Set(['ChatBubble', 'PromptField', 'Transcript', 'TypingIndicator', 'VoiceWaveform']);
 
 // Clinical primitives (relocated behind ./clinical by B-49) get their own folder,
 // distinct from the per-object Cards.
