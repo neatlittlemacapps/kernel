@@ -67,6 +67,10 @@ const preview = {
   decorators: [
     (Story, context) => {
       const { brand, theme, density, breakpoint } = context.globals;
+      // Opt-out escape hatch (parameters.fitContent: true) for small atoms whose canvas
+      // shouldn't force a full viewport of empty space - default unchanged for everything
+      // else, since larger/overlay components rely on the full-height canvas.
+      const fitContent = context.parameters.fitContent;
       return (
         <div
           className="krnl-companion-layer"
@@ -76,7 +80,7 @@ const preview = {
           data-breakpoint={breakpoint}
           style={{
             padding: '1rem',
-            minHeight: '100vh',
+            minHeight: fitContent ? undefined : '100vh',
             background: 'var(--surface-page)',
             color: 'var(--color-text-primary, inherit)',
           }}

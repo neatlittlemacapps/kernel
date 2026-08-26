@@ -6413,7 +6413,14 @@
           "class": "dsPresentation",
           "type": "string",
           "default": "warning",
-          "description": "Dot colour once level drops to idle (no sound detected) - same value space as tone. Swaps in real time as level crosses the idle threshold; pass \"primary\" (or match tone) to keep one colour throughout, or null/\"neutral\" for the default fill in both states."
+          "description": "Dot colour once level drops to idle WHILE listening (connected, no sound detected) - same value space as tone. Has no effect when listening is false. Pass \"primary\" (or match tone) to keep one colour throughout, or null/\"neutral\" for the default fill."
+        },
+        {
+          "name": "listening",
+          "class": "content",
+          "type": "boolean",
+          "default": "true",
+          "description": "Whether capture has actually started. Before it has (level is meaningless yet), the idle dots stay in the tone/\"primary\" colour instead of idleTone - so \"not connected\" and \"connected but quiet\" read as two distinct states, not the same warning colour."
         },
         {
           "name": "size",
@@ -6430,12 +6437,12 @@
           "name": "aria-label",
           "class": "a11y",
           "type": "string",
-          "default": "Voice input level",
-          "description": "Accessible name for the indicator (role=\"img\"); the bars themselves are aria-hidden."
+          "default": "Voice input level\" / \"Microphone not connected\"",
+          "description": "Accessible name for the indicator (role=\"img\"); the bars themselves are aria-hidden. Defaults to a listening-aware string since the idle/warning colour swap carries meaning colour alone won't convey to assistive tech."
         }
       ],
       "composes": [],
-      "usage": "<VoiceWaveform level={0.6} bars={3} /> {/* idleTone=\"warning\" by default; add tone=\"primary\" to be explicit about the active colour */}",
+      "usage": "<VoiceWaveform level={0.6} bars={3} /> {/* idleTone=\"warning\" by default; pass listening={false} before capture actually starts */}",
       "keywords": [
         "voice",
         "waveform",
@@ -6464,6 +6471,10 @@
           "text": "Leave idleTone at its \"warning\" default so the colour itself signals \"not hearing you yet\" - no separate status text needed for that state."
         },
         {
+          "do": true,
+          "text": "Pass listening={false} before capture actually starts (e.g. while awaiting mic permission or a socket connection) - otherwise the pre-connection dots wrongly read as \"connected but silent\" (warning) instead of just \"not started yet\" (primary)."
+        },
+        {
           "do": false,
           "text": "Use it as a scrubbable seek/waveform for recorded audio - this is a live level meter, not a track timeline."
         }
@@ -6477,7 +6488,7 @@
         {
           "name": "dots",
           "required": false,
-          "description": "The idle state - each bar collapses to a round blinking dot when level is near zero; coloured by idleTone."
+          "description": "The idle state - each bar collapses to a round blinking dot when level is near zero; coloured by idleTone once listening, or by tone before listening starts."
         }
       ],
       "related": [
