@@ -10,7 +10,8 @@ export default {
   argTypes: {
     level: { control: { type: 'range', min: 0, max: 1, step: 0.01 }, description: "Current input loudness, 0..1 (clamped). Drag toward 0 to see the idle blinking dots.", table: { category: 'Content', defaultValue: { summary: "0" }, type: { summary: "number" } } },
     bars: { control: { type: 'range', min: 1, max: 9, step: 1 }, description: "How many bars/dots to render. Odd counts read best (the centre bar peaks).", table: { category: 'Appearance', defaultValue: { summary: "3" }, type: { summary: "number" } } },
-    tone: { control: 'text', description: "Bar colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\", or any colour/var. Omit for the default --action-accent fill.", table: { category: 'Appearance', type: { summary: "string" } } },
+    tone: { control: 'text', description: "Bar colour while sound is detected: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\", or any colour/var. Omit for the default --action-accent fill.", table: { category: 'Appearance', type: { summary: "string" } } },
+    idleTone: { control: 'text', description: "Dot colour once level drops to idle (no sound). Same value space as tone. Drag the level slider through the idle threshold (~0.08) to see it cross-fade live.", table: { category: 'Appearance', defaultValue: { summary: "warning" }, type: { summary: "string" } } },
     size: { control: 'inline-radio', options: ["sm","md","lg"], description: "Overall height: sm 16px, md 22px (default), lg 30px.", table: { category: 'Appearance', defaultValue: { summary: "md" } } },
     'aria-label': { control: 'text', description: "Accessible name for the indicator (role=\"img\"); the bars themselves are aria-hidden.", table: { category: 'Accessibility', defaultValue: { summary: "Voice input level" }, type: { summary: "string" } } },
   },
@@ -22,10 +23,11 @@ export default {
   },
 };
 
-// Drag the `level` slider: high = bars, near 0 = idle blinking dots.
+// Drag the `level` slider through ~0.08: bars (tone, default primary/accent) cross-fade
+// live into blinking dots (idleTone, default warning) as level falls to idle.
 export const Playground = {
-  args: { level: 0.55, bars: 3, size: 'md', 'aria-label': 'Voice input level' },
-  parameters: { docs: { source: { code: `<VoiceWaveform level={0.6} bars={3} />` } } },
+  args: { level: 0.55, bars: 3, size: 'md', idleTone: 'warning', 'aria-label': 'Voice input level' },
+  parameters: { docs: { source: { code: `<VoiceWaveform level={0.6} bars={3} />  /* idleTone="warning" by default */` } } },
 };
 
 const Cell = ({ title, children }) => (
@@ -58,10 +60,16 @@ export const Gallery = {
         <Cell title="primary"><VoiceWaveform level={0.7} tone="primary" /></Cell>
         <Cell title="error"><VoiceWaveform level={0.7} tone="error" /></Cell>
       </div>
+      <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <Cell title="idle → warning"><VoiceWaveform level={0} /></Cell>
+        <Cell title="sound → primary"><VoiceWaveform level={0.7} /></Cell>
+        <Cell title="idleTone off"><VoiceWaveform level={0} idleTone="primary" /></Cell>
+      </div>
     </div>
   ),
   parameters: { docs: { source: { code: `// Idle dots, rising levels, sizes, bar counts, and tones
-<VoiceWaveform level={0} />                        {/* idle -> blinking dots */}
+<VoiceWaveform level={0} />                        {/* idle -> warning dots (idleTone default) */}
+<VoiceWaveform level={0} idleTone="primary" />     {/* same colour in both states */}
 <VoiceWaveform level={0.5} />
 <VoiceWaveform level={0.85} bars={5} />
 <VoiceWaveform level={0.6} size="lg" />

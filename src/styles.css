@@ -1225,7 +1225,10 @@
    height envelope (centre-weighted), while every bar also dances independently on a
    staggered scaleY loop; collapses to blinking dots (.is-idle) when the input goes
    quiet. NB class is krnl-voicewave, NOT krnl-wave - the latter is the waving-hand
-   emoji (krnl-handWave) at the top of this file. Reuses the krnl-blink keyframe. */
+   emoji (krnl-handWave) at the top of this file. Reuses the krnl-blink keyframe.
+   Colour cross-fades in real time between --wave-fill (sound detected) and
+   --wave-fill-idle (quiet) as .is-idle toggles - both are set by the component from
+   the SAME level, no separate state. */
 .krnl-voicewave { display: inline-flex; align-items: center; gap: 3px; height: 22px; --wave-dot: 4px; --wave-level: 0; }
 .krnl-voicewave[data-size="sm"] { height: 16px; }
 .krnl-voicewave[data-size="lg"] { height: 30px; }
@@ -1237,7 +1240,7 @@
      at once. Equal periods are required or the halves beat and drift. */
   animation: krnl-voicewave-bar 0.8s infinite;
   animation-delay: var(--wave-delay, 0s);
-  transition: height 120ms ease-out, opacity .2s linear; }
+  transition: height 120ms ease-out, opacity .2s linear, background-color 200ms linear; }
 /* Asymmetric bob (VU-meter release): a quick snap UP to the peak by 30% of the cycle,
    then a long decelerating fade DOWN over the remaining 70%. Per-keyframe easing does
    the two halves. Swing 0.22..1 stays lively at the 16-22px size; --wave-level scales
@@ -1247,7 +1250,7 @@
   30%  { transform: scaleY(1);    animation-timing-function: cubic-bezier(0.25, 0, 0.35, 1); }
   100% { transform: scaleY(0.22); }
 }
-.krnl-voicewave.is-idle i { height: var(--wave-dot); transform: none; animation: krnl-blink 1.2s infinite ease-in-out; animation-delay: calc(var(--i, 0) * .16s); }
+.krnl-voicewave.is-idle i { height: var(--wave-dot); transform: none; background: var(--wave-fill-idle, var(--wave-fill, var(--action-accent))); animation: krnl-blink 1.2s infinite ease-in-out; animation-delay: calc(var(--i, 0) * .16s); }
 @media (prefers-reduced-motion: reduce) { .krnl-voicewave i { animation: none; transform: none; } }
 
 /* the answer */
