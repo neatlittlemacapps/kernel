@@ -23,7 +23,7 @@ export default {
     surface: { control: 'radio', options: ['plain', 'tinted'], description: 'plain = white. tinted = a light wash - the semantic tone tint (toneScope="box") or a neutral tint (toneScope="content" / tone="neutral").', table: { category: 'Appearance', defaultValue: { summary: 'plain' } } },
     accent: { control: 'boolean', description: 'The 4px left accent strip.', table: { category: 'Appearance', defaultValue: { summary: 'true' } } },
     bordered: { control: 'boolean', description: 'The hairline border.', table: { category: 'Appearance', defaultValue: { summary: 'true' } } },
-    elevated: { control: 'boolean', description: 'Drop shadow (--elevation-raised).', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
+    elevated: { control: 'boolean', description: 'Soft, wide ambient drop shadow (--elevation-floating) - the same shared token an elevated/accent Card uses.', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     dense: { control: 'boolean', description: 'Compact density scope (data-density="compact" on this Banner) - shrinks padding/radius/gap and the icon tile.', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     fullWidth: { control: 'boolean', description: 'Flush, no-radius, edge-to-edge treatment for a page-level notice. Renders correctly only in a fullscreen canvas (see the dedicated FullWidth story) - Playground\'s padded canvas will show it inset, which is a canvas limitation, not a component bug.', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     title: { control: 'text', description: 'The banner headline.', table: { category: 'Content' } },
@@ -33,6 +33,7 @@ export default {
     dismissible: { control: 'boolean', description: 'Show the dismiss control (calls onDismiss).', table: { category: 'Content' } },
   },
   parameters: {
+    fitContent: true,
     docs: {
       description: {
         component:

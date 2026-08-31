@@ -47,7 +47,9 @@ export function DonutGauge({
   const drawFraction = unbounded ? Math.min(pct / 100, 0.8) : pct / 100;
   const dashoffset = circumference * (1 - drawFraction);
   const resolvedTone = resolveTone(pct, tone, thresholds);
-  const fillColor = toneFill(resolvedTone) || 'var(--action-solid)';
+  // Default (untoned) ring is --action-accent (the vivid .500 rung) - matches
+  // Progress/Meter's own default fill, not --action-solid (.700, muddy as a fill).
+  const fillColor = toneFill(resolvedTone) || 'var(--action-accent)';
   const crossR = r * 0.4;
 
   const idRef = React.useRef(null);

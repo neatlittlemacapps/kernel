@@ -27,13 +27,18 @@ test('toneFill: primary resolves to --action-accent', () => {
   assert.equal(toneFill('primary'), 'var(--action-accent)');
 });
 
-test('toneFill: status tones resolve to their vivid .500 accent rung', () => {
-  assert.equal(toneFill('info'), 'var(--status-info-accent)');
-  assert.equal(toneFill('error'), 'var(--status-error-accent)');
+test('toneFill: status tones resolve to their saturated data-fill rung', () => {
+  assert.equal(toneFill('info'), 'var(--data-status-info-fill)');
+  assert.equal(toneFill('error'), 'var(--data-status-error-fill)');
 });
 
-test('toneFill: data tones resolve to their accent rung', () => {
-  assert.equal(toneFill('data-3'), 'var(--data-tone-3-accent)');
+test('toneFill: data tones resolve to their saturated data-fill rung', () => {
+  assert.equal(toneFill('data-3'), 'var(--data-categorical-3-fill)');
+});
+
+test('toneFill: rung param selects fill-strong (hover/outline weight)', () => {
+  assert.equal(toneFill('info', 'fill-strong'), 'var(--data-status-info-fill-strong)');
+  assert.equal(toneFill('data-3', 'fill-strong'), 'var(--data-categorical-3-fill-strong)');
 });
 
 test('toneFill: arbitrary colour strings pass through unchanged', () => {

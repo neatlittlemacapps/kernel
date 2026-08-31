@@ -36,7 +36,7 @@ export const meta = {
     props: [
       { name: 'value', class: 'content', type: 'number', required: true, description: 'The current level.' },
       { name: 'max', class: 'content', type: 'number', default: 100, description: 'The upper bound of the scale.' },
-      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), "primary", or any colour/var. Omit for the default --action-solid fill.' },
+      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), "primary", or any colour/var. Omit for the default --action-accent fill.' },
       { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Track thickness: sm 4px, md 6px (default), lg 10px.' },
       { name: 'unbounded', class: 'dsPresentation', type: 'bool', description: 'Fades the fill\'s trailing edge instead of a hard cap, for a quantity with no real ceiling.' },
       { name: 'label', class: 'content', type: 'ReactNode', description: 'Optional caption above the track. Not the accessible name - see valueText.' },

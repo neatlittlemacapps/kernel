@@ -163,6 +163,9 @@
         "700": {
           "$value": "{color.sky.700}"
         },
+        "800": {
+          "$value": "{color.sky.800}"
+        },
         "900": {
           "$value": "{color.sky.900}"
         }
@@ -186,31 +189,38 @@
         "700": {
           "$value": "{color.green.700}"
         },
+        "800": {
+          "$value": "{color.green.800}"
+        },
         "900": {
           "$value": "{color.green.900}"
         }
       },
       "warning": {
+        "$description": "Retargeted from amber (hue 75, a muted gold/brown) to the dedicated orange ramp (hue 45) - amber's own hue+chroma read as muted brown rather than a clear warning orange. Kept as its own primitive rather than retuning amber, since myNeva's own accent group aliases amber directly for an unrelated warm gold identity.",
         "100": {
-          "$value": "{color.amber.100}"
+          "$value": "{color.orange.100}"
         },
         "200": {
-          "$value": "{color.amber.200}"
+          "$value": "{color.orange.200}"
         },
         "300": {
-          "$value": "{color.amber.300}"
+          "$value": "{color.orange.300}"
         },
         "400": {
-          "$value": "{color.amber.400}"
+          "$value": "{color.orange.400}"
         },
         "500": {
-          "$value": "{color.amber.500}"
+          "$value": "{color.orange.500}"
         },
         "700": {
-          "$value": "{color.amber.700}"
+          "$value": "{color.orange.700}"
+        },
+        "800": {
+          "$value": "{color.orange.800}"
         },
         "900": {
-          "$value": "{color.amber.900}"
+          "$value": "{color.orange.900}"
         }
       },
       "error": {
@@ -232,6 +242,9 @@
         "700": {
           "$value": "{color.red.700}"
         },
+        "800": {
+          "$value": "{color.red.800}"
+        },
         "900": {
           "$value": "{color.red.900}"
         }
@@ -246,7 +259,7 @@
         "$value": "{color.green.500}"
       },
       "warning": {
-        "$value": "{color.amber.500}"
+        "$value": "{color.orange.500}"
       },
       "error": {
         "$value": "{color.red.500}"
@@ -316,6 +329,7 @@
         "400": { "$value": "{color.teal.400}" },
         "500": { "$value": "{color.teal.500}" },
         "700": { "$value": "{color.teal.700}" },
+        "800": { "$value": "{color.teal.800}" },
         "900": { "$value": "{color.teal.900}" }
       },
       "2": {
@@ -325,6 +339,7 @@
         "400": { "$value": "{color.indigo.400}" },
         "500": { "$value": "{color.indigo.500}" },
         "700": { "$value": "{color.indigo.700}" },
+        "800": { "$value": "{color.indigo.800}" },
         "900": { "$value": "{color.indigo.900}" }
       },
       "3": {
@@ -334,6 +349,7 @@
         "400": { "$value": "{color.violet.400}" },
         "500": { "$value": "{color.violet.500}" },
         "700": { "$value": "{color.violet.700}" },
+        "800": { "$value": "{color.violet.800}" },
         "900": { "$value": "{color.violet.900}" }
       },
       "4": {
@@ -343,6 +359,7 @@
         "400": { "$value": "{color.magenta.400}" },
         "500": { "$value": "{color.magenta.500}" },
         "700": { "$value": "{color.magenta.700}" },
+        "800": { "$value": "{color.magenta.800}" },
         "900": { "$value": "{color.magenta.900}" }
       },
       "5": {
@@ -352,6 +369,7 @@
         "400": { "$value": "{color.mint.400}" },
         "500": { "$value": "{color.mint.500}" },
         "700": { "$value": "{color.mint.700}" },
+        "800": { "$value": "{color.mint.800}" },
         "900": { "$value": "{color.mint.900}" }
       },
       "6": {
@@ -361,6 +379,7 @@
         "400": { "$value": "{color.lime.400}" },
         "500": { "$value": "{color.lime.500}" },
         "700": { "$value": "{color.lime.700}" },
+        "800": { "$value": "{color.lime.800}" },
         "900": { "$value": "{color.lime.900}" }
       }
     },

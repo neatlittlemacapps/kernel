@@ -175,7 +175,7 @@
     }
   },
   "data": {
-    "$description": "Categorical data-visualisation palette. Six distinct hues with NO semantic meaning; for charts and series only. Hues owned by brand.data.*.",
+    "$description": "Categorical data-visualisation palette. Six distinct hues with NO semantic meaning; for charts and series only. Hues owned by brand.data.*. `series-N` (flat, unchanged) is the existing single-value hue, still the right choice for anything that just needs ONE colour per series (row-tone identity, an attachment-type icon). `categorical.N` and `status.*` below are a NEWER, separate concept: a saturated fill/fill-strong/fill-soft TRIAD per role, for components that render a fill or stroke on a non-text surface (a chart mark, a progress/meter bar, a chart line) and want more punch than the AA-safe text/border families (status.*/data-tone.* at the top level) allow. fill = the baseline weight; fill-strong = the higher-contrast-vs-background rung (lines, outlines, hover) — NOT a text colour, use status.*/data-tone.*'s own `solid` for that; fill-soft = the lower-contrast-vs-background rung (area backing, tracks). These rungs carry NO WCAG text-contrast guarantee — they exist precisely because they trade that guarantee for saturation, so they are for fills/strokes on non-text surfaces ONLY (charts, progress bars, meters), never for text, icons-as-text, or anything a screen reader user needs to read the colour of.",
     "series-1": {
       "$value": "{brand.data.1}"
     },
@@ -193,6 +193,62 @@
     },
     "series-6": {
       "$value": "{brand.data.6}"
+    },
+    "categorical": {
+      "$description": "The same six data-viz hues as series-1..6, as a fill/fill-strong/fill-soft triad (see the `data` group description for the a11y contract). Light: fill=.500, fill-strong=.700, fill-soft=.200 — mirrors data-tone.N's own accent/solid/tint-strong rungs on the identical hues.",
+      "1": {
+        "fill": { "$value": "{brand.data-tone.1.500}" },
+        "fill-strong": { "$value": "{brand.data-tone.1.700}" },
+        "fill-soft": { "$value": "{brand.data-tone.1.200}" }
+      },
+      "2": {
+        "fill": { "$value": "{brand.data-tone.2.500}" },
+        "fill-strong": { "$value": "{brand.data-tone.2.700}" },
+        "fill-soft": { "$value": "{brand.data-tone.2.200}" }
+      },
+      "3": {
+        "fill": { "$value": "{brand.data-tone.3.500}" },
+        "fill-strong": { "$value": "{brand.data-tone.3.700}" },
+        "fill-soft": { "$value": "{brand.data-tone.3.200}" }
+      },
+      "4": {
+        "fill": { "$value": "{brand.data-tone.4.500}" },
+        "fill-strong": { "$value": "{brand.data-tone.4.700}" },
+        "fill-soft": { "$value": "{brand.data-tone.4.200}" }
+      },
+      "5": {
+        "fill": { "$value": "{brand.data-tone.5.500}" },
+        "fill-strong": { "$value": "{brand.data-tone.5.700}" },
+        "fill-soft": { "$value": "{brand.data-tone.5.200}" }
+      },
+      "6": {
+        "fill": { "$value": "{brand.data-tone.6.500}" },
+        "fill-strong": { "$value": "{brand.data-tone.6.700}" },
+        "fill-soft": { "$value": "{brand.data-tone.6.200}" }
+      }
+    },
+    "status": {
+      "$description": "The four status hues as the same fill/fill-strong/fill-soft triad (see the `data` group description for the a11y contract) — for a status-toned progress bar, meter, or chart mark that wants more punch than status.*'s own AA-safe `accent`/`solid`. Light: fill=.500, fill-strong=.700, fill-soft=.200 — same steps as status.*'s own accent/solid/tint-strong.",
+      "info": {
+        "fill": { "$value": "{brand.status.info.500}" },
+        "fill-strong": { "$value": "{brand.status.info.700}" },
+        "fill-soft": { "$value": "{brand.status.info.200}" }
+      },
+      "success": {
+        "fill": { "$value": "{brand.status.success.500}" },
+        "fill-strong": { "$value": "{brand.status.success.700}" },
+        "fill-soft": { "$value": "{brand.status.success.200}" }
+      },
+      "warning": {
+        "fill": { "$value": "{brand.status.warning.500}" },
+        "fill-strong": { "$value": "{brand.status.warning.700}" },
+        "fill-soft": { "$value": "{brand.status.warning.200}" }
+      },
+      "error": {
+        "fill": { "$value": "{brand.status.error.500}" },
+        "fill-strong": { "$value": "{brand.status.error.700}" },
+        "fill-soft": { "$value": "{brand.status.error.200}" }
+      }
     }
   },
   "surface": {
@@ -304,21 +360,21 @@
   },
   "elevation": {
     "$type": "shadow",
-    "$description": "Box-shadow levels. raised = a tight contact shadow for grounded cards; floating = a soft, wide ambient lift for cards that visibly float above the page (collapsible / accent cards); overlay = menus, popovers, toasts; modal = dialogs. Shadow ink is hueless structural (primitives).",
+    "$description": "Box-shadow levels, a MONOTONIC ladder (each rung reads as clearly higher than the one below): raised = tight contact (a grounded card, or the pressed/active card state); floating = a gentle resting lift for a card that sits above the page (accent / collapsible / elevated cards) - deliberately BELOW overlay so a card hovering to `overlay` reads as rising; overlay = menus, popovers, toasts, and the card HOVER state; modal = dialogs, and the card DRAGGED state. Shadow ink is hueless structural (primitives).",
     "floating": {
       "$value": [
         {
           "color": "{color.alpha.black-10}",
           "offsetX": { "value": 0, "unit": "px" },
-          "offsetY": { "value": 4, "unit": "px" },
-          "blur": { "value": 20, "unit": "px" },
+          "offsetY": { "value": 2, "unit": "px" },
+          "blur": { "value": 6, "unit": "px" },
           "spread": { "value": 0, "unit": "px" }
         },
         {
           "color": "{color.alpha.black-06}",
           "offsetX": { "value": 0, "unit": "px" },
           "offsetY": { "value": 1, "unit": "px" },
-          "blur": { "value": 3, "unit": "px" },
+          "blur": { "value": 2, "unit": "px" },
           "spread": { "value": 0, "unit": "px" }
         }
       ]

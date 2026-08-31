@@ -1,18 +1,18 @@
 // Banner - a persistent status message the user must notice or act on (info /
 // success / warning / error), composed FROM Card for the Header/Body slots + the
-// Collapsible `detail` region, but NOT from Card's own tone/accent cascade: Banner
-// resolves its own chrome (surface, border, strip, icon) in JS into a fixed set of
-// --banner-* custom properties, and passes Card neither `tone` nor `accent`. Card's
-// [data-tone]/[data-accent] rules are tuned for Card's OWN defaults (solid .700
-// border, elevation that a strip always wins over on specificity) and collided with
-// Banner's needs in ways that couldn't be fixed by adding more CSS - see
-// resolveBannerChrome below and the decision table in STANDARD.md.
+// Collapsible `detail` region, and now ALSO from Card's shared chrome mechanic:
+// resolveBannerChrome is a thin wrapper over resolveCardChrome (../lib/cardChrome.js)
+// - the same resolver Card itself uses - so Banner and Card read the same --card-*
+// custom properties and changing the shared base changes both. Banner supplies its
+// own edge ('left', not Card's default 'top') and neutral fill ('bright', a crisp
+// white/floating look, vs Card's own 'panel'). See the decision table in STANDARD.md.
 //
 // Seven independent chrome switches, each its own prop (STANDARD.md: mutually
 // exclusive states are one enum; independent ones are separate booleans):
 //   accent    - the left strip, on/off
 //   bordered  - the hairline border, on/off
-//   elevated  - drop shadow, on/off
+//   elevated  - drop shadow, on/off (--elevation-floating - the same shared token a
+//               floating/accent Card uses, not the tighter --elevation-raised)
 //   surface   - body fill: plain (white) or tinted (light semantic wash)
 //   tone      - the semantic meaning (always paints the icon; see toneScope for the box)
 //   toneScope - "box" lets `tone` also paint background/border/strip; "content" keeps
@@ -28,6 +28,7 @@ import { Card } from './Card.jsx';
 import { Collapsible } from './Collapsible.jsx';
 import { IconButton } from './ui.jsx';
 import { Icon } from '../lib/icons.jsx';
+import { resolveCardChrome } from '../lib/cardChrome.js';
 
 const React = window.React;
 
@@ -48,35 +49,17 @@ const TONE_ICON = {
 // success / warning announce politely without stealing focus.
 const TONE_LIVE = { error: 'assertive', neutral: 'off' };
 
-// Resolves the tone-dependent part of the chrome matrix - background, border colour,
-// strip colour, and the icon-tile colours - into custom properties. This is the ONE
-// place the decision table lives, in code:
-//
-//   toneScope="box" + a real status tone -> the tone paints the box:
-//     surface  = plain -> --surface-bright        | tinted -> --status-{tone}-tint
-//     border   = --status-{tone}-border (soft hairline, NOT the vivid .700 solid)
-//     strip    = --status-{tone}-accent (the vivid .500)
-//   toneScope="content" (or tone="neutral", which has no box to paint anyway):
-//     surface  = plain -> --surface-bright        | tinted -> --surface-sunken (a
-//                neutral tint, not "no tint" - every combination is a real value)
-//     border / strip = --border-subtle (the soft neutral hairline)
-//
-// The icon layer is intentionally NOT gated by toneScope: "keep the box neutral"
-// means the box, not the message's own icon - so a toneScope="content" banner still
-// shows a coloured icon in a tinted tile.
-function resolveBannerChrome({ tone, toneScope, surface }) {
+// Wraps the shared resolveCardChrome for Banner's own left-edge, bright-neutral,
+// status-tone-only chrome, then adds the icon-tile colours (not part of the shared
+// contract - the icon is Banner's own anatomy, not a generic Card slot).
+function resolveBannerChrome({ tone, toneScope, surface, accent, bordered, elevated }) {
   const isStatus = STATUS_TONES.includes(tone);
-  const slug = isStatus ? `status-${tone}` : null;
-  const paintsBox = toneScope === 'box' && isStatus;
-
-  const vars = {
-    '--banner-surface': paintsBox
-      ? (surface === 'tinted' ? `var(--${slug}-tint)` : 'var(--surface-bright)')
-      : (surface === 'tinted' ? 'var(--surface-sunken)' : 'var(--surface-bright)'),
-    '--banner-border-color': paintsBox ? `var(--${slug}-border)` : 'var(--border-subtle)',
-    '--banner-strip-color': paintsBox ? `var(--${slug}-accent)` : 'var(--border-subtle)',
-  };
+  const vars = resolveCardChrome({
+    surface, tone, toneScope, accent, bordered, elevated,
+    edge: 'left', neutralFill: 'bright',
+  });
   if (isStatus) {
+    const slug = `status-${tone}`;
     vars['--banner-icon-tint'] = `var(--${slug}-tint-strong)`;
     vars['--banner-icon-text'] = `var(--${slug}-solid)`;
   }
@@ -104,7 +87,11 @@ export function Banner({
 
   const resolvedIcon = icon !== undefined ? icon : (TONE_ICON[tone]?.({ size: 18 }) ?? null);
   const resolvedLive = live || TONE_LIVE[tone] || 'polite';
-  const chromeVars = resolveBannerChrome({ tone, toneScope, surface });
+  // The resolved --card-* vars are the FINAL chrome values (accent/bordered/elevated
+  // already baked in as on/off), so no [data-strip]/[data-bordered]/[data-elevated]
+  // attribute is needed - Banner's own `style` override wins over Card's internal
+  // resolution for the same custom-prop names (object-spread order in Card.jsx).
+  const chromeVars = resolveBannerChrome({ tone, toneScope, surface, accent, bordered, elevated });
   const cls = [
     'krnl-banner-card',
     fullWidth && 'krnl-banner-card--flush',
@@ -114,9 +101,6 @@ export function Banner({
   return (
     <Card
       appearance="filled" className={cls} style={{ ...chromeVars, ...style }}
-      data-strip={accent ? '' : undefined}
-      data-bordered={bordered ? '' : undefined}
-      data-elevated={elevated ? '' : undefined}
       data-density={dense ? 'compact' : undefined}
       role={resolvedLive === 'off' ? undefined : (resolvedLive === 'assertive' ? 'alert' : 'status')}
       aria-live={resolvedLive === 'off' ? undefined : resolvedLive}
@@ -150,10 +134,10 @@ export const meta = {
     props: [
       { name: 'tone', class: 'dsPresentation', values: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral', description: 'Semantic meaning. Always selects the default icon + icon-tile colour and the default `live` politeness. Also paints the box (background/border/strip) when `toneScope="box"` - see `toneScope`.' },
       { name: 'toneScope', class: 'dsPresentation', values: ['box', 'content'], default: 'box', description: '"box" (default) lets `tone` paint the background/border/strip. "content" keeps the box neutral (a plain or neutral-tinted surface with the soft --border-subtle border) while the icon and its tile stay tone-coloured - use when the message needs to read as calm chrome with a coloured status glyph, not a coloured alert box.' },
-      { name: 'surface', class: 'dsPresentation', values: ['plain', 'tinted'], default: 'plain', description: 'Body fill: plain is white (--surface-bright); tinted is a light wash - the semantic tone tint when toneScope="box", or a neutral tint (--surface-sunken) when toneScope="content" or tone="neutral". Replaces the old `variant` prop, with the corrected meaning: neither value is ever a solid/inverted fill.' },
+      { name: 'surface', class: 'dsPresentation', values: ['plain', 'tinted'], default: 'plain', description: 'Body fill: plain is white (--surface-bright); tinted is a FAINT tone wash when toneScope="box" (the tone tint mixed ~55% toward white, via the shared card resolver, so it reads as a hint not a saturated panel), or a neutral tint (--surface-sunken) when toneScope="content" or tone="neutral". Replaces the old `variant` prop, with the corrected meaning: neither value is ever a solid/inverted fill.' },
       { name: 'accent', class: 'dsPresentation', type: 'bool', default: true, description: 'The 4px left accent strip. Coloured by `tone` (when toneScope="box") or the soft neutral border colour otherwise.' },
       { name: 'bordered', class: 'dsPresentation', type: 'bool', default: true, description: 'The hairline border, in the same colour the strip uses.' },
-      { name: 'elevated', class: 'dsPresentation', type: 'bool', default: false, description: 'A drop shadow (--elevation-raised) for a banner that should float above the page.' },
+      { name: 'elevated', class: 'dsPresentation', type: 'bool', default: false, description: 'A gentle resting drop shadow (--elevation-floating) for a banner that should sit above the page - the same shared token an elevated/accent Card and a collapsible card use (the "floating" rung of the shared elevation ladder: raised < floating < overlay < modal).' },
       { name: 'dense', class: 'dsPresentation', type: 'bool', default: false, description: 'A compact density scope: sets data-density="compact" on this Banner, shrinking its padding/radius/gap and cascading into the header, the action/dismiss controls, and `detail` - not a parallel spacing system, just a local scope over the existing --density-* tokens (STANDARD.md: density is a token modifier, not its own prop system).' },
       { name: 'title', class: 'content', type: 'ReactNode', description: 'The banner headline. Required - rendered in Card.Header’s title slot.' },
       { name: 'description', class: 'content', type: 'ReactNode', description: 'Supporting text below the title, rendered in Card.Header’s description slot. Falls back to `children` when omitted, so a single-line banner can just pass text as children.' },

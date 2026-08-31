@@ -809,9 +809,15 @@
   .krnl-card-panel, .krnl-card-chev, .krnl-card--collapsible { transition-duration: 1ms; }  /* collapsible card expand + hover-lift (B-46) */
 }
 
-/* ── Collapsible (B-38, Base UI) ── */
+/* ── Collapsible (B-38, Base UI) ── framed trigger inherits the shared chrome
+   contract (--card-surface / --card-border-color) with the SAME fallback values as
+   before, so a standalone Collapsible is pixel-unchanged, while one nested inside a
+   Card/Banner picks up that ancestor's resolved chrome via ordinary CSS custom-
+   property inheritance - the "family" the base-card mechanic is for (cardChrome.js).
+   Only the visual chrome is inherited, not the slot grid - a Collapsible's body is
+   one region, not Card's Preview/Header/Body/Footer set. */
 .krnl-collapsible { display: flex; flex-direction: column; }
-.krnl-collapsible-trigger { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); width: 100%; padding: var(--density-control-py) var(--density-control-px); background: var(--surface-page); border: var(--dimension-rule-hair) solid var(--border-subtle); border-radius: var(--density-radius); cursor: pointer; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); text-align: left; }
+.krnl-collapsible-trigger { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); width: 100%; padding: var(--density-control-py) var(--density-control-px); background: var(--card-surface, var(--surface-page)); border: var(--dimension-rule-hair) solid var(--card-border-color, var(--border-subtle)); border-radius: var(--density-radius); cursor: pointer; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); text-align: left; }
 .krnl-collapsible-trigger:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
 .krnl-collapsible-chev { display: inline-flex; color: var(--text-faint); transition: transform .18s ease; }
 .krnl-collapsible-trigger[data-panel-open] .krnl-collapsible-chev { transform: rotate(90deg); }
@@ -836,7 +842,12 @@
 :where(.krnl-progress, .krnl-meter) { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; }
 :where(.krnl-progress-label) { font-family: var(--typography-label-sm-font-family); font-size: var(--typography-label-sm-font-size); font-weight: var(--typography-label-sm-font-weight); color: var(--text-muted); }
 .krnl-progress-track { height: 6px; border-radius: var(--krnl-radius-pill); background: var(--surface-sunken); overflow: hidden; }
-.krnl-progress-ind { height: 100%; background: var(--bar-fill, var(--action-solid)); border-radius: var(--krnl-radius-pill); transition: width .3s ease; }
+/* Default (untoned) fill is --action-accent (the vivid .500 rung), not --action-solid
+   (the .700 AA-text rung, which reads muddy as a fat bar fill - the exact reasoning
+   ../lib/tone.js's toneFill already applies for a NAMED tone). --action-solid stays the
+   default everywhere else it's used (checkboxes, switches, tabs, etc.) - this is scoped
+   to the progress/meter fill only, not a change to the shared token. */
+.krnl-progress-ind { height: 100%; background: var(--bar-fill, var(--action-accent)); border-radius: var(--krnl-radius-pill); transition: width .3s ease; }
 /* size (B-48): track thickness. md is the pre-existing 6px default, unchanged. */
 :where(.krnl-progress, .krnl-meter)[data-size="sm"] .krnl-progress-track { height: 4px; }
 :where(.krnl-progress, .krnl-meter)[data-size="lg"] .krnl-progress-track { height: 10px; }
@@ -973,46 +984,126 @@
 
 /* ── SETTINGS ── */
 .krnl-settings { animation: krnl-fadeUp .25s ease; max-width: 420px; margin: 0 auto; }
-/* Card (B-42): base class = the `filled` appearance (border + panel surface). The
-   existing bare .krnl-card divs keep this look; <Card> composes it + adds variants /
-   states / slots. margin-bottom is a legacy flow-spacing carry-over - drops out once
-   consumers wrap cards in a Stack. */
-.krnl-card { position: relative; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--density-radius); padding: var(--density-card-pad); background: var(--surface-panel); margin-bottom: var(--density-gap);
+/* Card (B-42, unified onto the shared chrome contract - "Base Card mechanic"): base
+   class = the `filled` look (border + panel surface). The existing bare .krnl-card
+   divs keep this look via the --card-* DEFAULTS declared here; <Card> (and Banner,
+   which shares this same var namespace) overrides them with resolveCardChrome's
+   output (../lib/cardChrome.js), written once as inline style so nothing ever
+   competes with a second CSS rule for the same property (see that file's header for
+   the B-54 bug this fixes). margin-bottom is a legacy flow-spacing carry-over - drops
+   out once consumers wrap cards in a Stack. */
+.krnl-card { position: relative; box-sizing: border-box; border-radius: var(--density-radius); padding: var(--density-card-pad); margin-bottom: var(--density-gap);
+  container-type: inline-size; /* the card's OWN width, not the viewport - see the @container rules further down */
+  /* internal slot skeleton (the Base Card mechanic's layout half, alongside the chrome
+     contract above): named grid areas place each slot by ROLE, not DOM order, so
+     swapping orientation swaps the template wholesale instead of fighting flexbox
+     `order`. An unoccupied ROW auto-collapses to 0 height (no explicit row sizing),
+     so an absent slot never leaves a gap in this vertical (default) form - see
+     .krnl-card--horizontal below for the one case (a fixed-width media COLUMN) that
+     needs an explicit fallback instead. */
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "preview" "header" "body" "footer";
+  /* chrome defaults (a bare, JS-less .krnl-card div renders the plain filled look) */
+  --card-surface: var(--surface-panel);
+  --card-border-color: var(--border-subtle);
+  --card-strip-color: var(--border-subtle);
+  border: var(--dimension-rule-hair) solid var(--card-border-color);
+  background: var(--card-surface);
   /* tone axis (B-42): neutral by default; a `tone` sets --card-tone and these derive a
-     tint + text via color-mix (shared with PatientCard, which composes this base). */
+     tint + text via color-mix (shared with PatientCard, which composes this base). Only
+     the CSS-computed default for an ARBITRARY colour tone - a named status/data tone is
+     set explicitly by the resolver (tintVars) so it reads at full ramp saturation. */
   --card-tone-tint: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint) * 100%), var(--surface-raised));
   --card-tone-tint-strong: color-mix(in oklch, var(--card-tone) calc(var(--color-tone-mix-tint-strong) * 100%), var(--surface-raised));
   --card-tone-text: var(--card-tone);
-  /* accent strip + elevation are LAYERED into one box-shadow via two vars so they compose
-     (B-46). Both default to a transparent no-op; `appearance`/state set --card-elevation,
-     `accent` sets --card-strip. The strip is an INSET shadow → the browser clips it to
-     border-radius automatically (no overflow/inner-radius hack). --card-strip-edge is the
-     top edge by default; Banner overrides it to the left edge. `var(--card-tone, transparent)`
-     keeps elevation intact when `accent` is set without a `tone`. */
+  /* accent strip + selection ring + elevation are LAYERED into one box-shadow so they
+     compose (B-46). The strip is an INSET shadow → the browser clips it to border-radius
+     automatically (no overflow/inner-radius hack). --card-strip-edge is the top edge by
+     default; Banner overrides it to the left.
+     ELEVATION indirection (fixes the inline-override bug): the resolver writes
+     --card-elevation-REST inline (the resting shadow, decided once in JS). This rule maps
+     it to --card-elevation, which the interaction-state rules (:hover / :active /
+     [data-dragging]) then override. --card-elevation is NEVER set inline, so those state
+     rules win - whereas the resolver writing --card-elevation directly would beat every
+     stylesheet rule (an inline custom prop always does), which is why dragging/hover/press
+     shadows silently did nothing before. */
   --card-strip-w: 3px;
-  --card-strip-edge: inset 0 var(--card-strip-w) 0 0 var(--card-accent, var(--card-tone, transparent));
+  --card-strip-edge: inset 0 var(--card-strip-w) 0 0 var(--card-strip-color);
   --card-strip: 0 0 #0000;
-  --card-elevation: 0 0 #0000;
-  box-shadow: var(--card-strip), var(--card-elevation);
+  --card-selection: 0 0 #0000;
+  --card-elevation: var(--card-elevation-rest, 0 0 #0000);
+  box-shadow: var(--card-strip), var(--card-selection), var(--card-elevation);
 }
 .krnl-card--outline { background: none; }
 .krnl-card--subtle { background: none; border-color: transparent; }
-/* elevated (B-42): a raised ring + shadow instead of a flat border, with a hover lift -
-   the wrapper treatment PatientCard is built on (kept accent-bar-free). */
-.krnl-card--elevated { border: none; background: var(--surface-raised); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--border-subtle), var(--elevation-raised); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
+/* elevated (B-42, the deprecated appearance="elevated" alias): a raised ring + shadow
+   instead of a flat border, with a hover lift - the wrapper treatment PatientCard is
+   built on (kept accent-bar-free). --card-surface/--card-elevation are resolved by JS
+   (legacyElevated in cardChrome.js); this class only needs the WIDTH removed from the
+   border (border-color alone can't do that under box-sizing:border-box). */
+.krnl-card--elevated { border: none; transition: transform var(--motion-duration-base) var(--motion-easing-decelerate), box-shadow var(--motion-duration-base) var(--motion-easing-decelerate); }
+/* elevation <-> state ladder, legacy-elevated ring variant: hover lifts ONE step
+   (raised -> overlay, plus the accent-coloured ring); press drops back down (a
+   step below rest, raised) - "pressed" reads as settling, not floating higher.
+   Both keep the SAME specificity as each other (equal class+pseudo count), so with
+   `:active` declared AFTER `:hover` in source, pressing while hovering correctly
+   shows the pressed (raised) tier, not the hover (overlay) one - see the file-level
+   note on cardChrome.js for why a SINGLE state rule per transition is safe (only
+   TWO competing BASE rules was ever the B-54 bug). */
 .krnl-card--elevated.krnl-card--interactive:hover:not(:disabled) { transform: translateY(-1px); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--action-accent), var(--elevation-overlay); }
-/* toned (B-42): a colour-tinted card - tinted surface + tone-coloured accent border. The
-   neutral card sets no tone; `tone` opts in. (PatientCard uses --card-tone for identity
-   without this tinted treatment, so it does not set data-tone.) */
-.krnl-card[data-tone] { background: var(--card-tone-tint); border-color: var(--card-tone); }
+.krnl-card--elevated.krnl-card--interactive:active:not(:disabled) { transform: translateY(0); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--border-subtle), var(--elevation-raised); }
 .krnl-card--sm { padding: var(--space-3); }
 .krnl-card--lg { padding: var(--space-6); }
-.krnl-card--horizontal { display: flex; flex-direction: row; gap: var(--space-3); }
-/* interactive card renders a <button>: neutralise the UA button paint, add affordances */
-.krnl-card--interactive { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; transition: border-color .14s, box-shadow .14s, background .14s; }
+/* horizontal: a media column + a stacked text column (Preview spans all three text
+   rows). Falls back to the vertical single-column template when there is no Preview -
+   a fixed-width column track does not auto-collapse the way an empty ROW does (see
+   the base rule's comment), so this is the one slot combination that needs an
+   explicit :has() fallback rather than relying on auto-collapse. */
+.krnl-card--horizontal { grid-template-columns: minmax(96px, min(30%, 320px)) 1fr; grid-template-areas: "preview header" "preview body" "preview footer"; gap: var(--space-3); }
+.krnl-card--horizontal:not(:has(.krnl-card-preview)) { grid-template-columns: 1fr; grid-template-areas: "preview" "header" "body" "footer"; }
+/* NOT DONE: a container-query horizontal->vertical collapse (the card reacting to its
+   OWN width, not the viewport) needs a query container that is an ANCESTOR of the
+   styled element, never the element itself - confirmed empirically in this browser
+   (Chromium/CDP): a `@container` condition evaluated against a container-type the
+   SAME element establishes on itself never matches, even a trivial `!important` test
+   case, and PatientCard's own pre-existing `@container (min-width:340px)
+   .krnl-pcard[data-stage="sprout"]` rule (styles.css ~1900) has the identical bug -
+   it never actually applies either, despite its "container-query intrinsic width
+   morph" doc claim. Fixing this needs a dedicated wrapper element (container-type on
+   an outer box, the styled card as its child) - a real structural change with its own
+   margin-collapsing implications, out of scope for this pass. File both as follow-ups
+   (this Card + the pre-existing PatientCard bug) rather than ship a rule that silently
+   never fires. `.krnl-card`'s own container-type stays - querying DESCENDANTS from it
+   (e.g. scaling header text with cqw) is legal and unaffected by this limitation. */
+/* interactive card renders a <button>: neutralise the UA button paint, add affordances.
+   Keeps the base rule's `display: grid` (a clickable card still composes the same
+   Preview/Header/Body/Footer slots) - only width/text/cursor need resetting here. */
+.krnl-card--interactive { width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; transition: border-color .14s, box-shadow .14s, background .14s; }
 .krnl-card--interactive:hover:not(:disabled) { border-color: var(--action-accent); }
 .krnl-card--interactive:active:not(:disabled) { background: var(--state-hover); }
-.krnl-card--interactive:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
+/* elevation <-> state ladder, for an interactive card that is ALREADY floating at
+   rest ([data-elevated] = the new `elevated` boolean; [data-accent] - the strip
+   family shares the same resting --elevation-floating, see cardChrome.js). A FLAT
+   interactive card (neither) never lifts on hover - only its border-color changes
+   (the rule above) - a static/flat affordance must not gain elevation just because
+   it is clickable. :not(.krnl-card--elevated) excludes the legacy ring variant,
+   which has its OWN hover/active rules above at the SAME specificity (2 classes +
+   pseudo) - without the exclusion, an accent + legacyElevated + interactive card
+   would tie between the two rule sets and source order (not intent) would decide.
+   Order matters: :active is declared AFTER :hover so pressing while hovering
+   resolves to the lower (raised) tier. */
+.krnl-card--interactive[data-elevated]:not(.krnl-card--elevated),
+.krnl-card--interactive[data-accent]:not(.krnl-card--elevated) { transition: transform var(--motion-duration-base) var(--motion-easing-decelerate), box-shadow var(--motion-duration-base) var(--motion-easing-decelerate); }
+.krnl-card--interactive[data-elevated]:not(.krnl-card--elevated):hover:not(:disabled),
+.krnl-card--interactive[data-accent]:not(.krnl-card--elevated):hover:not(:disabled) { transform: translateY(-1px); --card-elevation: var(--elevation-overlay); }
+.krnl-card--interactive[data-elevated]:not(.krnl-card--elevated):active:not(:disabled),
+.krnl-card--interactive[data-accent]:not(.krnl-card--elevated):active:not(:disabled) { transform: translateY(0); --card-elevation: var(--elevation-raised); }
+/* Focus: a 2px ring on `outline` - a SEPARATE rendering channel from box-shadow, so a
+   card that is both focused AND selected shows both signals at once (selected lives in
+   the --card-selection box-shadow layer). ≥3:1 vs background per the card-a11y state set
+   (--focus-ring = brand.neutral.ink, well clear of that). */
+.krnl-card--interactive:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 /* selectable row (B-42 A.4): an interactive Card used as a dense list row (citation,
    suggestion, radio row) rather than a flowed container. Drops the legacy flow-margin
    (rows sit in a Stack / list with gap) and, on the borderless `subtle` appearance, gives
@@ -1021,44 +1112,41 @@
 .krnl-card--interactive { margin-bottom: 0; }
 .krnl-card--subtle.krnl-card--interactive:hover:not(:disabled) { background: var(--state-hover); border-color: transparent; }
 .krnl-card--subtle.krnl-card--interactive:active:not(:disabled) { background: var(--state-selected-surface); }
-.krnl-card[data-selected] { border-color: var(--action-accent); }
+/* Selected: an accent border PLUS a 2px inset accent ring (the --card-selection
+   box-shadow layer, kept inset so it never bleeds into a neighbour in a card grid).
+   The ring is what makes selection read at a glance - a lone 1px border-color swap
+   was too quiet. Distinct from focus (outline, a different channel) so both can show
+   together. --card-selection is never set inline, so this stylesheet rule applies. */
+.krnl-card[data-selected] { border-color: var(--action-accent); --card-selection: inset 0 0 0 2px var(--action-accent); }
+/* top of the elevation <-> state ladder: dragging always wins - highest of any
+   state (raised < floating < overlay < hover/active tiers < modal here). */
 .krnl-card[data-dragging] { --card-elevation: var(--elevation-modal); }
 .krnl-card[data-disabled], .krnl-card:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
 .krnl-card-floataction { position: absolute; top: var(--space-2); right: var(--space-2); z-index: 1; }
-/* accent strip (B-46): a tone-coloured bar on one edge, opt-in via the `accent` prop
-   (data-accent="strip" | "strip-border"). Inset box-shadow → auto corner-clipped. Reads
-   --card-tone, so `accent` needs a `tone` to show. strip-border also keeps the tone border
-   that [data-tone] already supplies. The edge is --card-strip-edge (top here). accent +
-   Card.Preview are mutually exclusive (the inset shadow paints under a full-bleed preview
-   image). NOTE: Banner (below) no longer uses this mechanism at all - it resolves its own
-   left-edge strip via --banner-* vars, independent of Card's tone/accent props (B-47). */
-.krnl-card[data-accent="strip"], .krnl-card[data-accent="strip-border"] { --card-strip: var(--card-strip-edge); }
-/* strip-border's border matches the reference: a HAIRLINE (1px, same weight as the base
-   card's own default border - not a heavier ring) in the vivid accent SOFTENED toward the
-   surface (~= the reference's "accentColor at 38% alpha"), so it hugs the body as a light
-   tone tint rather than a heavy solid .700 rule. */
-.krnl-card[data-accent="strip-border"][data-tone] { border-width: var(--dimension-rule-hair); border-color: color-mix(in oklch, var(--card-accent) 45%, var(--surface-bright)); }
-/* An accent card carries its tone in the strip + icon-tile + accents, NOT a tinted body:
-   the surface is `bright` — PURE WHITE in light (theme-aware in dark) — like the reference's
-   crisp white cards, which also makes the vivid strip/icon read stronger. Overrides both
-   [data-tone]'s tinted fill AND the appearance surface; a toned card WITHOUT an accent keeps
-   the tint. Covers toned and neutral accent cards/banners alike. */
-.krnl-card[data-accent] { background: var(--surface-bright); }
+/* accent strip (B-46, unified B-54): a tone-coloured bar on one edge, opt-in via the
+   `accent` boolean. --card-strip / --card-strip-color / --card-elevation are now ALL
+   resolved once by resolveCardChrome (cardChrome.js) and written as inline style, so
+   this rule only needs to draw the box-shadow from those vars - see the base .krnl-card
+   rule above. accent + Card.Preview are mutually exclusive (the inset shadow paints
+   under a full-bleed preview image). FIXED (was B-54's known bug): accent + the legacy
+   appearance="elevated" no longer fight over --card-elevation on CSS specificity - JS
+   decides the one final value for both at once. */
 /* collapsible card (B-46): `detail` makes the summary a Base UI Collapsible.Trigger and
-   reveals `detail` in an animated panel below. Padding moves off the root onto the trigger +
-   panel-inner, so the divider spans edge-to-edge and the accent strip hugs the very top edge. */
-.krnl-card--collapsible { padding: 0; }
-/* accent + collapsible cards FLOAT (soft ambient shadow, the reference look) instead of the
-   tight `raised` contact shadow; collapsible cards lift on hover and pop when open (they are
-   clickable to expand). Non-accent, non-collapsible cards keep their existing elevation.
-   KNOWN BUG (tracked for a follow-up, not fixed here - out of scope for the Banner rework):
-   `.krnl-card[data-accent]` is (0,2,0) vs `.krnl-card--elevated`'s (0,1,0), so on any Card
-   with BOTH `accent` and `appearance="elevated"` set, this rule always wins regardless of
-   source order - `elevated`'s own --card-elevation (and its border-none / raised-surface
-   look) never applies. Not a cascade a reorder can fix; would need the same
-   resolved-custom-props treatment Banner got (B-47). */
-.krnl-card[data-accent], .krnl-card--collapsible { --card-elevation: var(--elevation-floating); transition: transform var(--motion-duration-base) var(--motion-easing-swift), box-shadow var(--motion-duration-base) var(--motion-easing-swift); }
-.krnl-card--collapsible:hover:not([data-disabled]) { transform: translateY(-2px); --card-elevation: var(--elevation-overlay); }
+   reveals `detail` in an animated panel below - Trigger + Panel, not the slot grid
+   above (opts out with display:block), so the divider spans edge-to-edge and the
+   accent strip hugs the very top edge. Padding moves off the root onto the trigger +
+   panel-inner. */
+.krnl-card--collapsible { display: block; padding: 0; }
+/* collapsible cards additionally LIFT on hover and POP when open (state overrides on
+   top of the resolved base --card-elevation, which is already --elevation-floating for
+   any collapsible card - see cardChrome.js). */
+.krnl-card--collapsible { transition: transform var(--motion-duration-base) var(--motion-easing-decelerate), box-shadow var(--motion-duration-base) var(--motion-easing-decelerate); }
+.krnl-card--collapsible:hover:not([data-disabled]) { transform: translateY(-1px); --card-elevation: var(--elevation-overlay); }
+/* press: :active on .krnl-card-trigger (the real <button>) does not reliably bubble
+   :active to this ancestor across browsers, so :has() targets it explicitly - same
+   technique the [data-panel-open] rule below already uses. Declared AFTER :hover so
+   pressing while hovering resolves to the lower (raised) tier, matching the ladder. */
+.krnl-card--collapsible:has(.krnl-card-trigger:active):not([data-disabled]) { transform: translateY(0); --card-elevation: var(--elevation-raised); }
 .krnl-card--collapsible:has(.krnl-card-trigger[data-panel-open]) { --card-elevation: var(--elevation-overlay); }
 .krnl-card-trigger { position: relative; display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: none; border: none; border-radius: inherit; cursor: pointer; padding: var(--density-card-pad); padding-bottom: calc(var(--density-card-pad) + var(--space-3)); }
 .krnl-card-trigger:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: -2px; }
@@ -1070,30 +1158,13 @@
 .krnl-card-panel { overflow: hidden; height: var(--collapsible-panel-height); transition: height var(--motion-duration-base) var(--motion-easing-decelerate); }
 .krnl-card-panel[data-starting-style], .krnl-card-panel[data-ending-style] { height: 0; }
 .krnl-card-panel-inner { padding: var(--space-3) var(--density-card-pad) var(--density-card-pad); border-top: var(--dimension-rule-hair) solid var(--border-subtle); }
-/* Banner (B-45, reworked B-47): composes Card for the Header/Body slots + Collapsible
-   `detail`, but NOT Card's own tone/accent cascade - Banner's JS (resolveBannerChrome)
-   resolves the whole chrome matrix (surface / border / strip / icon) into --banner-*
-   custom properties up front, and this stylesheet only ever reads those. Banner passes
-   Card neither `tone` nor `accent`, so none of `.krnl-card[data-tone]` /
-   `.krnl-card[data-accent]` above ever match a Banner root - those rules are tuned for
-   Card's own defaults (a solid .700 border; an accent strip that always wins the
-   elevation fight on specificity) and previously collided with Banner's needs in ways
-   more CSS couldn't fix. The strip sits on the LEFT edge (Card's own accent defaults to
-   the top); `accent`/`bordered`/`elevated` are independent on/off switches, each its
-   own data-attribute so no single rule has to reason about the other two. */
-.krnl-banner-card {
-  --banner-surface: var(--surface-bright);
-  --banner-border-color: var(--border-subtle);
-  --banner-strip-color: var(--border-subtle);
-  --banner-strip: 0 0 #0000;
-  --banner-elevation: 0 0 #0000;
-  background: var(--banner-surface);
-  border: var(--dimension-rule-hair) solid var(--banner-border-color);
-  box-shadow: var(--banner-strip), var(--banner-elevation);
-}
-.krnl-banner-card[data-strip] { --banner-strip: inset 4px 0 0 0 var(--banner-strip-color); }
-.krnl-banner-card:not([data-bordered]) { border-color: transparent; }
-.krnl-banner-card[data-elevated] { --banner-elevation: var(--elevation-raised); }
+/* Banner (B-45, unified onto the shared chrome contract - "Base Card mechanic"):
+   composes Card for the Header/Body slots + Collapsible `detail`, and now for chrome
+   too - resolveBannerChrome (Banner.jsx) is a thin wrapper over the SAME
+   resolveCardChrome Card itself uses (cardChrome.js), writing the SAME --card-* vars
+   the base .krnl-card rule above already reads. This class therefore needs no
+   background/border/box-shadow (or --card-strip-w) of its own any more - the
+   resolver's edge:'left' already supplies the correct left-edge geometry inline. */
 /* Banner icon = a vivid tone glyph in a light tone tile (the reference's icon-tile), matching
    the vitals-card leading treatment. --banner-icon-tint/-text are only set (inline, by JS)
    when there's a real status tone; the var() fallback here IS the neutral (tone-less) look -
@@ -1152,16 +1223,25 @@
 .krnl-ladder-name { font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); }
 .krnl-ladder-price { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .krnl-ladder-note { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
-.krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
+/* Slot placement in the grid skeleton above - grid-area, not DOM order, decides
+   where each fills. The edge-bleed margin is tuned for the vertical (default) form's
+   top edge; a horizontal Preview (the left column) is a follow-up, not yet exercised
+   by any consumer. */
+.krnl-card-preview { grid-area: preview; margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
 .krnl-card-preview img { display: block; width: 100%; }
-.krnl-card-header { display: flex; align-items: flex-start; gap: var(--space-2); }
+/* Horizontal orientation: Preview is the LEFT column (spanning the header/body/footer
+   rows), so it bleeds to the left/top/bottom card edges only - NOT the right, which
+   borders the text column (the vertical bleed's right-side negative margin would
+   otherwise overlap the header by that same amount). */
+.krnl-card--horizontal .krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) 0 calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)); border-top-right-radius: 0; border-bottom-left-radius: var(--density-radius); }
+.krnl-card-header { grid-area: header; display: flex; align-items: flex-start; gap: var(--space-2); }
 .krnl-card-header-lead { flex-shrink: 0; display: inline-flex; }
 .krnl-card-header-text { flex: 1; min-width: 0; }
 .krnl-card-header-title { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--text-default); }
 .krnl-card-header-desc { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
 .krnl-card-header-action { margin-left: auto; flex-shrink: 0; }
-.krnl-card-body { min-width: 0; }
-.krnl-card-footer { display: flex; align-items: center; gap: var(--space-2); }
+.krnl-card-body { grid-area: body; min-width: 0; }
+.krnl-card-footer { grid-area: footer; display: flex; align-items: center; gap: var(--space-2); }
 .krnl-row-between { display: flex; align-items: center; justify-content: space-between; }
 .krnl-saved { display: inline-flex; align-items: center; gap: 4px; color: var(--status-success-solid); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); }
 
