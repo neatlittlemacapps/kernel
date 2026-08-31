@@ -1064,7 +1064,7 @@
         {
           "name": "Header",
           "required": false,
-          "description": "Leading + title/description + trailing action (Card.Header)."
+          "description": "Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header)."
         },
         {
           "name": "Body",
@@ -2066,7 +2066,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Pencil + label trailing chip used on Shoot-stage cards. Composes Base UI Button for the a11y and focus baseline.",
+      "summary": "A pencil + label trailing chip for a card action slot. Composes Base UI Button for the a11y/focus baseline.",
       "usecases": [
         "card-trailing"
       ],
@@ -2086,17 +2086,15 @@
         }
       ],
       "composes": [],
-      "usage": "<EditChip label=\"Bewerken\" onClick={startEdit} />",
+      "usage": "<EditChip label=\"Edit\" onClick={startEdit} />",
       "keywords": [
         "edit",
         "chip",
         "pencil",
         "trailing",
-        "button",
-        "shoot",
-        "bewerken"
+        "button"
       ],
-      "category": "Action",
+      "category": "Content",
       "anatomy": [
         {
           "name": "Icon",
@@ -2228,46 +2226,30 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Definition list of label / value rows for demographic and condition detail bodies.",
+      "summary": "A definition list of label / value rows for a card body.",
       "usecases": [
-        "card-body",
-        "demographics"
+        "card-body"
       ],
       "props": [
         {
           "name": "items",
           "class": "content",
-          "type": "Array<{ label: node, value: node }>",
-          "required": true,
-          "example": [
-            {
-              "label": "Geboortedatum",
-              "value": "12-04-1978"
-            },
-            {
-              "label": "Geslacht",
-              "value": "Vrouw"
-            },
-            {
-              "label": "Rijksregisternr.",
-              "value": "78.04.12-006.83"
-            }
-          ],
-          "description": "The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings."
+          "type": "{ label, value }[]",
+          "description": "The rows to render, each a { label, value } pair."
         }
       ],
       "composes": [],
       "usage": "<FieldList items={[{ label: \"Born\", value: \"1978-04-12\" }, { label: \"Sex\", value: \"F\" }]} />",
       "keywords": [
-        "field-list",
+        "field",
+        "list",
+        "definition",
         "key-value",
-        "definition-list",
-        "details",
-        "demographics",
-        "properties",
-        "labels"
+        "label",
+        "value",
+        "detail"
       ],
-      "category": "Data display"
+      "category": "Content"
     },
     {
       "name": "FileInput",
@@ -2423,7 +2405,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Rounded-square tone-tinted glyph holder for the card leading slot.",
+      "summary": "Rounded-square tone-tinted glyph holder for a card leading slot.",
       "usecases": [
         "card-leading"
       ],
@@ -2432,7 +2414,7 @@
           "name": "children",
           "class": "content",
           "type": "node",
-          "description": "The glyph to render (an icon element); tinted by the card tone."
+          "description": "The glyph to render (an icon element); tinted by the surrounding tone."
         },
         {
           "name": "label",
@@ -2442,7 +2424,7 @@
         }
       ],
       "composes": [],
-      "usage": "<IconPill label=\"Hartslag\">{Icon.heart({ size: 16 })}</IconPill>",
+      "usage": "<IconPill label=\"Heart rate\">{Icon.heart({ size: 16 })}</IconPill>",
       "keywords": [
         "icon",
         "pill",
@@ -2450,9 +2432,9 @@
         "leading",
         "adornment",
         "tone",
-        "avatar"
+        "tile"
       ],
-      "category": "Data display"
+      "category": "Content"
     },
     {
       "name": "Inline",
@@ -4891,62 +4873,50 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Inline SVG line chart with soft gradient fill; draws in currentColor so it inherits the card tone.",
+      "summary": "Inline SVG line chart with a soft gradient fill; draws in currentColor so it inherits the surrounding tone.",
       "usecases": [
         "card-media",
-        "vital-trend"
+        "trend"
       ],
       "props": [
         {
           "name": "data",
           "class": "content",
           "type": "number[]",
-          "required": true,
-          "example": [
-            72,
-            74,
-            71,
-            78,
-            75,
-            73,
-            76
-          ],
-          "description": "The ordered series to plot (oldest to newest). Renders nothing when empty; the axis auto-scales to the min and max."
+          "description": "The series to plot; a plain array of numbers."
         },
         {
           "name": "width",
           "class": "dsPresentation",
           "type": "number",
           "default": 240,
-          "description": "Intrinsic viewBox width; the SVG itself scales to 100% of its container, so this only sets the drawing aspect ratio."
+          "description": "viewBox width (the svg scales to its container; this sets the aspect + point spacing)."
         },
         {
           "name": "height",
           "class": "dsPresentation",
           "type": "number",
           "default": 56,
-          "description": "Rendered pixel height and viewBox height of the chart."
+          "description": "Rendered height in px."
         },
         {
           "name": "ariaLabel",
           "class": "a11y",
           "type": "string",
-          "description": "Accessible name for the img-role SVG, e.g. a spoken summary of the trend. Provide a value that does not just repeat the metric name."
+          "description": "Accessible name describing the trend, since the chart is an image."
         }
       ],
       "composes": [],
       "usage": "<Sparkline data={[72, 74, 71, 78, 75]} ariaLabel=\"Heart rate, last 5 readings\" />",
       "keywords": [
         "sparkline",
+        "chart",
         "trend",
         "line",
-        "chart",
-        "micro-chart",
-        "graph",
-        "vital",
-        "series"
+        "inline",
+        "mini-chart"
       ],
-      "category": "Data display"
+      "category": "Content"
     },
     {
       "name": "SproutCard",
@@ -5185,9 +5155,10 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Interpretation pill (dot + label). Tone follows the status, not the card identity tone.",
+      "summary": "Interpretation pill (dot + label). Drop into a meta/status slot; the tone encodes a state, kept orthogonal to the card identity tone.",
       "usecases": [
-        "card-meta"
+        "card-meta",
+        "status-label"
       ],
       "props": [
         {
@@ -5201,13 +5172,13 @@
             "critical"
           ],
           "default": "normal",
-          "description": "Clinical interpretation; drives the dot + label colour. Keep this orthogonal to the card tone, which encodes identity, not interpretation."
+          "description": "The state; drives the dot + label colour. Keep orthogonal to the card identity tone."
         },
         {
           "name": "label",
           "class": "content",
           "type": "node",
-          "example": "Normaal",
+          "example": "Normal",
           "description": "The pill text. Falls back to children when omitted."
         },
         {
@@ -5218,33 +5189,21 @@
         }
       ],
       "composes": [],
-      "usage": "<StatusPill status=\"high\" label=\"Verhoogd\" />",
+      "usage": "<StatusPill status=\"high\" label=\"Elevated\" />",
       "keywords": [
         "status",
         "pill",
         "badge",
         "dot",
         "interpretation",
-        "clinical",
-        "normal",
-        "critical"
+        "label"
       ],
-      "category": "Feedback & Status",
-      "bestPractices": [
-        {
-          "do": true,
-          "text": "Drive the pill from the measurement interpretation (normal / critical / ...), independent of the card identity tone."
-        },
-        {
-          "do": false,
-          "text": "Pass the card identity tone into status; that conflates identity and interpretation."
-        }
-      ],
+      "category": "Content",
       "anatomy": [
         {
           "name": "Dot",
           "required": true,
-          "description": "Small status-coloured indicator dot."
+          "description": "Small state-coloured indicator dot."
         },
         {
           "name": "Label",
@@ -5259,9 +5218,9 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Shoot-stage editable value (minus / value / plus). No save; the consumer provides the CTA in the actions slot.",
+      "summary": "An editable numeric value (minus / value / plus). No save; the consumer provides the CTA.",
       "usecases": [
-        "card-value-shoot"
+        "card-value-edit"
       ],
       "props": [
         {
@@ -5298,7 +5257,7 @@
           "name": "onChange",
           "class": "event",
           "type": "fn",
-          "description": "Called with the new numeric value on each change; wraps the Base UI onValueChange and skips null (mid-edit) values."
+          "description": "Called with the new numeric value on each change; wraps Base UI onValueChange and skips null (mid-edit) values."
         },
         {
           "name": "ariaLabel",
@@ -5308,7 +5267,7 @@
         }
       ],
       "composes": [],
-      "usage": "<Stepper value={72} unit=\"bpm\" min={30} max={220} onChange={setBpm} ariaLabel=\"Hartslag\" />",
+      "usage": "<Stepper value={72} unit=\"bpm\" min={30} max={220} onChange={setBpm} ariaLabel=\"Heart rate\" />",
       "keywords": [
         "stepper",
         "number",
@@ -5316,10 +5275,9 @@
         "decrement",
         "edit",
         "input",
-        "numberfield",
-        "shoot"
+        "numberfield"
       ],
-      "category": "Data Input",
+      "category": "Content",
       "anatomy": [
         {
           "name": "Decrement",
@@ -6047,12 +6005,12 @@
           "name": "label",
           "class": "a11y",
           "type": "string",
-          "example": "Gestegen met 3",
-          "description": "Accessible name for the chip; describes the trend for screen readers since the arrow is decorative."
+          "example": "Up by 3",
+          "description": "Accessible name for the chip; the arrow is decorative."
         }
       ],
       "composes": [],
-      "usage": "<TrendChip direction=\"up\" value=\"+3\" label=\"Gestegen met 3\" />",
+      "usage": "<TrendChip direction=\"up\" value=\"+3\" label=\"Up by 3\" />",
       "keywords": [
         "trend",
         "chip",
@@ -6063,7 +6021,7 @@
         "up",
         "down"
       ],
-      "category": "Data display",
+      "category": "Content",
       "anatomy": [
         {
           "name": "Arrow",
@@ -6291,7 +6249,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "experimental",
-      "summary": "Big numeric value + small unit; the canonical value-slot content for vitals and labs.",
+      "summary": "Big numeric value + small unit; the canonical value-slot content for metric cards.",
       "usecases": [
         "card-value"
       ],
@@ -6315,6 +6273,17 @@
           "class": "content",
           "type": "string",
           "description": "Optional small marker before the value (e.g. a comparator like \"<\")."
+        },
+        {
+          "name": "size",
+          "class": "dsPresentation",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "description": "Value scale: md is the hero value on a card; sm is compact for a collapsed header value line; lg is the largest."
         }
       ],
       "composes": [],
@@ -6325,10 +6294,10 @@
         "number",
         "unit",
         "reading",
-        "vital",
+        "metric",
         "display"
       ],
-      "category": "Data display",
+      "category": "Content",
       "anatomy": [
         {
           "name": "Prefix",

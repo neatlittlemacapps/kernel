@@ -1,5 +1,13 @@
 // Kernel — clinical tier (the "./clinical" subpath).
 //
+// ⚠️ DEPRECATED (2026-08) — the whole clinical slice (the per-object cards + PatientCard/
+// SproutCard/PropertyList + the clinical-only primitives) is slated for REMOVAL once its
+// downstream consumers (greenhouse/Juglans, grove) migrate off it. It is kept working for
+// now (nothing here is deleted yet); do NOT build anything new on it. The reusable content
+// atoms were extracted to the generic surface — see CONTENT-ATOMS.md for the base set +
+// the migration path. `Sparkline` and `FieldList` below are re-exported here for back-compat
+// only; they now live on the generic "." surface (import them from '@corilus/kernel').
+//
 // Corilus healthcare-specific per-object cards. These are companion/healthcare-
 // specific, NOT generic primitives — kept behind a separate entry point so the
 // EXTERNAL/client Kernel build can drop this slice while the INTERNAL (Corilus)

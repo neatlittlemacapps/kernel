@@ -20,8 +20,6 @@
 //   status — interpretation (normal, borderline, high, low, critical). Drives the
 //            meta pill's dot + text. NEVER conflate.
 
-import { NumberField } from '@base-ui-components/react/number-field';
-import { Button } from '@base-ui-components/react/button';
 import { Tooltip } from '@base-ui-components/react/tooltip';
 import { Card } from '../Card.jsx';
 
@@ -161,96 +159,13 @@ export function PatientCard({
   );
 }
 
-// ── companion atoms used inside the card slots ──────────────────────────────
-// These keep the per-object cards tiny: they assemble pre-styled bits instead
-// of re-inventing layout. All are token-driven; none own any data.
-
-// StatusPill — for the meta slot. Dot + label. Tone follows the status, not the
-// card. (Don't pass it the card tone — that would conflate identity + interpretation.)
-export function StatusPill({ status = 'normal', label, children }) {
-  return (
-    <span className={`krnl-pcard-status-pill is-status-${status}`}>
-      <span className="krnl-pcard-status-dot" aria-hidden="true" />
-      <span className="krnl-pcard-status-label">{label || children}</span>
-    </span>
-  );
-}
-
-// TrendChip — small Δ indicator with a direction arrow.
-// direction: 'up' | 'down' | 'flat'
-export function TrendChip({ direction = 'flat', value, label }) {
-  const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '·';
-  return (
-    <span className={`krnl-pcard-trend-chip is-trend-${direction}`} aria-label={label}>
-      <span className="krnl-pcard-trend-arrow" aria-hidden="true">{arrow}</span>
-      <span className="krnl-pcard-trend-value">{value}</span>
-    </span>
-  );
-}
-
-// ValueDisplay — the canonical "74 bpm" composition used in vitals + labs.
-// Pass into the `value` slot. Consumers wanting a stepper variant pass a
-// custom node instead — the slot is unopinionated.
-export function ValueDisplay({ value, unit, prefix }) {
-  return (
-    <span className="krnl-pcard-value-display">
-      {prefix && <span className="krnl-pcard-value-prefix">{prefix}</span>}
-      <span className="krnl-pcard-value-num">{value}</span>
-      {unit && <span className="krnl-pcard-value-unit">{unit}</span>}
-    </span>
-  );
-}
-
-// Stepper — Shoot-stage editable value. Composes Base UI NumberField for
-// keyboard arrows, wheel scrub, IME-safe typing, and min/max/step a11y.
-// Min/max/step honoured. No save here — consumer provides the save CTA.
-export function Stepper({ value, unit, min, max, step = 1, onChange, ariaLabel }) {
-  return (
-    <NumberField.Root
-      value={Number(value)}
-      onValueChange={(n) => { if (n != null) onChange?.(n); }}
-      min={min}
-      max={max}
-      step={step}
-      aria-label={ariaLabel}
-      className="krnl-pcard-stepper"
-    >
-      <NumberField.Group className="krnl-pcard-stepper-group">
-        <NumberField.Decrement className="krnl-pcard-stepper-btn" aria-label="Verlagen">−</NumberField.Decrement>
-        <span className="krnl-pcard-stepper-value">
-          <NumberField.Input className="krnl-pcard-stepper-input" />
-          {unit && <span className="krnl-pcard-value-unit">{unit}</span>}
-        </span>
-        <NumberField.Increment className="krnl-pcard-stepper-btn" aria-label="Verhogen">+</NumberField.Increment>
-      </NumberField.Group>
-    </NumberField.Root>
-  );
-}
-
-// IconPill — the rounded-square tone-tinted glyph holder for the leading slot.
-// Light tint of the card tone behind a tone-coloured glyph.
-export function IconPill({ children, label }) {
-  return (
-    <span className="krnl-pcard-icon-pill" role="img" aria-label={label}>
-      {children}
-    </span>
-  );
-}
-
-// EditChip — trailing slot decoration on a Shoot card ("✎ Bewerken").
-// Composes Base UI Button for the a11y/focus baseline.
-export function EditChip({ label = 'Bewerken', onClick }) {
-  return (
-    <Button className="krnl-pcard-edit-chip" onClick={onClick}>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 20h9" />
-        <path d="M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4 12.5-12.5z" />
-      </svg>
-      <span>{label}</span>
-    </Button>
-  );
-}
+// ── companion content atoms ─────────────────────────────────────────────────
+// StatusPill / TrendChip / ValueDisplay / Stepper / IconPill / EditChip were
+// EXTRACTED to the generic ../content/content.jsx (2026-08) so they read as a base
+// content-atom set, not clinical parts. Re-exported here so the existing per-object
+// card imports (`import { StatusPill, … } from './PatientCard.jsx'`) keep working
+// unchanged - new code should import them from '@corilus/kernel' instead.
+export { StatusPill, TrendChip, ValueDisplay, Stepper, IconPill, EditChip } from '../content/content.jsx';
 
 // MeterTooltip — Tooltip wrapper used to expose measurement metadata
 // (timestamp, source) when hovering a value or status pill. Optional —
@@ -306,112 +221,6 @@ export const meta = {
     ],
     composes: [],
     usage: '<PatientCard stage="sprout" tone="heart" title="Heart rate" value={<ValueDisplay value="72" unit="bpm" />} />',
-  },
-  StatusPill: {
-    layer: 'atom', scope: 'global', usecases: ['card-meta'], status: 'experimental',
-    category: 'Feedback & Status',
-    keywords: ['status', 'pill', 'badge', 'dot', 'interpretation', 'clinical', 'normal', 'critical'],
-    summary: 'Interpretation pill (dot + label). Tone follows the status, not the card identity tone.',
-    props: {
-      status: { class: 'dsPresentation', values: ['normal', 'borderline', 'high', 'low', 'critical'], default: 'normal', description: 'Clinical interpretation; drives the dot + label colour. Keep this orthogonal to the card tone, which encodes identity, not interpretation.' },
-      label: { class: 'content', type: 'node', example: 'Normaal', description: 'The pill text. Falls back to children when omitted.' },
-      children: { class: 'content', type: 'node', description: 'Alternative to label; rendered as the pill text when label is not passed.' },
-    },
-    anatomy: [
-      { name: 'Dot', required: true, description: 'Small status-coloured indicator dot.' },
-      { name: 'Label', required: true, description: 'The interpretation text.' },
-    ],
-    bestPractices: [
-      { do: true, text: 'Drive the pill from the measurement interpretation (normal / critical / ...), independent of the card identity tone.' },
-      { do: false, text: 'Pass the card identity tone into status; that conflates identity and interpretation.' },
-    ],
-    composes: [],
-    usage: '<StatusPill status="high" label="Verhoogd" />',
-  },
-  TrendChip: {
-    layer: 'atom', scope: 'global', usecases: ['card-meta'], status: 'experimental',
-    category: 'Data display',
-    keywords: ['trend', 'chip', 'delta', 'change', 'arrow', 'direction', 'up', 'down'],
-    summary: 'Compact delta indicator with a direction arrow (up / down / flat).',
-    props: {
-      direction: { class: 'dsPresentation', values: ['up', 'down', 'flat'], default: 'flat', description: 'Movement direction; selects the arrow glyph and the chip colour treatment.' },
-      value: { class: 'content', type: 'node', example: '+3', description: 'The delta magnitude shown beside the arrow (e.g. "+3" or "2 mmHg").' },
-      label: { class: 'a11y', type: 'string', example: 'Gestegen met 3', description: 'Accessible name for the chip; describes the trend for screen readers since the arrow is decorative.' },
-    },
-    anatomy: [
-      { name: 'Arrow', required: true, description: 'Decorative direction glyph set from direction.' },
-      { name: 'Value', required: true, description: 'The delta magnitude text.' },
-    ],
-    composes: [],
-    usage: '<TrendChip direction="up" value="+3" label="Gestegen met 3" />',
-  },
-  ValueDisplay: {
-    layer: 'atom', scope: 'global', usecases: ['card-value'], status: 'experimental',
-    category: 'Data display',
-    keywords: ['value', 'measurement', 'number', 'unit', 'reading', 'vital', 'display'],
-    summary: 'Big numeric value + small unit; the canonical value-slot content for vitals and labs.',
-    props: {
-      value: { class: 'content', type: 'string|number', example: 74, description: 'The primary reading, rendered large (e.g. 74).' },
-      unit: { class: 'content', type: 'string', example: 'bpm', description: 'Small trailing unit shown after the value (e.g. "bpm").' },
-      prefix: { class: 'content', type: 'string', description: 'Optional small marker before the value (e.g. a comparator like "<").' },
-    },
-    anatomy: [
-      { name: 'Prefix', required: false, description: 'Optional leading marker.' },
-      { name: 'Value', required: true, description: 'The large numeric reading.' },
-      { name: 'Unit', required: false, description: 'The small trailing unit.' },
-    ],
-    composes: [],
-    usage: '<ValueDisplay value="74" unit="bpm" />',
-  },
-  Stepper: {
-    layer: 'atom', scope: 'global', usecases: ['card-value-shoot'], status: 'experimental',
-    category: 'Data Input',
-    keywords: ['stepper', 'number', 'increment', 'decrement', 'edit', 'input', 'numberfield', 'shoot'],
-    summary: 'Shoot-stage editable value (minus / value / plus). No save; the consumer provides the CTA in the actions slot.',
-    props: {
-      value: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.value', example: 72 },
-      min: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.min', example: 30 },
-      max: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.max', example: 220 },
-      step: { class: 'passThroughControl', passthrough: 'BaseUI.NumberField.step', example: 1 },
-      unit: { class: 'content', type: 'string', description: 'Small trailing unit shown after the editable value (e.g. "bpm").' },
-      onChange: { class: 'event', type: 'fn', description: 'Called with the new numeric value on each change; wraps the Base UI onValueChange and skips null (mid-edit) values.' },
-      ariaLabel: { class: 'a11y', type: 'string', description: 'Accessible name for the number field, since there is no visible label.' },
-    },
-    anatomy: [
-      { name: 'Decrement', required: true, description: 'The minus button.' },
-      { name: 'Input', required: true, description: 'The editable numeric field.' },
-      { name: 'Increment', required: true, description: 'The plus button.' },
-    ],
-    composes: [],
-    usage: '<Stepper value={72} unit="bpm" min={30} max={220} onChange={setBpm} ariaLabel="Hartslag" />',
-  },
-  IconPill: {
-    layer: 'atom', scope: 'global', usecases: ['card-leading'], status: 'experimental',
-    category: 'Data display',
-    keywords: ['icon', 'pill', 'glyph', 'leading', 'adornment', 'tone', 'avatar'],
-    summary: 'Rounded-square tone-tinted glyph holder for the card leading slot.',
-    props: {
-      children: { class: 'content', type: 'node', description: 'The glyph to render (an icon element); tinted by the card tone.' },
-      label: { class: 'a11y', type: 'string', description: 'Accessible name for the pill, which carries an image role.' },
-    },
-    composes: [],
-    usage: '<IconPill label="Hartslag">{Icon.heart({ size: 16 })}</IconPill>',
-  },
-  EditChip: {
-    layer: 'atom', scope: 'global', usecases: ['card-trailing'], status: 'experimental',
-    category: 'Action',
-    keywords: ['edit', 'chip', 'pencil', 'trailing', 'button', 'shoot', 'bewerken'],
-    summary: 'Pencil + label trailing chip used on Shoot-stage cards. Composes Base UI Button for the a11y and focus baseline.',
-    props: {
-      label: { class: 'content', type: 'string', default: 'Bewerken', description: 'The chip text shown beside the pencil glyph.' },
-      onClick: { class: 'event', type: 'fn', description: 'Invoked when the chip is activated (enters edit mode).' },
-    },
-    anatomy: [
-      { name: 'Icon', required: true, description: 'The pencil glyph.' },
-      { name: 'Label', required: true, description: 'The chip text.' },
-    ],
-    composes: [],
-    usage: '<EditChip label="Bewerken" onClick={startEdit} />',
   },
   MeterTooltip: {
     layer: 'atom', scope: 'global', usecases: ['card-meta', 'hover-detail'], status: 'experimental',

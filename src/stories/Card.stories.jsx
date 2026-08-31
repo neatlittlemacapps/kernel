@@ -4,7 +4,10 @@
 // ../lib/cardChrome.js) that Banner and a framed Collapsible trigger read too - change
 // the base here and all three adapt. See the "Base Card" docs section below for the
 // chrome contract + the internal slot grid.
-import { Card, Button, Icon } from '@corilus/kernel';
+import {
+  Card, Button, Icon,
+  IconPill, StatusPill, TrendChip, ValueDisplay, Sparkline, FieldList, EditChip,
+} from '@corilus/kernel';
 
 const React = window.React;
 
@@ -75,14 +78,6 @@ const IconTile = ({ children }) => (
     background: 'var(--card-tone-tint-strong, var(--surface-sunken))',
     color: 'var(--card-tone-text, var(--text-muted))',
   }}>{children}</span>
-);
-
-// ── A tone status label (dot + text) reading the card tone ──
-const StatusText = ({ children }) => (
-  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--card-tone-text, var(--text-muted))', fontWeight: 'var(--type-weight-semibold)', fontSize: 'var(--typography-caption-md-font-size)' }}>
-    <span style={{ width: 7, height: 7, borderRadius: 999, background: 'currentColor' }} />
-    {children}
-  </span>
 );
 
 export const Playground = {
@@ -206,13 +201,15 @@ export const ChromeMatrix = {
   ),
 };
 
-// The reference "vitals" pattern: collapsible cards, one open at a time (accordion via
-// the controlled expanded/onExpandedChange triad), vibrant strip + icon tile on light bodies.
+// The reference "vitals" pattern, rebuilt from the base Card + content ATOMS with NO
+// inline restyling: the icon-indented identity cluster uses Card.Header's stacked text
+// column - leading=IconPill, title + badge=StatusPill (title row), value=ValueDisplay
+// size="sm", description=teaser. Compare with the raw markup this used to need.
 const VITALS = [
-  { id: 'bp', tone: 'error', icon: Icon.heart, title: 'Blood Pressure', status: 'Increasing', value: '152/94', unit: 'mmHg', teaser: '132/82 → 152/94 mmHg — elevated 9 consecutive days' },
-  { id: 'hr', tone: 'success', icon: Icon.heart, title: 'Heart Rate', status: 'Stable', value: '74', unit: 'bpm', teaser: '72 → 74 bpm — resting rate unchanged' },
-  { id: 'wt', tone: 'warning', icon: Icon.chart, title: 'Weight', status: 'Caution', value: '84.1', unit: 'kg', teaser: '+2.1 kg over 3 weeks — +3% since last visit' },
-  { id: 'o2', tone: 'data-1', icon: Icon.chart, title: 'Oxygen Saturation', status: 'Normal', value: '98', unit: '%', teaser: '97 → 98% — within expected range' },
+  { id: 'bp', tone: 'error', icon: Icon.heart, title: 'Blood Pressure', statusKind: 'high', status: 'Increasing', value: '152/94', unit: 'mmHg', teaser: '132/82 → 152/94 mmHg — elevated 9 consecutive days' },
+  { id: 'hr', tone: 'success', icon: Icon.heart, title: 'Heart Rate', statusKind: 'normal', status: 'Stable', value: '74', unit: 'bpm', teaser: '72 → 74 bpm — resting rate unchanged' },
+  { id: 'wt', tone: 'warning', icon: Icon.chart, title: 'Weight', statusKind: 'borderline', status: 'Caution', value: '84.1', unit: 'kg', teaser: '+2.1 kg over 3 weeks — +3% since last visit' },
+  { id: 'o2', tone: 'data-1', icon: Icon.chart, title: 'Oxygen Saturation', statusKind: 'normal', status: 'Normal', value: '98', unit: '%', teaser: '97 → 98% — within expected range' },
 ];
 
 function VitalsDemo() {
@@ -236,9 +233,11 @@ function VitalsDemo() {
           }
         >
           <Card.Header
-            leading={<IconTile>{v.icon({ size: 18 })}</IconTile>}
-            title={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>{v.title} <StatusText>{v.status}</StatusText></span>}
-            description={<><span style={{ fontSize: 'var(--typography-title-md-font-size)', fontWeight: 'var(--type-weight-bold)', color: 'var(--text-default)' }}>{v.value}</span> <span style={{ color: 'var(--text-faint)' }}>{v.unit}</span><div style={{ marginTop: 2 }}>{v.teaser}</div></>}
+            leading={<IconPill label={v.title}>{v.icon({ size: 18 })}</IconPill>}
+            title={v.title}
+            badge={<StatusPill status={v.statusKind} label={v.status} />}
+            value={<ValueDisplay value={v.value} unit={v.unit} size="sm" />}
+            description={v.teaser}
           />
         </Card>
       ))}
@@ -345,56 +344,125 @@ export const Elevation = {
 // ── Base-card anatomy ───────────────────────────────────────────────────────
 // Card is the base of the whole family; every specialised card fills these regions.
 // Body is the only region that's conceptually required; everything else is optional.
-// A numbered badge keyed to the right-hand legend. `inset` places the badge INSIDE the
-// region (for Card.Preview, which clips overflow so a negative-offset badge would be cut);
-// the others sit in the padding gutter at a negative offset without clipping.
-const AnnotatedRegion = ({ n, inset, children }) => (
-  <div style={{ position: 'relative', outline: '1px dashed var(--border-subtle)', outlineOffset: 2, borderRadius: 4 }}>
-    <span style={{ position: 'absolute', top: inset ? 6 : -9, left: inset ? 6 : -9, width: 18, height: 18, borderRadius: 999, background: 'var(--action-accent)', color: 'var(--text-on-accent, #fff)', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>{n}</span>
-    {children}
-  </div>
-);
-
 export const Anatomy = {
   parameters: {
     controls: { disable: true },
-    docs: { description: { story: 'Card is the base of the whole card family - Banner, PatientCard, and specialised cards all compose these same regions and inherit the shared chrome. Fill the slots you need; `Card.Body` is the only conceptually required region, the rest are optional.' } },
+    docs: { description: { story: 'Card is the base of the whole card family - Banner, PatientCard, and specialised cards all compose these same regions and inherit the shared chrome. A REAL card (left) with a legend (right). Two alignment contexts: the header text column indents past the leading icon (title-row · value · description, one identity cluster); Body and Footer reset to the full card width. Region-to-region spacing is a consistent --density-gap; the header stack uses --space-1.' } },
   },
   render: () => (
-    <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: '2rem', alignItems: 'start', maxWidth: 720 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: '2rem', alignItems: 'start', maxWidth: 760 }}>
       <Card elevated style={{ margin: 0 }}>
         <Card.Preview>
-          <AnnotatedRegion n={1} inset>
-            <div style={{ width: '100%', minHeight: 90, background: 'var(--surface-sunken)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-faint)' }}>media / cover</div>
-          </AnnotatedRegion>
+          <div style={{ width: '100%', minHeight: 90, background: 'var(--surface-sunken)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-faint)', fontSize: 'var(--typography-caption-md-font-size)' }}>Card.Preview — media / cover</div>
         </Card.Preview>
-        <AnnotatedRegion n={2}>
-          <Card.Header
-            leading={<span style={{ width: 36, height: 36, borderRadius: 'var(--density-radius)', background: 'var(--surface-sunken)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{Icon.heart({ size: 18 })}</span>}
-            title="Title"
-            description="leading · title / description · action"
-            action={<Button size="sm" variant="secondary">Action</Button>}
-          />
-        </AnnotatedRegion>
-        <AnnotatedRegion n={3}>
-          <Card.Body><span style={{ color: 'var(--text-muted)', fontSize: 'var(--typography-body-sm-font-size)' }}>Body — the main content region.</span></Card.Body>
-        </AnnotatedRegion>
-        <AnnotatedRegion n={4}>
-          <Card.Footer><Button size="sm" variant="secondary">Cancel</Button><Button size="sm">Confirm</Button></Card.Footer>
-        </AnnotatedRegion>
+        <Card.Header
+          leading={<IconPill label="Heart rate">{Icon.heart({ size: 18 })}</IconPill>}
+          title="Card.Header title"
+          badge={<StatusPill status="high" label="badge" />}
+          value={<ValueDisplay value="152/94" unit="mmHg" size="sm" />}
+          description="value · description all indent past the icon"
+          action={<Button size="sm" variant="secondary">action</Button>}
+        />
+        <Card.Body><span style={{ color: 'var(--text-muted)', fontSize: 'var(--typography-body-sm-font-size)' }}>Card.Body — full-width content (breaks out of the icon indent).</span></Card.Body>
+        <Card.Footer><Button size="sm" variant="secondary">Cancel</Button><Button size="sm">Confirm</Button></Card.Footer>
       </Card>
       <div>
         <h4 style={{ margin: '0 0 0.5rem' }}>Regions</h4>
         <ol style={{ margin: 0, paddingLeft: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: 'var(--typography-body-sm-font-size)', color: 'var(--text-muted)' }}>
           <li><b style={{ color: 'var(--text-default)' }}>Card.Preview</b> — edge-to-edge media / cover. Optional.</li>
-          <li><b style={{ color: 'var(--text-default)' }}>Card.Header</b> — a flex row: leading (icon/avatar) · title + description · trailing action. Optional.</li>
-          <li><b style={{ color: 'var(--text-default)' }}>Card.Body</b> — the main content. The one region a card is really about.</li>
-          <li><b style={{ color: 'var(--text-default)' }}>Card.Footer</b> — an actions row. Optional.</li>
+          <li><b style={{ color: 'var(--text-default)' }}>Card.Header</b> — a leading column (icon/avatar) + a stacked <b style={{ color: 'var(--text-default)' }}>text column</b> that all aligns past the icon:
+            <ul style={{ margin: '0.35rem 0 0', paddingLeft: '1.1rem' }}>
+              <li><code>title</code> + <code>badge</code> — the identity row (a StatusPill / TrendChip)</li>
+              <li><code>value</code> — the prominent value line (a ValueDisplay)</li>
+              <li><code>description</code> — the muted supporting / teaser line</li>
+              <li><code>action</code> — trailing control (far right)</li>
+            </ul>
+          </li>
+          <li><b style={{ color: 'var(--text-default)' }}>Card.Body</b> — the main content, full width. The one region a card is really about.</li>
+          <li><b style={{ color: 'var(--text-default)' }}>Card.Footer</b> — a full-width actions row. Optional.</li>
         </ol>
         <p style={{ margin: '1rem 0 0', fontSize: 'var(--typography-caption-md-font-size)', color: 'var(--text-faint)' }}>
-          Regions are placed by CSS-Grid named areas (not DOM order), so orientation="horizontal" re-lays the same slots as a media column beside the text. Chrome (surface / border / accent / elevation) is shared with Banner via one resolver - see the Docs page.
+          Drop content ATOMS into the header column (IconPill · StatusPill · ValueDisplay) rather than hand-styling markup. Regions are placed by CSS-Grid named areas; chrome is shared with Banner via one resolver — see the Docs page and the Composer story.
         </p>
       </div>
+    </div>
+  ),
+};
+
+// ── Composer ────────────────────────────────────────────────────────────────
+// The "how do I drop content atoms into the regions?" sandbox. Each region has a
+// control that picks a content-atom from the base set; the render slots the chosen
+// atom into Card.Header (leading / title / status / action), Card.Body and Card.Footer.
+// This is the fastest way to see which atom goes where — and the code panel shows the
+// exact composition. Chrome (surface/tone/accent/bordered/elevated) is wired too.
+const LEADING = {
+  none: null,
+  'IconPill': <IconPill label="Heart rate">{Icon.heart({ size: 18 })}</IconPill>,
+};
+const STATUS = {
+  none: null,
+  'StatusPill': <StatusPill status="high" label="Elevated" />,
+  'TrendChip': <TrendChip direction="up" value="+3" label="Up by 3" />,
+};
+const ACTION = {
+  none: null,
+  'EditChip': <EditChip label="Edit" />,
+  'Button': <Button size="sm" variant="secondary">Action</Button>,
+};
+const VALUE = {
+  none: null,
+  'ValueDisplay': <ValueDisplay value="152/94" unit="mmHg" size="sm" />,
+};
+const BODY = {
+  none: null,
+  'Sparkline': <div style={{ color: 'var(--card-tone-text, var(--action-accent))' }}><Sparkline data={[132, 134, 131, 138, 143, 148, 152]} ariaLabel="Blood pressure trend" /></div>,
+  'FieldList': <FieldList items={[{ label: 'Recorded', value: 'Jul 23, 11:42' }, { label: 'Source', value: 'Philips monitor' }]} />,
+  'Text': <span style={{ color: 'var(--text-muted)', fontSize: 'var(--typography-body-sm-font-size)' }}>Free-form body text.</span>,
+};
+const FOOTER = {
+  none: null,
+  'Actions': <><Button size="sm" variant="secondary">Dismiss</Button><Button size="sm">Review</Button></>,
+};
+
+export const Composer = {
+  argTypes: {
+    surface: { control: 'select', options: ['plain', 'tinted', 'none'], table: { category: 'Chrome' } },
+    tone: { control: 'text', table: { category: 'Chrome' } },
+    accent: { control: 'boolean', table: { category: 'Chrome' } },
+    bordered: { control: 'boolean', table: { category: 'Chrome' } },
+    elevated: { control: 'boolean', table: { category: 'Chrome' } },
+    leading: { control: 'select', options: Object.keys(LEADING), table: { category: 'Header (indented past the icon)' } },
+    title: { control: 'text', table: { category: 'Header (indented past the icon)' } },
+    badge: { control: 'select', options: Object.keys(STATUS), table: { category: 'Header (indented past the icon)' } },
+    value: { control: 'select', options: Object.keys(VALUE), table: { category: 'Header (indented past the icon)' } },
+    description: { control: 'text', table: { category: 'Header (indented past the icon)' } },
+    action: { control: 'select', options: Object.keys(ACTION), table: { category: 'Header (indented past the icon)' } },
+    body: { control: 'select', options: Object.keys(BODY), table: { category: 'Body (full width)' } },
+    footer: { control: 'select', options: Object.keys(FOOTER), table: { category: 'Footer (full width)' } },
+  },
+  args: {
+    surface: 'plain', tone: 'info', accent: true, bordered: true, elevated: true,
+    leading: 'IconPill', title: 'Blood pressure', badge: 'StatusPill', value: 'ValueDisplay',
+    description: '132/82 → 152/94 mmHg — elevated 9 consecutive days', action: 'none',
+    body: 'none', footer: 'none',
+  },
+  parameters: {
+    docs: { description: { story: 'Pick a content-atom for each region and watch the card compose. Note the header column: leading / title+badge / value / description all indent PAST the icon (one identity cluster), while Body and Footer reset to full width. The base content atoms — IconPill, StatusPill, TrendChip, ValueDisplay, Sparkline, FieldList, EditChip (+ Button) — all import from `@corilus/kernel`. Open the Code panel to copy the exact composition.' } },
+  },
+  render: ({ surface, tone, accent, bordered, elevated, leading, title, badge, value, description, action, body, footer }) => (
+    <div style={{ maxWidth: 400 }}>
+      <Card surface={surface} tone={tone || undefined} accent={accent} bordered={bordered} elevated={elevated}>
+        <Card.Header
+          leading={LEADING[leading]}
+          title={title}
+          badge={STATUS[badge]}
+          value={VALUE[value]}
+          description={description || undefined}
+          action={ACTION[action]}
+        />
+        {body !== 'none' ? <Card.Body>{BODY[body]}</Card.Body> : null}
+        {footer !== 'none' ? <Card.Footer>{FOOTER[footer]}</Card.Footer> : null}
+      </Card>
     </div>
   ),
 };

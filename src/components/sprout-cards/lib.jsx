@@ -115,39 +115,13 @@ export function iconFor(propertyOrTone) {
   return propertyIcons[propertyOrTone] || propertyIcons.identity;
 }
 
-// ── Sparkline ────────────────────────────────────────────────────────────
+// Sparkline + FieldList were EXTRACTED to ../content/content.jsx (2026-08) and
+// PROMOTED to the generic surface. Re-exported here so this clinical slice + its
+// existing '@corilus/kernel/clinical' importers keep working unchanged.
+export { Sparkline, FieldList } from '../content/content.jsx';
 // Inline SVG line + soft gradient fill. Uses the card tone via currentColor so
 // the consumer needs only style="color: var(--card-tone)" on a parent — but
 // in practice we set `currentColor` to the card tone via .krnl-pcard-media.
-export function Sparkline({ data = [], width = 240, height = 56, ariaLabel }) {
-  if (!data.length) return null;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const stepX = data.length > 1 ? width / (data.length - 1) : 0;
-  const points = data.map((v, i) => {
-    const x = i * stepX;
-    const y = height - ((v - min) / range) * (height - 6) - 3;
-    return [x, y];
-  });
-  const pathD = points.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`).join(' ');
-  const areaD = `${pathD} L ${width} ${height} L 0 ${height} Z`;
-  const gradId = 'krnl-sparkline-' + Math.random().toString(36).slice(2, 8);
-  return (
-    <svg className="krnl-sparkline" width="100%" height={height} viewBox={`0 0 ${width} ${height}`}
-      preserveAspectRatio="none" role="img" aria-label={ariaLabel}>
-      <defs>
-        <linearGradient id={gradId} x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={areaD} fill={`url(#${gradId})`} />
-      <path d={pathD} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 // ── Reference-range bar — lab card media ────────────────────────────────
 // A horizontal range strip with the patient's marker. low/high define the
 // normal range; value is the measurement; absMin/absMax bound the axis.
@@ -189,20 +163,6 @@ export function ScheduleStrip({ days = [], ariaLabel }) {
   );
 }
 
-// ── FieldList — demographic key/value pairs in the body of a Sprout card ─
-export function FieldList({ items = [] }) {
-  return (
-    <dl className="krnl-field-list">
-      {items.map(({ label, value }, i) => (
-        <div key={i} className="krnl-field-row">
-          <dt className="krnl-field-label">{label}</dt>
-          <dd className="krnl-field-value">{value}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
 // ── ReactionList — allergy reactions ─────────────────────────────────────
 export function ReactionList({ reactions = [] }) {
   return (
@@ -229,20 +189,6 @@ export function PrimaryCTA({ children, onClick, disabled }) {
 }
 
 export const meta = {
-  Sparkline: {
-    layer: 'atom', scope: 'global', status: 'experimental', category: 'Data display',
-    usecases: ['card-media', 'vital-trend'],
-    keywords: ['sparkline', 'trend', 'line', 'chart', 'micro-chart', 'graph', 'vital', 'series'],
-    summary: 'Inline SVG line chart with soft gradient fill; draws in currentColor so it inherits the card tone.',
-    props: {
-      data: { class: 'content', type: 'number[]', required: true, example: [72, 74, 71, 78, 75, 73, 76], description: 'The ordered series to plot (oldest to newest). Renders nothing when empty; the axis auto-scales to the min and max.' },
-      width: { class: 'dsPresentation', type: 'number', default: 240, description: 'Intrinsic viewBox width; the SVG itself scales to 100% of its container, so this only sets the drawing aspect ratio.' },
-      height: { class: 'dsPresentation', type: 'number', default: 56, description: 'Rendered pixel height and viewBox height of the chart.' },
-      ariaLabel: { class: 'a11y', type: 'string', description: 'Accessible name for the img-role SVG, e.g. a spoken summary of the trend. Provide a value that does not just repeat the metric name.' },
-    },
-    composes: [],
-    usage: '<Sparkline data={[72, 74, 71, 78, 75]} ariaLabel="Heart rate, last 5 readings" />',
-  },
   ReferenceRangeBar: {
     layer: 'atom', scope: 'global', status: 'experimental', category: 'Data display',
     usecases: ['card-media', 'lab-range'],
@@ -281,17 +227,6 @@ export const meta = {
     ],
     composes: [],
     usage: '<ScheduleStrip days={[{ label: "Mo", status: "taken" }, { label: "Tu", status: "missed" }]} ariaLabel="Adherence this week" />',
-  },
-  FieldList: {
-    layer: 'atom', scope: 'global', status: 'experimental', category: 'Data display',
-    usecases: ['card-body', 'demographics'],
-    keywords: ['field-list', 'key-value', 'definition-list', 'details', 'demographics', 'properties', 'labels'],
-    summary: 'Definition list of label / value rows for demographic and condition detail bodies.',
-    props: {
-      items: { class: 'content', type: 'Array<{ label: node, value: node }>', required: true, example: [{ label: 'Geboortedatum', value: '12-04-1978' }, { label: 'Geslacht', value: 'Vrouw' }, { label: 'Rijksregisternr.', value: '78.04.12-006.83' }], description: 'The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings.' },
-    },
-    composes: [],
-    usage: '<FieldList items={[{ label: "Born", value: "1978-04-12" }, { label: "Sex", value: "F" }]} />',
   },
   ReactionList: {
     layer: 'atom', scope: 'global', status: 'experimental', category: 'Data display',

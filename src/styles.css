@@ -1227,7 +1227,7 @@
    where each fills. The edge-bleed margin is tuned for the vertical (default) form's
    top edge; a horizontal Preview (the left column) is a follow-up, not yet exercised
    by any consumer. */
-.krnl-card-preview { grid-area: preview; margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) var(--density-card-pad); overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
+.krnl-card-preview { grid-area: preview; margin: calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)) 0; overflow: hidden; border-top-left-radius: var(--density-radius); border-top-right-radius: var(--density-radius); }
 .krnl-card-preview img { display: block; width: 100%; }
 /* Horizontal orientation: Preview is the LEFT column (spanning the header/body/footer
    rows), so it bleeds to the left/top/bottom card edges only - NOT the right, which
@@ -1236,12 +1236,30 @@
 .krnl-card--horizontal .krnl-card-preview { margin: calc(-1 * var(--density-card-pad)) 0 calc(-1 * var(--density-card-pad)) calc(-1 * var(--density-card-pad)); border-top-right-radius: 0; border-bottom-left-radius: var(--density-radius); }
 .krnl-card-header { grid-area: header; display: flex; align-items: flex-start; gap: var(--space-2); }
 .krnl-card-header-lead { flex-shrink: 0; display: inline-flex; }
-.krnl-card-header-text { flex: 1; min-width: 0; }
+/* The text column: a vertical STACK (title row / value / description) that aligns past
+   the leading icon. --space-1 is the internal rhythm between the three lines. */
+.krnl-card-header-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+/* title row: title + an inline trailing badge (StatusPill / TrendChip), left-clustered. */
+.krnl-card-header-titlerow { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 .krnl-card-header-title { font-family: var(--typography-label-lg-font-family); font-size: var(--typography-label-lg-font-size); font-weight: var(--typography-label-lg-font-weight); color: var(--text-default); }
+.krnl-card-header-badge { display: inline-flex; flex-shrink: 0; }
+/* value line: prominent by default (a bare "74 bpm" reads as a value); a ValueDisplay
+   atom dropped here carries its own sizing and overrides this. */
+.krnl-card-header-value { font-family: var(--typography-title-md-font-family); font-size: var(--typography-title-md-font-size); font-weight: var(--type-weight-bold); color: var(--text-default); }
 .krnl-card-header-desc { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
 .krnl-card-header-action { margin-left: auto; flex-shrink: 0; }
 .krnl-card-body { grid-area: body; min-width: 0; }
 .krnl-card-footer { grid-area: footer; display: flex; align-items: center; gap: var(--space-2); }
+/* Consistent vertical rhythm between PRESENT, adjacent regions (--density-gap). Uses
+   sibling-adjacency rather than a grid row-gap so an ABSENT region leaves no phantom gap
+   (an empty grid row still gaps under row-gap) and Preview keeps its edge bleed. Every
+   present→present pair is covered so header/body/footer never touch. */
+.krnl-card-preview + .krnl-card-header,
+.krnl-card-preview + .krnl-card-body,
+.krnl-card-preview + .krnl-card-footer,
+.krnl-card-header + .krnl-card-body,
+.krnl-card-header + .krnl-card-footer,
+.krnl-card-body + .krnl-card-footer { margin-top: var(--density-gap); }
 .krnl-row-between { display: flex; align-items: center; justify-content: space-between; }
 .krnl-saved { display: inline-flex; align-items: center; gap: 4px; color: var(--status-success-solid); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); }
 
@@ -1623,8 +1641,12 @@
   line-height: 1;
   letter-spacing: var(--type-tracking-tight);
 }
-.krnl-pcard[data-stage="seed"] .krnl-pcard-value-num {
+.krnl-pcard[data-stage="seed"] .krnl-pcard-value-num,
+.krnl-pcard-value-display[data-size="sm"] .krnl-pcard-value-num {
   font-size: var(--typography-heading-sm-font-size);
+}
+.krnl-pcard-value-display[data-size="lg"] .krnl-pcard-value-num {
+  font-size: var(--typography-display-sm-font-size, var(--type-size-3xl));
 }
 .krnl-pcard-value-unit {
   font-size: var(--typography-body-sm-font-size);

@@ -1,7 +1,7 @@
 import { IconPill } from '@corilus/kernel';
 
 export default {
-  title: 'Core/Data Display/IconPill',
+  title: 'Core/Content/IconPill',
   component: IconPill,
   tags: ['autodocs'],
   argTypes: {

@@ -1,7 +1,7 @@
 import { StatusPill } from '@corilus/kernel';
 
 export default {
-  title: 'Core/Feedback & Status/StatusPill',
+  title: 'Core/Content/StatusPill',
   component: StatusPill,
   tags: ['autodocs'],
   argTypes: {

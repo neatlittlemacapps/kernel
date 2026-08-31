@@ -1,14 +1,14 @@
-import { FieldList } from '@corilus/kernel/clinical';
+import { FieldList } from '@corilus/kernel';
 
 export default {
-  title: 'Clinical/Primitives/FieldList',
+  title: 'Clinical/Cards/FieldList',
   component: FieldList,
   tags: ['autodocs'],
   argTypes: {
     items: { control: false, description: "The rows to render. Each label becomes a dt and its value a dd; both accept nodes, not just strings.", type: { name: 'other', value: 'Array<{ label: node, value: node }>', required: true }, table: { category: 'Content', type: { summary: "Array<{ label: node, value: node }>" } } },
   },
   parameters: {
-    docs: { description: { component: "Definition list of label / value rows for demographic and condition detail bodies.\n\n**Import**\n\n```ts\nimport { FieldList } from '@corilus/kernel/clinical'\n```" } },
+    docs: { description: { component: "Definition list of label / value rows for demographic and condition detail bodies.\n\n**Import**\n\n```ts\nimport { FieldList } from '@corilus/kernel'\n```" } },
   },
 };
 

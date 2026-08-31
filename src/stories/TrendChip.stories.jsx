@@ -1,7 +1,7 @@
 import { TrendChip } from '@corilus/kernel';
 
 export default {
-  title: 'Core/Data Display/TrendChip',
+  title: 'Core/Content/TrendChip',
   component: TrendChip,
   tags: ['autodocs'],
   argTypes: {

@@ -1,7 +1,7 @@
-import { Sparkline } from '@corilus/kernel/clinical';
+import { Sparkline } from '@corilus/kernel';
 
 export default {
-  title: 'Clinical/Primitives/Sparkline',
+  title: 'Clinical/Cards/Sparkline',
   component: Sparkline,
   tags: ['autodocs'],
   argTypes: {
@@ -11,7 +11,7 @@ export default {
     ariaLabel: { control: 'text', description: "Accessible name for the img-role SVG, e.g. a spoken summary of the trend. Provide a value that does not just repeat the metric name.", table: { category: 'Accessibility', type: { summary: "string" } } },
   },
   parameters: {
-    docs: { description: { component: "Inline SVG line chart with soft gradient fill; draws in currentColor so it inherits the card tone.\n\n**Import**\n\n```ts\nimport { Sparkline } from '@corilus/kernel/clinical'\n```" } },
+    docs: { description: { component: "Inline SVG line chart with soft gradient fill; draws in currentColor so it inherits the card tone.\n\n**Import**\n\n```ts\nimport { Sparkline } from '@corilus/kernel'\n```" } },
   },
 };
 
