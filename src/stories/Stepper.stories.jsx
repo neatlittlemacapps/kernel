@@ -1,7 +1,7 @@
 import { Stepper } from '@corilus/kernel';
 
 export default {
-  title: 'Core/Inputs/Stepper',
+  title: 'Core/Content/Stepper',
   component: Stepper,
   tags: ['autodocs'],
   argTypes: {

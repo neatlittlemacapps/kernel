@@ -4,7 +4,10 @@
 // ../lib/cardChrome.js) that Banner and a framed Collapsible trigger read too - change
 // the base here and all three adapt. See the "Base Card" docs section below for the
 // chrome contract + the internal slot grid.
-import { Card, Button, Icon } from '@corilus/kernel';
+import {
+  Card, Button, Icon,
+  IconPill, StatusPill, TrendChip, ValueDisplay, Sparkline, FieldList, EditChip,
+} from '@corilus/kernel';
 
 const React = window.React;
 
@@ -395,6 +398,77 @@ export const Anatomy = {
           Regions are placed by CSS-Grid named areas (not DOM order), so orientation="horizontal" re-lays the same slots as a media column beside the text. Chrome (surface / border / accent / elevation) is shared with Banner via one resolver - see the Docs page.
         </p>
       </div>
+    </div>
+  ),
+};
+
+// ── Composer ────────────────────────────────────────────────────────────────
+// The "how do I drop content atoms into the regions?" sandbox. Each region has a
+// control that picks a content-atom from the base set; the render slots the chosen
+// atom into Card.Header (leading / title / status / action), Card.Body and Card.Footer.
+// This is the fastest way to see which atom goes where — and the code panel shows the
+// exact composition. Chrome (surface/tone/accent/bordered/elevated) is wired too.
+const LEADING = {
+  none: null,
+  'IconPill': <IconPill label="Heart rate">{Icon.heart({ size: 18 })}</IconPill>,
+};
+const STATUS = {
+  none: null,
+  'StatusPill': <StatusPill status="high" label="Elevated" />,
+  'TrendChip': <TrendChip direction="up" value="+3" label="Up by 3" />,
+};
+const ACTION = {
+  none: null,
+  'EditChip': <EditChip label="Edit" />,
+  'Button': <Button size="sm" variant="secondary">Action</Button>,
+};
+const BODY = {
+  none: null,
+  'ValueDisplay': <ValueDisplay value="152/94" unit="mmHg" />,
+  'Sparkline': <div style={{ color: 'var(--card-tone-text, var(--action-accent))' }}><Sparkline data={[132, 134, 131, 138, 143, 148, 152]} ariaLabel="Blood pressure trend" /></div>,
+  'FieldList': <FieldList items={[{ label: 'Recorded', value: 'Jul 23, 11:42' }, { label: 'Source', value: 'Philips monitor' }]} />,
+  'Text': <span style={{ color: 'var(--text-muted)', fontSize: 'var(--typography-body-sm-font-size)' }}>Free-form body text.</span>,
+};
+const FOOTER = {
+  none: null,
+  'Actions': <><Button size="sm" variant="secondary">Dismiss</Button><Button size="sm">Review</Button></>,
+};
+
+export const Composer = {
+  argTypes: {
+    surface: { control: 'select', options: ['plain', 'tinted', 'none'], table: { category: 'Chrome' } },
+    tone: { control: 'text', table: { category: 'Chrome' } },
+    accent: { control: 'boolean', table: { category: 'Chrome' } },
+    bordered: { control: 'boolean', table: { category: 'Chrome' } },
+    elevated: { control: 'boolean', table: { category: 'Chrome' } },
+    leading: { control: 'select', options: Object.keys(LEADING), table: { category: 'Header' } },
+    title: { control: 'text', table: { category: 'Header' } },
+    status: { control: 'select', options: Object.keys(STATUS), table: { category: 'Header' } },
+    action: { control: 'select', options: Object.keys(ACTION), table: { category: 'Header' } },
+    body: { control: 'select', options: Object.keys(BODY), table: { category: 'Body' } },
+    footer: { control: 'select', options: Object.keys(FOOTER), table: { category: 'Footer' } },
+  },
+  args: {
+    surface: 'plain', tone: 'info', accent: true, bordered: true, elevated: true,
+    leading: 'IconPill', title: 'Blood pressure', status: 'StatusPill', action: 'none',
+    body: 'ValueDisplay', footer: 'none',
+  },
+  parameters: {
+    docs: { description: { story: 'Pick a content-atom for each region and watch the card compose. The base content atoms — IconPill, StatusPill, TrendChip, ValueDisplay, Sparkline, FieldList, EditChip (+ Button) — all import from `@corilus/kernel` and drop straight into Card.Header / Card.Body / Card.Footer. Open the Code panel to copy the exact composition.' } },
+  },
+  render: ({ surface, tone, accent, bordered, elevated, leading, title, status, action, body, footer }) => (
+    <div style={{ maxWidth: 400 }}>
+      <Card surface={surface} tone={tone || undefined} accent={accent} bordered={bordered} elevated={elevated}>
+        <Card.Header
+          leading={LEADING[leading]}
+          title={status !== 'none'
+            ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{title} {STATUS[status]}</span>
+            : title}
+          action={ACTION[action]}
+        />
+        {body !== 'none' ? <Card.Body>{BODY[body]}</Card.Body> : null}
+        {footer !== 'none' ? <Card.Footer>{FOOTER[footer]}</Card.Footer> : null}
+      </Card>
     </div>
   ),
 };

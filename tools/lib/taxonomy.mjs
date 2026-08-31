@@ -24,18 +24,21 @@ const CHAT = new Set(['ChatBubble', 'PromptField', 'Transcript', 'TypingIndicato
 // Clinical primitives (relocated behind ./clinical by B-49) get their own folder,
 // distinct from the per-object Cards.
 const CLINICAL_PRIMITIVES = new Set([
-  'Sparkline', 'ReferenceRangeBar', 'ScheduleStrip', 'FieldList', 'ReactionList', 'PrimaryCTA',
+  'ReferenceRangeBar', 'ScheduleStrip', 'ReactionList', 'PrimaryCTA',
 ]);
 
 // Category assignment for the CORE tier. Keyed by component name so casing/merges are
 // explicit (the raw catalog has `Data display`/`Data Display`, `Action`/`Actions`, …).
 const CORE_CATEGORY = {
   // Actions
-  Button: 'Actions', IconButton: 'Actions', Fab: 'Actions', Trigger: 'Actions', EditChip: 'Actions',
+  Button: 'Actions', IconButton: 'Actions', Fab: 'Actions', Trigger: 'Actions',
   // Inputs
   Checkbox: 'Inputs', FileInput: 'Inputs', Radio: 'Inputs', RadioGroup: 'Inputs',
-  Select: 'Inputs', SelectItem: 'Inputs', Slider: 'Inputs', Stepper: 'Inputs',
+  Select: 'Inputs', SelectItem: 'Inputs', Slider: 'Inputs',
   TextArea: 'Inputs', TextInput: 'Inputs', Toggle: 'Inputs', ToggleGroup: 'Inputs', ToggleGroupItem: 'Inputs',
+  // Content — the base content-atom set you drop into Card slots (extracted 2026-08)
+  StatusPill: 'Content', TrendChip: 'Content', ValueDisplay: 'Content', Stepper: 'Content',
+  IconPill: 'Content', EditChip: 'Content', Sparkline: 'Content', FieldList: 'Content',
   // Layout
   Box: 'Layout', Stack: 'Layout', Inline: 'Layout', Grid: 'Layout', Card: 'Layout', SidePanel: 'Layout',
   // Overlays
@@ -47,10 +50,10 @@ const CORE_CATEGORY = {
   // Navigation
   Tabs: 'Navigation', Tab: 'Navigation', TabList: 'Navigation', TabPanel: 'Navigation', ActionRow: 'Navigation',
   // Data Display
-  Chip: 'Data Display', IconPill: 'Data Display', TrendChip: 'Data Display', ValueDisplay: 'Data Display',
-  PropertyList: 'Data Display', PatientCard: 'Data Display', SproutCard: 'Data Display', Table: 'Data Display',
+  Chip: 'Data Display', PropertyList: 'Data Display', PatientCard: 'Data Display',
+  SproutCard: 'Data Display', Table: 'Data Display',
   // Feedback & Status
-  Progress: 'Feedback & Status', StatusPill: 'Feedback & Status', Banner: 'Feedback & Status',
+  Progress: 'Feedback & Status', Banner: 'Feedback & Status',
   Meter: 'Feedback & Status', DonutGauge: 'Feedback & Status',
   // Structure
   Collapsible: 'Structure', Separator: 'Structure',

@@ -40,8 +40,15 @@ export * from './components/ToggleGroup.jsx';
 export * from './components/Fab.jsx';
 export * from './components/Trigger.jsx';
 export * from './components/ActionRow.jsx';
+// Base content atoms — the small, region-agnostic pieces you drop into Card slots
+// (StatusPill, TrendChip, ValueDisplay, Stepper, IconPill, EditChip, Sparkline,
+// FieldList). Extracted 2026-08 from the clinical sprout-cards so they read as a base
+// set; the sprout-cards + ./clinical re-export them for back-compat. See CONTENT-ATOMS.md.
+export * from './components/content/content.jsx';
 export * from './components/sprout-cards/SproutCard.jsx';
-export * from './components/sprout-cards/PatientCard.jsx';
+// PatientCard re-exports the 6 content atoms above for back-compat; use a NAMED export
+// here so those names aren't ambiguously re-declared against the content module.
+export { PatientCard, MeterTooltip } from './components/sprout-cards/PatientCard.jsx';
 export * from './components/sprout-cards/PropertyList.jsx';
 // NB: the clinical card-media primitives + FHIR helpers from sprout-cards/lib.jsx
 // (Sparkline, ReferenceRangeBar, ScheduleStrip, FieldList, ReactionList, PrimaryCTA,

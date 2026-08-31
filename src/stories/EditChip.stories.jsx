@@ -1,7 +1,7 @@
 import { EditChip } from '@corilus/kernel';
 
 export default {
-  title: 'Core/Actions/EditChip',
+  title: 'Core/Content/EditChip',
   component: EditChip,
   tags: ['autodocs'],
   argTypes: {

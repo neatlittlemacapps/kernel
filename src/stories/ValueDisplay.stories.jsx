@@ -1,7 +1,7 @@
 import { ValueDisplay } from '@corilus/kernel';
 
 export default {
-  title: 'Core/Data Display/ValueDisplay',
+  title: 'Core/Content/ValueDisplay',
   component: ValueDisplay,
   tags: ['autodocs'],
   argTypes: {
