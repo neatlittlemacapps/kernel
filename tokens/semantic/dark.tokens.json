@@ -195,7 +195,7 @@
     }
   },
   "data": {
-    "$description": "Categorical / row-tone hues at the brand-bright (.400) step so decorative icons and chart series read on dark surfaces.",
+    "$description": "Categorical / row-tone hues at the brand-bright (.400) step so decorative icons and chart series read on dark surfaces. `categorical.N`/`status.*` below are the fill/fill-strong/fill-soft triad (see light.tokens.json's `data` group description for the full a11y contract - fills/strokes on non-text surfaces ONLY). Dark steps deliberately DIFFER from light's naive +0 mapping: fill=.400 (not .500 - matches data-bright's own rationale that .500 falls below AA for graphics on dark) and fill-strong=.300 (matches data-tone.*'s own dark `solid` rung) - both mirror the step-down this brand already applies to vivid colour on dark. fill-soft=.800 sinks the area/track fill down near the dark surface, the mirror of light's .200.",
     "series-1": {
       "$value": "{brand.data-bright.1}"
     },
@@ -213,6 +213,60 @@
     },
     "series-6": {
       "$value": "{brand.data-bright.6}"
+    },
+    "categorical": {
+      "1": {
+        "fill": { "$value": "{brand.data-tone.1.400}" },
+        "fill-strong": { "$value": "{brand.data-tone.1.300}" },
+        "fill-soft": { "$value": "{brand.data-tone.1.800}" }
+      },
+      "2": {
+        "fill": { "$value": "{brand.data-tone.2.400}" },
+        "fill-strong": { "$value": "{brand.data-tone.2.300}" },
+        "fill-soft": { "$value": "{brand.data-tone.2.800}" }
+      },
+      "3": {
+        "fill": { "$value": "{brand.data-tone.3.400}" },
+        "fill-strong": { "$value": "{brand.data-tone.3.300}" },
+        "fill-soft": { "$value": "{brand.data-tone.3.800}" }
+      },
+      "4": {
+        "fill": { "$value": "{brand.data-tone.4.400}" },
+        "fill-strong": { "$value": "{brand.data-tone.4.300}" },
+        "fill-soft": { "$value": "{brand.data-tone.4.800}" }
+      },
+      "5": {
+        "fill": { "$value": "{brand.data-tone.5.400}" },
+        "fill-strong": { "$value": "{brand.data-tone.5.300}" },
+        "fill-soft": { "$value": "{brand.data-tone.5.800}" }
+      },
+      "6": {
+        "fill": { "$value": "{brand.data-tone.6.400}" },
+        "fill-strong": { "$value": "{brand.data-tone.6.300}" },
+        "fill-soft": { "$value": "{brand.data-tone.6.800}" }
+      }
+    },
+    "status": {
+      "info": {
+        "fill": { "$value": "{brand.status.info.400}" },
+        "fill-strong": { "$value": "{brand.status.info.300}" },
+        "fill-soft": { "$value": "{brand.status.info.800}" }
+      },
+      "success": {
+        "fill": { "$value": "{brand.status.success.400}" },
+        "fill-strong": { "$value": "{brand.status.success.300}" },
+        "fill-soft": { "$value": "{brand.status.success.800}" }
+      },
+      "warning": {
+        "fill": { "$value": "{brand.status.warning.400}" },
+        "fill-strong": { "$value": "{brand.status.warning.300}" },
+        "fill-soft": { "$value": "{brand.status.warning.800}" }
+      },
+      "error": {
+        "fill": { "$value": "{brand.status.error.400}" },
+        "fill-strong": { "$value": "{brand.status.error.300}" },
+        "fill-soft": { "$value": "{brand.status.error.800}" }
+      }
     }
   },
   "state": {
@@ -255,15 +309,15 @@
         {
           "color": "{color.alpha.black-30}",
           "offsetX": { "value": 0, "unit": "px" },
-          "offsetY": { "value": 4, "unit": "px" },
-          "blur": { "value": 20, "unit": "px" },
+          "offsetY": { "value": 2, "unit": "px" },
+          "blur": { "value": 6, "unit": "px" },
           "spread": { "value": 0, "unit": "px" }
         },
         {
           "color": "{color.alpha.black-24}",
           "offsetX": { "value": 0, "unit": "px" },
           "offsetY": { "value": 1, "unit": "px" },
-          "blur": { "value": 3, "unit": "px" },
+          "blur": { "value": 2, "unit": "px" },
           "spread": { "value": 0, "unit": "px" }
         }
       ]

@@ -409,7 +409,7 @@
             "tinted"
           ],
           "default": "plain",
-          "description": "Body fill: plain is white (--surface-bright); tinted is a light wash - the semantic tone tint when toneScope=\"box\", or a neutral tint (--surface-sunken) when toneScope=\"content\" or tone=\"neutral\". Replaces the old `variant` prop, with the corrected meaning: neither value is ever a solid/inverted fill."
+          "description": "Body fill: plain is white (--surface-bright); tinted is a FAINT tone wash when toneScope=\"box\" (the tone tint mixed ~55% toward white, via the shared card resolver, so it reads as a hint not a saturated panel), or a neutral tint (--surface-sunken) when toneScope=\"content\" or tone=\"neutral\". Replaces the old `variant` prop, with the corrected meaning: neither value is ever a solid/inverted fill."
         },
         {
           "name": "accent",
@@ -430,7 +430,7 @@
           "class": "dsPresentation",
           "type": "bool",
           "default": false,
-          "description": "A drop shadow (--elevation-raised) for a banner that should float above the page."
+          "description": "A gentle resting drop shadow (--elevation-floating) for a banner that should sit above the page - the same shared token an elevated/accent Card and a collapsible card use (the \"floating\" rung of the shared elevation ladder: raised < floating < overlay < modal)."
         },
         {
           "name": "dense",
@@ -856,7 +856,7 @@
       "layer": "atom",
       "scope": "global",
       "status": "stable",
-      "summary": "Neutral base card: wrapper + appearance + rest/hover/pressed/focus/selected/dragging states; fill Preview / Header / Body / Footer.",
+      "summary": "Neutral base card: wrapper + surface/border/accent/elevation chrome + rest/hover/pressed/focus/selected/dragging states; fill Preview / Header / Body / Footer.",
       "usecases": [
         "card",
         "surface",
@@ -865,22 +865,59 @@
       ],
       "props": [
         {
-          "name": "appearance",
+          "name": "surface",
           "class": "dsPresentation",
           "values": [
-            "filled",
-            "outline",
-            "subtle",
-            "elevated"
+            "plain",
+            "tinted",
+            "none"
           ],
-          "default": "filled",
-          "description": "Surface treatment: filled (panel + border), outline (border only), subtle (no border/fill), elevated (raised ring + shadow, hover-lift - the base PatientCard is built on)."
+          "default": "plain",
+          "description": "Body fill: plain is pure white/bright (--surface-bright, matches Banner); tinted is a light tone wash (the tone, mixed toward white for a faint hint, when a tone paints the box - a neutral sunken tint otherwise); none is transparent."
+        },
+        {
+          "name": "bordered",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": true,
+          "description": "The hairline border."
+        },
+        {
+          "name": "elevated",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": false,
+          "description": "A floating ambient drop shadow (--elevation-floating) - the same family as `accent` and a collapsible card. For the older raised-ring look, see the deprecated `appearance=\"elevated\"`."
+        },
+        {
+          "name": "accent",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": false,
+          "description": "A tone-coloured accent strip on the top edge. Inset box-shadow, so it is auto-clipped to the corner radius. Falls back to a neutral hairline (never silently invisible) when toneScope=\"content\" or no `tone` resolves. Mutually exclusive with Card.Preview (the inset paints under a full-bleed image). Deprecated string values 'strip' / 'strip-border' still work (both -> accent={true}; 'strip-border' also keeps a border softened toward the tone) for back-compat."
+        },
+        {
+          "name": "toneScope",
+          "class": "dsPresentation",
+          "values": [
+            "box",
+            "content"
+          ],
+          "default": "box",
+          "description": "\"box\" lets `tone` also paint background/border/strip - border and strip resolve to the SAME saturated accent rung (~.500), so the edge reads as one weight rather than a soft border plus a vivid strip. \"content\" keeps the box neutral while the tone stays available to slot content (e.g. an icon tile) via --card-tone-*."
+        },
+        {
+          "name": "dense",
+          "class": "dsPresentation",
+          "type": "bool",
+          "default": false,
+          "description": "A compact density scope: sets data-density=\"compact\" on this Card, shrinking padding/radius/gap - a local scope over the existing --density-* tokens, not a parallel spacing system."
         },
         {
           "name": "tone",
           "class": "dsPresentation",
           "type": "string",
-          "description": "Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for \"one of several categories\" identity without implying status), or any colour/var. Sets --card-tone (+ tinted surface via [data-tone]); neutral when omitted, and tone=\"neutral\" is equivalent to omitting it (there is no --status-neutral-* token family, so it never sets --card-tone/[data-tone] either). Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation."
+          "description": "Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for \"one of several categories\" identity without implying status), or any colour/var. With the default toneScope=\"box\", a resolved tone colours the border and (when `accent` is set) the strip immediately - a tinted BODY fill additionally needs surface=\"tinted\" (surface and tone are independent axes, like Banner). Also exposes the tone triad to slot content (e.g. an icon tile) via --card-tone-*. Neutral when omitted, and tone=\"neutral\" is equivalent to omitting it (there is no --status-neutral-* token family, so it never paints the box either). Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation."
         },
         {
           "name": "orientation",
@@ -890,7 +927,7 @@
             "horizontal"
           ],
           "default": "vertical",
-          "description": "Lays the slots in a column (default) or a row."
+          "description": "Lays the slots in a column (default) or a row; the row form collapses back to a column inside a narrow container (@container, not the viewport)."
         },
         {
           "name": "size",
@@ -914,15 +951,6 @@
           "class": "dsPresentation",
           "type": "string",
           "description": "Element tag for the non-interactive form (default div; e.g. \"article\"). Ignored when interactive (always a <button>) or collapsible (always a Collapsible root div)."
-        },
-        {
-          "name": "accent",
-          "class": "dsPresentation",
-          "values": [
-            "strip",
-            "strip-border"
-          ],
-          "description": "Opt-in tone-coloured accent (needs a `tone`): strip = a bar on one edge (top on a Card; Banner flips it to the left); strip-border also keeps the tone border. Inset box-shadow, so it is auto-clipped to the corner radius. Mutually exclusive with Card.Preview (the inset paints under a full-bleed image)."
         },
         {
           "name": "selected",
@@ -979,10 +1007,22 @@
           "class": "content",
           "type": "ReactNode",
           "description": "Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content). When `detail` is set, children are the always-visible summary and must stay display-only (no nested buttons/links)."
+        },
+        {
+          "name": "appearance",
+          "class": "dsPresentation",
+          "values": [
+            "filled",
+            "outline",
+            "subtle",
+            "elevated"
+          ],
+          "deprecated": true,
+          "description": "Deprecated - use `surface`/`bordered`/`elevated`. filled -> surface=\"plain\" bordered=true (the unchanged default look); outline -> surface=\"none\" bordered=true; subtle -> surface=\"none\" bordered=false; elevated -> the raised-ring look PatientCard is built on (kept pixel-identical - distinct from the new plain `elevated` boolean, which is a ringless floating shadow)."
         }
       ],
       "composes": [],
-      "usage": "<Card accent=\"strip\" tone=\"info\" detail={<Chart/>}>\n  <Card.Header leading={icon} title=\"Blood pressure\" description=\"152/94 mmHg\" />\n</Card>",
+      "usage": "<Card accent tone=\"info\" detail={<Chart/>}>\n  <Card.Header leading={icon} title=\"Blood pressure\" description=\"152/94 mmHg\" />\n</Card>",
       "keywords": [
         "card",
         "surface",
@@ -1008,7 +1048,7 @@
         },
         {
           "do": true,
-          "text": "Use accent=\"strip\" (needs a tone) for the vibrant top-edge bar; the accent + icon-tile carry the colour so the body can stay light and text stays AA."
+          "text": "Use accent (needs a tone) for the vibrant top-edge bar; the accent + icon-tile carry the colour so the body can stay light and text stays AA."
         },
         {
           "do": false,
@@ -1046,7 +1086,8 @@
         "Box",
         "PatientCard",
         "Stack",
-        "Collapsible"
+        "Collapsible",
+        "Banner"
       ]
     },
     {
@@ -2921,7 +2962,7 @@
           "name": "tone",
           "class": "dsPresentation",
           "type": "string",
-          "description": "Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\", or any colour/var. Omit for the default --action-solid fill."
+          "description": "Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\", or any colour/var. Omit for the default --action-accent fill."
         },
         {
           "name": "size",
@@ -3610,7 +3651,7 @@
           "name": "tone",
           "class": "dsPresentation",
           "type": "string",
-          "description": "Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\" (the brand action colour), or any colour/var. Omit to keep the default --action-solid fill."
+          "description": "Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), \"primary\" (the brand action colour), or any colour/var. Omit for the default --action-accent fill."
         },
         {
           "name": "unbounded",

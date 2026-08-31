@@ -97,6 +97,13 @@ follows [SemVer](https://semver.org/).
   - *Affects:* Card + Banner: any card with accent=strip|strip-border gets the pure-white body (was surface-raised/panel). Non-accent cards unchanged. Additive token; multi-brand note: bright is deliberately brand-neutral white, so brands with tinted surfaces (semble/myneva) only get it where accent is used.
   - *Rationale:* User wants a true pure-white card surface (the reference uses #fff cards); Kernel's raised surface carries a faint slate tint, so 'white' cards weren't actually white. Adds an explicit hueless white surface token.
   - *Migration:* None — additive. npm run tokens regenerated tokens.css.
+- `semantic.data.categorical.*, semantic.data.status.*` — Saturated data-fill triad (fill/fill-strong/fill-soft) for categorical 1-6 and status info/success/warning/error, for fills/strokes on non-text surfaces only (charts, progress bars, meters)
+  - *Affects:* Progress, Meter, DonutGauge (repointed toneFill() from the AA-safe .accent rung to the new saturated data-fill rung); any future chart consumer
+  - *Rationale:* status.*/data-tone.*'s .accent rung is AA-text-safe but reads dull as a fat bar/ring fill; these rungs trade the text-contrast guarantee for saturation, restricted by contract to non-text fills/strokes only
+  - *Migration:* toneFill(tone) callers get the new look automatically; pass toneFill(tone, 'fill-strong') for the higher-contrast rung (hover/outline)
+- `brand.data-tone.*.800, brand.status.*.800` — brand.data-tone.{1-6} and brand.status.{info,success,warning,error} ramps gained step 800 (corilus.tokens.json only - semble/myneva inherit it additively)
+  - *Affects:* The new data-fill triad's dark fill-soft rung, which needed the missing step
+  - *Rationale:* Primitive palettes already have the full 50-950 scale; the brand ramps were missing 800 (had 100/200/300/400/500/700/900) - pure mechanical aliasing to fill the gap the homogeneous-step principle expects
 
 ### Changed
 - `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Warmed and lightened the six neutral primitives (cool greys -> warm greige, hue 75, lifted lightness)
@@ -182,6 +189,14 @@ follows [SemVer](https://semver.org/).
   - *Affects:* Sprout-cards system. Also: status/data/chart hues that derive from the rebuilt primitives (red, amber, green, sky, indigo, violet, magenta, mint, lime, coral) now read more vivid — generally positive in the Clinical Almanac direction. brand.primary (teal) preserved unchanged.
   - *Rationale:* User complaint: cards read bland and dull. frontend-design skill audit prescribed Clinical Almanac aesthetic. .700-on-white was the dullness root; .500 accent decorative + .700 text-contrast preserves WCAG AA while shipping vibrancy. The paper-tab gesture and italic margin notes give a domain-specific personality clinicians read fluently.
   - *Migration:* Sprout-cards CSS auto-updated. Components outside the sprout-cards system that consume color.{red,sky,etc.}.500 will read more vivid — review status/data palette usage if specific saturation matters. brand.property.allergy moved magenta → rust (hue 35°) — any UI referencing it gets a warm-orange instead of pink-purple.
+- `color.orange (new primitive ramp), brand.status.warning.*, brand.signal.warning` — Warning tone retargeted from the amber primitive (hue 75, reads as muted brown) to a new dedicated orange primitive (hue 45, gamut-max chroma) - amber's own hue+chroma was too desaturated to read as a clear warning colour
+  - *Affects:* Every status=warning surface (Banner, Card accent/border, StatusPill, buttons, chips) in both light and dark; myNeva's amber-based inverted-surface accent is UNCHANGED (kept its own alias to color.amber, untouched) since that is a distinct warm gold identity, not the warning tone
+  - *Rationale:* User feedback: the warning tone read as a muted brown, not orange, in the Base Card chrome work. amber is shared with myNeva's own accent identity, so the fix adds a new ramp rather than retuning amber for everyone
+  - *Migration:* No consumer code changes - the retarget is entirely within the brand tier alias chain. WCAG contrast re-verified: button-warning-text on button-warning-background improved from 6.99:1 to 7.23:1 light, 9.37:1 dark - no regression.
+- `semantic.elevation.floating` — elevation.floating retuned from y4/blur20 to y2/blur6 so the four shadow rungs form a monotonic ladder (raised < floating < overlay < modal) - floating previously read LARGER than overlay, so a card hovering from floating to overlay looked like it lost shadow
+  - Before: `0 4px 20px black-10, 0 1px 3px black-06 (light)` → After: `0 2px 6px black-10, 0 1px 2px black-06 (light); dark scales alpha`
+  - *Affects:* Card family only (accent/collapsible/elevated cards at rest) - floating has no non-card consumers; menus/dialogs use overlay/modal, unchanged
+  - *Rationale:* User feedback: elevation states were indistinguishable. Root cause was two-fold - (1) the resolver wrote --card-elevation inline, so CSS state rules could never override it (fixed via a --card-elevation-rest indirection in cardChrome.js + styles.css), and (2) the rungs weren't monotonic
 
 ### Removed
 - `type.display, type.body` - Orphaned, duplicate primitives/typography.tokens.json

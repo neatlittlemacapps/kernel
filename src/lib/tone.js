@@ -20,14 +20,29 @@ export const toneSlug = (tone) =>
   : DATA_TONES.includes(tone) ? tone.replace('data-', 'data-tone-')
   : null;
 
+// The saturated data-fill family (semantic.data.categorical.N / semantic.data.status.*
+// in tokens/) - a fill/fill-strong/fill-soft triad per role, deliberately MORE vivid
+// than the AA-safe status.*/data-tone.* families (whose `.accent` rung reads dull as a
+// fat bar/ring fill - the very complaint this exists to fix). These rungs carry NO
+// text-contrast guarantee: fills/strokes on non-text surfaces ONLY (a bar, a meter, a
+// chart mark) - never text, an icon glyph, or anything a reader needs to read the
+// colour of. Maps to the data-fill namespace, distinct from toneSlug's status-*/
+// data-tone-* namespace (which still backs Card/Banner's own AA-safe chrome).
+const dataFillSlug = (tone) =>
+  STATUS_TONES.includes(tone) ? `data-status-${tone}`
+  : DATA_TONES.includes(tone) ? tone.replace('data-', 'data-categorical-')
+  : null;
+
 // The fill colour for a meter/gauge/bar. `undefined` means "use the caller's own
 // default" (so an un-toned Progress keeps its current --action-solid, unchanged).
 // `neutral` behaves exactly like an omitted tone - there is no --status-neutral-*
 // family, so treating it as a real tone would repeat the invalid-CSS class of bug
-// fixed on Card/Banner (see CHANGELOG: tone="neutral" IACVT).
-export function toneFill(tone) {
+// fixed on Card/Banner (see CHANGELOG: tone="neutral" IACVT). `rung` picks which of
+// the data-fill triad to use - 'fill' (default, the baseline weight) or 'fill-strong'
+// (the higher-contrast-vs-background rung: lines, outlines, hover).
+export function toneFill(tone, rung = 'fill') {
   if (tone == null || tone === 'neutral') return undefined;
   if (tone === 'primary') return 'var(--action-accent)';
-  const slug = toneSlug(tone);
-  return slug ? `var(--${slug}-accent)` : tone;
+  const slug = dataFillSlug(tone);
+  return slug ? `var(--${slug}-${rung})` : tone;
 }

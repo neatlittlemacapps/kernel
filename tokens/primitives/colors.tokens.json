@@ -864,6 +864,130 @@
         }
       }
     },
+    "orange": {
+      "$description": "Vivid orange (hue 45, gamut-max chroma strategy) - distinct from amber (hue 75, a warmer gold/brown the myNeva brand's own inverted-surface accent relies on). Built for Corilus's warning tone, which read as a muted brown at amber's hue+chroma; kept as its own ramp rather than retuning amber so myNeva's amber-gold identity is untouched.",
+      "50": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.978,
+            0.0116,
+            45.0
+          ],
+          "hex": "#fff6f1"
+        }
+      },
+      "100": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.936,
+            0.0348,
+            45.0
+          ],
+          "hex": "#ffe3d7"
+        }
+      },
+      "200": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.881,
+            0.0676,
+            45.0
+          ],
+          "hex": "#ffcbb3"
+        }
+      },
+      "300": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.827,
+            0.1031,
+            45.0
+          ],
+          "hex": "#ffb18e"
+        }
+      },
+      "400": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.742,
+            0.1667,
+            45.0
+          ],
+          "hex": "#ff8448"
+        }
+      },
+      "500": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.648,
+            0.1853,
+            45.0
+          ],
+          "hex": "#e55f00"
+        }
+      },
+      "600": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.573,
+            0.1638,
+            45.0
+          ],
+          "hex": "#c35000"
+        }
+      },
+      "700": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.469,
+            0.1341,
+            45.0
+          ],
+          "hex": "#953b00"
+        }
+      },
+      "800": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.394,
+            0.1126,
+            45.0
+          ],
+          "hex": "#752d00"
+        }
+      },
+      "900": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.32,
+            0.0915,
+            45.0
+          ],
+          "hex": "#571f00"
+        }
+      },
+      "950": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.238,
+            0.068,
+            45.0
+          ],
+          "hex": "#381100"
+        }
+      }
+    },
     "red": {
       "50": {
         "$value": {

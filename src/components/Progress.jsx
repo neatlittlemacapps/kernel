@@ -15,7 +15,8 @@ const React = window.React;
 // or the progressbar has no accessible name - Base UI only names it from a mounted Label.
 //
 // `size` (track thickness) and `tone` (fill colour) are independent presentation axes;
-// `tone` omitted keeps today's default --action-solid fill unchanged. `unbounded` fades
+// `tone` omitted keeps the default --action-accent fill (the vivid .500 rung - not
+// --action-solid's .700, which reads muddy as a fat bar fill). `unbounded` fades
 // the fill's trailing edge instead of a hard cap, for a quantity with no real ceiling.
 export function Progress({ value, max, label, size = 'md', tone, unbounded, className = '', style, ...rest }) {
   const fill = toneFill(tone);
@@ -44,7 +45,7 @@ export const meta = {
       { name: 'aria-label', class: 'a11y', type: 'string',
         description: 'Accessible name when there is no visible label. Exactly one of label / aria-label is required - Base UI names the progressbar only from a mounted label, so a bare bar is otherwise unnamed (WCAG 4.1.2).' },
       { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Track thickness: sm 4px, md 6px (default), lg 10px.' },
-      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), "primary" (the brand action colour), or any colour/var. Omit to keep the default --action-solid fill.' },
+      { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Fill colour: a named status tone (info/success/warning/error), a data tone (data-1..data-6), "primary" (the brand action colour), or any colour/var. Omit for the default --action-accent fill.' },
       { name: 'unbounded', class: 'dsPresentation', type: 'bool', description: 'Fades the fill\'s trailing edge instead of a hard right cap, for a quantity that has no real ceiling (e.g. an Unlimited tier\'s own usage bar).' },
       { name: 'value', class: 'passThroughControl', passthrough: 'BaseUI.Progress.Root.value', example: 64 },
       { name: 'max', class: 'passThroughControl', passthrough: 'BaseUI.Progress.Root.max', example: 100 },

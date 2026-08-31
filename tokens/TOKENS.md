@@ -1,8 +1,8 @@
 # Design tokens — Kernel
 
-_Last regenerated: 2026-08-03._
+_Last regenerated: 2026-08-28._
 _Spec: W3C Design Tokens 2025.10._  
-_Discovered: 904 tokens across 23 file(s); 1 resolver(s)._
+_Discovered: 993 tokens across 23 file(s); 1 resolver(s)._
 
 This document is the canonical reference for the token system. It is regenerated automatically — do not hand-edit; instead update the source `.tokens.json` files and re-run `scripts/generate_docs.py`.
 
@@ -101,7 +101,7 @@ _22 token(s)._
 
 _See [USAGE.md#data](./USAGE.md#data) for usage recommendations and CSS snippets._
 
-_20 token(s)._
+_80 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -113,6 +113,42 @@ _20 token(s)._
 | `brand.data.6` | color | `{color.lime.500}` |  |
 | `chart.grid` | color | `{brand.ink.800}` |  |
 | `chart.grid` | color | `{brand.ink.400}` |  |
+| `data.categorical.1.fill` | color | `{brand.data-tone.1.400}` |  |
+| `data.categorical.1.fill` | color | `{brand.data-tone.1.500}` |  |
+| `data.categorical.1.fill-soft` | color | `{brand.data-tone.1.800}` |  |
+| `data.categorical.1.fill-soft` | color | `{brand.data-tone.1.200}` |  |
+| `data.categorical.1.fill-strong` | color | `{brand.data-tone.1.300}` |  |
+| `data.categorical.1.fill-strong` | color | `{brand.data-tone.1.700}` |  |
+| `data.categorical.2.fill` | color | `{brand.data-tone.2.400}` |  |
+| `data.categorical.2.fill` | color | `{brand.data-tone.2.500}` |  |
+| `data.categorical.2.fill-soft` | color | `{brand.data-tone.2.800}` |  |
+| `data.categorical.2.fill-soft` | color | `{brand.data-tone.2.200}` |  |
+| `data.categorical.2.fill-strong` | color | `{brand.data-tone.2.300}` |  |
+| `data.categorical.2.fill-strong` | color | `{brand.data-tone.2.700}` |  |
+| `data.categorical.3.fill` | color | `{brand.data-tone.3.400}` |  |
+| `data.categorical.3.fill` | color | `{brand.data-tone.3.500}` |  |
+| `data.categorical.3.fill-soft` | color | `{brand.data-tone.3.800}` |  |
+| `data.categorical.3.fill-soft` | color | `{brand.data-tone.3.200}` |  |
+| `data.categorical.3.fill-strong` | color | `{brand.data-tone.3.300}` |  |
+| `data.categorical.3.fill-strong` | color | `{brand.data-tone.3.700}` |  |
+| `data.categorical.4.fill` | color | `{brand.data-tone.4.400}` |  |
+| `data.categorical.4.fill` | color | `{brand.data-tone.4.500}` |  |
+| `data.categorical.4.fill-soft` | color | `{brand.data-tone.4.800}` |  |
+| `data.categorical.4.fill-soft` | color | `{brand.data-tone.4.200}` |  |
+| `data.categorical.4.fill-strong` | color | `{brand.data-tone.4.300}` |  |
+| `data.categorical.4.fill-strong` | color | `{brand.data-tone.4.700}` |  |
+| `data.categorical.5.fill` | color | `{brand.data-tone.5.400}` |  |
+| `data.categorical.5.fill` | color | `{brand.data-tone.5.500}` |  |
+| `data.categorical.5.fill-soft` | color | `{brand.data-tone.5.800}` |  |
+| `data.categorical.5.fill-soft` | color | `{brand.data-tone.5.200}` |  |
+| `data.categorical.5.fill-strong` | color | `{brand.data-tone.5.300}` |  |
+| `data.categorical.5.fill-strong` | color | `{brand.data-tone.5.700}` |  |
+| `data.categorical.6.fill` | color | `{brand.data-tone.6.400}` |  |
+| `data.categorical.6.fill` | color | `{brand.data-tone.6.500}` |  |
+| `data.categorical.6.fill-soft` | color | `{brand.data-tone.6.800}` |  |
+| `data.categorical.6.fill-soft` | color | `{brand.data-tone.6.200}` |  |
+| `data.categorical.6.fill-strong` | color | `{brand.data-tone.6.300}` |  |
+| `data.categorical.6.fill-strong` | color | `{brand.data-tone.6.700}` |  |
 | `data.series-1` | color | `{brand.data-bright.1}` |  |
 | `data.series-1` | color | `{brand.data.1}` |  |
 | `data.series-2` | color | `{brand.data-bright.2}` |  |
@@ -125,6 +161,30 @@ _20 token(s)._
 | `data.series-5` | color | `{brand.data.5}` |  |
 | `data.series-6` | color | `{brand.data-bright.6}` |  |
 | `data.series-6` | color | `{brand.data.6}` |  |
+| `data.status.error.fill` | color | `{brand.status.error.400}` |  |
+| `data.status.error.fill` | color | `{brand.status.error.500}` |  |
+| `data.status.error.fill-soft` | color | `{brand.status.error.800}` |  |
+| `data.status.error.fill-soft` | color | `{brand.status.error.200}` |  |
+| `data.status.error.fill-strong` | color | `{brand.status.error.300}` |  |
+| `data.status.error.fill-strong` | color | `{brand.status.error.700}` |  |
+| `data.status.info.fill` | color | `{brand.status.info.400}` |  |
+| `data.status.info.fill` | color | `{brand.status.info.500}` |  |
+| `data.status.info.fill-soft` | color | `{brand.status.info.800}` |  |
+| `data.status.info.fill-soft` | color | `{brand.status.info.200}` |  |
+| `data.status.info.fill-strong` | color | `{brand.status.info.300}` |  |
+| `data.status.info.fill-strong` | color | `{brand.status.info.700}` |  |
+| `data.status.success.fill` | color | `{brand.status.success.400}` |  |
+| `data.status.success.fill` | color | `{brand.status.success.500}` |  |
+| `data.status.success.fill-soft` | color | `{brand.status.success.800}` |  |
+| `data.status.success.fill-soft` | color | `{brand.status.success.200}` |  |
+| `data.status.success.fill-strong` | color | `{brand.status.success.300}` |  |
+| `data.status.success.fill-strong` | color | `{brand.status.success.700}` |  |
+| `data.status.warning.fill` | color | `{brand.status.warning.400}` |  |
+| `data.status.warning.fill` | color | `{brand.status.warning.500}` |  |
+| `data.status.warning.fill-soft` | color | `{brand.status.warning.800}` |  |
+| `data.status.warning.fill-soft` | color | `{brand.status.warning.200}` |  |
+| `data.status.warning.fill-strong` | color | `{brand.status.warning.300}` |  |
+| `data.status.warning.fill-strong` | color | `{brand.status.warning.700}` |  |
 
 ### Typography
 
@@ -193,7 +253,7 @@ _56 token(s)._
 
 ### Base / color
 
-_194 token(s)._
+_205 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -297,6 +357,17 @@ _194 token(s)._
 | `color.mint.800` | color | `oklch(0.394, 0.0757, 173.0)` (`#005342`) |  |
 | `color.mint.900` | color | `oklch(0.32, 0.0614, 173.0)` (`#003d30`) |  |
 | `color.mint.950` | color | `oklch(0.238, 0.0457, 173.0)` (`#00261d`) |  |
+| `color.orange.100` | color | `oklch(0.936, 0.0348, 45.0)` (`#ffe3d7`) |  |
+| `color.orange.200` | color | `oklch(0.881, 0.0676, 45.0)` (`#ffcbb3`) |  |
+| `color.orange.300` | color | `oklch(0.827, 0.1031, 45.0)` (`#ffb18e`) |  |
+| `color.orange.400` | color | `oklch(0.742, 0.1667, 45.0)` (`#ff8448`) |  |
+| `color.orange.50` | color | `oklch(0.978, 0.0116, 45.0)` (`#fff6f1`) |  |
+| `color.orange.500` | color | `oklch(0.648, 0.1853, 45.0)` (`#e55f00`) |  |
+| `color.orange.600` | color | `oklch(0.573, 0.1638, 45.0)` (`#c35000`) |  |
+| `color.orange.700` | color | `oklch(0.469, 0.1341, 45.0)` (`#953b00`) |  |
+| `color.orange.800` | color | `oklch(0.394, 0.1126, 45.0)` (`#752d00`) |  |
+| `color.orange.900` | color | `oklch(0.32, 0.0915, 45.0)` (`#571f00`) |  |
+| `color.orange.950` | color | `oklch(0.238, 0.068, 45.0)` (`#381100`) |  |
 | `color.red.100` | color | `oklch(0.936, 0.0322, 25.0)` (`#ffe2df`) |  |
 | `color.red.200` | color | `oklch(0.881, 0.0629, 25.0)` (`#ffc9c3`) |  |
 | `color.red.300` | color | `oklch(0.827, 0.0963, 25.0)` (`#ffaea7`) |  |
@@ -478,7 +549,7 @@ _16 token(s)._
 
 ### Other
 
-_538 token(s)._
+_556 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -512,6 +583,7 @@ _538 token(s)._
 | `brand.data-tone.1.400` | color | `{color.teal.400}` |  |
 | `brand.data-tone.1.500` | color | `{color.teal.500}` |  |
 | `brand.data-tone.1.700` | color | `{color.teal.700}` |  |
+| `brand.data-tone.1.800` | color | `{color.teal.800}` |  |
 | `brand.data-tone.1.900` | color | `{color.teal.900}` |  |
 | `brand.data-tone.2.100` | color | `{color.indigo.100}` |  |
 | `brand.data-tone.2.200` | color | `{color.indigo.200}` |  |
@@ -519,6 +591,7 @@ _538 token(s)._
 | `brand.data-tone.2.400` | color | `{color.indigo.400}` |  |
 | `brand.data-tone.2.500` | color | `{color.indigo.500}` |  |
 | `brand.data-tone.2.700` | color | `{color.indigo.700}` |  |
+| `brand.data-tone.2.800` | color | `{color.indigo.800}` |  |
 | `brand.data-tone.2.900` | color | `{color.indigo.900}` |  |
 | `brand.data-tone.3.100` | color | `{color.violet.100}` |  |
 | `brand.data-tone.3.200` | color | `{color.violet.200}` |  |
@@ -526,6 +599,7 @@ _538 token(s)._
 | `brand.data-tone.3.400` | color | `{color.violet.400}` |  |
 | `brand.data-tone.3.500` | color | `{color.violet.500}` |  |
 | `brand.data-tone.3.700` | color | `{color.violet.700}` |  |
+| `brand.data-tone.3.800` | color | `{color.violet.800}` |  |
 | `brand.data-tone.3.900` | color | `{color.violet.900}` |  |
 | `brand.data-tone.4.100` | color | `{color.magenta.100}` |  |
 | `brand.data-tone.4.200` | color | `{color.magenta.200}` |  |
@@ -533,6 +607,7 @@ _538 token(s)._
 | `brand.data-tone.4.400` | color | `{color.magenta.400}` |  |
 | `brand.data-tone.4.500` | color | `{color.magenta.500}` |  |
 | `brand.data-tone.4.700` | color | `{color.magenta.700}` |  |
+| `brand.data-tone.4.800` | color | `{color.magenta.800}` |  |
 | `brand.data-tone.4.900` | color | `{color.magenta.900}` |  |
 | `brand.data-tone.5.100` | color | `{color.mint.100}` |  |
 | `brand.data-tone.5.200` | color | `{color.mint.200}` |  |
@@ -540,6 +615,7 @@ _538 token(s)._
 | `brand.data-tone.5.400` | color | `{color.mint.400}` |  |
 | `brand.data-tone.5.500` | color | `{color.mint.500}` |  |
 | `brand.data-tone.5.700` | color | `{color.mint.700}` |  |
+| `brand.data-tone.5.800` | color | `{color.mint.800}` |  |
 | `brand.data-tone.5.900` | color | `{color.mint.900}` |  |
 | `brand.data-tone.6.100` | color | `{color.lime.100}` |  |
 | `brand.data-tone.6.200` | color | `{color.lime.200}` |  |
@@ -547,6 +623,7 @@ _538 token(s)._
 | `brand.data-tone.6.400` | color | `{color.lime.400}` |  |
 | `brand.data-tone.6.500` | color | `{color.lime.500}` |  |
 | `brand.data-tone.6.700` | color | `{color.lime.700}` |  |
+| `brand.data-tone.6.800` | color | `{color.lime.800}` |  |
 | `brand.data-tone.6.900` | color | `{color.lime.900}` |  |
 | `brand.fill.100` | color | `{color.slate.100}` |  |
 | `brand.fill.100` | color | `{color.taupe.100}` |  |
@@ -697,13 +774,14 @@ _538 token(s)._
 | `brand.signal.error` | color | `{color.red.500}` |  |
 | `brand.signal.info` | color | `{color.sky.500}` |  |
 | `brand.signal.success` | color | `{color.green.500}` |  |
-| `brand.signal.warning` | color | `{color.amber.500}` |  |
+| `brand.signal.warning` | color | `{color.orange.500}` |  |
 | `brand.status.error.100` | color | `{color.red.100}` |  |
 | `brand.status.error.200` | color | `{color.red.200}` |  |
 | `brand.status.error.300` | color | `{color.red.300}` |  |
 | `brand.status.error.400` | color | `{color.red.400}` |  |
 | `brand.status.error.500` | color | `{color.red.500}` |  |
 | `brand.status.error.700` | color | `{color.red.700}` |  |
+| `brand.status.error.800` | color | `{color.red.800}` |  |
 | `brand.status.error.900` | color | `{color.red.900}` |  |
 | `brand.status.info.100` | color | `{color.sky.100}` |  |
 | `brand.status.info.200` | color | `{color.sky.200}` |  |
@@ -711,6 +789,7 @@ _538 token(s)._
 | `brand.status.info.400` | color | `{color.sky.400}` |  |
 | `brand.status.info.500` | color | `{color.sky.500}` |  |
 | `brand.status.info.700` | color | `{color.sky.700}` |  |
+| `brand.status.info.800` | color | `{color.sky.800}` |  |
 | `brand.status.info.900` | color | `{color.sky.900}` |  |
 | `brand.status.success.100` | color | `{color.green.100}` |  |
 | `brand.status.success.200` | color | `{color.green.200}` |  |
@@ -718,14 +797,16 @@ _538 token(s)._
 | `brand.status.success.400` | color | `{color.green.400}` |  |
 | `brand.status.success.500` | color | `{color.green.500}` |  |
 | `brand.status.success.700` | color | `{color.green.700}` |  |
+| `brand.status.success.800` | color | `{color.green.800}` |  |
 | `brand.status.success.900` | color | `{color.green.900}` |  |
-| `brand.status.warning.100` | color | `{color.amber.100}` |  |
-| `brand.status.warning.200` | color | `{color.amber.200}` |  |
-| `brand.status.warning.300` | color | `{color.amber.300}` |  |
-| `brand.status.warning.400` | color | `{color.amber.400}` |  |
-| `brand.status.warning.500` | color | `{color.amber.500}` |  |
-| `brand.status.warning.700` | color | `{color.amber.700}` |  |
-| `brand.status.warning.900` | color | `{color.amber.900}` |  |
+| `brand.status.warning.100` | color | `{color.orange.100}` |  |
+| `brand.status.warning.200` | color | `{color.orange.200}` |  |
+| `brand.status.warning.300` | color | `{color.orange.300}` |  |
+| `brand.status.warning.400` | color | `{color.orange.400}` |  |
+| `brand.status.warning.500` | color | `{color.orange.500}` |  |
+| `brand.status.warning.700` | color | `{color.orange.700}` |  |
+| `brand.status.warning.800` | color | `{color.orange.800}` |  |
+| `brand.status.warning.900` | color | `{color.orange.900}` |  |
 | `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 219.1)` (`#0088a4`) |  |
 | `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 39.0)` (`#ae634a`) |  |
 | `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 169.0)` (`#248e6f`) |  |
@@ -975,6 +1056,8 @@ _538 token(s)._
 | `state.selected.text` | color | `{action.solid}` | Text/icon colour when selected. |
 | `status.error.accent` | color | `{brand.status.error.400}` |  |
 | `status.error.accent` | color | `{brand.status.error.500}` |  |
+| `status.error.border` | color | `{brand.status.error.500}` |  |
+| `status.error.border` | color | `{brand.status.error.300}` |  |
 | `status.error.on` | color | `{brand.ink.950}` |  |
 | `status.error.on` | color | `{brand.neutral.on-light}` |  |
 | `status.error.solid` | color | `{brand.status.error.300}` |  |
@@ -985,6 +1068,8 @@ _538 token(s)._
 | `status.error.tint-strong` | color | `{brand.status.error.200}` |  |
 | `status.info.accent` | color | `{brand.status.info.400}` |  |
 | `status.info.accent` | color | `{brand.status.info.500}` |  |
+| `status.info.border` | color | `{brand.status.info.500}` |  |
+| `status.info.border` | color | `{brand.status.info.300}` |  |
 | `status.info.on` | color | `{brand.ink.950}` |  |
 | `status.info.on` | color | `{brand.neutral.on-light}` |  |
 | `status.info.solid` | color | `{brand.status.info.300}` |  |
@@ -995,6 +1080,8 @@ _538 token(s)._
 | `status.info.tint-strong` | color | `{brand.status.info.200}` |  |
 | `status.success.accent` | color | `{brand.status.success.400}` |  |
 | `status.success.accent` | color | `{brand.status.success.500}` |  |
+| `status.success.border` | color | `{brand.status.success.500}` |  |
+| `status.success.border` | color | `{brand.status.success.300}` |  |
 | `status.success.on` | color | `{brand.ink.950}` |  |
 | `status.success.on` | color | `{brand.neutral.on-light}` |  |
 | `status.success.solid` | color | `{brand.status.success.300}` |  |
@@ -1005,6 +1092,8 @@ _538 token(s)._
 | `status.success.tint-strong` | color | `{brand.status.success.200}` |  |
 | `status.warning.accent` | color | `{brand.status.warning.400}` |  |
 | `status.warning.accent` | color | `{brand.status.warning.500}` |  |
+| `status.warning.border` | color | `{brand.status.warning.500}` |  |
+| `status.warning.border` | color | `{brand.status.warning.300}` |  |
 | `status.warning.on` | color | `{brand.ink.950}` |  |
 | `status.warning.on` | color | `{brand.neutral.on-light}` |  |
 | `status.warning.solid` | color | `{brand.status.warning.300}` |  |
