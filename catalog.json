@@ -1064,7 +1064,7 @@
         {
           "name": "Header",
           "required": false,
-          "description": "Leading + title/description + trailing action (Card.Header)."
+          "description": "Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header)."
         },
         {
           "name": "Body",
@@ -6273,6 +6273,17 @@
           "class": "content",
           "type": "string",
           "description": "Optional small marker before the value (e.g. a comparator like \"<\")."
+        },
+        {
+          "name": "size",
+          "class": "dsPresentation",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "description": "Value scale: md is the hero value on a card; sm is compact for a collapsed header value line; lg is the largest."
         }
       ],
       "composes": [],

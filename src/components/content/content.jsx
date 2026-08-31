@@ -35,9 +35,11 @@ export function TrendChip({ direction = 'flat', value, label }) {
 }
 
 // ValueDisplay — the canonical "74 bpm" big-value + small-unit composition for a value slot.
-export function ValueDisplay({ value, unit, prefix }) {
+// `size`: 'md' (default, the hero value on a card) | 'sm' (compact, for a collapsed header's
+// value line) | 'lg'. The slot styling scales the number; the unit stays small.
+export function ValueDisplay({ value, unit, prefix, size = 'md' }) {
   return (
-    <span className="krnl-pcard-value-display">
+    <span className="krnl-pcard-value-display" data-size={size === 'md' ? undefined : size}>
       {prefix && <span className="krnl-pcard-value-prefix">{prefix}</span>}
       <span className="krnl-pcard-value-num">{value}</span>
       {unit && <span className="krnl-pcard-value-unit">{unit}</span>}
@@ -185,6 +187,7 @@ export const meta = {
       value: { class: 'content', type: 'string|number', example: 74, description: 'The primary reading, rendered large (e.g. 74).' },
       unit: { class: 'content', type: 'string', example: 'bpm', description: 'Small trailing unit shown after the value (e.g. "bpm").' },
       prefix: { class: 'content', type: 'string', description: 'Optional small marker before the value (e.g. a comparator like "<").' },
+      size: { class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Value scale: md is the hero value on a card; sm is compact for a collapsed header value line; lg is the largest.' },
     },
     anatomy: [
       { name: 'Prefix', required: false, description: 'Optional leading marker.' },

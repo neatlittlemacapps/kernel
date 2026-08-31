@@ -143,14 +143,29 @@ Card.Preview = function CardPreview({ className = '', children, ...rest }) {
   return <div className={`krnl-card-preview ${className}`.trim()} {...rest}>{children}</div>;
 };
 
-// header row - leading (icon/avatar), title + description, trailing action
-Card.Header = function CardHeader({ leading, title, description, action, className = '', children, ...rest }) {
+// header row - a leading column (icon/avatar) + a stacked TEXT COLUMN + a trailing action.
+// The text column is a vertical stack that all aligns PAST the leading icon (the icon
+// indents the whole identity cluster, not just the title):
+//   1. title row  - `title` + an optional trailing `badge` (a StatusPill / TrendChip)
+//   2. `value`    - the prominent value line (drop a ValueDisplay here, not in Card.Body -
+//                   Card.Body is full-width and would sit flush UNDER the icon, breaking
+//                   the icon-indented cluster). Styled prominent by default for bare text.
+//   3. `description` - the muted supporting / teaser line.
+// Card.Body / Card.Footer intentionally reset to the full card width (outside this column).
+Card.Header = function CardHeader({ leading, title, badge, value, description, action, className = '', children, ...rest }) {
+  const hasText = title != null || badge != null || value != null || description != null;
   return (
     <div className={`krnl-card-header ${className}`.trim()} {...rest}>
       {leading ? <div className="krnl-card-header-lead">{leading}</div> : null}
-      {(title != null || description != null) ? (
+      {hasText ? (
         <div className="krnl-card-header-text">
-          {title != null ? <div className="krnl-card-header-title">{title}</div> : null}
+          {(title != null || badge != null) ? (
+            <div className="krnl-card-header-titlerow">
+              {title != null ? <div className="krnl-card-header-title">{title}</div> : null}
+              {badge != null ? <div className="krnl-card-header-badge">{badge}</div> : null}
+            </div>
+          ) : null}
+          {value != null ? <div className="krnl-card-header-value">{value}</div> : null}
           {description != null ? <div className="krnl-card-header-desc">{description}</div> : null}
         </div>
       ) : null}
@@ -207,7 +222,7 @@ export const meta = {
     ],
     anatomy: [
       { name: 'Preview', required: false, description: 'Edge-to-edge media (Card.Preview).' },
-      { name: 'Header', required: false, description: 'Leading + title/description + trailing action (Card.Header).' },
+      { name: 'Header', required: false, description: 'Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header).' },
       { name: 'Body', required: false, description: 'Main content (Card.Body).' },
       { name: 'Footer', required: false, description: 'Actions row (Card.Footer).' },
       { name: 'Detail', required: false, description: 'Collapsible panel revealed below the summary when `detail` is set.' },
