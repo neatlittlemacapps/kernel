@@ -104,6 +104,12 @@ follows [SemVer](https://semver.org/).
 - `brand.data-tone.*.800, brand.status.*.800` — brand.data-tone.{1-6} and brand.status.{info,success,warning,error} ramps gained step 800 (corilus.tokens.json only - semble/myneva inherit it additively)
   - *Affects:* The new data-fill triad's dark fill-soft rung, which needed the missing step
   - *Rationale:* Primitive palettes already have the full 50-950 scale; the brand ramps were missing 800 (had 100/200/300/400/500/700/900) - pure mechanical aliasing to fill the gap the homogeneous-step principle expects
+- `color.emerald.*` — New primitive color ramp `emerald` (hue 163.21, gamut-max chroma), seeded from #00B982.
+  - *Affects:* Primitives only - not yet aliased into any brand, semantic, or component tier.
+  - *Rationale:* Requested vivid teal-green accent distinct from mint (hue 173, ~10 deg apart). Step-500 hex (#00a876) differs from the input hex because lightness/chroma at each step follow the system's homogeneous-step schedule - only the hue was preserved from the seed.
+- `color.*.650` — New intermediate step `650` on all 18 primitive color ramps, between existing 600 and 700.
+  - *Affects:* All primitives: teal, mint, emerald, sky, green, lime, coral, amber, orange, red, indigo, violet, magenta, rust (gamut-max chroma at L=0.521, each ramp's own hue), slate/sage/taupe (fixed low chroma, continuing their 600-700 plateau: 0.012/0.006/0.006), graphite (achromatic, L=0.521).
+  - *Rationale:* Requested extra granularity between 600 and 700. L=0.521 is the linear midpoint of the existing 600 (0.573) and 700 (0.469) lightness steps, applied uniformly per the homogeneous-step principle. Chroma computed with the same method each ramp already uses (gamut-max seed for chromatic ramps; fixed curve for the neutral-surface ramps). Not yet referenced by any brand/semantic/component token.
 
 ### Changed
 - `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Warmed and lightened the six neutral primitives (cool greys -> warm greige, hue 75, lifted lightness)

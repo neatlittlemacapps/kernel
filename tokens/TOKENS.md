@@ -1,8 +1,8 @@
-# Design tokens — Kernel
+# Design tokens — system documentation
 
-_Last regenerated: 2026-08-28._
+_Last regenerated: 2026-09-01._
 _Spec: W3C Design Tokens 2025.10._  
-_Discovered: 993 tokens across 23 file(s); 1 resolver(s)._
+_Discovered: 1022 tokens across 23 file(s); 1 resolver(s)._
 
 This document is the canonical reference for the token system. It is regenerated automatically — do not hand-edit; instead update the source `.tokens.json` files and re-run `scripts/generate_docs.py`.
 
@@ -253,7 +253,7 @@ _56 token(s)._
 
 ### Base / color
 
-_205 token(s)._
+_234 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -274,6 +274,7 @@ _205 token(s)._
 | `color.amber.50` | color | `oklch(0.978, 0.0175, 75.0)` (`#fff6eb`) |  |
 | `color.amber.500` | color | `oklch(0.648, 0.1367, 75.0)` (`#be8000`) |  |
 | `color.amber.600` | color | `oklch(0.573, 0.1209, 75.0)` (`#a16c00`) |  |
+| `color.amber.650` | color | `oklch(0.521, 0.1099, 75.0)` (`#8e5e00`) |  |
 | `color.amber.700` | color | `oklch(0.469, 0.0989, 75.0)` (`#7a5100`) |  |
 | `color.amber.800` | color | `oklch(0.394, 0.0831, 75.0)` (`#603e00`) |  |
 | `color.amber.900` | color | `oklch(0.32, 0.0675, 75.0)` (`#472d00`) |  |
@@ -285,10 +286,23 @@ _205 token(s)._
 | `color.coral.50` | color | `oklch(0.978, 0.0108, 15.0)` (`#fff5f5`) |  |
 | `color.coral.500` | color | `oklch(0.648, 0.2418, 15.0)` (`#ff275d`) |  |
 | `color.coral.600` | color | `oklch(0.573, 0.2291, 15.0)` (`#de004a`) |  |
+| `color.coral.650` | color | `oklch(0.521, 0.2083, 15.0)` (`#c40040`) |  |
 | `color.coral.700` | color | `oklch(0.469, 0.1875, 15.0)` (`#aa0037`) |  |
 | `color.coral.800` | color | `oklch(0.394, 0.1575, 15.0)` (`#860029`) |  |
 | `color.coral.900` | color | `oklch(0.32, 0.1279, 15.0)` (`#64001d`) |  |
 | `color.coral.950` | color | `oklch(0.238, 0.0952, 15.0)` (`#41000f`) |  |
+| `color.emerald.100` | color | `oklch(0.936, 0.0976, 163.21)` (`#acffd8`) |  |
+| `color.emerald.200` | color | `oklch(0.881, 0.1898, 163.21)` (`#00feb4`) |  |
+| `color.emerald.300` | color | `oklch(0.827, 0.1782, 163.21)` (`#00e9a5`) |  |
+| `color.emerald.400` | color | `oklch(0.742, 0.1599, 163.21)` (`#00ca8e`) |  |
+| `color.emerald.50` | color | `oklch(0.978, 0.0316, 163.21)` (`#e6fff2`) |  |
+| `color.emerald.500` | color | `oklch(0.648, 0.1396, 163.21)` (`#00a876`) |  |
+| `color.emerald.600` | color | `oklch(0.573, 0.1235, 163.21)` (`#008e63`) |  |
+| `color.emerald.650` | color | `oklch(0.521, 0.1123, 163.21)` (`#007d56`) |  |
+| `color.emerald.700` | color | `oklch(0.469, 0.1011, 163.21)` (`#006c4a`) |  |
+| `color.emerald.800` | color | `oklch(0.394, 0.0849, 163.21)` (`#005439`) |  |
+| `color.emerald.900` | color | `oklch(0.32, 0.069, 163.21)` (`#003d29`) |  |
+| `color.emerald.950` | color | `oklch(0.238, 0.0513, 163.21)` (`#002618`) |  |
 | `color.graphite.0` | color | `oklch(1.0, 0.0, none)` (`#ffffff`) |  |
 | `color.graphite.100` | color | `oklch(0.936, 0.0, none)` (`#eaeaea`) |  |
 | `color.graphite.1000` | color | `oklch(0.0, 0.0, none)` (`#000000`) |  |
@@ -298,6 +312,7 @@ _205 token(s)._
 | `color.graphite.50` | color | `oklch(0.978, 0.0, none)` (`#f8f8f8`) |  |
 | `color.graphite.500` | color | `oklch(0.648, 0.0, none)` (`#8e8e8e`) |  |
 | `color.graphite.600` | color | `oklch(0.573, 0.0, none)` (`#787878`) |  |
+| `color.graphite.650` | color | `oklch(0.521, 0.0, none)` (`#696969`) |  |
 | `color.graphite.700` | color | `oklch(0.469, 0.0, none)` (`#5a5a5a`) |  |
 | `color.graphite.800` | color | `oklch(0.394, 0.0, none)` (`#464646`) |  |
 | `color.graphite.900` | color | `oklch(0.32, 0.0, none)` (`#333333`) |  |
@@ -309,6 +324,7 @@ _205 token(s)._
 | `color.green.50` | color | `oklch(0.978, 0.0358, 148.0)` (`#e8ffeb`) |  |
 | `color.green.500` | color | `oklch(0.648, 0.1876, 148.0)` (`#00ac44`) |  |
 | `color.green.600` | color | `oklch(0.573, 0.1658, 148.0)` (`#009138`) |  |
+| `color.green.650` | color | `oklch(0.521, 0.1508, 148.0)` (`#007f31`) |  |
 | `color.green.700` | color | `oklch(0.469, 0.1357, 148.0)` (`#006e29`) |  |
 | `color.green.800` | color | `oklch(0.394, 0.114, 148.0)` (`#00561e`) |  |
 | `color.green.900` | color | `oklch(0.32, 0.0926, 148.0)` (`#003f14`) |  |
@@ -320,6 +336,7 @@ _205 token(s)._
 | `color.indigo.50` | color | `oklch(0.978, 0.0103, 267.0)` (`#f5f8ff`) |  |
 | `color.indigo.500` | color | `oklch(0.648, 0.187, 267.0)` (`#5b85ff`) |  |
 | `color.indigo.600` | color | `oklch(0.573, 0.2334, 267.0)` (`#3c65ff`) |  |
+| `color.indigo.650` | color | `oklch(0.521, 0.2669, 267.0)` (`#2949ff`) |  |
 | `color.indigo.700` | color | `oklch(0.469, 0.3014, 267.0)` (`#201aff`) |  |
 | `color.indigo.800` | color | `oklch(0.394, 0.2654, 267.0)` (`#1800d1`) |  |
 | `color.indigo.900` | color | `oklch(0.32, 0.2155, 267.0)` (`#0f009e`) |  |
@@ -331,6 +348,7 @@ _205 token(s)._
 | `color.lime.50` | color | `oklch(0.978, 0.0483, 130.0)` (`#edffdd`) |  |
 | `color.lime.500` | color | `oklch(0.648, 0.1744, 130.0)` (`#6aa200`) |  |
 | `color.lime.600` | color | `oklch(0.573, 0.1542, 130.0)` (`#598900`) |  |
+| `color.lime.650` | color | `oklch(0.521, 0.1402, 130.0)` (`#4d7800`) |  |
 | `color.lime.700` | color | `oklch(0.469, 0.1262, 130.0)` (`#426700`) |  |
 | `color.lime.800` | color | `oklch(0.394, 0.106, 130.0)` (`#325000`) |  |
 | `color.lime.900` | color | `oklch(0.32, 0.0861, 130.0)` (`#243b00`) |  |
@@ -342,6 +360,7 @@ _205 token(s)._
 | `color.magenta.50` | color | `oklch(0.978, 0.0129, 348.0)` (`#fff4f9`) |  |
 | `color.magenta.500` | color | `oklch(0.648, 0.2723, 348.0)` (`#f800ab`) |  |
 | `color.magenta.600` | color | `oklch(0.573, 0.2408, 348.0)` (`#d30091`) |  |
+| `color.magenta.650` | color | `oklch(0.521, 0.219, 348.0)` (`#b9007f`) |  |
 | `color.magenta.700` | color | `oklch(0.469, 0.1971, 348.0)` (`#a1006d`) |  |
 | `color.magenta.800` | color | `oklch(0.394, 0.1656, 348.0)` (`#7f0055`) |  |
 | `color.magenta.900` | color | `oklch(0.32, 0.1345, 348.0)` (`#5e003f`) |  |
@@ -353,6 +372,7 @@ _205 token(s)._
 | `color.mint.50` | color | `oklch(0.978, 0.0305, 173.0)` (`#e4fff6`) |  |
 | `color.mint.500` | color | `oklch(0.648, 0.1244, 173.0)` (`#00a787`) |  |
 | `color.mint.600` | color | `oklch(0.573, 0.11, 173.0)` (`#008d72`) |  |
+| `color.mint.650` | color | `oklch(0.521, 0.1, 173.0)` (`#007b64`) |  |
 | `color.mint.700` | color | `oklch(0.469, 0.0901, 173.0)` (`#006b56`) |  |
 | `color.mint.800` | color | `oklch(0.394, 0.0757, 173.0)` (`#005342`) |  |
 | `color.mint.900` | color | `oklch(0.32, 0.0614, 173.0)` (`#003d30`) |  |
@@ -364,6 +384,7 @@ _205 token(s)._
 | `color.orange.50` | color | `oklch(0.978, 0.0116, 45.0)` (`#fff6f1`) |  |
 | `color.orange.500` | color | `oklch(0.648, 0.1853, 45.0)` (`#e55f00`) |  |
 | `color.orange.600` | color | `oklch(0.573, 0.1638, 45.0)` (`#c35000`) |  |
+| `color.orange.650` | color | `oklch(0.521, 0.149, 45.0)` (`#ab4500`) |  |
 | `color.orange.700` | color | `oklch(0.469, 0.1341, 45.0)` (`#953b00`) |  |
 | `color.orange.800` | color | `oklch(0.394, 0.1126, 45.0)` (`#752d00`) |  |
 | `color.orange.900` | color | `oklch(0.32, 0.0915, 45.0)` (`#571f00`) |  |
@@ -375,6 +396,7 @@ _205 token(s)._
 | `color.red.50` | color | `oklch(0.978, 0.0107, 25.0)` (`#fff5f4`) |  |
 | `color.red.500` | color | `oklch(0.648, 0.2378, 25.0)` (`#ff303b`) |  |
 | `color.red.600` | color | `oklch(0.573, 0.2323, 25.0)` (`#e10025`) |  |
+| `color.red.650` | color | `oklch(0.521, 0.2112, 25.0)` (`#c6001f`) |  |
 | `color.red.700` | color | `oklch(0.469, 0.1901, 25.0)` (`#ac001a`) |  |
 | `color.red.800` | color | `oklch(0.394, 0.1597, 25.0)` (`#880012`) |  |
 | `color.red.900` | color | `oklch(0.32, 0.1297, 25.0)` (`#65000b`) |  |
@@ -386,6 +408,7 @@ _205 token(s)._
 | `color.rust.50` | color | `oklch(0.978, 0.0109, 35.0)` (`#fff5f3`) |  |
 | `color.rust.500` | color | `oklch(0.648, 0.2273, 35.0)` (`#fa4100`) |  |
 | `color.rust.600` | color | `oklch(0.573, 0.201, 35.0)` (`#d43600`) |  |
+| `color.rust.650` | color | `oklch(0.521, 0.1828, 35.0)` (`#bb2e00`) |  |
 | `color.rust.700` | color | `oklch(0.469, 0.1645, 35.0)` (`#a22700`) |  |
 | `color.rust.800` | color | `oklch(0.394, 0.1382, 35.0)` (`#801d00`) |  |
 | `color.rust.900` | color | `oklch(0.32, 0.1123, 35.0)` (`#5f1300`) |  |
@@ -398,6 +421,7 @@ _205 token(s)._
 | `color.sage.50` | color | `oklch(0.978, 0.002, 169.0)` (`#f6f8f7`) |  |
 | `color.sage.500` | color | `oklch(0.648, 0.0055, 169.0)` (`#8b908e`) |  |
 | `color.sage.600` | color | `oklch(0.573, 0.006, 169.0)` (`#757978`) |  |
+| `color.sage.650` | color | `oklch(0.521, 0.006, 169.0)` (`#666a68`) |  |
 | `color.sage.700` | color | `oklch(0.469, 0.006, 169.0)` (`#575c5a`) |  |
 | `color.sage.800` | color | `oklch(0.394, 0.0055, 169.0)` (`#434745`) |  |
 | `color.sage.900` | color | `oklch(0.32, 0.005, 169.0)` (`#303432`) |  |
@@ -409,6 +433,7 @@ _205 token(s)._
 | `color.sky.50` | color | `oklch(0.978, 0.0136, 227.0)` (`#effaff`) |  |
 | `color.sky.500` | color | `oklch(0.648, 0.1251, 227.0)` (`#009dc9`) |  |
 | `color.sky.600` | color | `oklch(0.573, 0.1106, 227.0)` (`#0084ab`) |  |
+| `color.sky.650` | color | `oklch(0.521, 0.1006, 227.0)` (`#007496`) |  |
 | `color.sky.700` | color | `oklch(0.469, 0.0905, 227.0)` (`#006482`) |  |
 | `color.sky.800` | color | `oklch(0.394, 0.0761, 227.0)` (`#004e66`) |  |
 | `color.sky.900` | color | `oklch(0.32, 0.0618, 227.0)` (`#00394b`) |  |
@@ -421,6 +446,7 @@ _205 token(s)._
 | `color.slate.50` | color | `oklch(0.978, 0.004, 219.0)` (`#f5f8fa`) |  |
 | `color.slate.500` | color | `oklch(0.648, 0.011, 219.0)` (`#889093`) |  |
 | `color.slate.600` | color | `oklch(0.573, 0.012, 219.0)` (`#717a7d`) |  |
+| `color.slate.650` | color | `oklch(0.521, 0.012, 219.0)` (`#626b6e`) |  |
 | `color.slate.700` | color | `oklch(0.469, 0.012, 219.0)` (`#535c5f`) |  |
 | `color.slate.800` | color | `oklch(0.394, 0.011, 219.0)` (`#40484a`) |  |
 | `color.slate.900` | color | `oklch(0.32, 0.01, 219.0)` (`#2d3436`) |  |
@@ -433,6 +459,7 @@ _205 token(s)._
 | `color.taupe.50` | color | `oklch(0.978, 0.002, 39.0)` (`#f9f7f7`) |  |
 | `color.taupe.500` | color | `oklch(0.648, 0.0055, 39.0)` (`#928d8c`) |  |
 | `color.taupe.600` | color | `oklch(0.573, 0.006, 39.0)` (`#7c7776`) |  |
+| `color.taupe.650` | color | `oklch(0.521, 0.006, 39.0)` (`#6c6867`) |  |
 | `color.taupe.700` | color | `oklch(0.469, 0.006, 39.0)` (`#5e5958`) |  |
 | `color.taupe.800` | color | `oklch(0.394, 0.0055, 39.0)` (`#494544`) |  |
 | `color.taupe.900` | color | `oklch(0.32, 0.005, 39.0)` (`#353231`) |  |
@@ -444,6 +471,7 @@ _205 token(s)._
 | `color.teal.50` | color | `oklch(0.978, 0.0108, 219.0)` (`#f0fafd`) |  |
 | `color.teal.500` | color | `oklch(0.648, 0.1172, 219.0)` (`#009fbf`) |  |
 | `color.teal.600` | color | `oklch(0.573, 0.1036, 219.0)` (`#0086a2`) |  |
+| `color.teal.650` | color | `oklch(0.521, 0.0942, 219.0)` (`#00758e`) |  |
 | `color.teal.700` | color | `oklch(0.469, 0.0848, 219.0)` (`#00657b`) |  |
 | `color.teal.800` | color | `oklch(0.394, 0.0713, 219.0)` (`#004f60`) |  |
 | `color.teal.900` | color | `oklch(0.32, 0.0579, 219.0)` (`#003947`) |  |
@@ -458,6 +486,7 @@ _205 token(s)._
 | `color.violet.50` | color | `oklch(0.978, 0.0141, 311.0)` (`#fbf5ff`) |  |
 | `color.violet.500` | color | `oklch(0.648, 0.2599, 311.0)` (`#c04aff`) |  |
 | `color.violet.600` | color | `oklch(0.573, 0.2883, 311.0)` (`#ad00f0`) |  |
+| `color.violet.650` | color | `oklch(0.521, 0.2621, 311.0)` (`#9800d4`) |  |
 | `color.violet.700` | color | `oklch(0.469, 0.2359, 311.0)` (`#8400b8`) |  |
 | `color.violet.800` | color | `oklch(0.394, 0.1982, 311.0)` (`#670091`) |  |
 | `color.violet.900` | color | `oklch(0.32, 0.161, 311.0)` (`#4c006d`) |  |

@@ -9,6 +9,7 @@
   --color-teal-400: #00bee4;
   --color-teal-500: #009fbf;
   --color-teal-600: #0086a2;
+  --color-teal-650: #00758e;
   --color-teal-700: #00657b;
   --color-teal-800: #004f60;
   --color-teal-900: #003947;
@@ -20,10 +21,23 @@
   --color-mint-400: #00c8a3;
   --color-mint-500: #00a787;
   --color-mint-600: #008d72;
+  --color-mint-650: #007b64;
   --color-mint-700: #006b56;
   --color-mint-800: #005342;
   --color-mint-900: #003d30;
   --color-mint-950: #00261d;
+  --color-emerald-50: #e6fff2;
+  --color-emerald-100: #acffd8;
+  --color-emerald-200: #00feb4;
+  --color-emerald-300: #00e9a5;
+  --color-emerald-400: #00ca8e;
+  --color-emerald-500: #00a876;
+  --color-emerald-600: #008e63;
+  --color-emerald-650: #007d56;
+  --color-emerald-700: #006c4a;
+  --color-emerald-800: #005439;
+  --color-emerald-900: #003d29;
+  --color-emerald-950: #002618;
   --color-sky-50: #effaff;
   --color-sky-100: #cff0ff;
   --color-sky-200: #a2e3ff;
@@ -31,6 +45,7 @@
   --color-sky-400: #00bcf1;
   --color-sky-500: #009dc9;
   --color-sky-600: #0084ab;
+  --color-sky-650: #007496;
   --color-sky-700: #006482;
   --color-sky-800: #004e66;
   --color-sky-900: #00394b;
@@ -42,6 +57,7 @@
   --color-green-400: #00ce53;
   --color-green-500: #00ac44;
   --color-green-600: #009138;
+  --color-green-650: #007f31;
   --color-green-700: #006e29;
   --color-green-800: #00561e;
   --color-green-900: #003f14;
@@ -53,6 +69,7 @@
   --color-lime-400: #80c200;
   --color-lime-500: #6aa200;
   --color-lime-600: #598900;
+  --color-lime-650: #4d7800;
   --color-lime-700: #426700;
   --color-lime-800: #325000;
   --color-lime-900: #243b00;
@@ -64,6 +81,7 @@
   --color-coral-400: #ff7d8b;
   --color-coral-500: #ff275d;
   --color-coral-600: #de004a;
+  --color-coral-650: #c40040;
   --color-coral-700: #aa0037;
   --color-coral-800: #860029;
   --color-coral-900: #64001d;
@@ -75,6 +93,7 @@
   --color-amber-400: #e49b00;
   --color-amber-500: #be8000;
   --color-amber-600: #a16c00;
+  --color-amber-650: #8e5e00;
   --color-amber-700: #7a5100;
   --color-amber-800: #603e00;
   --color-amber-900: #472d00;
@@ -86,6 +105,7 @@
   --color-orange-400: #ff8448;
   --color-orange-500: #e55f00;
   --color-orange-600: #c35000;
+  --color-orange-650: #ab4500;
   --color-orange-700: #953b00;
   --color-orange-800: #752d00;
   --color-orange-900: #571f00;
@@ -97,6 +117,7 @@
   --color-red-400: #ff7f78;
   --color-red-500: #ff303b;
   --color-red-600: #e10025;
+  --color-red-650: #c6001f;
   --color-red-700: #ac001a;
   --color-red-800: #880012;
   --color-red-900: #65000b;
@@ -108,6 +129,7 @@
   --color-indigo-400: #86a8ff;
   --color-indigo-500: #5b85ff;
   --color-indigo-600: #3c65ff;
+  --color-indigo-650: #2949ff;
   --color-indigo-700: #201aff;
   --color-indigo-800: #1800d1;
   --color-indigo-900: #0f009e;
@@ -119,6 +141,7 @@
   --color-violet-400: #d086ff;
   --color-violet-500: #c04aff;
   --color-violet-600: #ad00f0;
+  --color-violet-650: #9800d4;
   --color-violet-700: #8400b8;
   --color-violet-800: #670091;
   --color-violet-900: #4c006d;
@@ -130,6 +153,7 @@
   --color-magenta-400: #ff71c1;
   --color-magenta-500: #f800ab;
   --color-magenta-600: #d30091;
+  --color-magenta-650: #b9007f;
   --color-magenta-700: #a1006d;
   --color-magenta-800: #7f0055;
   --color-magenta-900: #5e003f;
@@ -142,6 +166,7 @@
   --color-slate-400: #a5adb0;
   --color-slate-500: #889093;
   --color-slate-600: #717a7d;
+  --color-slate-650: #626b6e;
   --color-slate-700: #535c5f;
   --color-slate-800: #40484a;
   --color-slate-900: #2d3436;
@@ -154,6 +179,7 @@
   --color-sage-400: #a8acab;
   --color-sage-500: #8b908e;
   --color-sage-600: #757978;
+  --color-sage-650: #666a68;
   --color-sage-700: #575c5a;
   --color-sage-800: #434745;
   --color-sage-900: #303432;
@@ -166,6 +192,7 @@
   --color-taupe-400: #aeaaa9;
   --color-taupe-500: #928d8c;
   --color-taupe-600: #7c7776;
+  --color-taupe-650: #6c6867;
   --color-taupe-700: #5e5958;
   --color-taupe-800: #494544;
   --color-taupe-900: #353231;
@@ -178,6 +205,7 @@
   --color-graphite-400: #ababab;
   --color-graphite-500: #8e8e8e;
   --color-graphite-600: #787878;
+  --color-graphite-650: #696969;
   --color-graphite-700: #5a5a5a;
   --color-graphite-800: #464646;
   --color-graphite-900: #333333;
@@ -201,6 +229,7 @@
   --color-rust-400: #ff8263;
   --color-rust-500: #fa4100;
   --color-rust-600: #d43600;
+  --color-rust-650: #bb2e00;
   --color-rust-700: #a22700;
   --color-rust-800: #801d00;
   --color-rust-900: #5f1300;

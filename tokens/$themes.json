@@ -1,6 +1,6 @@
 [
   {
-    "id": "65ec333b-7826-4378-9175-c127220506fc",
+    "id": "2cd6b1ff-20d3-47bb-8e40-b768e17925c2",
     "name": "corilus",
     "group": "brand",
     "selectedTokenSets": {
@@ -30,7 +30,7 @@
     }
   },
   {
-    "id": "1a686f03-b933-4b07-8241-e7884d774c9a",
+    "id": "f00d91f2-4386-49ce-96d9-c31f8eea83c1",
     "name": "semble",
     "group": "brand",
     "selectedTokenSets": {
@@ -60,7 +60,7 @@
     }
   },
   {
-    "id": "c03f56d8-8f47-46cb-8434-748b1330da49",
+    "id": "eb6a9444-f2a5-4d9c-a8df-9168d66e79fa",
     "name": "myneva",
     "group": "brand",
     "selectedTokenSets": {
@@ -90,7 +90,7 @@
     }
   },
   {
-    "id": "06e5fd59-de25-4b95-97eb-77755ec5f632",
+    "id": "92bff34e-b4a1-411e-ac1f-e66f4b93832c",
     "name": "light",
     "group": "theme",
     "selectedTokenSets": {
@@ -120,7 +120,7 @@
     }
   },
   {
-    "id": "fe8cad68-83cb-43f5-a61a-d9976decb46e",
+    "id": "b597a243-6c2d-454f-94a1-532abf32006f",
     "name": "dark",
     "group": "theme",
     "selectedTokenSets": {
@@ -150,7 +150,7 @@
     }
   },
   {
-    "id": "922aa996-3edd-4ab1-8c52-0ce42e059121",
+    "id": "5e23ca27-003b-4285-885b-1d490bbaa76e",
     "name": "desktop",
     "group": "breakpoint",
     "selectedTokenSets": {
@@ -180,7 +180,7 @@
     }
   },
   {
-    "id": "b603092f-d6d1-442b-825f-d8a54a9c2a71",
+    "id": "5e9cb07a-ce5d-4780-9f99-091463d5128b",
     "name": "tablet",
     "group": "breakpoint",
     "selectedTokenSets": {
@@ -210,7 +210,7 @@
     }
   },
   {
-    "id": "d7e47bed-3ea4-4a00-9e47-c37925fc5a96",
+    "id": "85980cf2-d5cd-41f1-a36c-a1d210eea28e",
     "name": "mobile",
     "group": "breakpoint",
     "selectedTokenSets": {
@@ -240,7 +240,7 @@
     }
   },
   {
-    "id": "7b05d348-4953-49dc-ada2-1dd073d53ab3",
+    "id": "f0a75ff8-9aab-4487-970e-d70a598914d4",
     "name": "compact",
     "group": "density",
     "selectedTokenSets": {
@@ -270,7 +270,7 @@
     }
   },
   {
-    "id": "81bd47b3-9a5b-4342-8078-0127ae2aa5d0",
+    "id": "dc3f7b29-b1e9-4ef3-8739-a63a2a16a310",
     "name": "comfortable",
     "group": "density",
     "selectedTokenSets": {
@@ -300,7 +300,7 @@
     }
   },
   {
-    "id": "fafc4cd1-b7a9-46e6-9d83-93c3a4b40fd3",
+    "id": "1558a533-3598-46e2-b028-825de67b70f9",
     "name": "spacious",
     "group": "density",
     "selectedTokenSets": {
