@@ -27,14 +27,14 @@ const React = window.React;
 
 export const Card = React.forwardRef(function Card(
   { surface = 'plain', bordered = true, elevated = false, accent = false,
-    toneScope = 'box', dense = false,
-    orientation = 'vertical', size = 'md', tone,
+    toneScope = 'box', density,
+    orientation = 'vertical', tone,
     selected, interactive, disabled, dragging, floatingAction, as,
     detail, expanded, defaultExpanded, onExpandedChange,
     onClick, className = '', style, children,
     // Deprecated - translated onto the props above so existing callers keep working.
     // Remove once callers migrate (see STANDARD.md's Card entry + references/migration.md).
-    appearance, ...rest }, ref) {
+    appearance, size, dense, ...rest }, ref) {
   // appearance -> {surface, bordered} alias table (kept pixel-identical):
   //   filled (old default)  -> surface="plain"  bordered=true   (unchanged base look)
   //   outline                -> surface="none"   bordered=true
@@ -57,6 +57,17 @@ export const Card = React.forwardRef(function Card(
   // of the shared chrome contract.
   const legacyStripBorder = accent === 'strip-border';
   if (typeof accent === 'string') { bordered = true; accent = true; }
+  // density unifies three overlapping controls onto the ONE canonical density scale
+  // (data-density="compact"|"comfortable"|"spacious", reshaping padding/radius/gap via
+  // --density-* tokens) instead of `size`'s old parallel padding-only classes. Explicit
+  // `density` wins; then the deprecated `size` (sm/md/lg map onto the same three steps);
+  // then the deprecated boolean `dense`. Omitting all three writes NO data-density
+  // attribute, so the card inherits any ambient [data-density] scope from an ancestor -
+  // do not default this to 'comfortable', that would pin every card and break inheritance.
+  const SIZE_TO_DENSITY = { sm: 'compact', md: 'comfortable', lg: 'spacious' };
+  const resolvedDensity = density
+    ?? (size != null ? SIZE_TO_DENSITY[size] : undefined)
+    ?? (dense ? 'compact' : undefined);
   // `detail` opts the card into collapse: the summary (children) becomes a toggle and
   // `detail` is revealed in an animated panel below. It composes Base UI collapsible.
   const collapsible = detail != null;
@@ -71,7 +82,6 @@ export const Card = React.forwardRef(function Card(
     'krnl-card',
     legacyElevated && 'krnl-card--elevated',
     orientation === 'horizontal' && 'krnl-card--horizontal',
-    size !== 'md' && `krnl-card--${size}`,
     clickable && 'krnl-card--interactive',
     collapsible && 'krnl-card--collapsible',
     className,
@@ -98,7 +108,7 @@ export const Card = React.forwardRef(function Card(
     // hover/active rules; folding it in here would tie those rules' specificity
     // with the generic ones below and let source order (not intent) decide winner.
     'data-elevated': elevated || undefined,
-    'data-density': dense ? 'compact' : undefined,
+    'data-density': resolvedDensity || undefined,
   };
 
   // Collapsible form: root is Base UI Collapsible.Root (a <div>, never a button); the
@@ -195,10 +205,10 @@ export const meta = {
       { name: 'elevated', class: 'dsPresentation', type: 'bool', default: false, description: 'A floating ambient drop shadow (--elevation-floating) - the same family as `accent` and a collapsible card. For the older raised-ring look, see the deprecated `appearance="elevated"`.' },
       { name: 'accent', class: 'dsPresentation', type: 'bool', default: false, description: 'A tone-coloured accent strip on the top edge. Inset box-shadow, so it is auto-clipped to the corner radius. Falls back to a neutral hairline (never silently invisible) when toneScope="content" or no `tone` resolves. Mutually exclusive with Card.Preview (the inset paints under a full-bleed image). Deprecated string values \'strip\' / \'strip-border\' still work (both -> accent={true}; \'strip-border\' also keeps a border softened toward the tone) for back-compat.' },
       { name: 'toneScope', class: 'dsPresentation', values: ['box', 'content'], default: 'box', description: '"box" lets `tone` also paint background/border/strip - border and strip resolve to the SAME saturated accent rung (~.500), so the edge reads as one weight rather than a soft border plus a vivid strip. "content" keeps the box neutral while the tone stays available to slot content (e.g. an icon tile) via --card-tone-*.' },
-      { name: 'dense', class: 'dsPresentation', type: 'bool', default: false, description: 'A compact density scope: sets data-density="compact" on this Card, shrinking padding/radius/gap - a local scope over the existing --density-* tokens, not a parallel spacing system.' },
+      { name: 'density', class: 'dsPresentation', values: ['compact', 'comfortable', 'spacious'], description: 'Density scope: sets data-density on the card root, reshaping padding/radius/gap via the --density-* tokens. Omit to inherit the ambient density of an enclosing [data-density] scope.' },
       { name: 'tone', class: 'dsPresentation', type: 'string', description: 'Colour identity: a named status (info/success/warning/error), a named data tone (data-1..data-6 - the categorical data-viz hues: teal/indigo/violet/magenta/mint/lime, for "one of several categories" identity without implying status), or any colour/var. With the default toneScope="box", a resolved tone colours the border and (when `accent` is set) the strip immediately - a tinted BODY fill additionally needs surface="tinted" (surface and tone are independent axes, like Banner). Also exposes the tone triad to slot content (e.g. an icon tile) via --card-tone-*. Neutral when omitted, and tone="neutral" is equivalent to omitting it (there is no --status-neutral-* token family, so it never paints the box either). Data tones alias their own designed --data-tone-{n}-tint directly rather than the generic mix, so they read at full ramp saturation.' },
       { name: 'orientation', class: 'dsPresentation', values: ['vertical', 'horizontal'], default: 'vertical', description: 'Lays the slots in a column (default) or a row; the row form collapses back to a column inside a narrow container (@container, not the viewport).' },
-      { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], default: 'md', description: 'Padding density step.' },
+      { name: 'size', class: 'dsPresentation', values: ['sm', 'md', 'lg'], deprecated: true, description: 'Deprecated - use `density`. sm->compact, md->comfortable, lg->spacious (maps onto the canonical density scale instead of a parallel padding-only system).' },
       { name: 'interactive', class: 'dsPresentation', type: 'bool', description: 'Renders a focusable <button> with hover / pressed / focus states. Opt-in only (not implied by onClick), so a specialised non-button card can compose Card via `as` + its own onClick.' },
       { name: 'as', class: 'dsPresentation', type: 'string', description: 'Element tag for the non-interactive form (default div; e.g. "article"). Ignored when interactive (always a <button>) or collapsible (always a Collapsible root div).' },
       { name: 'selected', class: 'dsPresentation', type: 'bool', description: 'Marks the chosen state (accent border via [data-selected]); sets aria-pressed on the interactive form.' },
@@ -212,6 +222,7 @@ export const meta = {
       { name: 'onClick', class: 'event', type: '(event) => void', description: 'Click handler attached to the card element. Pair with `interactive` for the focusable <button> affordance. Ignored when `detail` is set (the toggle owns the click - use onExpandedChange).' },
       { name: 'children', class: 'content', type: 'ReactNode', description: 'Card.Preview / Card.Header / Card.Body / Card.Footer (+ any content). When `detail` is set, children are the always-visible summary and must stay display-only (no nested buttons/links).' },
       { name: 'appearance', class: 'dsPresentation', values: ['filled', 'outline', 'subtle', 'elevated'], deprecated: true, description: 'Deprecated - use `surface`/`bordered`/`elevated`. filled -> surface="plain" bordered=true (the unchanged default look); outline -> surface="none" bordered=true; subtle -> surface="none" bordered=false; elevated -> the raised-ring look PatientCard is built on (kept pixel-identical - distinct from the new plain `elevated` boolean, which is a ringless floating shadow).' },
+      { name: 'dense', class: 'dsPresentation', type: 'bool', deprecated: true, description: 'Deprecated - use density="compact".' },
     ],
     bestPractices: [
       { do: true, text: 'Compose the base Card + fill slots for a specialised card; do not hand-roll a card wrapper.' },

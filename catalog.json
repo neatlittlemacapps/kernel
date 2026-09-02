@@ -907,11 +907,14 @@
           "description": "\"box\" lets `tone` also paint background/border/strip - border and strip resolve to the SAME saturated accent rung (~.500), so the edge reads as one weight rather than a soft border plus a vivid strip. \"content\" keeps the box neutral while the tone stays available to slot content (e.g. an icon tile) via --card-tone-*."
         },
         {
-          "name": "dense",
+          "name": "density",
           "class": "dsPresentation",
-          "type": "bool",
-          "default": false,
-          "description": "A compact density scope: sets data-density=\"compact\" on this Card, shrinking padding/radius/gap - a local scope over the existing --density-* tokens, not a parallel spacing system."
+          "values": [
+            "compact",
+            "comfortable",
+            "spacious"
+          ],
+          "description": "Density scope: sets data-density on the card root, reshaping padding/radius/gap via the --density-* tokens. Omit to inherit the ambient density of an enclosing [data-density] scope."
         },
         {
           "name": "tone",
@@ -937,8 +940,8 @@
             "md",
             "lg"
           ],
-          "default": "md",
-          "description": "Padding density step."
+          "deprecated": true,
+          "description": "Deprecated - use `density`. sm->compact, md->comfortable, lg->spacious (maps onto the canonical density scale instead of a parallel padding-only system)."
         },
         {
           "name": "interactive",
@@ -1019,6 +1022,13 @@
           ],
           "deprecated": true,
           "description": "Deprecated - use `surface`/`bordered`/`elevated`. filled -> surface=\"plain\" bordered=true (the unchanged default look); outline -> surface=\"none\" bordered=true; subtle -> surface=\"none\" bordered=false; elevated -> the raised-ring look PatientCard is built on (kept pixel-identical - distinct from the new plain `elevated` boolean, which is a ringless floating shadow)."
+        },
+        {
+          "name": "dense",
+          "class": "dsPresentation",
+          "type": "bool",
+          "deprecated": true,
+          "description": "Deprecated - use density=\"compact\"."
         }
       ],
       "composes": [],

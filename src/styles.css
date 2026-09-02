@@ -1053,8 +1053,6 @@
    TWO competing BASE rules was ever the B-54 bug). */
 .krnl-card--elevated.krnl-card--interactive:hover:not(:disabled) { transform: translateY(-1px); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--action-accent), var(--elevation-overlay); }
 .krnl-card--elevated.krnl-card--interactive:active:not(:disabled) { transform: translateY(0); --card-elevation: 0 0 0 var(--dimension-rule-hair) var(--border-subtle), var(--elevation-raised); }
-.krnl-card--sm { padding: var(--space-3); }
-.krnl-card--lg { padding: var(--space-6); }
 /* horizontal: a media column + a stacked text column (Preview spans all three text
    rows). Falls back to the vertical single-column template when there is no Preview -
    a fixed-width column track does not auto-collapse the way an empty ROW does (see

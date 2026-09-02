@@ -21,10 +21,9 @@ export default {
     elevated: { control: 'boolean', description: 'A floating ambient drop shadow (--elevation-floating) - the same family as `accent` and a collapsible card.', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     accent: { control: 'boolean', description: 'A tone-coloured accent strip on the top edge (needs a `tone` to show colour; toneScope="box").', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     toneScope: { control: 'radio', options: ['box', 'content'], description: '"box" lets `tone` also paint background/border/strip. "content" keeps the box neutral while the tone stays available to slot content (e.g. an icon tile).', table: { category: 'Appearance', defaultValue: { summary: 'box' } } },
-    dense: { control: 'boolean', description: 'A compact density scope (data-density="compact" on this Card).', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
+    density: { control: 'select', options: [undefined, 'compact', 'comfortable', 'spacious'], description: 'Density scope: reshapes padding/radius/gap via --density-* tokens. Omit to inherit the ambient density.', table: { category: 'Appearance' } },
     tone: { control: 'text', description: 'Colour identity: a named status (info/success/warning/error), a data tone (data-1..data-6), or any colour/var.', table: { category: 'Appearance' } },
     orientation: { control: 'select', options: ['vertical', 'horizontal'], description: 'Column (default) or row - the row form collapses back to a column inside a narrow container (@container, not the viewport).', table: { category: 'Appearance', defaultValue: { summary: 'vertical' } } },
-    size: { control: 'select', options: ['sm', 'md', 'lg'], description: 'Padding density step.', table: { category: 'Appearance', defaultValue: { summary: 'md' } } },
     interactive: { control: 'boolean', description: 'Renders a focusable <button>. Opt-in only.', table: { category: 'Appearance', type: { summary: 'bool' } } },
     selected: { control: 'boolean', description: 'Chosen state (accent border via [data-selected]).', table: { category: 'Appearance', type: { summary: 'bool' } } },
     dragging: { control: 'boolean', description: 'Lifted drag state.', table: { category: 'Appearance', type: { summary: 'bool' } } },
@@ -81,7 +80,7 @@ const IconTile = ({ children }) => (
 );
 
 export const Playground = {
-  args: { surface: 'plain', bordered: true, elevated: true, accent: true, toneScope: 'box', dense: false, tone: 'info', orientation: 'vertical', size: 'md', interactive: false, selected: false, dragging: false },
+  args: { surface: 'plain', bordered: true, elevated: true, accent: true, toneScope: 'box', tone: 'info', orientation: 'vertical', interactive: false, selected: false, dragging: false },
   render: (args) => (
     <div style={{ maxWidth: 380 }}>
       <Card {...args}>
@@ -195,6 +194,14 @@ export const ChromeMatrix = {
           <Card appearance="outline"><Card.Body>appearance="outline" → surface="none" bordered</Card.Body></Card>
           <Card appearance="subtle"><Card.Body>appearance="subtle" → surface="none" borderless</Card.Body></Card>
           <Card appearance="elevated" accent tone="info"><Card.Header title="appearance=&quot;elevated&quot; + accent" description="the raised-ring look, unchanged for PatientCard" /></Card>
+        </div>
+      </div>
+      <div>
+        <h4 style={{ margin: '0 0 0.5rem' }}>the deprecated `size` / `dense` aliases still work → `density`</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+          <Cell label='size="sm" → compact'><Card size="sm"><Card.Body>size="sm"</Card.Body></Card></Cell>
+          <Cell label='dense → compact'><Card dense><Card.Body>dense</Card.Body></Card></Cell>
+          <Cell label='density="compact" (preferred)'><Card density="compact"><Card.Body>density="compact"</Card.Body></Card></Cell>
         </div>
       </div>
     </div>
