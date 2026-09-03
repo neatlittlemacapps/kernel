@@ -851,66 +851,21 @@
   --canvas-texture-opacity: 0.03;
 }
 
-[data-brand="semble"] {
-  --brand-primary: #38d2a6;
-  --brand-primary-deep: #38d2a6;
-  --brand-primary-bright: #38d2a6;
+[data-brand="sofia"] {
+  --brand-primary: #3858c7;
+  --brand-primary-deep: #324fb3;
+  --brand-primary-bright: #889bdd;
   --brand-secondary: var(--color-graphite-0);
-  --brand-neutral-on-light: var(--brand-ink-950);
-  --brand-fill-25: var(--color-sage-25);
-  --brand-fill-50: var(--color-sage-50);
-  --brand-fill-100: var(--color-sage-100);
-  --brand-fill-200: var(--color-sage-200);
-  --brand-fill-300: var(--color-sage-300);
-  --brand-fill-600: var(--color-sage-600);
-  --brand-fill-700: var(--color-sage-700);
-  --brand-fill-800: var(--color-sage-800);
-  --brand-fill-900: var(--color-sage-900);
-  --brand-fill-950: var(--color-sage-950);
-  --brand-logo-from: #38d2a6;
-  --brand-logo-to: #008f6e;
+  --brand-logo-from: #3858c7;
+  --brand-logo-to: #212e5e;
   --brand-logo-angle: -52.3;
-  --brand-accent-400: #ffb03d;
-  --brand-accent-700: #9f6200;
-  --brand-accent-950: #4e2900;
-  --brand-tint-soft: oklch(0.5792 0.1048 169.0 / 0.12);
-  --brand-tint-strong: oklch(0.5792 0.1048 169.0 / 0.24);
-  --brand-radius-compact: var(--radius-none);
-  --brand-radius-base: var(--radius-none);
-  --brand-radius-spacious: var(--radius-xs);
-  --font-heading: "DM Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "DM Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-}
-
-[data-brand="myneva"] {
-  --brand-primary: #ed6739;
-  --brand-primary-deep: #ed6739;
-  --brand-primary-bright: #ed6739;
-  --brand-secondary: var(--color-graphite-0);
-  --brand-neutral-on-light: var(--brand-ink-950);
-  --brand-fill-25: var(--color-taupe-25);
-  --brand-fill-50: var(--color-taupe-50);
-  --brand-fill-100: var(--color-taupe-100);
-  --brand-fill-200: var(--color-taupe-200);
-  --brand-fill-300: var(--color-taupe-300);
-  --brand-fill-600: var(--color-taupe-600);
-  --brand-fill-700: var(--color-taupe-700);
-  --brand-fill-800: var(--color-taupe-800);
-  --brand-fill-900: var(--color-taupe-900);
-  --brand-fill-950: var(--color-taupe-950);
-  --brand-logo-from: #ed6739;
-  --brand-logo-to: #b7593a;
-  --brand-logo-angle: -52.3;
-  --brand-accent-400: var(--color-amber-400);
-  --brand-accent-700: var(--color-amber-700);
-  --brand-accent-950: var(--color-amber-950);
-  --brand-tint-soft: oklch(0.5792 0.1048 39.0 / 0.12);
-  --brand-tint-strong: oklch(0.5792 0.1048 39.0 / 0.24);
-  --brand-radius-compact: var(--radius-sm);
-  --brand-radius-base: var(--radius-md);
-  --brand-radius-spacious: var(--radius-lg);
-  --font-heading: Lato, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-body: Lato, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --brand-accent-400: #28d6d7;
+  --brand-accent-700: #188081;
+  --brand-accent-950: #082b2b;
+  --brand-tint-soft: oklch(0.5792 0.1048 267.4 / 0.12);
+  --brand-tint-strong: oklch(0.5792 0.1048 267.4 / 0.24);
+  --font-heading: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-body: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
 
 [data-theme="dark"] {

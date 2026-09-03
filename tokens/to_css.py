@@ -100,8 +100,7 @@ def main(root):
     # semantic layer aliases var(--brand-*), so re-pointing these re-skins everything
     # without touching the semantic/theme/density blocks. Additive: only the deltas
     # are emitted; unspecified brand vars stay at the :root (Corilus) value.
-    L.append('\n[data-brand="semble"] {'); L += block(root, "brand/semble.tokens.json"); L.append("}")
-    L.append('\n[data-brand="myneva"] {'); L += block(root, "brand/myneva.tokens.json"); L.append("}")
+    L.append('\n[data-brand="sofia"] {'); L += block(root, "brand/sofia.tokens.json"); L.append("}")
     L.append('\n[data-theme="dark"] {'); L += block(root, "semantic/dark.tokens.json"); L.append("}")
     L.append('\n[data-density="compact"] {'); L += block(root, "responsive/compact.tokens.json"); L.append("}")
     L.append('\n[data-density="comfortable"] {'); L += block(root, "responsive/comfortable.tokens.json"); L.append("}")

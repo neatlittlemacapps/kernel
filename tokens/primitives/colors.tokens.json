@@ -1077,7 +1077,7 @@
       }
     },
     "orange": {
-      "$description": "Vivid orange (hue 45, gamut-max chroma strategy) - distinct from amber (hue 75, a warmer gold/brown the myNeva brand's own inverted-surface accent relies on). Built for Corilus's warning tone, which read as a muted brown at amber's hue+chroma; kept as its own ramp rather than retuning amber so myNeva's amber-gold identity is untouched.",
+      "$description": "Vivid orange (hue 45, gamut-max chroma strategy) - distinct from amber (hue 75, a warmer gold/brown used elsewhere as an inverted-surface accent identity). Built for Corilus's warning tone, which read as a muted brown at amber's hue+chroma; kept as its own ramp rather than retuning amber so that other amber-gold accent usage stays untouched.",
       "50": {
         "$value": {
           "colorSpace": "oklch",
@@ -1894,7 +1894,7 @@
       }
     },
     "sage": {
-      "$description": "Surface neutral, faint Semble shamrock cast (hue 169). Chroma is 0.5x slate's \u2014 green reads more saturated than slate's blue at equal chroma, so it's halved to match slate's perceived subtlety. Same lightness as slate. Semble brand.fill.* points here.",
+      "$description": "Surface neutral, faint green cast (hue 169). Chroma is 0.5x slate's \u2014 green reads more saturated than slate's blue at equal chroma, so it's halved to match slate's perceived subtlety. Same lightness as slate. Currently unreferenced by any brand (orphaned since the demo brand that used it was removed).",
       "25": {
         "$value": {
           "colorSpace": "oklch",
@@ -2040,7 +2040,7 @@
       }
     },
     "taupe": {
-      "$description": "Surface neutral, faint myNeva warm cast (hue 39). Chroma 0.5x slate's (warm reads stronger than blue at equal chroma). Same lightness as slate. myNeva brand.fill.* points here.",
+      "$description": "Surface neutral, faint warm cast (hue 39). Chroma 0.5x slate's (warm reads stronger than blue at equal chroma). Same lightness as slate. Corilus brand.property.body.* points here.",
       "25": {
         "$value": {
           "colorSpace": "oklch",

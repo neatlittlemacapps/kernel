@@ -94,7 +94,7 @@ page carrying usage / Do-Don't / anatomy. Author stories to match.
   canonical component (`Button`/`PersonAvatar`/`Tooltip`) instead. See `taxonomy.mjs`.
 - **Decorator:** every story is auto-wrapped in `<div class="krnl-companion-layer" data-brand
   data-theme data-density data-breakpoint>` (`.storybook/preview.jsx`).
-- **Toolbar globals:** Brand (corilus/semble/myneva), Theme (light/dark), Density,
+- **Toolbar globals:** Brand (corilus/sofia), Theme (light/dark), Density,
   Breakpoint - QA across the full matrix.
 
 **Before authoring a story:** query the Storybook MCP (`get-documentation <Name>`) AND/OR

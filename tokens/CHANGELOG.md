@@ -110,6 +110,10 @@ follows [SemVer](https://semver.org/).
 - `color.*.650` — New intermediate step `650` on all 18 primitive color ramps, between existing 600 and 700.
   - *Affects:* All primitives: teal, mint, emerald, sky, green, lime, coral, amber, orange, red, indigo, violet, magenta, rust (gamut-max chroma at L=0.521, each ramp's own hue), slate/sage/taupe (fixed low chroma, continuing their 600-700 plateau: 0.012/0.006/0.006), graphite (achromatic, L=0.521).
   - *Rationale:* Requested extra granularity between 600 and 700. L=0.521 is the linear midpoint of the existing 600 (0.573) and 700 (0.469) lightness steps, applied uniformly per the homogeneous-step principle. Chroma computed with the same method each ramp already uses (gamut-max seed for chromatic ramps; fixed curve for the neutral-surface ramps). Not yet referenced by any brand/semantic/component token.
+- `brand.sofia` — New brand: Sofia (Topaze AIR / AiCalendar), replacing the two demo brands Semble and myNeva
+  - *Affects:* New `[data-brand=sofia]` block (to_css.py); resolver `modifiers.brand.contexts` gains `sofia` (loads brand/corilus then brand/sofia); `$themes.json` gains a `sofia` brand entry; Storybook/FF brand selector is now corilus/sofia only
+  - *Rationale:* Consolidate the demo-brand roster to a single new tenant identity: Sofia's Electric Blue (#3858C7, primary) carries white text at AA (~6.2:1, unlike Semble/myNeva's dark-on-brand-fill pattern); Topaze Turquoise (#28D6D7) is the inverted-surface accent; secondary is white; font is Inter. Sofia has no verbatim logo asset — it resolves to the recoloured brain-mark, which reads brand.logo.from/to/angle live as its gradient source (BRAND_LOGOS in src/lib/logo.js is now empty).
+  - *Migration:* Sofia inherits Corilus additively for everything not listed above: surfaces (brand.fill → slate), radius (brand.radius), brand.neutral.on-light, and status/signal/data/property. `color.sage` and `radius.none` are now unreferenced orphans (left in place, not pruned — out of scope here). `color.taupe` stays load-bearing (Corilus `brand.property.body.*` aliases it).
 
 ### Changed
 - `color.paper, color.aluminium, color.aluminium-hi, color.aluminium-lo, color.grey, color.grey-light` - Warmed and lightened the six neutral primitives (cool greys -> warm greige, hue 75, lifted lightness)
@@ -212,6 +216,11 @@ follows [SemVer](https://semver.org/).
 - `type.display, type.body` - Stale duplicate primitives/typography.tokens.json (font families already live in foundations)
   - *Affects:* none: file was an unwired orphan duplicating font.heading/body
   - *Rationale:* Two competing definitions of the type families (type.* vs font.*) is a drift hazard; foundations.font is the single source.
+- `brand.semble, brand.myneva` — Removed the two demo brands (Semble, myNeva), replaced by `brand.sofia` (see Added)
+  - Before: `brands: corilus, semble, myneva` → After: `brands: corilus, sofia`
+  - *Affects:* `tokens/brand/semble.tokens.json` and `tokens/brand/myneva.tokens.json` deleted; resolver `semble`/`myneva` contexts removed; `$themes.json`/`$metadata.json` entries removed; `[data-brand=semble]`/`[data-brand=myneva]` CSS blocks gone; Semble's shamrock (BRAND_LOGOS.semble) and myNeva's orange (BRAND_LOGOS.myneva) verbatim logo SVGs removed from src/lib/logo.js
+  - *Rationale:* Consolidate the demo-brand roster onto a single new tenant (Sofia) rather than carrying three. Corilus (base brand) and the light/dark themes are untouched.
+  - *Migration:* `data-brand=semble` and `data-brand=myneva` no longer resolve — switch consumers to `sofia`. `color.sage` (Semble's fill hue) and `radius.none` (Semble's harsh-radius primitive) are now unreferenced orphans, left in place per policy of not pruning primitives as a side effect. `color.taupe` (myNeva's fill hue) stays load-bearing — Corilus's own `brand.property.body.*` aliases it.
 
 ### Fixed
 - `semantic.dark.text.muted, semantic.dark.text.faint, semantic.dark.action.accent, semantic.dark.data.series, semantic.dark.border.subtle, semantic.dark.chart` — Dark theme accessibility: repoint dark semantic foregrounds to lighter ramp steps so they meet WCAG 2.2 AA on dark surfaces

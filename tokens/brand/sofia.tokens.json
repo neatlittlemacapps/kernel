@@ -1,0 +1,38 @@
+{
+  "brand": {
+    "$type": "color",
+    "$description": "Tier 2 brand identity — Sofia (Topaze AIR / AiCalendar). ADDITIVE over Corilus. Electric Blue #3858C7 primary carrying white text at AA (~6.2:1); Turquoise accent; white inverted secondary. Everything not listed inherits Corilus.",
+
+    "primary":        { "$value": { "colorSpace": "oklch", "components": [0.5023, 0.1768, 267.43], "hex": "#3858c7" }, "$description": "Sofia Electric Blue 50 #3858C7 — exact brand colour (off-ramp). Action accent + active states." },
+    "primary-deep":   { "$value": { "colorSpace": "oklch", "components": [0.4657, 0.1625, 267.44], "hex": "#324fb3" }, "$description": "Solid action fill (Electric Blue 45); carries WHITE text at AA (~6.2:1)." },
+    "primary-bright": { "$value": { "colorSpace": "oklch", "components": [0.7006, 0.0996, 271.35], "hex": "#889bdd" }, "$description": "Electric Blue 70 — accent/icon on dark surfaces." },
+    "secondary":      { "$value": "{color.graphite.0}", "$description": "White — Sofia inverts to white on dark / ambient surfaces." },
+
+    "logo": {
+      "$description": "Sofia has no verbatim SVG logo asset. It resolves to the recoloured brain-mark, which READS these vars live as its gradient source.",
+      "from":  { "$value": { "colorSpace": "oklch", "components": [0.5023, 0.1768, 267.43], "hex": "#3858c7" }, "$description": "Electric Blue 50." },
+      "to":    { "$value": { "colorSpace": "oklch", "components": [0.3178, 0.0869, 269.54], "hex": "#212e5e" }, "$description": "Deeper electric blue (Electric Blue 25)." },
+      "angle": { "$type": "number", "$value": -52.3, "$description": "Brand gradient angle in degrees." }
+    },
+
+    "accent": {
+      "$description": "Sofia inverted-surface accent — Topaze Turquoise (#28D6D7). Reserved to inverted blocks + ambient.",
+      "400": { "$value": { "colorSpace": "oklch", "components": [0.7965, 0.1297, 195.49], "hex": "#28d6d7" } },
+      "700": { "$value": { "colorSpace": "oklch", "components": [0.5462, 0.0875, 195.91], "hex": "#188081" } },
+      "950": { "$value": { "colorSpace": "oklch", "components": [0.2648, 0.0389, 195.06], "hex": "#082b2b" } }
+    },
+
+    "tint": {
+      "$description": "Selected-state overlay at the Electric Blue hue (267.4). Concrete OKLCH-with-alpha, shared tint weight (L/C 0.5792/0.1048); composites over any surface. Hex fallback #5f77b8.",
+      "soft":   { "$value": { "colorSpace": "oklch", "components": [0.5792, 0.1048, 267.4], "alpha": 0.12, "hex": "#5f77b8" } },
+      "strong": { "$value": { "colorSpace": "oklch", "components": [0.5792, 0.1048, 267.4], "alpha": 0.24, "hex": "#5f77b8" } }
+    }
+  },
+
+  "font": {
+    "$type": "fontFamily",
+    "$description": "Sofia uses Inter.",
+    "heading": { "$value": ["Inter", "Segoe UI", "ui-sans-serif", "system-ui", "sans-serif"] },
+    "body":    { "$value": ["Inter", "Segoe UI", "ui-sans-serif", "system-ui", "sans-serif"] }
+  }
+}

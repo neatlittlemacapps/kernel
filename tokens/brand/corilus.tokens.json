@@ -197,7 +197,7 @@
         }
       },
       "warning": {
-        "$description": "Retargeted from amber (hue 75, a muted gold/brown) to the dedicated orange ramp (hue 45) - amber's own hue+chroma read as muted brown rather than a clear warning orange. Kept as its own primitive rather than retuning amber, since myNeva's own accent group aliases amber directly for an unrelated warm gold identity.",
+        "$description": "Retargeted from amber (hue 75, a muted gold/brown) to the dedicated orange ramp (hue 45) - amber's own hue+chroma read as muted brown rather than a clear warning orange. Kept as its own primitive rather than retuning amber, since amber also serves as a distinct warm gold accent identity elsewhere in the palette.",
         "100": {
           "$value": "{color.orange.100}"
         },

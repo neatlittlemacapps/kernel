@@ -15,8 +15,7 @@ const preview = {
         icon: 'paintbrush',
         items: [
           { value: 'corilus', title: 'Corilus' },
-          { value: 'semble', title: 'Semble' },
-          { value: 'myneva', title: 'Myneva' },
+          { value: 'sofia', title: 'Sofia' },
         ],
         dynamicTitle: true,
       },

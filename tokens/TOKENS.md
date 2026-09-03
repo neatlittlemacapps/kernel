@@ -28,7 +28,7 @@ A component MUST NOT reference a base token directly — always go through seman
 
 ## Modes and brands
 
-- **`brand` modifier** — contexts: `corilus, myneva, semble` (default: `corilus`). Brand identity — the single chokepoint for colour, radius and font. Resolves BEFORE theme so the semantic layer (and theme's dark deltas) re-resolve against the chosen brand. Each non-default brand is additive over Corilus (Corilus loaded first as the base, then the brand deltas) — the same pattern as dark-over-light. To add a brand, drop in brand/{name}.tokens.json and add a context here that loads corilus first, then the new file.
+- **`brand` modifier** — contexts: `corilus, sofia` (default: `corilus`). Brand identity — the single chokepoint for colour, radius and font. Resolves BEFORE theme so the semantic layer (and theme's dark deltas) re-resolve against the chosen brand. Each non-default brand is additive over Corilus (Corilus loaded first as the base, then the brand deltas) — the same pattern as dark-over-light. To add a brand, drop in brand/{name}.tokens.json and add a context here that loads corilus first, then the new file.
 - **`theme` modifier** — contexts: `dark, light` (default: `light`). Visual mode. Dark is additive over light.
 - **`breakpoint` modifier** — contexts: `desktop, mobile, tablet` (default: `desktop`)
 - **`density` modifier** — contexts: `comfortable, compact, spacious` (default: `comfortable`)
@@ -512,26 +512,20 @@ _11 token(s)._
 
 ### Base / radius
 
-_20 token(s)._
+_14 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
 | `brand.radius.base` | dimension | `{radius.md}` |  |
-| `brand.radius.base` | dimension | `{radius.md}` |  |
-| `brand.radius.base` | dimension | `{radius.none}` |  |
 | `brand.radius.compact` | dimension | `{radius.sm}` |  |
-| `brand.radius.compact` | dimension | `{radius.sm}` |  |
-| `brand.radius.compact` | dimension | `{radius.none}` |  |
 | `brand.radius.spacious` | dimension | `{radius.lg}` |  |
-| `brand.radius.spacious` | dimension | `{radius.lg}` |  |
-| `brand.radius.spacious` | dimension | `{radius.xs}` |  |
 | `density.radius` | dimension | `{brand.radius.base}` |  |
 | `density.radius` | dimension | `{brand.radius.compact}` |  |
 | `density.radius` | dimension | `{brand.radius.spacious}` |  |
 | `icon-pill.radius` | dimension | `10px` | Slightly softer than the chip pill — reads as a 'stamp', not a square. |
 | `radius.lg` | dimension | `16px` |  |
 | `radius.md` | dimension | `12px` |  |
-| `radius.none` | dimension | `0px` | Square corners — for harsh/angular brands (e.g. Semble's brand radius). |
+| `radius.none` | dimension | `0px` | Square corners — for harsh/angular brands. |
 | `radius.pill` | dimension | `999px` |  |
 | `radius.sm` | dimension | `8px` |  |
 | `radius.xl` | dimension | `24px` |  |
@@ -539,7 +533,7 @@ _20 token(s)._
 
 ### Base / font
 
-_9 token(s)._
+_7 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -547,11 +541,9 @@ _9 token(s)._
 | `density.font` | dimension | `13px` |  |
 | `density.font` | dimension | `15px` |  |
 | `font.body` | fontFamily | `Corporate S Pro, ui-sans-serif, system-ui, sans-serif` |  |
-| `font.body` | fontFamily | `Lato, Segoe UI, ui-sans-serif, system-ui, sans-serif` |  |
-| `font.body` | fontFamily | `DM Sans, Segoe UI, ui-sans-serif, system-ui, sans-serif` |  |
+| `font.body` | fontFamily | `Inter, Segoe UI, ui-sans-serif, system-ui, sans-serif` |  |
 | `font.heading` | fontFamily | `Corporate S Pro, ui-sans-serif, system-ui, sans-serif` |  |
-| `font.heading` | fontFamily | `Lato, Segoe UI, ui-sans-serif, system-ui, sans-serif` |  |
-| `font.heading` | fontFamily | `DM Sans, Segoe UI, ui-sans-serif, system-ui, sans-serif` |  |
+| `font.heading` | fontFamily | `Inter, Segoe UI, ui-sans-serif, system-ui, sans-serif` |  |
 
 ### Base / motion
 
@@ -578,7 +570,7 @@ _16 token(s)._
 
 ### Other
 
-_556 token(s)._
+_522 token(s)._
 
 | Path | Type | Value | Description |
 |------|------|-------|-------------|
@@ -592,14 +584,11 @@ _556 token(s)._
 | `border.subtle` | color | `{brand.fill.600}` | Hairline structure, lifted for clearer delineation on dark. Hairlines/dividers are decorative (WCAG-exempt). |
 | `border.subtle` | color | `{brand.fill.200}` |  |
 | `brand.accent.400` | color | `{color.lime.400}` |  |
-| `brand.accent.400` | color | `{color.amber.400}` |  |
-| `brand.accent.400` | color | `oklch(0.815, 0.154, 71.9)` (`#ffb03d`) |  |
+| `brand.accent.400` | color | `oklch(0.7965, 0.1297, 195.49)` (`#28d6d7`) | Sofia inverted-surface accent — Topaze Turquoise (#28D6D7). Reserved to inverted blocks + ambient. |
 | `brand.accent.700` | color | `{color.lime.700}` |  |
-| `brand.accent.700` | color | `{color.amber.700}` |  |
-| `brand.accent.700` | color | `oklch(0.55, 0.13, 72.0)` (`#9f6200`) |  |
+| `brand.accent.700` | color | `oklch(0.5462, 0.0875, 195.91)` (`#188081`) | Sofia inverted-surface accent — Topaze Turquoise (#28D6D7). Reserved to inverted blocks + ambient. |
 | `brand.accent.950` | color | `{color.lime.950}` |  |
-| `brand.accent.950` | color | `{color.amber.950}` |  |
-| `brand.accent.950` | color | `oklch(0.32, 0.09, 72.0)` (`#4e2900`) |  |
+| `brand.accent.950` | color | `oklch(0.2648, 0.0389, 195.06)` (`#082b2b`) | Sofia inverted-surface accent — Topaze Turquoise (#28D6D7). Reserved to inverted blocks + ambient. |
 | `brand.data-bright.1` | color | `{color.teal.400}` |  |
 | `brand.data-bright.2` | color | `{color.indigo.400}` |  |
 | `brand.data-bright.3` | color | `{color.violet.400}` |  |
@@ -655,35 +644,15 @@ _556 token(s)._
 | `brand.data-tone.6.800` | color | `{color.lime.800}` |  |
 | `brand.data-tone.6.900` | color | `{color.lime.900}` |  |
 | `brand.fill.100` | color | `{color.slate.100}` |  |
-| `brand.fill.100` | color | `{color.taupe.100}` |  |
-| `brand.fill.100` | color | `{color.sage.100}` |  |
 | `brand.fill.200` | color | `{color.slate.200}` |  |
-| `brand.fill.200` | color | `{color.taupe.200}` |  |
-| `brand.fill.200` | color | `{color.sage.200}` |  |
 | `brand.fill.25` | color | `{color.slate.25}` |  |
-| `brand.fill.25` | color | `{color.taupe.25}` |  |
-| `brand.fill.25` | color | `{color.sage.25}` |  |
 | `brand.fill.300` | color | `{color.slate.300}` |  |
-| `brand.fill.300` | color | `{color.taupe.300}` |  |
-| `brand.fill.300` | color | `{color.sage.300}` |  |
 | `brand.fill.50` | color | `{color.slate.50}` |  |
-| `brand.fill.50` | color | `{color.taupe.50}` |  |
-| `brand.fill.50` | color | `{color.sage.50}` |  |
 | `brand.fill.600` | color | `{color.slate.600}` |  |
-| `brand.fill.600` | color | `{color.taupe.600}` |  |
-| `brand.fill.600` | color | `{color.sage.600}` |  |
 | `brand.fill.700` | color | `{color.slate.700}` |  |
-| `brand.fill.700` | color | `{color.taupe.700}` |  |
-| `brand.fill.700` | color | `{color.sage.700}` |  |
 | `brand.fill.800` | color | `{color.slate.800}` |  |
-| `brand.fill.800` | color | `{color.taupe.800}` |  |
-| `brand.fill.800` | color | `{color.sage.800}` |  |
 | `brand.fill.900` | color | `{color.slate.900}` |  |
-| `brand.fill.900` | color | `{color.taupe.900}` |  |
-| `brand.fill.900` | color | `{color.sage.900}` |  |
 | `brand.fill.950` | color | `{color.slate.950}` |  |
-| `brand.fill.950` | color | `{color.taupe.950}` |  |
-| `brand.fill.950` | color | `{color.sage.950}` |  |
 | `brand.ink.0` | color | `{color.graphite.0}` |  |
 | `brand.ink.100` | color | `{color.graphite.100}` |  |
 | `brand.ink.300` | color | `{color.graphite.300}` |  |
@@ -695,31 +664,23 @@ _556 token(s)._
 | `brand.ink.950` | color | `{color.graphite.950}` |  |
 | `brand.logo.angle` | number | `-52.3` | Brand gradient angle in degrees (CSS convention). |
 | `brand.logo.angle` | number | `-52.3` | Brand gradient angle in degrees. |
-| `brand.logo.angle` | number | `-52.3` | Brand gradient angle in degrees. |
 | `brand.logo.from` | color | `oklch(0.7516, 0.1426, 225.17)` (`#00c0f2`) | Gradient start — Corilus light blue (#00c0f2). |
-| `brand.logo.from` | color | `oklch(0.6728, 0.1766, 38.8)` (`#ed6739`) | myNeva brand orange (#ED6739). |
-| `brand.logo.from` | color | `oklch(0.774, 0.141, 169.0)` (`#38d2a6`) | Shamrock. |
+| `brand.logo.from` | color | `oklch(0.5023, 0.1768, 267.43)` (`#3858c7`) | Electric Blue 50. |
 | `brand.logo.to` | color | `oklch(0.6645, 0.1872, 148.48)` (`#0db14b`) | Gradient end — Corilus green (#0db14b). |
-| `brand.logo.to` | color | `oklch(0.573, 0.13, 39.0)` (`#b7593a`) | Deeper orange. |
-| `brand.logo.to` | color | `oklch(0.573, 0.11, 169.0)` (`#008f6e`) | Deeper shamrock. |
+| `brand.logo.to` | color | `oklch(0.3178, 0.0869, 269.54)` (`#212e5e`) | Deeper electric blue (Electric Blue 25). |
 | `brand.neutral.ink` | color | `{brand.ink.950}` |  |
 | `brand.neutral.muted` | color | `{brand.ink.700}` |  |
 | `brand.neutral.muted-light` | color | `{brand.fill.300}` |  |
 | `brand.neutral.on-light` | color | `{brand.ink.0}` | Text/icon colour on a brand-primary fill. |
-| `brand.neutral.on-light` | color | `{brand.ink.950}` | Near-black text/icon on the brand-orange fill (~5.6:1). |
-| `brand.neutral.on-light` | color | `{brand.ink.950}` | Near-black text/icon on the Shamrock fill (~9.3:1). |
 | `brand.neutral.panel-raised` | color | `{brand.fill.25}` |  |
 | `brand.neutral.panel-sunken` | color | `{brand.fill.100}` |  |
 | `brand.neutral.paper` | color | `{brand.ink.0}` | App canvas / page background (near-white). |
 | `brand.primary` | color | `{color.teal.600}` | Corilus teal. The action colour (default surfaces). |
-| `brand.primary` | color | `oklch(0.6728, 0.1766, 38.8)` (`#ed6739`) | myNeva orange #ED6739 — exact brand colour (off-ramp, like the logo). Action accent + active states. |
-| `brand.primary` | color | `oklch(0.774, 0.141, 169.0)` (`#38d2a6`) | Semble Shamrock #38D2A6 — exact brand colour (off-ramp). Action accent + active states. |
+| `brand.primary` | color | `oklch(0.5023, 0.1768, 267.43)` (`#3858c7`) | Sofia Electric Blue 50 #3858C7 — exact brand colour (off-ramp). Action accent + active states. |
 | `brand.primary-bright` | color | `{color.teal.400}` | Lighter teal for accents/icons on dark surfaces (AA on slate). |
-| `brand.primary-bright` | color | `oklch(0.6728, 0.1766, 38.8)` (`#ed6739`) | Brand orange accent/icon on dark surfaces. |
-| `brand.primary-bright` | color | `oklch(0.774, 0.141, 169.0)` (`#38d2a6`) | Shamrock accent/icon on dark surfaces. |
+| `brand.primary-bright` | color | `oklch(0.7006, 0.0996, 271.35)` (`#889bdd`) | Electric Blue 70 — accent/icon on dark surfaces. |
 | `brand.primary-deep` | color | `{color.teal.700}` | Deeper teal for solid fills that carry white text. |
-| `brand.primary-deep` | color | `oklch(0.6728, 0.1766, 38.8)` (`#ed6739`) | Solid action fill = the exact brand orange; carries DARK text (neutral.on-light) at AA. |
-| `brand.primary-deep` | color | `oklch(0.774, 0.141, 169.0)` (`#38d2a6`) | Solid action fill = the exact Shamrock; carries DARK text at AA. |
+| `brand.primary-deep` | color | `oklch(0.4657, 0.1625, 267.44)` (`#324fb3`) | Solid action fill (Electric Blue 45); carries WHITE text at AA (~6.2:1). |
 | `brand.property.allergy.100` | color | `{color.rust.100}` |  |
 | `brand.property.allergy.200` | color | `{color.rust.200}` |  |
 | `brand.property.allergy.300` | color | `{color.rust.300}` |  |
@@ -798,8 +759,7 @@ _556 token(s)._
 | `brand.property.temperature.700` | color | `{color.amber.700}` |  |
 | `brand.property.temperature.900` | color | `{color.amber.900}` |  |
 | `brand.secondary` | color | `{color.mint.400}` | Corilus mint. Inverted surfaces + the console ambient indicator only. |
-| `brand.secondary` | color | `{color.graphite.0}` | White — myNeva inverts to white on dark / ambient surfaces. |
-| `brand.secondary` | color | `{color.graphite.0}` | White — Semble inverts to white on dark / ambient surfaces (matches the white glyph in its logo). |
+| `brand.secondary` | color | `{color.graphite.0}` | White — Sofia inverts to white on dark / ambient surfaces. |
 | `brand.signal.error` | color | `{color.red.500}` |  |
 | `brand.signal.info` | color | `{color.sky.500}` |  |
 | `brand.signal.success` | color | `{color.green.500}` |  |
@@ -837,11 +797,9 @@ _556 token(s)._
 | `brand.status.warning.800` | color | `{color.orange.800}` |  |
 | `brand.status.warning.900` | color | `{color.orange.900}` |  |
 | `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 219.1)` (`#0088a4`) |  |
-| `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 39.0)` (`#ae634a`) |  |
-| `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 169.0)` (`#248e6f`) |  |
+| `brand.tint.soft` | color | `oklch(0.5792, 0.1048, 267.4)` (`#5f77b8`) |  |
 | `brand.tint.strong` | color | `oklch(0.5792, 0.1048, 219.1)` (`#0088a4`) |  |
-| `brand.tint.strong` | color | `oklch(0.5792, 0.1048, 39.0)` (`#ae634a`) |  |
-| `brand.tint.strong` | color | `oklch(0.5792, 0.1048, 169.0)` (`#248e6f`) |  |
+| `brand.tint.strong` | color | `oklch(0.5792, 0.1048, 267.4)` (`#5f77b8`) |  |
 | `canvas.texture-opacity` | number | `0.03` | 3% grain — felt at viewing distance, invisible on screenshot zoom. |
 | `chart.axis` | color | `{brand.ink.600}` |  |
 | `chart.axis` | color | `{brand.ink.500}` |  |

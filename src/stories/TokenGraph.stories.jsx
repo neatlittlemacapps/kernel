@@ -11,7 +11,7 @@ export default {
     docs: {
       description: {
         component:
-          'Every token set in `tokens/theme.resolver.json` as a node, with edges for structural alias references (e.g. `{brand.primary-deep}`) and additive modifier cascades (dark loads after light, semble/myneva load after corilus). Node color/opacity reflects whether the set is active for the current Brand/Theme/Density/Breakpoint toolbar selection above. Click a node to see the individual token aliases behind its edges.',
+          'Every token set in `tokens/theme.resolver.json` as a node, with edges for structural alias references (e.g. `{brand.primary-deep}`) and additive modifier cascades (dark loads after light, sofia loads after corilus). Node color/opacity reflects whether the set is active for the current Brand/Theme/Density/Breakpoint toolbar selection above. Click a node to see the individual token aliases behind its edges.',
       },
     },
   },

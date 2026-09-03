@@ -44,11 +44,10 @@ test('semantic/light aliases brand/corilus via action.solid -> brand.primary-dee
   );
 });
 
-test('brand modifier cascade: semble and myneva are additive over corilus', () => {
+test('brand modifier cascade: sofia is additive over corilus', () => {
   const { resolver, files } = loadAll();
   const { edges } = buildTokenGraph(files, resolver);
-  assert.ok(edges.some((e) => e.from === 'brand/semble' && e.to === 'brand/corilus' && e.kinds.includes('cascade')));
-  assert.ok(edges.some((e) => e.from === 'brand/myneva' && e.to === 'brand/corilus' && e.kinds.includes('cascade')));
+  assert.ok(edges.some((e) => e.from === 'brand/sofia' && e.to === 'brand/corilus' && e.kinds.includes('cascade')));
 });
 
 test('theme modifier cascade: dark is additive over light', () => {
@@ -57,12 +56,14 @@ test('theme modifier cascade: dark is additive over light', () => {
   assert.ok(edges.some((e) => e.from === 'semantic/dark' && e.to === 'semantic/light' && e.kinds.includes('cascade')));
 });
 
-test('activeSetsFor: selecting brand=semble activates corilus base + semble delta, not myneva', () => {
+test('activeSetsFor: selecting brand=sofia activates corilus base + sofia delta', () => {
   const { resolver } = loadAll();
-  const active = activeSetsFor(resolver, { brand: 'semble', theme: 'light', breakpoint: 'desktop', density: 'comfortable' });
+  const active = activeSetsFor(resolver, { brand: 'sofia', theme: 'light', breakpoint: 'desktop', density: 'comfortable' });
   assert.ok(active.has('brand/corilus'));
-  assert.ok(active.has('brand/semble'));
-  assert.ok(!active.has('brand/myneva'));
+  assert.ok(active.has('brand/sofia'));
+
+  const corilusOnly = activeSetsFor(resolver, { brand: 'corilus', theme: 'light', breakpoint: 'desktop', density: 'comfortable' });
+  assert.ok(!corilusOnly.has('brand/sofia'));
 });
 
 test('activeSetsFor: selecting theme=light does not activate semantic/dark', () => {

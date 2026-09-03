@@ -64,20 +64,12 @@
             "$ref": "brand/corilus.tokens.json"
           }
         ],
-        "semble": [
+        "sofia": [
           {
             "$ref": "brand/corilus.tokens.json"
           },
           {
-            "$ref": "brand/semble.tokens.json"
-          }
-        ],
-        "myneva": [
-          {
-            "$ref": "brand/corilus.tokens.json"
-          },
-          {
-            "$ref": "brand/myneva.tokens.json"
+            "$ref": "brand/sofia.tokens.json"
           }
         ]
       },
