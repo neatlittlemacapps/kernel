@@ -76,14 +76,45 @@ def render(v):
             return f'{v["value"]}{v["unit"]}'
     return str(v)
 
-def block(root, rel):
+def block_pairs(root, rel):
     data = json.loads((root / rel).read_text()); out = []
     walk(data, [], out)
-    return [f"  --{n}: {render(v)};" for n, v in out]
+    return [(n, render(v)) for n, v in out]
+
+def format_pairs(pairs):
+    return [f"  --{n}: {v};" for n, v in pairs]
+
+def block(root, rel):
+    return format_pairs(block_pairs(root, rel))
+
+VAR_REF = re.compile(r"var\(--([a-z0-9-]+)")  # group has no "--" prefix, matching walk()'s raw names
+
+# Every :root-declared semantic/typography/foundations/component token whose var()
+# chain (transitively) resolves through brand.*/font.* must be RE-DECLARED inside
+# each [data-brand=X] block, not just the raw brand primitives. A var() reference
+# resolves against the value of the referenced custom property AT THE ELEMENT WHERE
+# THE REFERENCING DECLARATION ITSELF LIVES — since these tokens are declared only
+# at :root (i.e. <html>), and Kernel's brand override lands on a descendant (the
+# `.krnl-companion-layer` wrapper, not <html>), leaving them undeclared here freezes
+# them to the Corilus default no matter which brand is selected. Computed by
+# transitive closure over the var() reference graph, not hand-maintained, so it
+# never goes stale as semantic/component tokens are added.
+def brand_dependent_redeclares(root_pairs):
+    seed = {n for n in root_pairs if n.startswith("brand-") or n.startswith("font-")}
+    dependent = set(seed)
+    changed = True
+    while changed:
+        changed = False
+        for n, v in root_pairs.items():
+            if n in dependent: continue
+            if any(ref in dependent for ref in VAR_REF.findall(v)):
+                dependent.add(n); changed = True
+    return format_pairs([(n, v) for n, v in root_pairs.items() if n in dependent and n not in seed])
 
 def main(root):
     root = pathlib.Path(root)
     L = ["/* Generated from DTCG tokens. Do not edit by hand. */", ":root {"]
+    root_pairs = {}  # name -> rendered value, insertion-ordered (last write wins, as CSS would)
     for rel in ["primitives/colors.tokens.json",
                 "primitives/typography.tokens.json","primitives/radius.tokens.json",
                 "primitives/space.tokens.json","primitives/motion.tokens.json",
@@ -94,13 +125,26 @@ def main(root):
                 "components/button.tokens.json","components/pill.tokens.json",
                 "components/card.tokens.json","components/sparkline.tokens.json",
                 "components/canvas.tokens.json"]:
-        L.append(f"\n  /* {rel} */"); L += block(root, rel)
+        pairs = block_pairs(root, rel)
+        L.append(f"\n  /* {rel} */"); L += format_pairs(pairs)
+        root_pairs.update(pairs)
     L.append("}")
-    # Brand modifier — overrides the brand-tier vars (colour, radius, font). The
-    # semantic layer aliases var(--brand-*), so re-pointing these re-skins everything
-    # without touching the semantic/theme/density blocks. Additive: only the deltas
-    # are emitted; unspecified brand vars stay at the :root (Corilus) value.
-    L.append('\n[data-brand="sofia"] {'); L += block(root, "brand/sofia.tokens.json"); L.append("}")
+    # Brand modifier — overrides the brand-tier vars (colour, radius, font), then
+    # re-declares every semantic/typography/foundations/component alias that
+    # depends on them (see brand_dependent_redeclares above) so those aliases
+    # resolve against THIS brand's primitives instead of the frozen :root default.
+    # Additive: only the deltas are emitted; unspecified brand vars stay at the
+    # :root (Corilus) value. To add a brand, just drop in brand/{name}.tokens.json —
+    # discovered automatically, no other changes needed.
+    brand_redeclares = brand_dependent_redeclares(root_pairs)
+    for brand_file in sorted(p.name for p in (root / "brand").glob("*.tokens.json")):
+        name = brand_file.removesuffix(".tokens.json")
+        if name == "corilus": continue  # corilus IS the :root default; nothing to override
+        L.append(f'\n[data-brand="{name}"] {{')
+        L += block(root, f"brand/{brand_file}")
+        L.append(f"\n  /* {len(brand_redeclares)} brand-dependent aliases, re-declared at this scope */")
+        L += brand_redeclares
+        L.append("}")
     L.append('\n[data-theme="dark"] {'); L += block(root, "semantic/dark.tokens.json"); L.append("}")
     L.append('\n[data-density="compact"] {'); L += block(root, "responsive/compact.tokens.json"); L.append("}")
     L.append('\n[data-density="comfortable"] {'); L += block(root, "responsive/comfortable.tokens.json"); L.append("}")
