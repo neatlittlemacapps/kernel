@@ -57,11 +57,13 @@ The error tone value is **`error`** — it matches the token stem `--status-erro
 prop-value→token lookup table.
 
 Surface/visualisation components read a wider tone set than the base dictionary above: **Card**
-additionally accepts `data-1..6` (categorical data-viz hues) and arbitrary colour/`var()`
-passthrough; **Progress / Meter / DonutGauge** additionally accept `data-1..6`, `primary` (the
-brand action colour), and arbitrary colour/`var()` passthrough, resolved via the shared
+additionally accepts `data-1..6` (categorical data-viz hues), `primary` (the brand action colour),
+and arbitrary colour/`var()` passthrough; **Progress / Meter / DonutGauge** additionally accept
+`data-1..6`, `primary`, and arbitrary colour/`var()` passthrough, resolved via the shared
 `src/lib/tone.js` helper — these read the vivid `-accent` (.500) rung rather than Card's `-solid`
-(.700 AA text rung), since a bar/ring fill is a decorative colour, not text.
+(.700 AA text rung), since a bar/ring fill is a decorative colour, not text. Card's own `primary`
+has no dedicated tint/tint-strong token pair (unlike the status/data families) — its tinted
+surface falls back to the same generic color-mix wash arbitrary colours use.
 
 Rules:
 - **Mutually-exclusive options are one enum, never N booleans** (Polaris Button v12).

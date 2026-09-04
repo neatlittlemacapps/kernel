@@ -18,15 +18,28 @@ import { toneSlug } from './tone.js';
 // A named tone resolves to its solid (.700, AA-text-weight) rung; `neutral` and
 // arbitrary colours pass through unchanged (`neutral` has no --status-neutral-*
 // family, so it must behave exactly like tone being omitted - see Card's own
-// long-standing comment on this IACVT trap).
+// long-standing comment on this IACVT trap). `primary` (the brand action colour)
+// is not a toneSlug family - it has no --action-tint/-tint-strong pair - so it's
+// special-cased here to the AA-safe --action-solid rung, same rung status tones use.
 export const toneVar = (tone) => (tone == null || tone === 'neutral') ? undefined
+  : tone === 'primary' ? 'var(--action-solid)'
   : toneSlug(tone) ? `var(--${toneSlug(tone)}-solid)` : tone;
 
 // A named tone binds the whole vivid family so accents read at full ramp saturation:
 // tint (.100 body) / tint-strong (.200 icon-tile) / text (.700 AA) / accent (.500
 // vivid, for the strip + icon glyph). Arbitrary colours return null and keep the
-// generic color-mix fallback authored once in the base .krnl-card rule.
+// generic color-mix fallback authored once in the base .krnl-card rule. `primary`
+// has no tint/tint-strong token pair to bind (see toneVar above), so it returns a
+// PARTIAL object: --card-tone-text (AA solid) + --card-accent (vivid, so the strip/
+// border read as the brand accent rather than the muddy solid) - the tint and
+// tint-strong rungs are left unset, falling through to the same generic color-mix
+// fallback arbitrary colours use (mixing --card-tone, i.e. --action-solid, at 12%/22%
+// into the surface - the same escape hatch, not a special case).
 export const tintVars = (tone) => {
+  if (tone === 'primary') return {
+    '--card-tone-text': 'var(--action-solid)',
+    '--card-accent': 'var(--action-accent)',
+  };
   const slug = toneSlug(tone);
   return slug ? {
     '--card-tone-tint': `var(--${slug}-tint)`,

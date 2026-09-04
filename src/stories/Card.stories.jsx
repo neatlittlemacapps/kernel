@@ -22,7 +22,7 @@ export default {
     accent: { control: 'boolean', description: 'A tone-coloured accent strip on the top edge (needs a `tone` to show colour; toneScope="box").', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     toneScope: { control: 'radio', options: ['box', 'content'], description: '"box" lets `tone` also paint background/border/strip. "content" keeps the box neutral while the tone stays available to slot content (e.g. an icon tile).', table: { category: 'Appearance', defaultValue: { summary: 'box' } } },
     density: { control: 'select', options: [undefined, 'compact', 'comfortable', 'spacious'], description: 'Density scope: reshapes padding/radius/gap via --density-* tokens. Omit to inherit the ambient density.', table: { category: 'Appearance' } },
-    tone: { control: 'text', description: 'Colour identity: a named status (info/success/warning/error), a data tone (data-1..data-6), or any colour/var.', table: { category: 'Appearance' } },
+    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6'], description: 'Colour identity: "primary" (the brand action colour), a named status (info/success/warning/error), a data tone (data-1..data-6), or any colour/var (not offered as a control option - pass one via code).', table: { category: 'Appearance' } },
     orientation: { control: 'select', options: ['vertical', 'horizontal'], description: 'Column (default) or row - the row form collapses back to a column inside a narrow container (@container, not the viewport).', table: { category: 'Appearance', defaultValue: { summary: 'vertical' } } },
     interactive: { control: 'boolean', description: 'Renders a focusable <button>. Opt-in only.', table: { category: 'Appearance', type: { summary: 'bool' } } },
     selected: { control: 'boolean', description: 'Chosen state (accent border via [data-selected]).', table: { category: 'Appearance', type: { summary: 'bool' } } },
@@ -102,6 +102,7 @@ export const Gallery = {
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 260px)', gap: '0.75rem' }}>
       {[
         { tone: undefined, label: 'neutral' },
+        { tone: 'primary', label: 'primary' },
         { tone: 'info', label: 'info' },
         { tone: 'success', label: 'success' },
         { tone: 'warning', label: 'warning' },
@@ -434,7 +435,7 @@ const FOOTER = {
 export const Composer = {
   argTypes: {
     surface: { control: 'select', options: ['plain', 'tinted', 'none'], table: { category: 'Chrome' } },
-    tone: { control: 'text', table: { category: 'Chrome' } },
+    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6'], table: { category: 'Chrome' } },
     accent: { control: 'boolean', table: { category: 'Chrome' } },
     bordered: { control: 'boolean', table: { category: 'Chrome' } },
     elevated: { control: 'boolean', table: { category: 'Chrome' } },
