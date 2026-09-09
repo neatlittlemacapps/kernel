@@ -819,8 +819,10 @@
 .krnl-collapsible { display: flex; flex-direction: column; }
 .krnl-collapsible-trigger { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); width: 100%; padding: var(--density-control-py) var(--density-control-px); background: var(--card-surface, var(--surface-page)); border: var(--dimension-rule-hair) solid var(--card-border-color, var(--border-subtle)); border-radius: var(--density-radius); cursor: pointer; font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); color: var(--text-default); text-align: left; }
 .krnl-collapsible-trigger:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: 2px; }
-.krnl-collapsible-chev { display: inline-flex; color: var(--text-faint); transition: transform .18s ease; }
-.krnl-collapsible-trigger[data-panel-open] .krnl-collapsible-chev { transform: rotate(90deg); }
+/* closed = points down, open = points up - same convention as the collapsible Card's
+   chevron (styles.css ~1160), so the two families animate identically. */
+.krnl-collapsible-chev { display: inline-flex; color: var(--text-faint); transform: rotate(90deg); transition: transform .18s ease; }
+.krnl-collapsible-trigger[data-panel-open] .krnl-collapsible-chev { transform: rotate(-90deg); }
 .krnl-collapsible-panel { overflow: hidden; }
 .krnl-collapsible-panel-inner { padding: var(--space-3) var(--space-1) var(--space-1); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); color: var(--text-muted); }
 /* Borderless variant — drops the trigger's box so the header reads as a heading row
@@ -1114,8 +1116,15 @@
    box-shadow layer, kept inset so it never bleeds into a neighbour in a card grid).
    The ring is what makes selection read at a glance - a lone 1px border-color swap
    was too quiet. Distinct from focus (outline, a different channel) so both can show
-   together. --card-selection is never set inline, so this stylesheet rule applies. */
-.krnl-card[data-selected] { border-color: var(--action-accent); --card-selection: inset 0 0 0 2px var(--action-accent); }
+   together. --card-selection is never set inline, so this stylesheet rule applies.
+   Colour follows the card's own tone rather than always being the primary action
+   colour: --card-accent (cardChrome.js, set for any named tone incl. `primary`) wins
+   when a tone resolved, falling back to --action-accent when no tone is set - the
+   original, pre-tone-aware look. Deliberately NOT falling back through --card-tone -
+   that property has an unrelated global default (`:root { --card-tone: var(--text-
+   muted) }`, this file, PatientCard's Level-4 colour-passing) that would leak a muted
+   grey into every tone-less Card's selection ring via inheritance. */
+.krnl-card[data-selected] { border-color: var(--card-accent, var(--action-accent)); --card-selection: inset 0 0 0 2px var(--card-accent, var(--action-accent)); }
 /* top of the elevation <-> state ladder: dragging always wins - highest of any
    state (raised < floating < overlay < hover/active tiers < modal here). */
 .krnl-card[data-dragging] { --card-elevation: var(--elevation-modal); }
@@ -1146,12 +1155,16 @@
    pressing while hovering resolves to the lower (raised) tier, matching the ladder. */
 .krnl-card--collapsible:has(.krnl-card-trigger:active):not([data-disabled]) { transform: translateY(0); --card-elevation: var(--elevation-raised); }
 .krnl-card--collapsible:has(.krnl-card-trigger[data-panel-open]) { --card-elevation: var(--elevation-overlay); }
-.krnl-card-trigger { position: relative; display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: none; border: none; border-radius: inherit; cursor: pointer; padding: var(--density-card-pad); padding-bottom: calc(var(--density-card-pad) + var(--space-3)); }
+.krnl-card-trigger { position: relative; display: flex; align-items: center; gap: var(--space-2); width: 100%; text-align: left; font: inherit; color: inherit; background: none; border: none; border-radius: inherit; cursor: pointer; padding: var(--density-card-pad); }
 .krnl-card-trigger:focus-visible { outline: var(--dimension-rule-thin) solid var(--focus-ring); outline-offset: -2px; }
 .krnl-card-trigger:disabled { cursor: not-allowed; }
-/* chevron hint centred on the summary's bottom edge; points down, flips up when open */
-.krnl-card-chev { position: absolute; left: 50%; bottom: var(--space-1); display: inline-flex; color: var(--text-faint); transform: translateX(-50%) rotate(90deg); transition: transform var(--motion-duration-fast) var(--motion-easing-standard); }
-.krnl-card-trigger[data-panel-open] .krnl-card-chev { transform: translateX(-50%) rotate(-90deg); }
+/* the summary (children - typically a Card.Header) fills the row, pushing the chevron
+   to the trailing edge - the "affordance rail" convention shared with Collapsible. */
+.krnl-card-trigger > :first-child { flex: 1 1 auto; min-width: 0; }
+/* chevron at the trailing edge of the header row; points down, flips up when open -
+   same convention as Collapsible's chevron (unified below). */
+.krnl-card-chev { flex: none; display: inline-flex; color: var(--text-faint); transform: rotate(90deg); transition: transform var(--motion-duration-fast) var(--motion-easing-standard); }
+.krnl-card-trigger[data-panel-open] .krnl-card-chev { transform: rotate(-90deg); }
 /* height-animated panel — Base UI supplies the measured --collapsible-panel-height */
 .krnl-card-panel { overflow: hidden; height: var(--collapsible-panel-height); transition: height var(--motion-duration-base) var(--motion-easing-decelerate); }
 .krnl-card-panel[data-starting-style], .krnl-card-panel[data-ending-style] { height: 0; }
@@ -1175,6 +1188,25 @@
 .krnl-banner-card .krnl-card-header-action { display: flex; align-items: center; gap: var(--space-2); }
 /* fullWidth (Banner-only, not a Card appearance): flush edge-to-edge page notice. */
 .krnl-banner-card--flush { border-radius: 0; border-left: none; border-right: none; margin-bottom: 0; width: 100%; }
+
+/* ── HighlightCard (B-5x) — a shell Card over a Stack of section-Cards. No new chrome:
+   the shell is a bare Card (its own tone/bordered chrome, resolved the usual way); each
+   section is itself a Card (tone/surface="tinted"/detail), so this class only supplies
+   the ONE bit neither Card nor a section needs on its own - the "no side content" body
+   wrapper and a section's optional bottom rule + the collapsible trigger's non-control
+   hint text + actions relocated into `detail`. */
+.krnl-hcard-body { color: var(--text-muted); font-family: var(--typography-body-sm-font-family); font-size: var(--typography-body-sm-font-size); line-height: var(--typography-body-sm-line-height); }
+/* borderBottom (CARECONNECT-CARD-MAPPING.md §3): the closest native Card concept is
+   `accent` (a TOP strip); a bottom rule needs this one small addition. Reads the same
+   --card-accent vivid rung + --card-strip-w Card's own accent strip uses, so a section
+   with borderBottom lines up with one that has a top accent instead. */
+.krnl-hcard-section[data-border-bottom] { border-bottom: var(--card-strip-w, 3px) solid var(--card-accent, var(--border-subtle)); }
+/* the show-more/show-less hint next to a collapsible section's chevron - plain text,
+   never a control, so it is safe inside the Base UI trigger button (unlike `actions`,
+   which a collapsible section renders in `detail` instead - see HighlightCard.jsx). */
+.krnl-hcard-section-hint { flex: none; color: var(--text-faint); font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); }
+.krnl-hcard-section-actions { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+
 /* ── CREDIT NOTICE (greenhouse) ── a Banner used as a footer row above the composer, so
    it must share the SAME left/right edge as the composer / context chip below it (see
    .krnl-panel's --krnl-footer-inset comment) rather than Card's own flow margin. Placed
