@@ -10,7 +10,7 @@ export default {
     value: { control: { type: 'range', min: 0, max: 100 }, description: "Current value (0..max).", table: { category: 'Content', type: { summary: "number" } } },
     max: { control: 'number', description: "Upper bound.", table: { category: 'Content', defaultValue: { summary: '100' }, type: { summary: "number" } } },
     size: { control: 'select', options: ['sm', 'md', 'lg'], description: "Track thickness: sm 4px, md 6px (default), lg 10px.", table: { category: 'Appearance', defaultValue: { summary: 'md' } } },
-    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3'], description: "Fill colour. Omit for the default --action-solid fill.", table: { category: 'Appearance' } },
+    tone: { control: 'select', options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3'], description: "Fill colour. Omit for the default --action-solid fill.", table: { category: 'Appearance' } },
     unbounded: { control: 'boolean', description: "Fades the fill's trailing edge instead of a hard cap.", table: { category: 'Appearance', type: { summary: 'bool' } } },
     'aria-label': { control: 'text', description: "Accessible name when there is no visible label. Exactly one of label / aria-label is required - Base UI names the progressbar only from a mounted label, so a bare bar is otherwise unnamed (WCAG 4.1.2).", table: { category: 'Accessibility', type: { summary: "string" } } },
   },
@@ -20,7 +20,7 @@ export default {
 };
 
 export const Playground = {
-  args: { label: "Uploading", value: 64, max: 100, size: 'md', tone: undefined, unbounded: false },
+  args: { label: "Uploading", value: 64, max: 100, size: 'md', tone: 'neutral', unbounded: false },
   render: (args) => <div style={{ maxWidth: 320 }}><Progress {...args} /></div>,
 };
 

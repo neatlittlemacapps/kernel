@@ -22,7 +22,7 @@ export default {
     accent: { control: 'boolean', description: 'A tone-coloured accent strip on the top edge (needs a `tone` to show colour; toneScope="box").', table: { category: 'Appearance', defaultValue: { summary: 'false' } } },
     toneScope: { control: 'radio', options: ['box', 'content'], description: '"box" lets `tone` also paint background/border/strip. "content" keeps the box neutral while the tone stays available to slot content (e.g. an icon tile).', table: { category: 'Appearance', defaultValue: { summary: 'box' } } },
     density: { control: 'select', options: [undefined, 'compact', 'comfortable', 'spacious'], description: 'Density scope: reshapes padding/radius/gap via --density-* tokens. Omit to inherit the ambient density.', table: { category: 'Appearance' } },
-    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6'], description: 'Colour identity: "primary" (the brand action colour), a named status (info/success/warning/error), a data tone (data-1..data-6), or any colour/var (not offered as a control option - pass one via code).', table: { category: 'Appearance' } },
+    tone: { control: 'select', options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6'], description: 'Colour identity: "primary" (the brand action colour), a named status (info/success/warning/error), a data tone (data-1..data-6), or any colour/var (not offered as a control option - pass one via code).', table: { category: 'Appearance' } },
     orientation: { control: 'select', options: ['vertical', 'horizontal'], description: 'Column (default) or row - the row form collapses back to a column inside a narrow container (@container, not the viewport).', table: { category: 'Appearance', defaultValue: { summary: 'vertical' } } },
     interactive: { control: 'boolean', description: 'Renders a focusable <button>. Opt-in only.', table: { category: 'Appearance', type: { summary: 'bool' } } },
     selected: { control: 'boolean', description: 'Chosen state (accent border via [data-selected]).', table: { category: 'Appearance', type: { summary: 'bool' } } },
@@ -204,6 +204,59 @@ export const ChromeMatrix = {
           <Cell label='dense → compact'><Card dense><Card.Body>dense</Card.Body></Card></Cell>
           <Cell label='density="compact" (preferred)'><Card density="compact"><Card.Body>density="compact"</Card.Body></Card></Cell>
         </div>
+      </div>
+    </div>
+  ),
+};
+
+// Region seams (B-5x): `divider` draws an edge-to-edge hairline rule at a region's
+// outer seam (border-bottom under a Header, border-top above a Footer); `tray`
+// additionally gives the region a distinct muted background bleeding to the card's
+// outer edge, with matching corner radius - the shadcn `border-t` / `bg-muted/50`
+// footer pattern. CareConnect needs both: a footer actions-row divided from the
+// body, and a header divided from the body.
+export const Seams = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div>
+      <h4 style={{ margin: '0 0 0.5rem' }}>Region seams — divider &amp; tray</h4>
+      <p style={{ margin: '0 0 0.75rem', fontSize: 'var(--typography-caption-md-font-size)', color: 'var(--text-muted)' }}>
+        `divider` draws a hairline rule edge-to-edge at the region's outer seam; `tray` adds a muted, edge-to-edge background zone (with matching corner radius) and implies the divider line.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 260px)', gap: '1rem' }}>
+        <Cell label="footer divider (hairline)">
+          <Card>
+            <Card.Body>Body content above the divided footer.</Card.Body>
+            <Card.Footer divider>
+              <Button size="sm" variant="secondary">Cancel</Button>
+              <Button size="sm">Save</Button>
+            </Card.Footer>
+          </Card>
+        </Cell>
+        <Cell label="footer tray (muted zone)">
+          <Card>
+            <Card.Body>Body content above the tray footer.</Card.Body>
+            <Card.Footer tray>
+              <Button size="sm" variant="secondary">Cancel</Button>
+              <Button size="sm">Save</Button>
+            </Card.Footer>
+          </Card>
+        </Cell>
+        <Cell label="header divider">
+          <Card>
+            <Card.Header divider title="Patient summary" description="Divided from the body below" />
+            <Card.Body>Body content below the divided header.</Card.Body>
+          </Card>
+        </Cell>
+        <Cell label='on a toned card (seam stays neutral)'>
+          <Card tone="error">
+            <Card.Body>Body content above the divided footer.</Card.Body>
+            <Card.Footer divider>
+              <Button size="sm" variant="secondary">Dismiss</Button>
+              <Button size="sm" tone="error">Acknowledge</Button>
+            </Card.Footer>
+          </Card>
+        </Cell>
       </div>
     </div>
   ),
@@ -435,7 +488,7 @@ const FOOTER = {
 export const Composer = {
   argTypes: {
     surface: { control: 'select', options: ['plain', 'tinted', 'none'], table: { category: 'Chrome' } },
-    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6'], table: { category: 'Chrome' } },
+    tone: { control: 'select', options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6'], table: { category: 'Chrome' } },
     accent: { control: 'boolean', table: { category: 'Chrome' } },
     bordered: { control: 'boolean', table: { category: 'Chrome' } },
     elevated: { control: 'boolean', table: { category: 'Chrome' } },

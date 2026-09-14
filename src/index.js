@@ -16,6 +16,7 @@
 export * from './components/ui.jsx';
 export * from './components/Layout.jsx';
 export * from './components/Card.jsx';
+export * from './components/HighlightCard.jsx';
 export * from './components/SidePanel.jsx';
 export * from './components/Menu.jsx';
 export * from './components/ContextMenu.jsx';

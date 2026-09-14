@@ -10,7 +10,7 @@ export default {
     max: { control: 'number', description: "The upper bound of the scale.", table: { category: 'Content', defaultValue: { summary: "100" }, type: { summary: "number" } } },
     size: { control: 'number', description: "Diameter in pixels.", table: { category: 'Appearance', defaultValue: { summary: "44" }, type: { summary: "number" } } },
     thickness: { control: 'number', description: "Stroke width in pixels. Defaults to roughly size / 6.", table: { category: 'Appearance', type: { summary: "number" } } },
-    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2'], description: "Static fill colour when thresholds are omitted.", table: { category: 'Appearance', type: { summary: "string" } } },
+    tone: { control: 'select', options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2'], description: "Static fill colour when thresholds are omitted.", table: { category: 'Appearance', type: { summary: "string" } } },
     unbounded: { control: 'boolean', description: "The ring never closes; the trailing end fades instead of a hard edge.", table: { category: 'Appearance', type: { summary: "bool" } } },
     valueText: { control: 'text', description: "The aria-valuetext announced by assistive tech - the ring carries no visible text of its own.", table: { category: 'Accessibility', type: { summary: "string" } } },
   },
