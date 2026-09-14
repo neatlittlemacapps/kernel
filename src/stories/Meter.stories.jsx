@@ -8,7 +8,7 @@ export default {
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 100, step: 0.5 }, description: "The current level.", table: { category: 'Content', type: { summary: "number" } } },
     max: { control: 'number', description: "The upper bound of the scale.", table: { category: 'Content', defaultValue: { summary: "100" }, type: { summary: "number" } } },
-    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3'], description: "Fill colour. Omit for the default --action-solid fill.", table: { category: 'Appearance', type: { summary: "string" } } },
+    tone: { control: 'select', options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3'], description: "Fill colour. Omit for the default --action-solid fill.", table: { category: 'Appearance', type: { summary: "string" } } },
     size: { control: 'select', options: ["sm","md","lg"], description: "Track thickness: sm 4px, md 6px (default), lg 10px.", table: { category: 'Appearance', defaultValue: { summary: "md" } } },
     unbounded: { control: 'boolean', description: "Fades the fill's trailing edge instead of a hard cap, for a quantity with no real ceiling.", table: { category: 'Appearance', type: { summary: "bool" } } },
     label: { control: 'text', description: "Optional caption above the track. Not the accessible name - see valueText.", table: { category: 'Content', type: { summary: "ReactNode" } } },

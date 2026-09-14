@@ -11,7 +11,7 @@ export default {
   component: HighlightCard,
   tags: ['autodocs'],
   argTypes: {
-    tone: { control: 'select', options: [undefined, 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3'], description: 'Colour identity of the shell, forwarded to the shell Card\'s own `tone`.', table: { category: 'Appearance' } },
+    tone: { control: 'select', options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'data-1', 'data-2', 'data-3'], description: 'Colour identity of the shell, forwarded to the shell Card\'s own `tone`.', table: { category: 'Appearance' } },
     bordered: { control: 'boolean', description: 'The shell\'s hairline border.', table: { category: 'Appearance' } },
     title: { control: 'text', table: { category: 'Header' } },
   },
