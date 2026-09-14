@@ -105,7 +105,7 @@ function Section({ section }) {
 // `sections` is the repeatable, independently-toned/collapsible unit; `footer` is a
 // full-width closing row.
 export const HighlightCard = React.forwardRef(function HighlightCard(
-  { tone, bordered, leading, title, badge, action, body, sections = [], footer,
+  { tone, bordered, leading, title, badge, action, body, sections = [], footer, footerDivider,
     onClick, className = '', style, ...rest }, ref) {
   const hasBody = body != null || sections.length > 0;
   return (
@@ -127,7 +127,7 @@ export const HighlightCard = React.forwardRef(function HighlightCard(
           </Stack>
         </Card.Body>
       ) : null}
-      {footer != null ? <Card.Footer>{footer}</Card.Footer> : null}
+      {footer != null ? <Card.Footer divider={footerDivider}>{footer}</Card.Footer> : null}
     </Card>
   );
 });
@@ -148,6 +148,7 @@ export const meta = {
       { name: 'body', class: 'content', type: 'ReactNode', description: 'Plain content with no section chrome, rendered above any `sections` (for a HighlightCard with no discrete sections at all - the CareConnect "no side content" pattern).' },
       { name: 'sections', class: 'content', type: 'Array<Section>', description: 'The repeatable unit: { icon, title, description, tone, highlight, borderBottom, actions, collapsible, defaultExpanded, expanded, onExpandedChange, showMoreLabel, showLessLabel, content, key }. Each renders as its own Card - `tone` colours it independently of the shell; `highlight` sets surface="tinted"; `collapsible` wraps `content` in that section Card\'s own `detail` (Change A gives it the right-aligned, down/up chevron for free); `borderBottom` draws a tone-coloured rule under the section header instead of Card\'s usual top strip. `actions` render in the section header when NOT collapsible, and inside `detail` (never the trigger) when collapsible - avoids nesting a control inside the trigger button.' },
       { name: 'footer', class: 'content', type: 'ReactNode', description: 'A full-width closing row - Card.Footer.' },
+      { name: 'footerDivider', class: 'dsPresentation', type: 'bool', description: 'Forwarded to the footer Card.Footer\'s own `divider` - an edge-to-edge hairline seam dividing the footer actions-row from the body above it.' },
       { name: 'onClick', class: 'event', type: '(event) => void', description: 'Click handler on the shell Card. The shell is never `interactive` (no button semantics), matching the source\'s plain onClick div - use a section `action` for a real keyboard-operable control.' },
       { name: 'className', class: 'dsPresentation', type: 'string', description: 'Extra class names appended after the canonical `krnl-hcard` class.' },
     ],

@@ -1061,6 +1061,10 @@
           "text": "Use accent (needs a tone) for the vibrant top-edge bar; the accent + icon-tile carry the colour so the body can stay light and text stays AA."
         },
         {
+          "do": true,
+          "text": "Divide a footer actions-row from the body with <Card.Footer divider>; use tray for a distinct muted actions zone (edge-to-edge, like a toolbar)."
+        },
+        {
           "do": false,
           "text": "Nest an interactive Card inside another interactive Card, or put a button/link inside a collapsible card's summary (button-in-button)."
         }
@@ -1074,7 +1078,7 @@
         {
           "name": "Header",
           "required": false,
-          "description": "Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header)."
+          "description": "Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header). Opt into `divider` for an edge-to-edge hairline seam under the header, or `tray` for that seam plus a muted background zone bleeding to the card's top edge."
         },
         {
           "name": "Body",
@@ -1084,7 +1088,7 @@
         {
           "name": "Footer",
           "required": false,
-          "description": "Actions row (Card.Footer)."
+          "description": "Actions row (Card.Footer). Opt into `divider` for an edge-to-edge hairline seam above the footer, or `tray` for that seam plus a muted background zone bleeding to the card's bottom edge."
         },
         {
           "name": "Detail",
@@ -2417,6 +2421,12 @@
           "class": "content",
           "type": "ReactNode",
           "description": "A full-width closing row - Card.Footer."
+        },
+        {
+          "name": "footerDivider",
+          "class": "dsPresentation",
+          "type": "bool",
+          "description": "Forwarded to the footer Card.Footer's own `divider` - an edge-to-edge hairline seam dividing the footer actions-row from the body above it."
         },
         {
           "name": "onClick",

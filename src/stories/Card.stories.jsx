@@ -209,6 +209,59 @@ export const ChromeMatrix = {
   ),
 };
 
+// Region seams (B-5x): `divider` draws an edge-to-edge hairline rule at a region's
+// outer seam (border-bottom under a Header, border-top above a Footer); `tray`
+// additionally gives the region a distinct muted background bleeding to the card's
+// outer edge, with matching corner radius - the shadcn `border-t` / `bg-muted/50`
+// footer pattern. CareConnect needs both: a footer actions-row divided from the
+// body, and a header divided from the body.
+export const Seams = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div>
+      <h4 style={{ margin: '0 0 0.5rem' }}>Region seams — divider &amp; tray</h4>
+      <p style={{ margin: '0 0 0.75rem', fontSize: 'var(--typography-caption-md-font-size)', color: 'var(--text-muted)' }}>
+        `divider` draws a hairline rule edge-to-edge at the region's outer seam; `tray` adds a muted, edge-to-edge background zone (with matching corner radius) and implies the divider line.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 260px)', gap: '1rem' }}>
+        <Cell label="footer divider (hairline)">
+          <Card>
+            <Card.Body>Body content above the divided footer.</Card.Body>
+            <Card.Footer divider>
+              <Button size="sm" variant="secondary">Cancel</Button>
+              <Button size="sm">Save</Button>
+            </Card.Footer>
+          </Card>
+        </Cell>
+        <Cell label="footer tray (muted zone)">
+          <Card>
+            <Card.Body>Body content above the tray footer.</Card.Body>
+            <Card.Footer tray>
+              <Button size="sm" variant="secondary">Cancel</Button>
+              <Button size="sm">Save</Button>
+            </Card.Footer>
+          </Card>
+        </Cell>
+        <Cell label="header divider">
+          <Card>
+            <Card.Header divider title="Patient summary" description="Divided from the body below" />
+            <Card.Body>Body content below the divided header.</Card.Body>
+          </Card>
+        </Cell>
+        <Cell label='on a toned card (seam stays neutral)'>
+          <Card tone="error">
+            <Card.Body>Body content above the divided footer.</Card.Body>
+            <Card.Footer divider>
+              <Button size="sm" variant="secondary">Dismiss</Button>
+              <Button size="sm" tone="error">Acknowledge</Button>
+            </Card.Footer>
+          </Card>
+        </Cell>
+      </div>
+    </div>
+  ),
+};
+
 // The reference "vitals" pattern, rebuilt from the base Card + content ATOMS with NO
 // inline restyling: the icon-indented identity cluster uses Card.Header's stacked text
 // column - leading=IconPill, title + badge=StatusPill (title row), value=ValueDisplay

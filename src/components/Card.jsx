@@ -162,10 +162,11 @@ Card.Preview = function CardPreview({ className = '', children, ...rest }) {
 //                   the icon-indented cluster). Styled prominent by default for bare text.
 //   3. `description` - the muted supporting / teaser line.
 // Card.Body / Card.Footer intentionally reset to the full card width (outside this column).
-Card.Header = function CardHeader({ leading, title, badge, value, description, action, className = '', children, ...rest }) {
+Card.Header = function CardHeader({ leading, title, badge, value, description, action, divider, tray, className = '', children, ...rest }) {
   const hasText = title != null || badge != null || value != null || description != null;
   return (
-    <div className={`krnl-card-header ${className}`.trim()} {...rest}>
+    <div className={`krnl-card-header ${className}`.trim()}
+      data-divider={divider || undefined} data-tray={tray || undefined} {...rest}>
       {leading ? <div className="krnl-card-header-lead">{leading}</div> : null}
       {hasText ? (
         <div className="krnl-card-header-text">
@@ -189,8 +190,13 @@ Card.Body = function CardBody({ className = '', children, ...rest }) {
   return <div className={`krnl-card-body ${className}`.trim()} {...rest}>{children}</div>;
 };
 
-Card.Footer = function CardFooter({ className = '', children, ...rest }) {
-  return <div className={`krnl-card-footer ${className}`.trim()} {...rest}>{children}</div>;
+Card.Footer = function CardFooter({ divider, tray, className = '', children, ...rest }) {
+  return (
+    <div className={`krnl-card-footer ${className}`.trim()}
+      data-divider={divider || undefined} data-tray={tray || undefined} {...rest}>
+      {children}
+    </div>
+  );
 };
 
 export const meta = {
@@ -229,13 +235,14 @@ export const meta = {
       { do: true, text: 'Use interactive/onClick for a clickable card; selected for a chosen state in a set.' },
       { do: true, text: 'For a collapsible card, put the compact teaser (icon / title / status / value) in children and the expandable content in `detail`; keep the summary display-only (actions live in detail). Coordinate one-open-at-a-time with the controlled expanded/onExpandedChange triad.' },
       { do: true, text: 'Use accent (needs a tone) for the vibrant top-edge bar; the accent + icon-tile carry the colour so the body can stay light and text stays AA.' },
+      { do: true, text: 'Divide a footer actions-row from the body with <Card.Footer divider>; use tray for a distinct muted actions zone (edge-to-edge, like a toolbar).' },
       { do: false, text: 'Nest an interactive Card inside another interactive Card, or put a button/link inside a collapsible card\'s summary (button-in-button).' },
     ],
     anatomy: [
       { name: 'Preview', required: false, description: 'Edge-to-edge media (Card.Preview).' },
-      { name: 'Header', required: false, description: 'Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header).' },
+      { name: 'Header', required: false, description: 'Leading column (icon/avatar) + a stacked text column that indents past the icon — title + badge (identity row), value (a ValueDisplay), description (supporting line) — plus a trailing action (Card.Header). Opt into `divider` for an edge-to-edge hairline seam under the header, or `tray` for that seam plus a muted background zone bleeding to the card\'s top edge.' },
       { name: 'Body', required: false, description: 'Main content (Card.Body).' },
-      { name: 'Footer', required: false, description: 'Actions row (Card.Footer).' },
+      { name: 'Footer', required: false, description: 'Actions row (Card.Footer). Opt into `divider` for an edge-to-edge hairline seam above the footer, or `tray` for that seam plus a muted background zone bleeding to the card\'s bottom edge.' },
       { name: 'Detail', required: false, description: 'Collapsible panel revealed below the summary when `detail` is set.' },
     ],
     related: ['Box', 'PatientCard', 'Stack', 'Collapsible', 'Banner'],

@@ -1290,6 +1290,44 @@
 .krnl-card-header + .krnl-card-body,
 .krnl-card-header + .krnl-card-footer,
 .krnl-card-body + .krnl-card-footer { margin-top: var(--density-gap); }
+/* Region seams (divider / tray) — an edge-to-edge rule between card regions.
+   The card pads its ROOT, so a region's rule must bleed past that padding to reach
+   the card edges, then re-inset its own content — the same negative-margin trick
+   Card.Preview uses for media. The sibling-margin rhythm above already puts a
+   --density-gap OUTSIDE the region (above a footer / below a header); the seam adds
+   a matching gap on the INNER side so the rule sits centered in the gap band.
+   Seam colour is the neutral --border-subtle (a header/footer seam reads as an
+   internal division, not the card's outer toned frame — matches shadcn's neutral
+   border-t). */
+.krnl-card-header[data-divider], .krnl-card-header[data-tray],
+.krnl-card-footer[data-divider], .krnl-card-footer[data-tray] {
+  margin-inline: calc(-1 * var(--density-card-pad));  /* bleed to the L/R edges */
+  padding-inline: var(--density-card-pad);            /* re-inset the content */
+}
+.krnl-card-footer[data-divider], .krnl-card-footer[data-tray] {
+  border-top: var(--dimension-rule-hair) solid var(--border-subtle);
+  padding-top: var(--density-gap);
+}
+.krnl-card-header[data-divider], .krnl-card-header[data-tray] {
+  border-bottom: var(--dimension-rule-hair) solid var(--border-subtle);
+  padding-bottom: var(--density-gap);
+}
+/* tray: a distinct muted zone that also bleeds to the card's block edge (top for a
+   header, bottom for a footer) with matching corner radius, so it reads as a tray. */
+.krnl-card-footer[data-tray] {
+  background: var(--surface-sunken);
+  margin-bottom: calc(-1 * var(--density-card-pad));
+  padding-bottom: var(--density-card-pad);
+  border-bottom-left-radius: var(--density-radius);
+  border-bottom-right-radius: var(--density-radius);
+}
+.krnl-card-header[data-tray] {
+  background: var(--surface-sunken);
+  margin-top: calc(-1 * var(--density-card-pad));
+  padding-top: var(--density-card-pad);
+  border-top-left-radius: var(--density-radius);
+  border-top-right-radius: var(--density-radius);
+}
 .krnl-row-between { display: flex; align-items: center; justify-content: space-between; }
 .krnl-saved { display: inline-flex; align-items: center; gap: 4px; color: var(--status-success-solid); font-family: var(--typography-label-md-font-family); font-size: var(--typography-label-md-font-size); font-weight: var(--typography-label-md-font-weight); }
 
