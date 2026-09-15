@@ -498,22 +498,26 @@ export const Composer = {
     value: { control: 'select', options: Object.keys(VALUE), table: { category: 'Header (indented past the icon)' } },
     description: { control: 'text', table: { category: 'Header (indented past the icon)' } },
     action: { control: 'select', options: Object.keys(ACTION), table: { category: 'Header (indented past the icon)' } },
+    headerSeam: { control: 'select', options: ['none', 'divider', 'tray'], description: 'Edge-to-edge seam below the header: a hairline (divider) or a muted background zone (tray).', table: { category: 'Header (indented past the icon)' } },
     body: { control: 'select', options: Object.keys(BODY), table: { category: 'Body (full width)' } },
     footer: { control: 'select', options: Object.keys(FOOTER), table: { category: 'Footer (full width)' } },
+    footerSeam: { control: 'select', options: ['none', 'divider', 'tray'], description: 'Edge-to-edge seam above the footer: a hairline (divider) or a muted background zone (tray).', table: { category: 'Footer (full width)' } },
   },
   args: {
     surface: 'plain', tone: 'info', accent: true, bordered: true, elevated: true,
     leading: 'IconPill', title: 'Blood pressure', badge: 'StatusPill', value: 'ValueDisplay',
-    description: '132/82 → 152/94 mmHg — elevated 9 consecutive days', action: 'none',
-    body: 'none', footer: 'none',
+    description: '132/82 → 152/94 mmHg — elevated 9 consecutive days', action: 'none', headerSeam: 'none',
+    body: 'none', footer: 'Actions', footerSeam: 'divider',
   },
   parameters: {
     docs: { description: { story: 'Pick a content-atom for each region and watch the card compose. Note the header column: leading / title+badge / value / description all indent PAST the icon (one identity cluster), while Body and Footer reset to full width. The base content atoms — IconPill, StatusPill, TrendChip, ValueDisplay, Sparkline, FieldList, EditChip (+ Button) — all import from `@corilus/kernel`. Open the Code panel to copy the exact composition.' } },
   },
-  render: ({ surface, tone, accent, bordered, elevated, leading, title, badge, value, description, action, body, footer }) => (
+  render: ({ surface, tone, accent, bordered, elevated, leading, title, badge, value, description, action, headerSeam, body, footer, footerSeam }) => (
     <div style={{ maxWidth: 400 }}>
       <Card surface={surface} tone={tone || undefined} accent={accent} bordered={bordered} elevated={elevated}>
         <Card.Header
+          divider={headerSeam === 'divider'}
+          tray={headerSeam === 'tray'}
           leading={LEADING[leading]}
           title={title}
           badge={STATUS[badge]}
@@ -522,7 +526,7 @@ export const Composer = {
           action={ACTION[action]}
         />
         {body !== 'none' ? <Card.Body>{BODY[body]}</Card.Body> : null}
-        {footer !== 'none' ? <Card.Footer>{FOOTER[footer]}</Card.Footer> : null}
+        {footer !== 'none' ? <Card.Footer divider={footerSeam === 'divider'} tray={footerSeam === 'tray'}>{FOOTER[footer]}</Card.Footer> : null}
       </Card>
     </div>
   ),
