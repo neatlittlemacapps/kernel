@@ -1279,7 +1279,9 @@
 .krnl-card-header-desc { font-family: var(--typography-caption-md-font-family); font-size: var(--typography-caption-md-font-size); color: var(--text-muted); }
 .krnl-card-header-action { margin-left: auto; flex-shrink: 0; }
 .krnl-card-body { grid-area: body; min-width: 0; }
-.krnl-card-footer { grid-area: footer; display: flex; align-items: center; gap: var(--space-2); }
+/* footer actions right-align by default (the conventional CTA placement - primary
+   action bottom-right, secondary to its left), matching dialog/card footer norms. */
+.krnl-card-footer { grid-area: footer; display: flex; align-items: center; justify-content: flex-end; gap: var(--space-2); }
 /* Consistent vertical rhythm between PRESENT, adjacent regions (--density-gap). Uses
    sibling-adjacency rather than a grid row-gap so an ABSENT region leaves no phantom gap
    (an empty grid row still gaps under row-gap) and Preview keeps its edge bleed. Every
